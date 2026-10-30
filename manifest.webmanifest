@@ -1,0 +1,8 @@
+{
+  "name": "Vizag · Araku · Vanjangi",
+  "short_name": "Vizag trip",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F2F2F2",
+  "theme_color": "#151515"
+}
