@@ -897,6 +897,92 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
 .dbtn{appearance:none;flex:none;border:1px solid var(--line);background:var(--soft);color:var(--ink);font:inherit;font-size:.86rem;font-weight:700;border-radius:999px;padding:8px 14px;cursor:pointer}
 .dbtn.red{background:color-mix(in srgb,var(--danger) 10%,var(--surface));border-color:color-mix(in srgb,var(--danger) 35%,var(--line));color:var(--danger)}
 
+/* ===== v20: more room under the top tabs; content clear of the status-bar blur ===== */
+.chips{padding:12px 0 12px;background:linear-gradient(var(--bg) 78%,color-mix(in srgb,var(--bg) 0%,transparent))}
+:root[data-skin] .chips{background:linear-gradient(var(--bg) 78%,color-mix(in srgb,var(--bg) 0%,transparent))}
+:root[data-skin="navy"] .chips{background:linear-gradient(#0A1228 78%,rgba(10,18,40,0))}
+.chip,#v-days .chip{padding:11px 2px}
+.seg-days{padding:5px;border-radius:20px}
+.chip{border-radius:15px}
+.view .chips + .subp > .summary,.view .chips + .subp > :first-child{margin-top:4px}
+main{padding-top:5px}
+#v-route > .summary:first-child,#v-alerts > .summary:first-child{margin-top:12px}
+
+/* ===== v21: onboarding-style login ===== */
+.modal.lfull{background:var(--bg);align-items:stretch;justify-content:center;z-index:60}
+.lpage{width:100%;max-width:520px;height:100%;height:100dvh;border-radius:0!important;box-shadow:none;background:var(--bg);padding:0!important;gap:0;overflow-y:auto;overflow-x:hidden;animation:none!important;display:flex;flex-direction:column}
+.lart{position:relative;flex:none;height:min(46vh,380px);overflow:hidden;clip-path:ellipse(118% 100% at 50% 0%);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.lslides{height:100%;--li:0;--dx:0px}
+.lset{display:none;height:100%;transform:translateX(calc(var(--li) * -100% + var(--dx)));transition:transform .55s cubic-bezier(.65,0,.35,1)}
+.lslides.drag .lset{transition:none}
+.lpage[data-ls="pastel"] .lset[data-ls="pastel"],.lpage[data-ls="line"] .lset[data-ls="line"],.lpage[data-ls="sketch"] .lset[data-ls="sketch"]{display:flex}
+.lslide{flex:0 0 100%;height:100%}
+.lslide svg{display:block;width:100%;height:100%}
+.lcopy{flex:none;text-align:center;padding:20px var(--gr) 6px var(--gl)}
+.lsteps{display:grid}
+.lstep{grid-area:1/1;opacity:0;transform:translateY(6px);transition:opacity .35s ease,transform .35s ease}
+.lstep.on{opacity:1;transform:none}
+.lstep h2{margin:0;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.lstep p{margin:6px auto 0;max-width:290px;font-size:.95rem;line-height:1.45;color:var(--muted)}
+.ldots{display:flex;justify-content:center;gap:6px;margin-top:14px}
+.ldots i{width:7px;height:7px;border-radius:99px;background:var(--line);transition:width .3s ease,background .3s ease}
+.ldots i.on{width:20px;background:var(--brand)}
+.ltop{display:flex;flex-direction:column;gap:10px;padding:14px var(--gr) calc(18px + env(safe-area-inset-bottom,0px)) var(--gl);flex:1;justify-content:flex-end}
+.lpage .mtile{display:none}
+.lpage .mhead{display:none}
+.lpage:has(#login-fields[hidden]) .mhead,.lpage.kb .mhead{display:block;margin-bottom:4px}
+.lpage .mhead h3{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+.lpage .mhead .s{font-size:.92rem;color:var(--muted);margin-top:4px}
+.lpage .fld{background:var(--surface);min-height:52px}
+.lpage .btn{border-radius:14px}
+.lpage .btn.ghost{padding:6px;font-size:.92rem}
+.lpage .fine{font-size:.76rem}
+.lpage.kb .lart,.lpage.kb .lcopy{display:none}
+.lpage.kb .ltop{justify-content:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 24px)}
+html.login-open,html.login-open body{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.lslides,.lstep{transition:none}}
+
+/* ===== v22: style picker on the login art + settings row ===== */
+.lpick{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:var(--gr);display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.lpick button{appearance:none;border:0;background:none;font:inherit;font-size:.74rem;font-weight:700;color:#3A3F4B;padding:5px 10px;border-radius:999px;cursor:pointer}
+.lpick button[aria-pressed="true"]{background:#1E2230;color:#fff}
+.lpage[data-ls="line"]{--lbg:#FAFAF8}
+.lpage[data-ls="sketch"]{--lbg:#F1EFEA}
+.lsrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 0 16px}
+.lsrow .seg{flex:1;display:flex}
+.lsrow .seg button{flex:1}
+
+/* ===== v25: login follows the app theme; sketch art drawn in theme colours ===== */
+.modal.lfull,.lpage,.lart{background:var(--bg)}
+.lart{clip-path:none;border-radius:0}
+.lset{display:flex!important}
+.lpick{display:none}
+.lart .k{stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.lart .f{fill:var(--bg)}
+.lart rect.f{stroke:none}
+.lart .sh{fill:color-mix(in srgb,var(--ink) 6%,var(--bg))}
+.lart .sh2{fill:color-mix(in srgb,var(--ink) 12%,var(--bg))}
+.lart .g{fill:#3E8E5A}
+.lart .d{stroke-dasharray:2 5;opacity:.7}
+:root[data-skin="graphite"] .lart .g,:root[data-skin="midnight"] .lart .g,:root[data-skin="navy"] .lart .g{fill:#5DB07C}
+.lpage .fine{max-width:280px;margin:0 auto;text-wrap:balance;line-height:1.4}
+
+/* ===== v27: login inputs without emoji, eye icon toggle ===== */
+.lpage .fld{padding-left:16px}
+.eye{display:grid;place-items:center;width:40px;height:40px;padding:0;border-radius:12px;background:transparent;color:var(--muted)}
+.eye svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.eye:active{background:var(--soft)}
+
+/* ===== v28: login art sits lower and scales with the screen; new settings icon ===== */
+.lart{height:clamp(200px,40vh,420px);margin-top:calc(env(safe-area-inset-top,0px) + clamp(28px,7vh,72px))}
+.lslide{display:flex;align-items:flex-end}
+.lslide svg{width:100%;height:100%}
+@media (min-height:800px){.lcopy{padding-top:26px}}
+@media (max-height:680px){.lart{height:clamp(170px,34vh,260px);margin-top:calc(env(safe-area-inset-top,0px) + 16px)}.lcopy{padding-top:12px}}
+.fab svg.fic{fill:none!important;stroke:currentColor!important;stroke-width:1.9;stroke-linecap:round}
+.lart{height:auto;aspect-ratio:390/330;max-height:42vh;width:100%}
+@media (max-height:680px){.lart{max-height:34vh}}
+
 </style>
 </head>
 <body>
@@ -1032,7 +1118,7 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
 </main>
 
 <button type="button" class="fab" id="fab" aria-label="Settings" aria-expanded="false" aria-controls="settings">
-  <svg class="ph i-open" aria-hidden="true"><use data-p="sliders" href="#i-majesticons-solid-sliders"/></svg>
+  <svg class="ph i-open fic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
   <svg class="ph i-close" aria-hidden="true"><use data-p="x" href="#i-majesticons-solid-x"/></svg>
   <svg class="ph i-up" aria-hidden="true"><use data-p="up" href="#i-majesticons-solid-up"/></svg>
 </button>
@@ -1061,15 +1147,17 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
   <button type="button" class="btn full danger" id="cf-go">Continue</button>
   <button type="button" class="btn ghost full" id="cf-cancel">Cancel</button>
 </div>
-<div class="modal" id="login" hidden>
-  <form class="mbox" id="login-form" autocomplete="on" aria-labelledby="login-title">
+<div class="modal lfull" id="login" hidden>
+  <form class="mbox lpage" id="login-form" autocomplete="on" aria-labelledby="login-title">
+   <div class="lart" aria-hidden="true"><div class="lslides"><div class="lset"><div class="lslide"><svg viewBox="0 0 390 330" preserveAspectRatio="xMidYMid slice"><rect class="f" width="390" height="330"/><path class="k f" d="M294 76a24 24 0 1 0 48 0a24 24 0 1 0 -48 0Z"/><path class="k f" d="M44 96c4-10 18-12 24-4 6-6 18-4 20 4 8 0 12 8 6 12H46c-6-2-6-10-2-12Z"/><path class="k" d="M236 50l6 6 6-6m10 6l5 5 5-5"/><path class="k f" d="M-10 196C34 168 66 158 104 170c36 12 58-52 108-64 44-10 70 42 108 42 30 0 52-10 80-6V345H-10Z"/><path class="k" d="M212 106V76"/><path class="k g" d="M212 76l24 8-24 8Z"/><path class="k f" d="M-10 236c46-30 98-40 148-20 42 16 74 18 112 4 50-18 102-14 150 4V345H-10Z"/><path class="k f" d="M52 214l11-28 11 28Z"/><path class="k f" d="M74 212l9-22 9 22Z"/><path class="k f" d="M316 214l10-26 10 26Z"/><path class="k" d="M63 214v6M83 212v6M326 214v6"/><path class="k f" d="M152.5 196a5.5 5.5 0 1 0 11.0 0a5.5 5.5 0 1 0 -11.0 0Z"/><path class="k f" d="M151 204h14l3 18h-20Z"/><path class="k" d="M154 222v8M162 222v8"/><path class="k f" d="M-10 268c18-18 46-18 62-6 16-18 48-18 64-2 16-16 48-14 62 2 18-16 50-14 62 2 18-14 48-14 62 2 16-14 46-12 60 2 14-8 30-8 42 0V345H-10Z"/></svg></div><div class="lslide"><svg viewBox="0 0 390 330" preserveAspectRatio="xMidYMid slice"><rect class="f" width="390" height="330"/><path class="k f" d="M296 70a20 20 0 1 0 40 0a20 20 0 1 0 -40 0Z"/><path class="k" d="M70 62l6 6 6-6m10 6l5 5 5-5"/><path class="k" d="M-10 152c40-18 84-22 124-6 14 6 28 8 40 8M240 154c16-2 30-6 44-12 38-16 78-12 116 2"/><path class="k g" d="M68 148l11-28 11 28Z"/><path class="k f" d="M90 146l9-22 9 22Z"/><path class="k f" d="M308 138l10-26 10 26Z"/><path class="k" d="M79 148v6M99 146v6M318 138v6"/><path class="k" d="M-10 216c40-16 80-18 112-6M296 206c34-10 66-8 104 4"/><path class="k" d="M166 156c-4 30 2 58-2 88-2 14-2 24 0 30M184 156c2 32-2 60 0 90 1 12 1 22 0 28M202 156c-2 30 2 60 0 90-1 12-1 22 0 28M220 156c2 30-2 58 2 88 2 14 2 24 0 30M236 156c-2 28 0 54 4 84"/><path class="k" d="M132 282c8-14 24-16 32-4 8-14 26-14 34-2 8-14 26-14 34 0 8-10 22-10 30 2"/><path class="k f" d="M104 290c6-12 20-14 28-4 3 3 3 6 1 8h-28Z"/><path class="k f" d="M266 286c5-10 17-12 25-4 3 3 3 6 1 8h-25Z"/><path class="k" d="M60 306c14-5 28-5 42 0M176 308c16-5 32-5 48 0M282 304c12-4 24-4 36 0M20 322c14-4 28-4 40 0M324 322c14-4 28-4 40 0"/><path class="k f" d="M325 174a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z"/><path class="k f" d="M323 182h14l3 18h-20Z"/><path class="k" d="M326 200v6M334 200v6"/></svg></div><div class="lslide"><svg viewBox="0 0 390 330" preserveAspectRatio="xMidYMid slice"><rect class="f" width="390" height="330"/><path class="k" d="M300 60l6 6 6-6m10 6l5 5 5-5"/><path class="k" d="M-10 196c50-40 110-62 170-64 62-2 122 18 162 44 28 18 48 28 78 32"/><path class="k f" d="M52 176l10-26 10 26Z"/><path class="k g" d="M72 172l8-20 8 20Z"/><path class="k f" d="M332 182l10-24 10 24Z"/><path class="k" d="M62 176v6M80 172v6M342 182v6"/><path class="sh" d="M122 302c0-72 34-122 78-122s78 50 78 122Z"/><path class="sh2" d="M156 302c0-46 18-80 44-80s44 34 44 80Z"/><path class="k" d="M122 302c0-72 34-122 78-122s78 50 78 122"/><path class="k" d="M168 200v14M184 190v22M200 186v14M216 190v20M232 200v12M152 302l6-18 6 18M240 302l6-24 6 24M260 302l4-12 4 12"/><path class="k f" d="M189.5 262a5.5 5.5 0 1 0 11.0 0a5.5 5.5 0 1 0 -11.0 0Z"/><path class="k f" d="M188 270h14l3 20h-20Z"/><path class="k" d="M191 290v12M199 290v12M202 274l8 4"/><path class="k g" d="M208 280a5 5 0 1 0 10 0a5 5 0 1 0 -10 0Z"/><path class="k d" d="M197 280a16 16 0 1 0 32 0a16 16 0 1 0-32 0"/><path class="k" d="M118 214c-8 14-8 28 0 42M282 212c8 12 10 26 4 40"/><path class="k g" d="M117 226c-9-3-14 1-14 6 7 3 12 0 14-6Z"/><path class="k g" d="M115 244c9-3 14 1 14 6-7 3-12 0-14-6Z"/><path class="k g" d="M285 224c9-3 14 1 14 6-7 3-12 0-14-6Z"/><path class="k g" d="M288 240c-9-3-14 1-14 6 7 3 12 0 14-6Z"/><path class="k" d="M100 302h200M40 312c14-4 28-4 40 0M300 314c14-4 28-4 40 0M150 324c14-4 28-4 40 0"/></svg></div><div class="lslide"><svg viewBox="0 0 390 330" preserveAspectRatio="xMidYMid slice"><rect class="f" width="390" height="330"/><path class="k f" d="M282 70a24 24 0 1 0 48 0a24 24 0 1 0 -48 0Z"/><path class="k" d="M92 60l6 6 6-6m10 8l5 5 5-5"/><path class="k" d="M-10 170c30-30 82-38 126-10"/><path class="k" d="M70 146L240 98"/><path class="k f" d="M182 106h14v12h-14Z"/><path class="k" d="M189 106v-4"/><path class="k" d="M150 170H400"/><path class="k" d="M200 194c14-6 28-6 42 0M300 210c14-6 28-6 42 0M170 228c14-6 28-6 42 0M330 236c10-4 20-4 30 0"/><path class="k f" d="M226 166h52l-9 12h-35Z"/><path class="k f" d="M252 164v-48l26 48Z"/><path class="k f" d="M248 164v-36l-18 36Z"/><path class="k" d="M-10 254c110-26 260-28 410-6"/><path class="k" d="M60 288h6M200 302h6M300 282h6M140 274h4M250 318h6"/><path class="k f" d="M96 316c-6-72 18-130 26-146l10 4c-8 18-30 72-24 142Z"/><path class="k" d="M106 292h10M108 264h12M112 236h12M118 208h10"/><path class="k f" d="M126 172c30-30 72-18 82-6-34-8-56-4-82 6Z"/><path class="k f" d="M126 172c-24-34-66-30-78-18 34 0 56 6 78 18Z"/><path class="k f" d="M126 172c4-40 36-54 52-50-28 16-40 30-52 50Z"/><path class="k f" d="M126 172c-36-6-58 12-60 28 18-18 36-24 60-28Z"/><path class="k" d="M300 298v-54"/><path class="k g" d="M256 246a44 28 0 0 1 88 0c-14-6-30-6-44 0-14-6-30-6-44 0Z"/><path class="k f" d="M211 294a9 9 0 1 0 18 0a9 9 0 1 0 -18 0Z"/></svg></div></div></div></div><div class="lcopy" aria-live="polite"><div class="lsteps"><div class="lstep on"><h2>Chase the sunrise</h2><p>Vanjangi’s sea of clouds at dawn, then the Araku hills.</p></div><div class="lstep"><h2>Into the valley</h2><p>Katiki waterfall, a short jeep ride from Borra.</p></div><div class="lstep"><h2>Deep in the caves</h2><p>Borra’s million-year-old limestone caves.</p></div><div class="lstep"><h2>Back by the sea</h2><p>RK Beach, Kailasagiri and the submarine museum.</p></div></div><div class="ldots"><i class=on></i><i></i><i></i><i></i></div></div>
+   <div class="ltop">
     <div class="mhead">
       <span class="mtile" aria-hidden="true"><span class="em" data-e="1f504">🔄️</span></span>
       <div><h3 id="login-title">Login</h3><p class="s" id="login-msg">Log in to keep ticks the same on all three phones.</p></div>
     </div>
     <div id="login-fields" class="fields">
-      <label class="fld" for="lg-user"><span class="fi" aria-hidden="true"><span class="ic"><span class="ie" data-e="1f464">👤️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="user" href="#i-majesticons-solid-user"/></svg></span></span></span><input id="lg-user" name="username" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
-      <label class="fld" for="lg-pass"><span class="fi" aria-hidden="true"><span class="em" data-e="1f511">🔑️</span></span><input id="lg-pass" name="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eye" id="lg-eye" aria-label="Show password">Show</button></label>
+      <label class="fld" for="lg-user"><input id="lg-user" name="username" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="fld" for="lg-pass"><input id="lg-pass" name="password" type="password" placeholder="Password" autocomplete="current-password" required><button type="button" class="eye" id="lg-eye" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></label>
       <p class="err" id="login-err" role="alert" hidden></p>
     </div>
     <div class="signed" id="login-signed" hidden>
@@ -1077,7 +1165,8 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
     </div>
     <button type="submit" class="btn full" id="login-go">Log in</button>
     <button type="button" class="btn ghost full" id="login-cancel">Skip, use on this phone only</button>
-    <p class="fine" id="login-fine">If you skip, ticks stay saved on this phone and upload when you log in later.</p>
+    <p class="fine" id="login-fine">Skipping keeps ticks on this phone. They sync once you log in.</p>
+   </div>
   </form>
 </div>
 
@@ -1514,13 +1603,15 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
   /* Login sheet */
   var modal=$('login'), form=$('login-form'), err=$('login-err'), msg=$('login-msg'), fields=$('login-fields'),
       go=$('login-go'), cancel=$('login-cancel'), signed=$('login-signed'), fine=$('login-fine'), titleEl=$('login-title');
+  var EYE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>', EYEOFF='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7c2.2 0 4 .8 5.6 1.9M22 12s-3.6 7-10 7c-2.2 0-4-.8-5.6-1.9M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/></svg>';
   $('lg-eye').addEventListener('click',function(){
     var pw=$('lg-pass'), showing=pw.type==='text';
-    pw.type=showing?'password':'text'; this.textContent=showing?'Show':'Hide';
+    pw.type=showing?'password':'text'; this.innerHTML=showing?EYE:EYEOFF;
     this.setAttribute('aria-label',showing?'Show password':'Hide password');
   });
   function showErr(t){ err.textContent=t; err.hidden=false; }
-  function openLogin(){
+  function openLogin(preview){
+    delete form.dataset.preview;
     openSheet(false); err.hidden=true; modal.hidden=false;
     if(cfgMissing||mode==='fbfail'){
       titleEl.textContent=cfgMissing?'Sharing isn’t on yet':'Login unavailable';
@@ -1536,10 +1627,43 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
     go.textContent=inn?'Log out':'Log in';
     cancel.textContent=inn?'Close':'Skip, use on this phone only';
     if(inn) $('signed-as').textContent='Logged in as '+String(fbUser.email||'').split('@')[0];
-    else setTimeout(function(){ try{$('lg-user').focus();}catch(e){} },60);
   }
-  function closeLogin(){ modal.hidden=true; }
-  cancel.addEventListener('click',function(){ if(!fbUser) set('vizag-skip-login','1'); closeLogin(); });
+  function previewLogin(){
+    openLogin(); form.dataset.preview='1'; err.hidden=true;
+    fields.hidden=false; signed.hidden=true; go.hidden=false; fine.hidden=false; titleEl.textContent='Login';
+    msg.textContent='Log in to keep ticks the same on all three phones.'; go.textContent='Log in'; cancel.textContent='Close preview';
+  }
+  form.addEventListener('submit',function(e){ if(form.dataset.preview && (fbUser || mode!=='firebase')){ e.preventDefault(); e.stopImmediatePropagation(); closeLogin(); } },true);
+  /* Full-screen login: artwork auto-advances every 2.5 s and can be swiped; hidden while typing */
+  var lslides=modal.querySelector('.lslides'), lart=modal.querySelector('.lart'), ldots=Array.prototype.slice.call(modal.querySelectorAll('.ldots i')), lsteps=Array.prototype.slice.call(modal.querySelectorAll('.lstep')), lIdx=0, lTimer=null;
+  function lShow(i){ if(!lslides) return; lIdx=(i+ldots.length)%ldots.length; lslides.style.setProperty('--li',lIdx); lslides.style.setProperty('--dx','0px'); ldots.forEach(function(d,k){ d.classList.toggle('on',k===lIdx); }); lsteps.forEach(function(d,k){ d.classList.toggle('on',k===lIdx); }); }
+  function lTick(){ clearInterval(lTimer); var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches; lTimer=setInterval(function(){ if(!form.classList.contains('kb')) lShow(lIdx+1); }, rm?4500:2500); }
+  function lStart(){ lShow(0); lTick(); }
+  function lStop(){ clearInterval(lTimer); lTimer=null; }
+  /* swipe */
+  (function(){
+    if(!lart) return; var x0=null, y0=0, dx=0, drag=false;
+    lart.addEventListener('pointerdown',function(e){ if(e.target.closest('.lpick')) return; x0=e.clientX; y0=e.clientY; dx=0; drag=false; });
+    lart.addEventListener('pointermove',function(e){ if(x0===null) return; dx=e.clientX-x0;
+      if(!drag && Math.abs(dx)>6 && Math.abs(dx)>Math.abs(e.clientY-y0)){ drag=true; lslides.classList.add('drag'); clearInterval(lTimer); try{ lart.setPointerCapture(e.pointerId); }catch(_){} }
+      if(drag) lslides.style.setProperty('--dx',dx+'px'); });
+    function end(){ if(x0===null) return; lslides.classList.remove('drag');
+      if(drag && Math.abs(dx)>lart.clientWidth*0.18) lShow(lIdx+(dx<0?1:-1)); else lShow(lIdx);
+      x0=null; drag=false; lTick(); }
+    lart.addEventListener('pointerup',end); lart.addEventListener('pointercancel',end);
+  })();
+  /* illustration style picker (Pastel / Line / Sketch) */
+  function setLS(k){ if(['pastel','line','sketch'].indexOf(k)<0) k='pastel'; form.setAttribute('data-ls',k); set('vizag-lstyle',k);
+    $$('[data-ls]').forEach(function(b){ if(b.tagName==='BUTTON') b.setAttribute('aria-pressed',b.dataset.ls===k?'true':'false'); });
+    var n=$('ls-name'); if(n) n.textContent={pastel:'Pastel',line:'Line',sketch:'Sketch'}[k]; }
+  $$('button[data-ls]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); setLS(b.dataset.ls); if(typeof armTimer==='function' && !sheet.hidden) armTimer(); }); });
+  setLS('sketch');
+  var lprev=$('login-preview'); if(lprev) lprev.addEventListener('click',function(e){ e.stopPropagation(); openSheet(false); previewLogin(); });
+  form.addEventListener('focusin',function(e){ if(e.target.tagName==='INPUT') form.classList.add('kb'); });
+  form.addEventListener('focusout',function(){ setTimeout(function(){ var a=document.activeElement; if(!a||a.tagName!=='INPUT'||!form.contains(a)) form.classList.remove('kb'); },120); });
+  new MutationObserver(function(){ if(modal.hidden){ lStop(); form.classList.remove('kb'); document.documentElement.classList.remove('login-open'); } else { lStart(); document.documentElement.classList.add('login-open'); } }).observe(modal,{attributes:true,attributeFilter:['hidden']});
+  function closeLogin(){ modal.hidden=true; delete form.dataset.preview; }
+  cancel.addEventListener('click',function(){ if(!fbUser && !form.dataset.preview) set('vizag-skip-login2','1'); closeLogin(); });
   modal.addEventListener('click',function(e){ if(e.target===modal) closeLogin(); });
   syncBtn.addEventListener('click',function(){ if(mode==='firebase'||mode==='fbfail'||cfgMissing) openLogin(); });
   function acctGo(e){ if(e) e.stopPropagation(); if(fbUser) openLogout(); else openLogin(); }
@@ -1624,7 +1748,7 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
         fbUser=u; if(unsub){ unsub(); unsub=null; }
         if(!u){
           push=function(){}; status('Log in','Log in from the settings button to share ticks between your phones.',false);
-          if(firstAuth && get('vizag-skip-login')!=='1') openLogin();
+          if(firstAuth && get('vizag-skip-login2')!=='1') openLogin();
           firstAuth=false; return;
         }
         firstAuth=false;
@@ -1656,7 +1780,7 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
         if(!u||!p){ showErr('Enter the username and password.'); return; }
         go.disabled=true; go.textContent='Logging in…';
         fbAuth.signInWithEmailAndPassword(u.indexOf('@')>0?u:userEmail(u),p)
-          .then(function(){ set('vizag-skip-login',''); $('lg-pass').value=''; closeLogin(); })
+          .then(function(){ set('vizag-skip-login2',''); $('lg-pass').value=''; closeLogin(); })
           .catch(function(e){ showErr(authMessage(e&&e.code)); })
           .then(function(){ go.disabled=false; go.textContent=fbUser?'Log out':'Log in'; });
       });
@@ -1667,9 +1791,18 @@ html.noto .ie[data-e]{width:1.15em;height:1.15em}
   var inClaude=!!(window.claude && typeof window.claude.use==='function');
   if(inClaude){ var pr=$('pdf-row'); if(pr) pr.hidden=true; }
   if(!inClaude && 'serviceWorker' in navigator && location.protocol==='https:'){
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+    /* A new version reloads the page by itself (once), so every phone picks it up */
+    function autoReload(){
+      try{ if(sessionStorage.getItem('vizag-reloaded')==='1') { var t=$('update-toast'); if(t) t.hidden=false; return; } sessionStorage.setItem('vizag-reloaded','1'); }catch(_){}
+      var a=document.activeElement; if(a && a.tagName==='INPUT'){ var t2=$('update-toast'); if(t2) t2.hidden=false; return; }
+      location.reload();
+    }
+    try{ setTimeout(function(){ sessionStorage.removeItem('vizag-reloaded'); },15000); }catch(_){}
+    var hadCtl=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange',function(){ if(hadCtl) autoReload(); });
+    navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){ try{ r.update(); }catch(_){} }).catch(function(){});
     navigator.serviceWorker.addEventListener('message',function(e){
-      if(e.data==='updated'){ var t=$('update-toast'); if(t) t.hidden=false; }
+      if(e.data==='updated') autoReload();
     });
     $('update-go').addEventListener('click',function(){ location.reload(); });
   }

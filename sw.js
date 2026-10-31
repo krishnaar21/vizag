@@ -1,7 +1,7 @@
 /* Offline + low-network support for the Vizag trip planner (GitHub Pages).
    Page files open instantly from the phone's cache and refresh in the background;
    fonts and login scripts are cached after first use. */
-const CACHE = 'vizag-trip-v19';
+const CACHE = 'vizag-trip-v28';
 const CORE = ['./', './index.html', './sync-config.js', './manifest.webmanifest', './vizag-trip-planner.pdf'];
 const EXTERNAL = [
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
@@ -12,14 +12,16 @@ const EXTERNAL = [
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
     const c = await caches.open(CACHE);
-    await Promise.all(CORE.map(u => c.add(u).catch(() => {})));
+    await Promise.all(CORE.map(u => c.add(new Request(u, { cache: 'reload' })).catch(() => {})));
     /* Warm the heavy scripts in the background; failures are fine */
     EXTERNAL.forEach(u => fetch(u, { mode: 'cors' }).then(r => r.ok && c.put(u, r)).catch(() => {}));
     await self.skipWaiting();
   })());
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())
+    /* Force every open copy onto the new version */
+    .then(() => self.clients.matchAll({ type: 'window' })).then(cs => cs.forEach(c => { try { c.navigate(c.url); } catch (_) {} })));
 });
 
 async function notifyUpdate() {
