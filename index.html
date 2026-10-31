@@ -983,6 +983,17 @@ html.login-open,html.login-open body{overflow:hidden}
 .lart{height:auto;aspect-ratio:390/330;max-height:42vh;width:100%}
 @media (max-height:680px){.lart{max-height:34vh}}
 
+/* ===== v29: no autofill yellow; login fits the screen ===== */
+.lpage input:-webkit-autofill,.lpage input:-webkit-autofill:hover,.lpage input:-webkit-autofill:focus,
+.fld input:-webkit-autofill,.fld input:-webkit-autofill:hover,.fld input:-webkit-autofill:focus{
+  -webkit-box-shadow:0 0 0 1000px var(--surface) inset!important;box-shadow:0 0 0 1000px var(--surface) inset!important;
+  -webkit-text-fill-color:var(--ink)!important;caret-color:var(--ink);transition:background-color 99999s ease 0s}
+.fld input:autofill{background:transparent!important}
+.lart{margin-top:calc(env(safe-area-inset-top,0px) + clamp(8px,2.5vh,24px));max-height:36vh}
+@media (max-height:680px){.lart{max-height:30vh;margin-top:calc(env(safe-area-inset-top,0px) + 6px)}}
+.lcopy{padding-top:14px}
+.ltop{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 28px);gap:10px}
+
 </style>
 </head>
 <body>
