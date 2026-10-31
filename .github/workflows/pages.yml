@@ -1,0 +1,76 @@
+# Publishes both branches to GitHub Pages:
+#   main -> https://krishnaar21.github.io/vizag/
+#   beta -> https://krishnaar21.github.io/vizag/beta/
+# Deploys always run from main (the Pages environment only allows the default branch);
+# a push to beta just asks main's workflow to republish.
+name: Pages (main + beta)
+
+on:
+  push:
+    branches: [main, beta]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  trigger-from-beta:
+    if: github.ref_name == 'beta'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Ask main to republish both sites
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main --repo "${{ github.repository }}"
+
+  deploy:
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+
+      - name: Check out beta
+        uses: actions/checkout@v4
+        with:
+          ref: beta
+          path: beta-src
+
+      - name: Assemble site
+        run: |
+          mkdir -p site/beta
+          rsync -a --exclude '.git' --exclude '.github' beta-src/ site/beta/
+          rm -rf site/.git site/.github
+          # main's service worker controls /vizag/, so keep it away from /vizag/beta/
+          # and stop it deleting beta's cache
+          if [ -f site/sw.js ]; then
+            sed -i "s#const req = e.request;#const req = e.request; if (new URL(req.url).pathname.includes('/beta/')) return;#" site/sw.js
+            sed -i "s#keys.filter(k => k !== CACHE)#keys.filter(k => k !== CACHE \&\& k.startsWith('vizag-trip-'))#" site/sw.js
+          fi
+          # beta gets its own cache name so the two copies never clear each other
+          if [ -f site/beta/sw.js ]; then
+            sed -i "s#'vizag-trip-v#'vizag-beta-v#" site/beta/sw.js
+            sed -i "s#keys.filter(k => k !== CACHE)#keys.filter(k => k !== CACHE \&\& k.startsWith('vizag-beta-'))#" site/beta/sw.js
+          fi
+          touch site/.nojekyll
+          ls -la site site/beta
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
