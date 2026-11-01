@@ -3228,6 +3228,32 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
 .cbzone{flex-direction:column-reverse!important;z-index:40!important}
 .chatbub{z-index:60}
 
+/* ===== v82: one page-header style everywhere (matches Profile) ===== */
+.hometop h1,.pghead h2,#v-days > .pghead h2{font-size:21.96px!important;line-height:1.2!important}
+#v-home > .hometop{padding-top:18px!important;padding-bottom:8px!important;margin:0 0 10px!important}
+#v-home > .hometop .hbell{margin-block:-8px}
+.pghead.pgflat{padding-top:18px!important;padding-bottom:8px!important;margin:0!important}
+#v-home .vz > .chips{padding-top:12px!important}
+#v-days > .pghead{margin-top:14px!important}
+/* chat sheet covers the page fully; the box follows the visible area */
+@media (max-width:1023px){ .chatsh.full{background:var(--surface)} .chatsh.full .chatbox{align-self:flex-start} }
+/* centred, short hint with an icon */
+.chint{display:flex;flex-direction:column;align-items:center;text-align:center;padding:28px 12px 8px!important}
+.chint .chico{width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:var(--ink);color:var(--surface);margin-bottom:14px}
+.chint .chico svg{width:26px;height:26px}
+.chint .chl{margin:0 0 4px!important;font-size:1.08rem!important;font-weight:700!important}
+.chint .chs{margin:0 0 16px;font-size:.84rem;color:var(--muted)}
+.chint .chatsugg{justify-content:center}
+/* docked: a slim dotted handle on the screen edge */
+.chatbub.dk{width:26px!important;height:72px!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:transparent}
+.chatbub.dk svg{display:none}
+.chatbub.dk::before{content:'';position:absolute;top:8px;bottom:8px;right:7px;width:6px;border-radius:3px;background:radial-gradient(circle,color-mix(in srgb,var(--ink) 55%,transparent) 1.6px,transparent 2px) center top/6px 9px repeat-y,color-mix(in srgb,var(--ink) 8%,transparent)}
+.chatbub.dk.left::before{right:auto;left:7px}
+.chatbub.dk.drag{width:52px!important;height:52px!important;border-radius:50%!important;background:var(--ink)!important;color:var(--surface)}
+.chatbub.dk.drag::before{display:none}
+.chatbub.dk.drag svg{display:block}
+.chatsh.full .chatav{display:none}
+
 </style>
 </head>
 <body>
@@ -4214,7 +4240,7 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
   window.__renderAcct=renderAcct;
   /* dim the status bar strip (and Safari's tint) while any sheet or overlay is open */
   (function(){ var tc=document.querySelector('meta[name="theme-color"]'), base=tc?tc.getAttribute('content'):''; var sc=$('scrim');
-    function upd(){ var ch=document.getElementById('chat'), dk=ch&&!ch.hidden&&ch.classList.contains('docked'); var on=!dk&&(document.documentElement.classList.contains('ps-open')||(sc&&!sc.hidden)); document.documentElement.classList.toggle('dim',on);
+    function upd(){ var ch=document.getElementById('chat'), dk=ch&&!ch.hidden&&ch.classList.contains('full')&&window.innerWidth<1024; var on=!dk&&(document.documentElement.classList.contains('ps-open')||(sc&&!sc.hidden)); document.documentElement.classList.toggle('dim',on);
       if(tc){ if(on){ if(!upd.on){ base=tc.getAttribute('content'); } var c=getComputedStyle(document.body,'::before').backgroundColor||''; var m=c.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/); if(m) c='rgb('+[m[1],m[2],m[3]].map(function(v){ return Math.round(v*255); }).join(',')+')'; tc.setAttribute('content',c||'#000'); } else if(upd.on) tc.setAttribute('content',base); } upd.on=on; }
     new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
     if(sc) new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(sc,{attributes:true,attributeFilter:['hidden']}); })();
@@ -5201,10 +5227,10 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
     var chatTrip=null;
     function chatSave(){ if(!chatTrip) return; var keep=Array.prototype.filter.call(chatLog.children,function(d){ return d.classList.contains('cmsg')&&!d.classList.contains('cm-typing'); }).slice(-40); CH[chatTrip]={h:keep.map(function(d){ return [d.className,d.innerHTML]; }),m:chatHist.slice(-12)}; try{ set('vizag-chat',JSON.stringify(CH)); }catch(e){} }
     function chatLoad(){ var id=cur()?cur().id:'vizag'; if(chatTrip===id) return; chatTrip=id; var c=CH[id]||{h:[],m:[]}; chatLog.innerHTML=c.h.filter(function(x){ return x[1].indexOf('Hi! Ask me anything')<0; }).map(function(x){ return '<div class="'+x[0]+'">'+x[1]+'</div>'; }).join(''); chatHist=c.m||[]; chatLog.scrollTop=chatLog.scrollHeight; }
-    function hintPaint(){ $$('.chint,.cdiv',chatLog).forEach(function(n){ n.remove(); });
+    function hintPaint(){ $$('.chint,.cdiv').forEach(function(n){ n.remove(); });
       var h=document.createElement('div'); h.className='chint';
-      h.innerHTML='<p class="chl">Ask anything about the <b>'+VNAME[chatView]+'</b> page or the rest of your trip.</p>'+
-        '<ul class="chow"><li>Answers come from the page you are on first, then the rest of the app.</li><li>'+(aiReady()?'AI is on. Answers use your connected AI.':'AI is off, so answers come from searching the app. Turn AI on in Profile.')+'</li><li>Pull down on any page to open this chat (on a computer, scroll up at the top or press /). Your chat is saved for each trip.</li></ul>'+
+      h.innerHTML='<span class="chico">'+icoT('sparkle')+'</span><p class="chl">Ask about '+(chatView==='home'?'your trip':'the <b>'+VNAME[chatView]+'</b> page')+'</p>'+
+        '<p class="chs">'+(aiReady()?'Answers start from this page.':'AI is off · answers come from the app')+'</p>'+
         '<div class="chatsugg">'+(SUGG[chatView]||[]).map(function(x){ return '<button type="button" class="csug">'+esc(x)+'</button>'; }).join('')+'</div>';
       chatLog.insertBefore(h,chatLog.firstChild);
       if(chatLog.querySelector('.cmsg')){ var d=document.createElement('div'); d.className='cdiv'; d.innerHTML='<span>Chat</span>'; h.after(d); } }
@@ -5244,7 +5270,7 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
     var SUGG={home:['What’s the plan for day 1?','How much will the trip cost?','What should I book first?'],days:['What time do we start today?','What should I carry?','Which stop can I skip if late?'],plan:['What’s left to book?','What should I pack for the hills?','How much will the trip cost?'],route:['Which places are must-see?','Where should we eat?','How far is the longest drive?'],alerts:['Anything urgent today?','What needs booking early?'],more:['How do I change the theme?','How do I add my home address?']};
     window.__chat=function(v){ chatLoad(); bub.hidden=true;
       chatView=VNAME[v]?v:'home'; hintPaint();
-      chatEl.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ chatEl.classList.add('in'); setTimeout(function(){ $('chat-q').focus({preventScroll:true}); },200); });
+      lockY=window.scrollY; document.body.style.position='fixed'; document.body.style.top=(-lockY)+'px'; document.body.style.left='0'; document.body.style.right='0'; chatEl.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ chatEl.classList.add('in'); setTimeout(function(){ $('chat-q').focus({preventScroll:true}); },200); });
       if(window.__paintUses) window.__paintUses(chatEl);
     };
     /* Home: pull down to refresh and open the chat */
@@ -5264,10 +5290,11 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
     $$('[data-cmode]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); cmode=b.dataset.cmode; set('vizag-chatmode',cmode); bub.hidden=false; cmPaint(); }); });
     /* keyboard: keep the chat inside the visible area and hide the nav while typing */
     function vvFit(){ var vv=window.visualViewport; if(!vv||chatEl.hidden) return; var kb=vv.height<window.innerHeight-120; root.classList.toggle('kbd',kb);
-      if(kb){ chatEl.style.top=vv.offsetTop+'px'; chatEl.style.height=vv.height+'px'; chatEl.style.bottom='auto'; } else { chatEl.style.top=''; chatEl.style.height=''; chatEl.style.bottom=''; } var lg=$('chat-log'); lg.scrollTop=lg.scrollHeight; }
+      var bx2=chatEl.querySelector('.chatbox'); if(kb&&window.innerWidth<1024){ bx2.style.height=vv.height+'px'; bx2.style.marginTop=vv.offsetTop+'px'; } else { bx2.style.height=''; bx2.style.marginTop=''; } var lg=$('chat-log'); lg.scrollTop=lg.scrollHeight; }
     if(window.visualViewport){ visualViewport.addEventListener('resize',vvFit); visualViewport.addEventListener('scroll',vvFit); }
     $('chat-q').addEventListener('focus',function(){ setTimeout(vvFit,60); setTimeout(vvFit,350); }); $('chat-q').addEventListener('blur',function(){ setTimeout(vvFit,120); });
-    function chatClose(){ root.classList.remove('kbd'); chatEl.style.top=''; chatEl.style.height=''; chatEl.style.bottom=''; chatEl.classList.remove('in'); root.classList.remove('ps-open'); setTimeout(function(){ chatEl.hidden=true; bub.hidden=false; bsnap(false); },220); }
+    var lockY=0;
+    function chatClose(){ root.classList.remove('kbd'); var bx3=chatEl.querySelector('.chatbox'); bx3.style.height=''; bx3.style.marginTop=''; if(document.body.style.position==='fixed'){ document.body.style.position=''; document.body.style.top=''; document.body.style.left=''; document.body.style.right=''; window.scrollTo(0,lockY); } chatEl.classList.remove('in'); root.classList.remove('ps-open'); setTimeout(function(){ chatEl.hidden=true; bub.hidden=false; bsnap(false); },220); }
     var bx=null, by=0, sx=0, sy=0, moved=false;
     function bpos(x,y){ var w=window.innerWidth, h=window.innerHeight, s=bub.offsetWidth||56; x=Math.max(8,Math.min(w-s-8,x)); y=Math.max(60,Math.min(h-s-90,y)); bub.style.left=x+'px'; bub.style.top=y+'px'; }
     function bsnap(anim){ var r=bub.getBoundingClientRect(), w=window.innerWidth, left=(r.left+r.width/2<w/2), dk=cmode==='dock', s=bub.offsetWidth||56;
