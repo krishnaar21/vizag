@@ -5401,6 +5401,20 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
         '<div class="chatsugg">'+(SUGG[chatView]||[]).map(function(x){ return '<button type="button" class="csug">'+esc(x)+'</button>'; }).join('')+'</div>';
       chatLog.insertBefore(h,chatLog.firstChild);
       if(chatLog.querySelector('.cmsg')){ var d=document.createElement('div'); d.className='cdiv'; d.innerHTML='<span>Chat</span>'; h.after(d); } }
+    /* everyday chat (greetings, thanks, bye) gets a friendly reply instead of a search */
+    function smallTalk(q){ var t=q.toLowerCase().replace(/[^a-z\s']/g,' ').replace(/\s+/g,' ').trim(); if(!t||t.split(' ').length>6) return '';
+      var h=new Date().getHours(), part=h<12?'morning':h<17?'afternoon':'evening', name=(function(){ try{ var pr=JSON.parse(get('vizag-profile')||'{}'); return (pr.name||'').split(' ')[0]; }catch(e){ return ''; } })(), nm=name?' '+esc(name):'';
+      var page=VNAME[chatView]||'this page', R=function(a){ return a[Math.floor(Math.random()*a.length)]; };
+      if(/^(good ?night|gn)\b/.test(t)) return R(['Good night'+nm+'! Rest well before the trip.','Sleep well'+nm+'. I’ll be here when you need me.']);
+      if(/^(bye|byee+|goodbye|good bye|see (you|ya)|cya|ttyl|later|take care)\b/.test(t)) return R(['Bye'+nm+'! Have a great trip.','See you'+nm+'. Pull down on any page whenever you need me.','Take care'+nm+'! Safe travels.']);
+      if(/^(thanks|thank you|thank u|thx|ty|tq|thanks a lot|many thanks|thank you so much|appreciate it)\b/.test(t)) return R(['You’re welcome'+nm+'!','Happy to help'+nm+'. Anything else about the trip?','Anytime! Ask me if anything else comes up.']);
+      if(/^good (morning|afternoon|evening)\b/.test(t)){ var g=t.match(/good (\w+)/)[1]; return 'Good '+g+nm+'! What would you like to know about your trip?'; }
+      if(/^(hi+|hello+|hey+|hiya|yo|namaste|namaskar|hola|howdy|greetings)\b/.test(t)) return R(['Hi'+nm+'! Ask me anything about the <b>'+page+'</b> page or your trip.','Hello'+nm+'! Good '+part+'. How can I help with your trip?','Hey'+nm+'! What do you need help with?']);
+      if(/^(how are you|how r u|how are u|hows it going|how's it going|whats up|what's up|sup|wassup)\b/.test(t)) return 'I’m doing well, thanks for asking! How can I help with your trip?';
+      if(/^(ok|okay|k|kk|cool|great|nice|awesome|perfect|got it|alright|sure|fine|good)\b/.test(t)) return R(['Great! Let me know if you need anything else.','👍 Anything else about the trip?']);
+      if(/^(who are you|what are you|what can you do|help)\b/.test(t)) return 'I’m your trip assistant. I answer from the page you’re on first, then the rest of the app: timings, stops, bookings, packing and costs. Try one of the suggestions above.';
+      if(/^(sorry|my bad|oops)\b/.test(t)) return 'No worries at all! What would you like to know?';
+      return ''; }
     function bubble(who,html){ if(!chatLog.querySelector('.cdiv')){ var dv=document.createElement('div'); dv.className='cdiv'; dv.innerHTML='<span>Chat</span>'; var hh=chatLog.querySelector('.chint'); if(hh) hh.after(dv); else chatLog.appendChild(dv); } var d=document.createElement('div'); d.className='cmsg cm-'+who.replace(' ',' cm-'); d.innerHTML=html; chatLog.appendChild(d); chatLog.scrollTop=chatLog.scrollHeight; if(who.indexOf('typing')<0) setTimeout(chatSave,0); return d; }
     function gLink(q){ return '<a class="cgoogle" data-ext="1" target="_blank" rel="noopener" href="https://www.google.com/search?q='+encodeURIComponent(q)+'">'+icoT('google')+'Search Google for “'+esc(q.slice(0,60))+'”</a>'; }
     function fmt(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^[-•]\s?/gm,'• ').replace(/\n/g,'<br>'); }
@@ -5413,6 +5427,7 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
     function ask(q){
       q=(q||'').trim(); if(!q) return;
       bubble('me',esc(q)); var wait=bubble('ai typing','<span></span><span></span><span></span>');
+      var st=smallTalk(q); if(st){ setTimeout(function(){ wait.remove(); bubble('ai','<p>'+st+'</p>'); chatHist.push(['Traveller',q],['Assistant',st.replace(/<[^>]+>/g,'')]); chatSave(); },450); return; }
       if(!aiReady()){
         var hits=localFind(q); wait.remove();
         if(hits.length){ var here=hits.filter(function(h){ return h.v===chatView; }), else_=hits.filter(function(h){ return h.v!==chatView; });
