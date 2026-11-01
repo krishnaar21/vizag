@@ -3100,6 +3100,10 @@ html .fab:not(.up) .i-chat{display:block!important}
 .avlet{display:grid;place-items:center;width:100%;height:100%;border-radius:inherit;background:var(--ink);color:var(--surface);font-weight:650;font-size:1.3rem;font-family:var(--font)}
 .avinit{background:none!important;padding:0!important}
 .avemo{background:color-mix(in srgb,var(--soft) 70%,var(--surface))}
+#av-body{padding-top:10px}
+#av-sheet .shtitle{margin-bottom:4px}
+.av.pic,.pav.pic{background:none!important}
+.pav.pic .avlet,.av.pic .avlet{font-size:1.35rem}
 
 </style>
 </head>
@@ -5170,12 +5174,12 @@ html .fab:not(.up) .i-chat{display:block!important}
     var AVS=['😀','😎','🤠','🥳','🤓','😇','🤩','😜','🧐','🤗','😌','🥸','😴'].map(function(e){ return [e]; });
     function avTile(a){ return ''; }
     function avFind(e){ return AVS.filter(function(a){ return a[0]===e; })[0]; }
-    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; var a=prof.avatar&&avFind(prof.avatar); if(a) return '<span class="avemo" data-noicon>'+a[0]+'</span>'; if(prof.avatar==='aa'){ var l=(prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0).toUpperCase(); if(l) return '<span class="avlet">'+esc(l)+'</span>'; } return ''; }
+    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; var a=prof.avatar&&avFind(prof.avatar); if(a) return '<span class="avemo" data-noicon>'+a[0]+'</span>'; var l=(prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0).toUpperCase()||'A'; return '<span class="avlet">'+esc(l)+'</span>'; }
     function initial(){ return (prof.name||'').trim().charAt(0).toUpperCase(); }
     var avs=$('av-sheet');
     function drawAvSheet(){ var cur=prof.photo?'photo':(prof.avatar||'');
       $('av-body').innerHTML='<div class="avpick big" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-pressed="'+(cur==='photo')+'" aria-label="Use a photo">'+(prof.photo?'<img src="'+prof.photo+'" alt="">':ic('camera'))+'</button>'+
-        '<button type="button" class="avopt avinit" data-init="1" aria-pressed="'+(cur==='aa')+'" aria-label="Letter from your username"><span class="avlet">'+esc(((prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0)||'A').toUpperCase())+'</span></button>'+
+        '<button type="button" class="avopt avinit" data-init="1" aria-pressed="'+(cur==='aa'||!cur)+'" aria-label="Letter from your username"><span class="avlet">'+esc(((prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0)||'A').toUpperCase())+'</span></button>'+
         AVS.map(function(a){ return '<button type="button" class="avopt" data-av="'+a[0]+'" aria-pressed="'+(cur===a[0])+'" style="'+avTile(a)+'">'+a[0]+'</button>'; }).join('')+'</div>'+
         (prof.photo?'<button type="button" class="avclear" id="av-rmph">Remove photo</button>':'');
       if(window.__paintUses) window.__paintUses($('av-body'));
