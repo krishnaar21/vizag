@@ -65,6 +65,13 @@ jobs:
             sed -i "s#'vizag-trip-v#'vizag-beta-v#" site/beta/sw.js
             sed -i "s#keys.filter(k => k !== CACHE)#keys.filter(k => k !== CACHE \&\& k.startsWith('vizag-beta-'))#" site/beta/sw.js
           fi
+          # label the beta copy so its Home Screen icon is easy to tell apart
+          if [ -f site/beta/manifest.webmanifest ]; then
+            sed -i 's#"short_name": *"[^"]*"#"short_name": "Vizag Beta"#; s#"name": *"\([^"]*\)"#"name": "\1 (Beta)"#' site/beta/manifest.webmanifest
+          fi
+          if [ -f site/beta/index.html ]; then
+            sed -i '0,/<title>[^<]*<\/title>/s##<title>Vizag Beta</title><meta name="apple-mobile-web-app-title" content="Vizag Beta">#' site/beta/index.html
+          fi
           touch site/.nojekyll
           ls -la site site/beta
 
