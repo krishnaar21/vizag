@@ -3818,6 +3818,9 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
 .wxwin{display:inline-block;height:1.35em;line-height:1.35em;overflow:hidden;vertical-align:bottom;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
 .wxreel{display:flex;flex-direction:column;will-change:transform}
 .wxreel > span{display:block;height:1.35em;white-space:nowrap}
+/* no trips: the nav bar always stays visible */
+@media (max-width:1023px){ html.notrips.navhide .nav{transform:none!important;opacity:1!important} }
+html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 
 </style>
 </head>
@@ -6223,7 +6226,7 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
   if(!rot.length) return;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   setInterval(function(){ if(document.hidden) return; rot.forEach(function(r){ if(!r.reel.offsetParent) return; r.i++; r.reel.style.transition=reduce?'none':'transform .38s cubic-bezier(.3,.7,.2,1)'; r.reel.style.transform='translateY(-'+(r.i*100/(r.n+1))+'%)';
-    if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },3000); })();
+    if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },5000); })();
 
 </script>
 
