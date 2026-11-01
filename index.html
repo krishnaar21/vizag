@@ -3057,6 +3057,28 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
 .rstars.sm button{min-width:26px;min-height:28px;font-size:1.1rem!important}
 .rvbtn{padding:6px 0!important}
 
+/* ===== v75 ===== */
+/* tick sits inside the photo's bottom-right corner with an even gap */
+html:not(.pv-card) .pcards .pcard.on .pbadge2{left:auto!important;right:auto!important;top:auto!important;inset:auto!important;transform:translate(calc(88px - 22px - 6px),calc(88px - 22px - 6px))!important;margin:0!important}
+html:not(.pv-card) .pcards .pcard.on .pbadge2{position:absolute;left:0!important;top:12px!important}
+html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;left:auto!important}
+.pbadge2{box-shadow:0 0 0 2px rgba(255,255,255,.9)!important}
+/* avatar sheet */
+.avpick.big{grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:10px}
+.avpick.big .avopt{font-size:1.9rem;border-radius:18px;border:0!important;box-shadow:inset 0 0 0 1px var(--line)}
+.avpick.big .avopt[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+.avinit{font-size:1.25rem!important;font-weight:650;color:var(--ink);background:var(--tile)!important}
+.avph{background:var(--tile)!important}
+.avemo{display:grid;place-items:center;width:100%;height:100%;font-size:1.7rem;line-height:1;border-radius:inherit}
+.av.pic,.pav.pic{background:none!important}
+.acrow .av{cursor:pointer}
+.pav[role="button"]{cursor:pointer}
+/* review: close becomes save while typing */
+#rate-close .si{display:none}
+#rate-close.save .xi{display:none}
+#rate-close.save .si{display:block}
+#rate-close.save{background:var(--ink)!important;color:var(--surface)!important;border-color:var(--ink)!important}
+
 </style>
 </head>
 <body>
@@ -3342,8 +3364,13 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
     <div class="serow"><button type="button" class="btn ghost" id="se-reset">Reset to suggested</button><button type="button" class="btn ghost sedanger" id="se-remove">Remove from trip</button></div>
   </div>
 </div>
+<div class="sheet lsheet psheet" id="av-sheet" hidden role="dialog" aria-label="Choose avatar">
+  <div class="shtitle"><span>Profile picture</span><button type="button" class="shclose" id="av-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div id="av-body"></div>
+  <input type="file" id="av-file" accept="image/*" hidden>
+</div>
 <div class="sheet lsheet psheet" id="rate-sheet" hidden role="dialog" aria-label="Rate your trips">
-  <div class="shtitle"><span>Rate &amp; review trips</span><button type="button" class="shclose" id="rate-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="shtitle"><span>Rate &amp; review trips</span><button type="button" class="shclose" id="rate-close" aria-label="Close"><svg class="xi" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></button></div>
   <div id="rate-body"></div>
 </div>
 <div class="sheet lsheet psheet" id="grp-sheet" hidden role="dialog" aria-label="Travel group">
@@ -4043,7 +4070,7 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
     function upd(){ ml.querySelectorAll('.seeall').forEach(function(b){ var l=$(b.dataset.see); b.hidden=!(l&&l.querySelectorAll('.mprow').length>2); }); }
     new MutationObserver(upd).observe(ml,{childList:true,subtree:true}); upd();
     ml.addEventListener('click',function(e){ var b=e.target.closest('.seeall'); if(!b) return; e.stopPropagation(); if(b.dataset.see==='recent-list'&&window.__recentTrips){ window.__recentTrips(); return; } if(window.__listSheet) window.__listSheet(b.dataset.ttl,b.dataset.ico,b.dataset.see); }); })();
-  (function(){ var ac=$('acct-top'); function op(e){ if(e.target.closest('#acct-edit')) return; var p=$('prof-open'); if(p) p.click(); }
+  (function(){ var ac=$('acct-top'); function op(e){ if(e.target.closest('#acct-edit')) return; if(e.target.closest('#acct-av')){ if(window.__avatarSheet) window.__avatarSheet(); return; } var p=$('prof-open'); if(p) p.click(); }
     $('acct-edit').addEventListener('click',function(e){ e.stopPropagation(); if(window.__editProfile) window.__editProfile(); });
 
     ac.addEventListener('click',op); ac.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); op(e); } });
@@ -4576,6 +4603,7 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
     });
     $$('[data-pgopen]').forEach(function(b){ b.addEventListener('click',function(){ var g=b.closest('.pgroup'); sumGroups(); $$('.pgroup.pexp').forEach(function(o){ if(o!==g){ o.classList.add('pcol'); o.classList.remove('pexp'); } }); g.classList.remove('pcol'); g.classList.add('pexp'); }); });
     $$('[data-pgdone]').forEach(function(b){ b.addEventListener('click',function(){ var g=b.closest('.pgroup'); sumGroups(); g.classList.add('pcol'); g.classList.remove('pexp'); }); });
+    window.__toast=function(m){ toast(m,'OK',function(){}); };
     function toast(msg,btn,fn){ var el=$('ok-toast'); if(!el) return; el.querySelector('span').textContent=msg; var b=el.querySelector('button'); b.textContent=btn; b.onclick=function(){ el.hidden=true; fn&&fn(); }; el.hidden=false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); clearTimeout(toast.t); toast.t=setTimeout(function(){ el.hidden=true; },4800);
       if(!el.dataset.sw){ el.dataset.sw='1'; var x0=null,y0=0; el.addEventListener('pointerdown',function(e){ if(e.target.closest('button')) return; x0=e.clientX; y0=e.clientY; });
         el.addEventListener('pointermove',function(e){ if(x0===null) return; var dx=e.clientX-x0, dy=e.clientY-y0; el.style.transform='translate('+dx+'px,'+Math.max(0,dy)+'px)'; el.style.opacity=String(1-Math.min(1,Math.abs(dx)/200)); });
@@ -5105,8 +5133,27 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
     }
     function stars(n,cls){ var o=''; for(var i=1;i<=5;i++) o+='<span class="'+(cls||'st')+(i<=Math.round(n)?' on':'')+'">★</span>'; return o; }
     var GL={woman:'Woman',man:'Man',nb:'Non-binary'};
-    var AVS=['🧳','🏔️','🌴','🐘','🏄','🛺','🧭','🌋','🐫','🦚'];
-    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; if(prof.avatar) return '<span class="avemo" data-noicon>'+prof.avatar+'</span>'; return ''; }
+    /* avatar = symbol on its own colour tile */
+    var AVS=[['🏝️','#38bdf8','#0ea5e9'],['🏔️','#a5b4fc','#6366f1'],['🐯','#fdba74','#f97316'],['🦜','#86efac','#22c55e'],['🛶','#67e8f9','#06b6d4'],['🎒','#fda4af','#f43f5e'],['🌅','#fcd34d','#f59e0b'],['🚂','#c4b5fd','#8b5cf6'],['🪷','#f9a8d4','#ec4899'],['⛺','#bef264','#65a30d'],['🐘','#cbd5e1','#64748b'],['🧭','#fde68a','#d97706'],['🗺️','#99f6e4','#14b8a6'],['🛺','#fef08a','#eab308'],['🦚','#5eead4','#0d9488'],['☕','#d6b38a','#92400e']];
+    function avTile(a){ return 'background:linear-gradient(140deg,'+a[1]+','+a[2]+')'; }
+    function avFind(e){ return AVS.filter(function(a){ return a[0]===e; })[0]; }
+    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; var a=prof.avatar&&avFind(prof.avatar); if(a) return '<span class="avemo" data-noicon style="'+avTile(a)+'">'+a[0]+'</span>'; return ''; }
+    function initial(){ return (prof.name||'').trim().charAt(0).toUpperCase(); }
+    var avs=$('av-sheet');
+    function drawAvSheet(){ var cur=prof.photo?'photo':(prof.avatar||'init');
+      $('av-body').innerHTML='<div class="avpick big" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-pressed="'+(cur==='photo')+'" aria-label="Use a photo">'+(prof.photo?'<img src="'+prof.photo+'" alt="">':ic('camera'))+'</button>'+
+        '<button type="button" class="avopt avinit" data-init="1" aria-pressed="'+(cur==='init')+'" aria-label="Use my initial">'+(initial()||'Aa')+'</button>'+
+        AVS.map(function(a){ return '<button type="button" class="avopt" data-av="'+a[0]+'" aria-pressed="'+(cur===a[0])+'" style="'+avTile(a)+'">'+a[0]+'</button>'; }).join('')+'</div>'+
+        (prof.photo?'<button type="button" class="avclear" id="av-rmph">Remove photo</button>':'');
+      if(window.__paintUses) window.__paintUses($('av-body'));
+      $('av-body').querySelectorAll('.avopt').forEach(function(b){ b.onclick=function(){ if(b.dataset.ph){ $('av-file').click(); return; } if(b.dataset.init){ prof.avatar=''; prof.photo=''; } else { prof.avatar=b.dataset.av; prof.photo=''; } avDone(); }; });
+      var rm=$('av-rmph'); if(rm) rm.onclick=function(){ prof.photo=''; avDone(); }; }
+    function avDone(){ saveF(); drawAvSheet(); if(window.__renderAcct) window.__renderAcct(); if(!ps.hidden) drawProfile(); }
+    $('av-file').addEventListener('change',function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'), s=200, m=Math.min(im.width,im.height); c.width=c.height=s; c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s); prof.photo=c.toDataURL('image/jpeg',0.82); avDone(); }; im.src=r.result; }; r.readAsDataURL(f); this.value=''; });
+    var avBack=false;
+    window.__avatarSheet=function(){ avBack=!ps.hidden; ps.hidden=true; drawAvSheet(); avs.hidden=false; $('scrim').hidden=false; };
+    function avClose(){ avs.hidden=true; if(avBack){ drawProfile(); ps.hidden=false; } else $('scrim').hidden=true; }
+    $('av-close').addEventListener('click',avClose); avs.addEventListener('click',function(e){ e.stopPropagation(); }); $('scrim').addEventListener('click',function(){ if(!avs.hidden) avClose(); });
     window.__avatarHTML=avatarHTML;
     function idLine(){ return prof.user?'@'+prof.user:''; }
     window.__idLine=idLine;
@@ -5121,6 +5168,7 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
 
         '<p class="pnote">Your details are saved only on this device. There\'s no account server yet, so nothing is uploaded; signing in will sync them across your phones once that\'s available.</p>';
       $('prof-edit').onclick=function(e){ e.stopPropagation(); openSoc(); };
+      var pv=box.querySelector('.pav'); if(pv){ pv.setAttribute('role','button'); pv.setAttribute('aria-label','Change profile picture'); pv.onclick=function(e){ e.stopPropagation(); window.__avatarSheet(); }; }
       drawContacts();
       if(window.__paintUses) window.__paintUses(box);
     }
@@ -5138,22 +5186,16 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
     var eG='', fromProf=false;
     function openSoc(){ eG=prof.gender||''; fromProf=!ps.hidden;
       var eAv=prof.avatar||'', ePh=prof.photo||'';
-      $('soc-body').innerHTML='<div class="pgl ptitle">Avatar</div><div class="pfgrp"><div class="avpick" id="ep-av" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-label="Upload a photo">'+(ePh?'<img src="'+ePh+'" alt="">':ic('camera'))+'</button>'+AVS.map(function(e){ return '<button type="button" class="avopt" data-av="'+e+'" aria-pressed="'+(eAv===e&&!ePh?'true':'false')+'">'+e+'</button>'; }).join('')+'</div><input type="file" id="ep-file" accept="image/*" hidden><button type="button" class="avclear" id="ep-avclear">Use my initial instead</button></div><div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" value="'+esc(prof.name||'')+'" placeholder="Your name"></label>'+
+      $('soc-body').innerHTML='<div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" value="'+esc(prof.name||'')+'" placeholder="Your name"></label>'+
         '<label class="pf"><span>Username</span><div class="epuser"><span>@</span><input id="ep-user" value="'+esc(prof.user||'')+'" placeholder="username" autocomplete="off" autocapitalize="none" spellcheck="false"></div></label>'+
         '<div class="pf"><span>Gender</span><div class="pills" id="ep-gender">'+[['woman','Woman'],['man','Man'],['nb','Non-binary']].map(function(g){ return '<button type="button" data-val="'+g[0]+'" aria-pressed="'+(eG===g[0]?'true':'false')+'">'+g[1]+'</button>'; }).join('')+'</div></div>'+
         '<label class="pf"><span>Age range</span><select id="ep-age">'+['','18–24','25–34','35–44','45–54','55–64','65+'].map(function(x){ return '<option value="'+x+'"'+(prof.age===x?' selected':'')+'>'+(x||'Prefer not to say')+'</option>'; }).join('')+'</select></label></div>'+
         '<div class="pgl ptitle">Social &amp; email</div><div class="pfgrp">'+CF.map(function(f){ return '<label class="pf"><span>'+f[1]+'</span><input data-pfk="'+f[0]+'" type="'+f[2]+'"'+(f[0]==='email'?' inputmode="email" autocomplete="email"':' autocomplete="off"')+' placeholder="'+f[3]+'" value="'+esc(cval(f[0]))+'"></label>'; }).join('')+'</div>';
       $('ep-user').addEventListener('input',function(){ var v=this.value.toLowerCase().replace(/[^a-z0-9._]/g,'').slice(0,24); if(v!==this.value) this.value=v; });
-      function avPaint(){ $$('#ep-av [data-av]').forEach(function(b){ b.setAttribute('aria-pressed',(!ePh&&b.dataset.av===eAv)?'true':'false'); }); var ph=$('ep-av').querySelector('[data-ph]'); ph.innerHTML=ePh?'<img src="'+ePh+'" alt="">':ic('camera'); ph.setAttribute('aria-pressed',ePh?'true':'false'); if(window.__paintUses) window.__paintUses(ph); }
-      $('ep-av').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; if(b.dataset.ph){ $('ep-file').click(); return; } eAv=b.dataset.av; ePh=''; avPaint(); soc.dataset.av=eAv; soc.dataset.ph=''; });
-      $('ep-avclear').addEventListener('click',function(){ eAv=''; ePh=''; avPaint(); soc.dataset.av=''; soc.dataset.ph=''; });
-      $('ep-file').addEventListener('change',function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'), s=160, m=Math.min(im.width,im.height); c.width=c.height=s; c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s); ePh=c.toDataURL('image/jpeg',0.82); avPaint(); soc.dataset.ph=ePh; }; im.src=r.result; }; r.readAsDataURL(f); });
-      soc.dataset.av=eAv; soc.dataset.ph=ePh;
       $('ep-gender').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; eG=eG===b.dataset.val?'':b.dataset.val; this.querySelectorAll('button').forEach(function(y){ y.setAttribute('aria-pressed',y.dataset.val===eG?'true':'false'); }); });
       ps.hidden=true; soc.hidden=false; $('scrim').hidden=false; soc.scrollTop=0; }
     window.__editProfile=openSoc;
     function closeSoc(save){ if(save){ prof.social=prof.social||{}; $$('#soc-body [data-pfk]').forEach(function(i){ prof.social[i.dataset.pfk]=i.value.trim(); if(i.dataset.pfk==='email') prof.email=i.value.trim(); });
-        prof.avatar=soc.dataset.av||''; prof.photo=soc.dataset.ph||'';
         prof.name=$('ep-name').value.trim(); prof.user=$('ep-user').value.trim(); prof.gender=eG; prof.age=$('ep-age').value; saveF(); if(window.__renderAcct) window.__renderAcct(); }
       soc.hidden=true; if(fromProf){ drawProfile(); ps.hidden=false; } else $('scrim').hidden=true; }
     $('soc-save').addEventListener('click',function(){ closeSoc(true); }); $('soc-back').addEventListener('click',function(){ closeSoc(false); });
@@ -5171,7 +5213,7 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
       $('rate-body').innerHTML='<div class="prates">'+all.map(function(t){ return '<div class="prate rvcard"><div class="rvtop"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days · '+t.places+' places</small></div>'+starBtns(t.id,prof.rating[t.id]||0)+'</div><textarea class="rvta" data-rvt="'+esc(t.id)+'" rows="2" maxlength="400" placeholder="How was it? Highlights, tips for next time…">'+esc(prof.review[t.id]||'')+'</textarea></div>'; }).join('')+'</div>'+
         '<p class="mcpnote" id="rate-avg">'+(S.avg?'Average '+S.avg.toFixed(1)+' ★ across rated trips':'No ratings yet')+'</p>';
       wireStars($('rate-body'),function(){ var S2=stats(); $('rate-avg').textContent=S2.avg?'Average '+S2.avg.toFixed(1)+' ★ across rated trips':'No ratings yet'; });
-      $$('#rate-body [data-rvt]').forEach(function(ta){ ta.addEventListener('input',function(){ var v=ta.value.trim(); if(v) prof.review[ta.dataset.rvt]=v; else delete prof.review[ta.dataset.rvt]; saveF(); }); });
+      $$('#rate-body [data-rvt]').forEach(function(ta){ ta.addEventListener('focus',function(){ $('rate-close').classList.add('save'); $('rate-close').setAttribute('aria-label','Save'); }); ta.addEventListener('input',function(){ var v=ta.value.trim(); if(v) prof.review[ta.dataset.rvt]=v; else delete prof.review[ta.dataset.rvt]; saveF(); }); });
       if(focus){ var f=document.querySelector('#rate-body [data-rvt="'+focus.replace(/"/g,'')+'"]'); if(f) setTimeout(function(){ f.scrollIntoView({block:'center'}); f.focus(); },120); } }
     prof.review=prof.review||{};
     function tripList(){ var S=stats(), t0={vizag:'2026-12-05'}, tr=[]; try{ tr=JSON.parse(get('vizag-trips')||'[]')||[]; }catch(e){} tr.forEach(function(t){ t0[t.id]=t.start||''; });
@@ -5183,8 +5225,8 @@ html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
       box.querySelectorAll('.rtrow').forEach(function(r,i){ r.onclick=function(e){ if(e.target.closest('button')) return; window.__recentTrips(all[i].id); }; });
       wireStars(box); box.querySelectorAll('[data-rv]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); window.__recentTrips(b.dataset.rv); }; }); }
     window.__drawRecent=drawRecent;
-    window.__recentTrips=function(focus){ rateRows(focus); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
-    function closeRate(){ rs.hidden=true; $('scrim').hidden=true; drawRecent(); }
+    window.__recentTrips=function(focus){ $('rate-close').classList.remove('save'); rateRows(focus); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
+    function closeRate(){ var rc=$('rate-close'); if(rc.classList.contains('save')&&!rs.hidden){ rc.classList.remove('save'); rc.setAttribute('aria-label','Close'); if(document.activeElement) document.activeElement.blur(); if(window.__toast) window.__toast('Review saved'); drawRecent(); return; } rs.hidden=true; $('scrim').hidden=true; drawRecent(); }
     $('rate-close').addEventListener('click',closeRate); rs.addEventListener('click',function(e){ e.stopPropagation(); }); $('scrim').addEventListener('click',closeRate);
     window.__profName=function(){ return {name:(prof.name||'').trim(),user:prof.user||'',line:idLine()}; };
     window.__profSummary=function(){ var S=stats(); return LEVELS[S.lvl-1]+' · '+S.pts+' travel points'; };
