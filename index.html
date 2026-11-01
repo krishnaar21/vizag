@@ -2888,6 +2888,37 @@ html .seg-days.dstrip{padding:5px!important}
 /* link sheet uses the place layout */
 .pshero[data-cat="food"]{--ph:20}
 
+/* ===== v68 ===== */
+/* 1. More sections: two rows inline, "More" opens the rest */
+.setcap.shd{display:flex;align-items:center;justify-content:space-between}
+.seeall{appearance:none;display:inline-flex;align-items:center;gap:2px;border:0;background:none;padding:2px 0;font:inherit;font-size:.78rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
+.seeall svg{width:14px;height:14px}
+.seeall[hidden]{display:none}
+#more-lists .mplist > .mprow:nth-child(n+3){display:none}
+.lsall .mprow{display:flex!important}
+.rmini{flex:none;font-size:.76rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--ink)}
+/* 2. nav: side gutters, tighter spacing, sizes follow the screen */
+@media (max-width:1023px){
+  .nav{padding-left:clamp(8px,3vw,18px)!important;padding-right:clamp(8px,3vw,18px)!important}
+  .nav ul{gap:0!important;padding:0!important}
+  .nav button{gap:2px!important;padding-inline:0!important;font-size:clamp(.6rem,2.7vw,.74rem)!important}
+  .nav button .icr,.nav button .icf,.nav button svg{width:clamp(22px,6.4vw,28px)!important;height:clamp(22px,6.4vw,28px)!important}
+  .fab,.totop:not(.inplan){width:clamp(50px,14vw,60px)!important;height:clamp(50px,14vw,60px)!important}
+  .fab .i-open,.fab .i-chat,.totop:not(.inplan) svg{width:clamp(22px,6.4vw,27px)!important;height:clamp(22px,6.4vw,27px)!important}
+}
+/* 5. timeline: icon + day, then name, then distance */
+.route .rh{display:flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.route .rhi{display:inline-flex;align-items:center}
+.route .rhi svg,.route .rhi .ic svg{width:15px;height:15px}
+.route li .t{font-size:1rem;font-weight:600;margin-top:2px}
+.route li .s{font-size:.84rem;color:var(--muted)}
+.route li .s:empty{display:none}
+/* 6. date strip: always a small inset fade at both edges */
+html .seg-days.dstrip{padding-left:12px!important;padding-right:12px!important;scroll-padding-inline:12px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 12px),transparent 100%)!important}
+html .seg-days.dstrip.more{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 40px),transparent 100%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 40px),transparent 100%)!important}
+html .seg-days.dstrip.lmore{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 12px),transparent 100%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 12px),transparent 100%)!important}
+html .seg-days.dstrip.more.lmore{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)!important;mask-image:linear-gradient(90deg,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)!important}
+
 </style>
 </head>
 <body>
@@ -3104,13 +3135,15 @@ html .seg-days.dstrip{padding:5px!important}
     <button type="button" class="acprof" id="acct-prof">View profile on this phone</button>
   </div>
   <div id="more-lists">
-  <div class="setcap">My trips</div>
+<div class="setcap shd"><span>My trips</span><button type="button" class="seeall" data-see="mytrips-list" data-ttl="My trips" data-ico="map" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="mytrips-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="mytrips-new">＋ New trip</button></div></div>
-  <div class="setcap">Travel groups</div>
+  <div class="setcap shd"><span>Recent trips</span><button type="button" class="seeall" data-see="recent-list" data-ttl="Recent trips" data-ico="history" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
+  <div class="setgrp"><div class="mplist" id="recent-list"></div></div>
+  <div class="setcap shd"><span>Travel groups</span><button type="button" class="seeall" data-see="grp-list" data-ttl="Travel groups" data-ico="users" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="grp-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="grp-new">＋ New group</button></div></div>
-  <div class="setcap">My places</div>
+<div class="setcap shd"><span>My places</span><button type="button" class="seeall" data-see="mp-list" data-ttl="My places" data-ico="pin" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="mp-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="mp-new">＋ Add a place</button></div></div>
   </div>
@@ -3129,7 +3162,7 @@ html .seg-days.dstrip{padding:5px!important}
 <div class="sheet lsheet psheet" id="mp-sheet" hidden role="dialog" aria-label="Add a place">
   <div class="shtitle"><button type="button" class="hback" data-tosettings aria-label="Back to settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button><span>Add a place</span><button type="button" class="shclose" id="mp-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div class="mpform">
-    <div class="pf"><span>Type</span><div class="seg pseg mpkinds" id="mp-kinds" role="group"><button type="button" data-val="Home" aria-pressed="true"><span class="ic"><span class="ie" data-e="1f3e0">🏠️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="house" href="#i-hugeicons-house"/></svg></span></span> Home</button><button type="button" data-val="Office" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f3e2">🏢️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="city" href="#i-hugeicons-city"/></svg></span></span> Office</button><button type="button" data-val="Native town" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f33e">🌾️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="garden" href="#i-hugeicons-garden"/></svg></span></span> Native</button><button type="button" data-val="Other" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f4cd">📍️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="pin" href="#i-hugeicons-pin"/></svg></span></span> Other</button></div></div>
+    <div class="pf"><span>Type</span><div class="seg pseg mpkinds" id="mp-kinds" role="group"><button type="button" data-val="Current" aria-pressed="true"><span class="ic"><span class="ie" data-e="1f4cd">📍️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="pin" href="#i-hugeicons-pin"/></svg></span></span> Current</button><button type="button" data-val="Office" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f3e2">🏢️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="city" href="#i-hugeicons-city"/></svg></span></span> Office</button><button type="button" data-val="Home" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f3e0">🏠️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="house" href="#i-hugeicons-house"/></svg></span></span> Home</button><button type="button" data-val="Other" aria-pressed="false"><span class="ic"><span class="ie" data-e="1f4cd">📍️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="pin" href="#i-hugeicons-pin"/></svg></span></span> Other</button></div></div>
     <label class="pf"><span>Name</span><input id="mp-label" type="text" value="Home" placeholder="e.g. Home"></label>
     <label class="pf"><span>Nearest city</span><select id="mp-city"></select></label>
     <label class="pf"><span>Address <small>(optional)</small></span><input id="mp-addr" type="text" placeholder="Street, area"></label>
@@ -3311,7 +3344,7 @@ html .seg-days.dstrip{padding:5px!important}
     VIEWS.forEach(function(n){ var el=$('v-'+n); if(el) el.hidden=(n!==v); });
     $$('.nav button[data-v]').forEach(function(b){ if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var hd=$('top-head'); if(hd) hd.hidden=(v!=='days');
-    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if((v==='more'||v==='profile')&&window.__renderAcct) window.__renderAcct(); if(v==='more'&&window.__drawMyTrips) window.__drawMyTrips(); setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label',v==='home'?'New trip':'Ask AI about this page');
+    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if((v==='more'||v==='profile')&&window.__renderAcct) window.__renderAcct(); if(v==='more'){ if(window.__drawMyTrips) window.__drawMyTrips(); if(window.__drawRecent) window.__drawRecent(); } setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label',v==='home'?'New trip':'Ask AI about this page');
   }
   $$('.nav button[data-v]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); show(b.dataset.v); }); });
   document.addEventListener('click',function(e){ var g=e.target.closest&&e.target.closest('[data-goto]'); if(g){ e.preventDefault(); show(g.dataset.goto); } });
@@ -3855,6 +3888,11 @@ html .seg-days.dstrip{padding:5px!important}
   $('lo-go').addEventListener('click',function(){ if(fbAuth) fbAuth.signOut().then(function(){ closeLogout(); openSheet(true); }); else closeLogout(); });
   $('acct-btn').addEventListener('click',acctGo);
   window.__renderAcct=renderAcct;
+  /* More: show two rows per section, "More" opens the full list in a sheet */
+  (function(){ var ml=$('more-lists'); if(!ml) return;
+    function upd(){ ml.querySelectorAll('.seeall').forEach(function(b){ var l=$(b.dataset.see); b.hidden=!(l&&l.querySelectorAll('.mprow').length>2); }); }
+    new MutationObserver(upd).observe(ml,{childList:true,subtree:true}); upd();
+    ml.addEventListener('click',function(e){ var b=e.target.closest('.seeall'); if(!b) return; e.stopPropagation(); if(window.__listSheet) window.__listSheet(b.dataset.ttl,b.dataset.ico,b.dataset.see); }); })();
   (function(){ var ac=$('acct-top'); function op(e){ if(e.target.closest('#acct-edit')) return; var p=$('prof-open'); if(p) p.click(); }
     $('acct-edit').addEventListener('click',function(e){ e.stopPropagation(); if(window.__editProfile) window.__editProfile(); });
     $('acct-hist').addEventListener('click',function(e){ e.stopPropagation(); if(window.__recentTrips) window.__recentTrips(); });
@@ -4180,7 +4218,7 @@ html .seg-days.dstrip{padding:5px!important}
       var chosen={}; t.places.forEach(function(p){ chosen[p[0]]=1; });
       var others=(STATES[t.state]||[]).filter(function(p){ return !chosen[p[0]]; });
       var rprev=[t.from[1],t.from[2]], rpn=t.from[0];
-      var routeList='<ol class="route">'+[['🏠',t.from[0],'Start · '+P.days.length+' days, ~'+P.total+' km in all']].concat(P.days.reduce(function(a,d,i){ return a.concat(d.stops.filter(function(s){ return s.kind!=='food'&&s.kind!=='travel'; }).map(function(s){ var pp=t.places.filter(function(x){ return x[0]===s.title; })[0], k=pp?road(rprev,[pp[2],pp[3]]):s.km, from=rpn; if(pp){ rprev=[pp[2],pp[3]]; rpn=pp[0]; } return [s.emo,s.title,'Day '+(i+1)+' · '+(k<2?'same area as '+from:'~'+k+' km from '+from)]; })); },[])).map(function(r){ return '<li><div class="t">'+r[0]+' '+esc(r[1])+'</div><div class="s">'+esc(r[2])+'</div></li>'; }).join('')+'</ol>';
+      var routeList='<ol class="route">'+[['🏠',t.from[0],'Start · '+P.days.length+' days · ~'+P.total.toLocaleString('en-IN')+' km in all']].concat(P.days.reduce(function(a,d,i){ return a.concat(d.stops.filter(function(s){ return s.kind!=='food'&&s.kind!=='travel'; }).map(function(s){ var pp=t.places.filter(function(x){ return x[0]===s.title; })[0], k=pp?road(rprev,[pp[2],pp[3]]):s.km, from=rpn; if(pp){ rprev=[pp[2],pp[3]]; rpn=pp[0]; } return [s.emo,s.title,'Day '+(i+1)+' · '+(k<2?'Same area as '+from:'~'+k.toLocaleString('en-IN')+' km from '+from)]; })); },[])).map(function(r){ var parts=r[2].split(' · '), head=parts.shift(); return '<li><div class="rh"><span class="rhi">'+r[0]+'</span><span>'+esc(head)+'</span></div><div class="t">'+esc(r[1])+'</div><div class="s">'+esc(parts.join(' · '))+'</div></li>'; }).join('')+'</ol>';
       var tday={}; P.days.forEach(function(d,k){ d.towns.forEach(function(x){ if(!(x in tday)) tday[x]=k+1; }); });
       var bdg=t.budget||'mid', MEAL={budget:'₹100–250',mid:'₹250–600',premium:'₹700–2,000'}[bdg];
       var KINDS={
@@ -4196,7 +4234,7 @@ html .seg-days.dstrip{padding:5px!important}
             return '<div class="twpanel" data-twp="'+kind+'-'+k+'"'+(k?' hidden':'')+'><div class="twhead"><b>'+esc(tw)+'</b><small>'+esc(sub)+'</small></div><div class="places twl">'+KINDS[kind].map(function(o){ return '<a href="'+gm(o[3]+tw+' '+t.state)+'" target="_blank" rel="noopener" data-title="'+esc(o[1]+' in '+tw)+'"><span class="twic">'+icoT(kind==='food'?FICO[o[0]]:ico)+'</span><span class="pn">'+esc(o[1])+'<small>'+esc(o[2])+'</small><em>'+esc(o[4])+'</em></span><span class="arr">'+icoT('chev')+'</span></a>'; }).join('')+'</div></div>'; }).join(''); }
       V.route.innerHTML=chipsHTML([['route','Route'],['more','Places'],['stays','Stays'],['food','Food'],['shop','Shop']],'seg-5','data-csub','route')+
         '<div class="ctsub" data-cs="route"'+subHidden('route','route',1)+'>'+head(t.state,'Route','Stops in the order the plan visits them. Distances are rough road estimates.',[['Stops',String(t.places.length)],['Road distance','~'+P.total+' km'],['Bases',String(towns.length)],['Start',t.from[0]]])+card(routeList)+'</div>'+
-        '<div class="ctsub" data-cs="more"'+subHidden('route','more')+'>'+head(t.state,'Add places','Well-known places in '+t.state+' not yet in your plan. Tap one to add it.',[['Available',String(others.length)]])+(others.length?VTOG.replace('<span>View</span>','<span class="vtt"><b>Places to add</b><small>'+others.length+' not in your plan yet</small></span>')+'<div class="ctcards">'+(window.__groupCards?window.__groupCards(others,STATES[t.state]||[],function(p,i){ return window.__placeCard(p,false,i,[t.from[1],t.from[2]]).replace('<input type="checkbox" class="cbx"','<input type="checkbox" class="cbx" data-addp="'+esc(p[0])+'"'); }):'')+'</div>':card('<p class="s">Every built-in place for this state is already in the plan.</p>'))+'</div>'+
+        '<div class="ctsub" data-cs="more"'+subHidden('route','more')+'>'+head(t.state,'Places','Well-known places in '+t.state+'. Tap a photo to add it to your trip or remove it.',[['In your trip',String(t.places.length)],['More to see',String(others.length)]])+VTOG.replace('<span>View</span>','<span class="vtt"><b>Places in '+esc(t.state)+'</b><small>'+t.places.length+' in your trip · '+others.length+' more</small></span>')+'<div class="ctcards">'+(window.__groupCards?window.__groupCards(STATES[t.state]||[],STATES[t.state]||[],function(p,i){ var on=!!chosen[p[0]]; return window.__placeCard(p,on,i,[t.from[1],t.from[2]]).replace('<input type="checkbox" class="cbx"','<input type="checkbox" class="cbx" data-addp="'+esc(p[0])+'"'); }):'')+'</div></div>'+
         ['stays','food','shop'].map(function(k){ return '<div class="ctsub" data-cs="'+k+'"'+subHidden('route',k)+'>'+head(t.state,{stays:'Places to stay',food:'Where to eat',shop:'Shopping'}[k],'Google Maps searches near each base on this trip.',[['Bases',String(towns.length)]])+'<div class="twwrap">'+links(k)+'</div>'+'</div>'; }).join('');
       /* Plan */
       var bk=[];
@@ -4246,7 +4284,10 @@ html .seg-days.dstrip{padding:5px!important}
       $$('.ctv [data-ctk]').forEach(function(cb){ cb.onchange=function(){ ticks2[cb.dataset.ctk]=cb.checked; set('vizag-ct-ticks',JSON.stringify(ticks2)); }; });
       $$('.ctv [data-ctedit]').forEach(function(b){ b.onclick=function(){ openPlanner(cur()); }; });
       if(window.__loadImgs) window.__loadImgs(V.route);
-      $$('.ctv [data-addp]').forEach(function(b){ b.onchange=function(){ var t=cur(); var p=(STATES[t.state]||[]).filter(function(x){ return x[0]===b.dataset.addp; })[0]; if(p){ t.places.push(p); save(); render(); show('route'); var c=document.querySelector('#ct-route [data-csub="more"]'); if(c) c.click(); } }; });
+      $$('.ctv [data-addp]').forEach(function(b){ b.onchange=function(){ var t=cur(), nm=b.dataset.addp, p=(STATES[t.state]||[]).filter(function(x){ return x[0]===nm; })[0]; if(!p) return;
+        var had=t.places.some(function(x){ return x[0]===nm; }); if(had) t.places=t.places.filter(function(x){ return x[0]!==nm; }); else t.places.push(p);
+        var y=window.scrollY; save(); render(); show('route'); var c=document.querySelector('#ct-route [data-csub="more"]'); if(c) c.click(); window.scrollTo(0,y);
+        toast(had?'Removed '+nm+' from your trip':'Added '+nm+' to your trip','Undo',function(){ var t2=cur(); if(had) t2.places.push(p); else t2.places=t2.places.filter(function(x){ return x[0]!==nm; }); var y2=window.scrollY; save(); render(); show('route'); var c2=document.querySelector('#ct-route [data-csub="more"]'); if(c2) c2.click(); window.scrollTo(0,y2); }); }; });
     }
 
     /* ---------- Edit a stop (time, note, what to carry, remove) ---------- */
@@ -4267,6 +4308,13 @@ html .seg-days.dstrip{padding:5px!important}
     document.addEventListener('click',function(e){ if(e.target.closest('.nav button[data-v="home"]')) setTimeout(tScroll,0); },true);
     window.addEventListener('resize',function(){ clearTimeout(tScroll.t); tScroll.t=setTimeout(tScroll,150); });
     document.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('[data-tswitch]')){ e.preventDefault(); openTripSheet(window.__tripCards||[]); } });
+    window.__listSheet=function(title,ico,srcId){ var src=$(srcId); if(!src) return;
+      $('ps-body').innerHTML='<div class="lshead"><span class="lsico">'+icoT(ico)+'</span><div class="lst"><h3>'+esc(title)+'</h3><p>'+src.querySelectorAll('.mprow').length+' items</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="pspanel tppanel"><div class="mplist lsall" id="ls-all"></div></div>';
+      var box=$('ls-all'); box.innerHTML=src.innerHTML;
+      box.addEventListener('click',function(e){ var el=e.target.closest('[data-mt],[data-gi],[data-mpdel],[data-rto]'); if(!el) return; e.stopPropagation(); var all=Array.prototype.slice.call(box.querySelectorAll('[data-mt],[data-gi],[data-mpdel],[data-rto]')), k=all.indexOf(el), orig=src.querySelectorAll('[data-mt],[data-gi],[data-mpdel],[data-rto]')[k]; closePlace(); if(orig) setTimeout(function(){ orig.click(); },230); });
+      if(window.__paintUses) window.__paintUses(box);
+      psCtx={name:'list'}; psh.classList.remove('full','tpsheet'); psh.classList.add('lsheet'); psh.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ psh.classList.add('in'); });
+      $('ps-close').onclick=closePlace; };
     function openTripSheet(cards,title,ico){
       $('ps-body').innerHTML='<div class="lshead"><span class="lsico">'+icoT(ico||'map')+'</span><div class="lst"><h3>'+(title||'My trips')+'</h3><p>'+cards.length+' trip'+(cards.length===1?'':'s')+'</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
         '<div class="tpsrch"><label class="psearch">'+icoT('search')+'<input id="ts-q" type="search" placeholder="Search your trips" autocomplete="off"></label></div>'+
@@ -4857,17 +4905,19 @@ html .seg-days.dstrip{padding:5px!important}
     var prof={name:'',rating:{}}; try{ prof=Object.assign(prof,JSON.parse(get('vizag-profile')||'{}')); }catch(e){}
     function saveP(){ set('vizag-places',JSON.stringify(places)); }
     function saveF(){ set('vizag-profile',JSON.stringify(prof)); }
-    var ICONS={Home:'🏠',Office:'🏢','Native town':'🌾',Other:'📍'};
+    /* "Current" = where you live now; "Home" = your native town (renamed from Home / Native town) */
+    if(!get('vizag-places-v2')){ places.forEach(function(p){ if(p.kind==='Home'){ p.kind='Current'; if(p.label==='Home') p.label='Current'; } else if(p.kind==='Native town'){ p.kind='Home'; if(p.label==='Native town') p.label='Home'; } }); saveP(); set('vizag-places-v2','1'); }
+    var ICONS={Current:'📍',Office:'🏢',Home:'🏠',Other:'📌'};
     window.__myPlaces=function(){ return places.map(function(p){ var c=CITIES.filter(function(x){ return x[0]===p.city; })[0]; return c?{label:p.label+(p.label===p.city?'':' · '+p.city),city:c,emo:ICONS[p.kind]||'📍'}:null; }).filter(Boolean); };
 
     /* Settings: list + add form */
     function drawPlaces(){
       var box=$('mp-list'); if(!box) return;
-      box.innerHTML=places.length?places.map(function(p,i){ return '<div class="mprow"><span class="emo">'+(ICONS[p.kind]||'📍')+'</span><div class="mpt"><b>'+esc(p.label)+'</b><small>'+esc([p.address,p.city,p.pin].filter(Boolean).join(' · '))+'</small></div><button type="button" class="mpdel" data-mpdel="'+i+'" aria-label="Remove '+esc(p.label)+'">×</button></div>'; }).join(''):'<p class="mpempty">Save home, office or your native town to start trips from them.</p>';
+      box.innerHTML=places.length?places.map(function(p,i){ return '<div class="mprow"><span class="emo">'+(ICONS[p.kind]||'📍')+'</span><div class="mpt"><b>'+esc(p.label)+'</b><small>'+esc([p.address,p.city,p.pin].filter(Boolean).join(' · '))+'</small></div><button type="button" class="mpdel" data-mpdel="'+i+'" aria-label="Remove '+esc(p.label)+'">×</button></div>'; }).join(''):'<p class="mpempty">Save where you live now, your office or your home town to start trips from them.</p>';
       box.querySelectorAll('[data-mpdel]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); var i=+b.dataset.mpdel, pl=places[i]; if(!pl) return; var go=function(){ places.splice(i,1); saveP(); drawPlaces(); drawProfile(); }; if(window.__confirm) window.__confirm('Delete '+pl.label+'?','This removes the saved address from your places. Trips that start from it keep their plan.','Delete',go); else go(); }; });
     }
     var cs=$('mp-city'); if(cs) cs.innerHTML=CITIES.map(function(c){ return '<option>'+esc(c[0])+'</option>'; }).join('');
-    var lab=$('mp-label'), kindV='Home', mps=$('mp-sheet');
+    var lab=$('mp-label'), kindV='Current', mps=$('mp-sheet');
     $('mp-kinds').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; kindV=b.dataset.val; $$('#mp-kinds button').forEach(function(x){ x.setAttribute('aria-pressed',x===b?'true':'false'); }); if(kindV!=='Other') lab.value=kindV; else { lab.value=''; lab.focus(); } });
     function mpOpen(){ if(typeof openSheet==='function') openSheet(false); mps.hidden=false; $('scrim').hidden=false; }
     function mpClose(){ mps.hidden=true; $('scrim').hidden=true; }
@@ -4950,8 +5000,13 @@ html .seg-days.dstrip{padding:5px!important}
       $('rate-body').innerHTML='<div class="prates">'+all.map(function(t){ var r=prof.rating[t.id]||0, d=t0[t.id]?new Date(t0[t.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; return '<div class="prate"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(d?d+' · ':'')+t.days+' days · '+t.places+' places</small></div><div class="rstars" data-rt="'+esc(t.id)+'">'+[1,2,3,4,5].map(function(i){ return '<button type="button" data-r="'+i+'" class="'+(i<=r?'on':'')+'" aria-label="'+i+' star'+(i>1?'s':'')+'">★</button>'; }).join('')+'</div></div>'; }).join('')+'</div>'+
         '<p class="mcpnote" id="rate-avg">'+(S.avg?'Average '+S.avg.toFixed(1)+' ★ across rated trips':'No ratings yet')+'</p>';
       $('rate-body').querySelectorAll('[data-rt]').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(){ prof.rating[g.dataset.rt]=+b.dataset.r; saveF(); var v=prof.rating[g.dataset.rt]; g.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',+x.dataset.r<=v); }); var S2=stats(); $('rate-avg').textContent=S2.avg?'Average '+S2.avg.toFixed(1)+' ★ across rated trips':'No ratings yet'; }; }); }); }
+    function drawRecent(){ var box=$('recent-list'); if(!box) return; var S=stats(), t0={vizag:'2026-12-05'}, tr=[]; try{ tr=JSON.parse(get('vizag-trips')||'[]')||[]; }catch(e){} tr.forEach(function(t){ t0[t.id]=t.start||''; });
+      var all=S.all.slice().sort(function(a,b){ return (t0[b.id]||'').localeCompare(t0[a.id]||''); });
+      box.innerHTML=all.map(function(t){ var r=prof.rating[t.id]||0, d=t0[t.id]?new Date(t0[t.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; return '<div class="mprow grow" data-rto="1" role="button" tabindex="0"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(d?d+' · ':'')+t.days+' days</small></div><span class="rmini">'+(r?'★ '+r+'.0':'Rate')+'</span></div>'; }).join('')||'<p class="mpempty">Trips you take show up here to rate.</p>';
+      box.querySelectorAll('[data-rto]').forEach(function(r){ r.onclick=function(e){ e.stopPropagation(); window.__recentTrips(); }; }); }
+    window.__drawRecent=drawRecent;
     window.__recentTrips=function(){ rateRows(); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
-    function closeRate(){ rs.hidden=true; $('scrim').hidden=true; }
+    function closeRate(){ rs.hidden=true; $('scrim').hidden=true; drawRecent(); }
     $('rate-close').addEventListener('click',closeRate); rs.addEventListener('click',function(e){ e.stopPropagation(); }); $('scrim').addEventListener('click',closeRate);
     window.__profName=function(){ return {name:(prof.name||'').trim(),user:prof.user||'',line:idLine()}; };
     window.__profSummary=function(){ var S=stats(); return LEVELS[S.lvl-1]+' · '+S.pts+' travel points'; };
@@ -5007,7 +5062,7 @@ html .seg-days.dstrip{padding:5px!important}
     $('grp-del').addEventListener('click',function(){ var i=gEdit, g=groups[i]; if(!g) return; closeGroup(); var go=function(){ groups.splice(i,1); saveG(); drawGroups(); }; if(window.__confirm) window.__confirm('Delete '+g.name+'?','The group is removed from your saved groups. Trips you already planned keep their travellers.','Delete',go); else go(); });
     gs.addEventListener('click',function(e){ e.stopPropagation(); });
     $('scrim').addEventListener('click',closeGroup);
-    drawGroups();
+    drawGroups(); drawRecent();
     if(window.__renderAcct) window.__renderAcct();
     drawPlaces();
   })();
