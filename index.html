@@ -3822,6 +3822,18 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
 @media (max-width:1023px){ html.notrips.navhide .nav{transform:none!important;opacity:1!important} }
 html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
 
+/* ===== v120 ===== */
+/* Home: date strip and the day card join into one card with a divider */
+#v-home .vz > .chips{padding-bottom:0!important}
+#v-home .vz > .chips .seg-days.hseg{border-radius:var(--stripR) var(--stripR) 0 0!important;border-bottom:1px solid var(--line)!important;background:var(--surface)!important}
+#v-home .vz > .hday > .card.summary:first-child,#v-home .vz > .hday > .summary{border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:0!important;margin-top:0!important}
+#v-home .vz > .hday{margin-top:0!important;padding-top:0!important}
+/* rolling weather label sits on the same baseline as the text around it */
+.wxrot{display:inline-block!important;height:1.35em;vertical-align:top!important;line-height:1.35em}
+.wxrot .wxwin{vertical-align:top!important}
+.wxrot .wxwin{position:relative;top:.1em}
+.wxrot .wxwin{top:.3em}
+
 </style>
 </head>
 <body>
@@ -6179,7 +6191,7 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
 (function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
-  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },600); },{passive:true}); })();
+  var lt=performance.now(), v=0; window.addEventListener('scroll',function(){ var y=window.scrollY, now=performance.now(), dt=Math.max(1,now-lt), dy=Math.abs(y-lastY); lastY=y; lt=now; v=v*0.6+(dy/dt)*0.4; if(y>40&&v>1.6) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); v=0; },600); },{passive:true}); })();
 
 
 /* back-to-top sits on <body> so it is positioned against the screen, not a scrolling container */
