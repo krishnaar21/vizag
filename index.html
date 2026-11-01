@@ -3027,6 +3027,36 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
 .av .tface,#settings-profile .acct .av .tface,#settings .acct .av .tface{width:40px!important;height:40px!important}
 .pav.face .tface{width:42px!important;height:42px!important}
 
+/* ===== v74 ===== */
+/* 1. in-trip places: no border or centre check; small tick badge on the photo corner. Add rows: small + circle */
+html .pcards .pcard.on .pchk{display:none!important}
+html .pcards .pcard.on .pimg::before,html .pcards .pcard.on .pimg::after{display:none!important}
+html:not(.pv-card) .pcards .pcard.on .pimg{outline:0!important;box-shadow:none!important}
+html.pv-card .pcards .pcard.on::after{border:1px dashed color-mix(in srgb,var(--ink) 20%,transparent)!important;box-shadow:none!important}
+html .pcards .pcard.on .pemo{opacity:1!important}
+.pbadge2{display:none}
+html .pcards .pcard.on .pbadge2{display:grid;position:absolute;z-index:3;width:22px;height:22px;border-radius:50%;place-items:center;background:#16a34a;color:#fff;box-shadow:0 0 0 2px var(--surface);pointer-events:none}
+.pbadge2 svg{width:13px!important;height:13px!important;stroke-width:2.4}
+html:not(.pv-card) .pcards .pcard.on .pbadge2{left:72px;top:calc(12px + 72px)}
+html.pv-card .pcards .pcard.on .pbadge2{right:10px;top:10px}
+.xout .pcard:not(.on)::after{content:'+'!important;padding:0!important;width:30px!important;height:30px!important;display:grid!important;place-items:center;font-size:1.15rem!important;font-weight:500!important;border-radius:50%!important}
+.xout .pcard:not(.on) .pinfo{padding-right:40px!important}
+html.pv-card .xout .pcard:not(.on) .pinfo{padding-right:44px!important}
+/* 2. avatar picker */
+.avpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:8px}
+.avopt{appearance:none;aspect-ratio:1;border-radius:14px;border:1px solid var(--line)!important;background:var(--surface);font-size:1.45rem;line-height:1;display:grid;place-items:center;cursor:pointer;overflow:hidden;padding:0}
+.avopt[aria-pressed="true"]{border:2px solid var(--ink)!important}
+.avopt img{width:100%;height:100%;object-fit:cover}
+.avopt svg{width:20px;height:20px;color:var(--muted)}
+.avclear{appearance:none;border:0;background:none;padding:10px 0 0;font:inherit;font-size:.82rem;font-weight:500;color:var(--muted);cursor:pointer}
+.avemo{font-size:1.7rem;line-height:1}
+.avimg{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.av.pic,.pav.pic{overflow:hidden;background:color-mix(in srgb,var(--brand) 10%,var(--surface))!important;padding:0!important}
+/* 3. recent trips: bigger tap targets */
+.rtrow{cursor:pointer}
+.rstars.sm button{min-width:26px;min-height:28px;font-size:1.1rem!important}
+.rvbtn{padding:6px 0!important}
+
 </style>
 </head>
 <body>
@@ -3880,10 +3910,12 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     var PERSON=window.__FACE;
     var inn = mode==='claude' || !!fbUser;
     var pn=window.__profName?window.__profName():{name:'',user:''};
-    if(pn.name){ nm.textContent=pn.name; av.textContent=pn.name.charAt(0).toUpperCase(); }
+    var avh=window.__avatarHTML?window.__avatarHTML():'';
+    if(avh){ av.innerHTML=avh; nm.textContent=pn.name||'Your profile'; }
+    else if(pn.name){ nm.textContent=pn.name; av.textContent=pn.name.charAt(0).toUpperCase(); }
     else if(fbUser){ var u=String(fbUser.email||'').split('@')[0]||'trip'; nm.textContent=u.charAt(0).toUpperCase()+u.slice(1); av.textContent=u.charAt(0).toUpperCase(); }
     else { nm.textContent='Your profile'; av.innerHTML=PERSON; }
-    av.classList.toggle('has',!!(pn.name||fbUser));
+    av.classList.toggle('has',!!(pn.name||fbUser||avh)); av.classList.toggle('pic',!!avh);
     av.classList.toggle('on',!!fbUser);
     if(lastEl) lastEl.textContent = inn ? lastText() : 'Saved on this phone';
     var gr=$('acct-grid'); if(gr&&window.__acctGrid) gr.innerHTML=window.__acctGrid();
@@ -4010,7 +4042,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
   (function(){ var ml=$('more-lists'); if(!ml) return;
     function upd(){ ml.querySelectorAll('.seeall').forEach(function(b){ var l=$(b.dataset.see); b.hidden=!(l&&l.querySelectorAll('.mprow').length>2); }); }
     new MutationObserver(upd).observe(ml,{childList:true,subtree:true}); upd();
-    ml.addEventListener('click',function(e){ var b=e.target.closest('.seeall'); if(!b) return; e.stopPropagation(); if(window.__listSheet) window.__listSheet(b.dataset.ttl,b.dataset.ico,b.dataset.see); }); })();
+    ml.addEventListener('click',function(e){ var b=e.target.closest('.seeall'); if(!b) return; e.stopPropagation(); if(b.dataset.see==='recent-list'&&window.__recentTrips){ window.__recentTrips(); return; } if(window.__listSheet) window.__listSheet(b.dataset.ttl,b.dataset.ico,b.dataset.see); }); })();
   (function(){ var ac=$('acct-top'); function op(e){ if(e.target.closest('#acct-edit')) return; var p=$('prof-open'); if(p) p.click(); }
     $('acct-edit').addEventListener('click',function(e){ e.stopPropagation(); if(window.__editProfile) window.__editProfile(); });
 
@@ -4582,7 +4614,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
       var d=fromLL?road(fromLL,[p[2],p[3]]):0;
       return '<label class="pcard'+(on?' on':'')+'" data-q="'+esc((p[0]+' '+p[1]+' '+(CATN[p[4]]||'')+' '+p[4]).toLowerCase())+'">'+
         '<div class="pimg" data-wq="'+esc(p[0]+' '+p[1])+'" data-cat="'+esc(p[4])+'"><span class="pemo">'+(EMO[p[4]]||'📍')+'</span></div>'+
-        '<span class="pchk" aria-hidden="true">'+icoT('tick')+icoT('plus')+'</span>'+
+        '<span class="pchk" aria-hidden="true">'+icoT('tick')+icoT('plus')+'</span><span class="pbadge2" aria-hidden="true">'+icoT('tick')+'</span>'+
         '<div class="pinfo"><div class="ptop"><b data-pn="'+esc(p[0])+'">'+esc(p[0])+'</b><span class="pinf" data-pn="'+esc(p[0])+'" data-full="1" role="button" aria-label="More about '+esc(p[0])+'">'+icoT('chev')+'</span>'+
         '<input type="checkbox" class="cbx" value="'+esc(p[0])+'"'+(on?' checked':'')+' aria-label="Include '+esc(p[0])+'"></div>'+
         '<small class="pdesc">'+esc(CATN[p[4]]||'Sight')+' · '+esc(p[1])+'</small><small class="pwd"></small>'+
@@ -5073,11 +5105,14 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     }
     function stars(n,cls){ var o=''; for(var i=1;i<=5;i++) o+='<span class="'+(cls||'st')+(i<=Math.round(n)?' on':'')+'">★</span>'; return o; }
     var GL={woman:'Woman',man:'Man',nb:'Non-binary'};
+    var AVS=['🧳','🏔️','🌴','🐘','🏄','🛺','🧭','🌋','🐫','🦚'];
+    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; if(prof.avatar) return '<span class="avemo" data-noicon>'+prof.avatar+'</span>'; return ''; }
+    window.__avatarHTML=avatarHTML;
     function idLine(){ return prof.user?'@'+prof.user:''; }
     window.__idLine=idLine;
     function drawProfile(){
       var box=$('prof-body'); if(!box) return; var S=stats(), init=(prof.name||'').trim().charAt(0).toUpperCase();
-      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav'+(init?'':' face')+'">'+(init?esc(init):(window.__FACE||ic('user')))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div><button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button></div>'+
+      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav'+(avatarHTML()?' pic':(init?'':' face'))+'">'+(avatarHTML()||(init?esc(init):(window.__FACE||ic('user'))))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div><button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button></div>'+
         '<div id="prof-contacts"></div>'+
         '<div class="plevel"><div><div class="plv">'+LEVELS[S.lvl-1]+'</div><div class="pstars">'+stars(S.lvl)+'</div></div><div class="ppts"><b>'+S.pts+'</b><small>travel points'+(S.next?' · '+S.next+' to '+LEVELS[S.lvl]:'')+'</small></div></div></div>'+
         '<p class="pptsnote">Points: 1 per place, 2 per day, 5 per state.</p>'+
@@ -5102,16 +5137,23 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     var soc=$('soc-sheet'), ps=$('profile');
     var eG='', fromProf=false;
     function openSoc(){ eG=prof.gender||''; fromProf=!ps.hidden;
-      $('soc-body').innerHTML='<div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" value="'+esc(prof.name||'')+'" placeholder="Your name"></label>'+
+      var eAv=prof.avatar||'', ePh=prof.photo||'';
+      $('soc-body').innerHTML='<div class="pgl ptitle">Avatar</div><div class="pfgrp"><div class="avpick" id="ep-av" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-label="Upload a photo">'+(ePh?'<img src="'+ePh+'" alt="">':ic('camera'))+'</button>'+AVS.map(function(e){ return '<button type="button" class="avopt" data-av="'+e+'" aria-pressed="'+(eAv===e&&!ePh?'true':'false')+'">'+e+'</button>'; }).join('')+'</div><input type="file" id="ep-file" accept="image/*" hidden><button type="button" class="avclear" id="ep-avclear">Use my initial instead</button></div><div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" value="'+esc(prof.name||'')+'" placeholder="Your name"></label>'+
         '<label class="pf"><span>Username</span><div class="epuser"><span>@</span><input id="ep-user" value="'+esc(prof.user||'')+'" placeholder="username" autocomplete="off" autocapitalize="none" spellcheck="false"></div></label>'+
         '<div class="pf"><span>Gender</span><div class="pills" id="ep-gender">'+[['woman','Woman'],['man','Man'],['nb','Non-binary']].map(function(g){ return '<button type="button" data-val="'+g[0]+'" aria-pressed="'+(eG===g[0]?'true':'false')+'">'+g[1]+'</button>'; }).join('')+'</div></div>'+
         '<label class="pf"><span>Age range</span><select id="ep-age">'+['','18–24','25–34','35–44','45–54','55–64','65+'].map(function(x){ return '<option value="'+x+'"'+(prof.age===x?' selected':'')+'>'+(x||'Prefer not to say')+'</option>'; }).join('')+'</select></label></div>'+
         '<div class="pgl ptitle">Social &amp; email</div><div class="pfgrp">'+CF.map(function(f){ return '<label class="pf"><span>'+f[1]+'</span><input data-pfk="'+f[0]+'" type="'+f[2]+'"'+(f[0]==='email'?' inputmode="email" autocomplete="email"':' autocomplete="off"')+' placeholder="'+f[3]+'" value="'+esc(cval(f[0]))+'"></label>'; }).join('')+'</div>';
       $('ep-user').addEventListener('input',function(){ var v=this.value.toLowerCase().replace(/[^a-z0-9._]/g,'').slice(0,24); if(v!==this.value) this.value=v; });
+      function avPaint(){ $$('#ep-av [data-av]').forEach(function(b){ b.setAttribute('aria-pressed',(!ePh&&b.dataset.av===eAv)?'true':'false'); }); var ph=$('ep-av').querySelector('[data-ph]'); ph.innerHTML=ePh?'<img src="'+ePh+'" alt="">':ic('camera'); ph.setAttribute('aria-pressed',ePh?'true':'false'); if(window.__paintUses) window.__paintUses(ph); }
+      $('ep-av').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; if(b.dataset.ph){ $('ep-file').click(); return; } eAv=b.dataset.av; ePh=''; avPaint(); soc.dataset.av=eAv; soc.dataset.ph=''; });
+      $('ep-avclear').addEventListener('click',function(){ eAv=''; ePh=''; avPaint(); soc.dataset.av=''; soc.dataset.ph=''; });
+      $('ep-file').addEventListener('change',function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'), s=160, m=Math.min(im.width,im.height); c.width=c.height=s; c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s); ePh=c.toDataURL('image/jpeg',0.82); avPaint(); soc.dataset.ph=ePh; }; im.src=r.result; }; r.readAsDataURL(f); });
+      soc.dataset.av=eAv; soc.dataset.ph=ePh;
       $('ep-gender').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; eG=eG===b.dataset.val?'':b.dataset.val; this.querySelectorAll('button').forEach(function(y){ y.setAttribute('aria-pressed',y.dataset.val===eG?'true':'false'); }); });
       ps.hidden=true; soc.hidden=false; $('scrim').hidden=false; soc.scrollTop=0; }
     window.__editProfile=openSoc;
     function closeSoc(save){ if(save){ prof.social=prof.social||{}; $$('#soc-body [data-pfk]').forEach(function(i){ prof.social[i.dataset.pfk]=i.value.trim(); if(i.dataset.pfk==='email') prof.email=i.value.trim(); });
+        prof.avatar=soc.dataset.av||''; prof.photo=soc.dataset.ph||'';
         prof.name=$('ep-name').value.trim(); prof.user=$('ep-user').value.trim(); prof.gender=eG; prof.age=$('ep-age').value; saveF(); if(window.__renderAcct) window.__renderAcct(); }
       soc.hidden=true; if(fromProf){ drawProfile(); ps.hidden=false; } else $('scrim').hidden=true; }
     $('soc-save').addEventListener('click',function(){ closeSoc(true); }); $('soc-back').addEventListener('click',function(){ closeSoc(false); });
@@ -5138,6 +5180,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     function wireStars(box,after){ box.querySelectorAll('[data-rt]').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); prof.rating[g.dataset.rt]=+b.dataset.r; saveF(); var v=prof.rating[g.dataset.rt]; g.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',+x.dataset.r<=v); }); if(after) after(); }; }); }); }
     function drawRecent(){ var box=$('recent-list'); if(!box) return; var all=tripList();
       box.innerHTML=all.map(function(t){ var rv=prof.review[t.id]; return '<div class="mprow rtrow"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days</small>'+(rv?'<small class="rvq">“'+esc(rv)+'”</small>':'')+'</div><div class="rtact">'+starBtns(t.id,prof.rating[t.id]||0)+'<button type="button" class="rvbtn" data-rv="'+esc(t.id)+'">'+(rv?'Edit review':'Write a review')+'</button></div></div>'; }).join('')||'<p class="mpempty">Trips you take show up here to rate and review.</p>';
+      box.querySelectorAll('.rtrow').forEach(function(r,i){ r.onclick=function(e){ if(e.target.closest('button')) return; window.__recentTrips(all[i].id); }; });
       wireStars(box); box.querySelectorAll('[data-rv]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); window.__recentTrips(b.dataset.rv); }; }); }
     window.__drawRecent=drawRecent;
     window.__recentTrips=function(focus){ rateRows(focus); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
