@@ -3105,6 +3105,16 @@ html .fab:not(.up) .i-chat{display:block!important}
 .av.pic,.pav.pic{background:none!important}
 .pav.pic .avlet,.av.pic .avlet{font-size:1.35rem}
 
+/* ===== v77 ===== */
+/* 1. nav: centre icons in the visible bar; the home-indicator strip is shorter */
+@media (max-width:1023px){
+  .nav{padding-top:6px!important;padding-bottom:max(calc(env(safe-area-inset-bottom,0px) - 12px),6px)!important}
+  .nav ul{align-items:center}
+  .nav button{justify-content:center!important;height:100%}
+}
+/* 2. status-bar strip dims with the page when a sheet is open */
+html.dim body::before{background:color-mix(in srgb,var(--bg) 52%,#000)!important;z-index:200}
+
 </style>
 </head>
 <body>
@@ -4084,6 +4094,12 @@ html .fab:not(.up) .i-chat{display:block!important}
   $('lo-go').addEventListener('click',function(){ if(fbAuth) fbAuth.signOut().then(function(){ closeLogout(); openSheet(true); }); else closeLogout(); });
   $('acct-btn').addEventListener('click',acctGo);
   window.__renderAcct=renderAcct;
+  /* dim the status bar strip (and Safari's tint) while any sheet or overlay is open */
+  (function(){ var tc=document.querySelector('meta[name="theme-color"]'), base=tc?tc.getAttribute('content'):''; var sc=$('scrim');
+    function upd(){ var on=document.documentElement.classList.contains('ps-open')||(sc&&!sc.hidden); document.documentElement.classList.toggle('dim',on);
+      if(tc){ if(on){ if(!upd.on){ base=tc.getAttribute('content'); } var c=getComputedStyle(document.body,'::before').backgroundColor||''; var m=c.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/); if(m) c='rgb('+[m[1],m[2],m[3]].map(function(v){ return Math.round(v*255); }).join(',')+')'; tc.setAttribute('content',c||'#000'); } else if(upd.on) tc.setAttribute('content',base); } upd.on=on; }
+    new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+    if(sc) new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(sc,{attributes:true,attributeFilter:['hidden']}); })();
   /* DEBUG (beta only): double-tap "My trips" to force a fresh copy: clears offline caches and reloads.
      Never active on the live site; remove before merging to main unless asked. */
   (function(){ var dbg=/\/beta\//.test(location.pathname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname); var h=document.querySelector('.hometop h1'); if(!dbg||!h) return;
