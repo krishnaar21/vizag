@@ -3501,6 +3501,30 @@ html:not(.pv-card) .pcards .pimg,html:not(.pv-card) .pcards .pimg::after{border-
 .setgrp .swatch{border-radius:calc(var(--rc) - 14px)!important}
 .plancta{margin-top:36px!important}
 
+/* ===== v98 ===== */
+/* 1 · softer illustration tones */
+.hvill .hvk{fill-opacity:.42!important}
+.hvill .hvc{fill-opacity:.22!important}
+.hvill .hvm{fill-opacity:.38!important}
+.hvill .hvs{fill:#F8D66D!important;fill-opacity:.85!important}
+/* 2 · nav slides away while scrolling */
+.nav{transition:transform .28s cubic-bezier(.3,.7,.3,1),opacity .2s!important}
+@media (max-width:1023px){ html.navhide .nav{transform:translateY(calc(100% + 24px))!important;opacity:0} }
+html.navhide .chatbub{transition:opacity .2s} 
+/* 3 · divider: more room above, smaller waves; less empty space at the bottom of Home */
+.plancta{margin-top:45px!important;margin-bottom:6px!important;padding-bottom:0!important}
+.plancta::before{height:8px!important;background-size:16px 8px!important;margin-bottom:32px!important}
+#v-home{padding-bottom:0!important}
+/* 4 · sign-in button on the profile sheet */
+.psign{flex:none;align-self:center;appearance:none;border:0;background:var(--ink);color:var(--surface);font:inherit;font-size:.86rem;font-weight:600;padding:9px 16px;border-radius:999px;cursor:pointer}
+/* 5 · header: smaller bell, 18px to the hairline */
+.pghead,.hometop,#v-home > .hometop{padding-bottom:18px!important}
+.pghead.pgflat{padding-bottom:8px!important}
+#v-home > .hometop .hbell{width:38px!important;height:38px!important;margin-block:-6px!important}
+#v-home > .hometop .hbell svg{width:20px!important;height:20px!important}
+/* 6 · iOS-style smooth (squircle) corners where the browser supports it */
+.card,.summary,.stop,.setgrp,.acempty,.pcard1,.pcards,.pcard,.alert,.btn,.hgo,.sheet,.chatbox,.seg-days,.chip,.pimg,.tile,.swatch,.gchip,.csug,.plancta .btn,.pstats > div,.mprow,.dstrip,.chatbar input{corner-shape:superellipse(1.6)}
+
 </style>
 </head>
 <body>
@@ -4354,6 +4378,7 @@ html:not(.pv-card) .pcards .pimg,html:not(.pv-card) .pcards .pimg::after{border-
   apply();
 
   var syncBtn=$('sync-btn'), notes=$$('.sync-note'), mode='local', fbUser=null, fbAuth=null, cfgMissing=false;
+  window.__signedIn=function(){ return !!fbUser; };
   var snTitles=$$('.sn-title'), snIcons=$$('.sn-ico');
   function greeting(){
     var h=new Date().getHours();
@@ -5667,16 +5692,16 @@ html:not(.pv-card) .pcards .pimg,html:not(.pv-card) .pcards .pimg::after{border-
     function idLine(){ return prof.user?'@'+prof.user:''; }
     window.__idLine=idLine;
     function drawProfile(){
-      var box=$('prof-body'); if(!box) return; var S=stats(), init=(prof.name||'').trim().charAt(0).toUpperCase();
-      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav'+(avatarHTML()?' pic':(init?'':' face'))+'">'+(avatarHTML()||(init?esc(init):(window.__FACE||ic('user'))))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div><button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button></div>'+
+      var box=$('prof-body'); if(!box) return; var signed=!!(window.__signedIn&&window.__signedIn()), S=stats(); if(!signed){ S={all:S.all,avg:0,pts:0,lvl:1,next:30,tot:{trips:0,days:0,places:0,states:0,km:0}}; } var init=(prof.name||'').trim().charAt(0).toUpperCase();
+      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav'+(avatarHTML()?' pic':(init?'':' face'))+'">'+(avatarHTML()||(init?esc(init):(window.__FACE||ic('user'))))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div>'+(signed?'<button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button>':'<button type="button" class="psign" id="prof-signin">Sign in</button>')+'</div>'+
         '<div id="prof-contacts"></div>'+
         '<div class="plevel"><div><div class="plv">'+LEVELS[S.lvl-1]+'</div><div class="pstars">'+stars(S.lvl)+'</div></div><div class="ppts"><b>'+S.pts+'</b><small>travel points'+(S.next?' · '+S.next+' to '+LEVELS[S.lvl]:'')+'</small></div></div></div>'+
         '<p class="pptsnote">Points: 1 per place, 2 per day, 5 per state.</p>'+
         '<div class="pstats">'+[['Trips',S.tot.trips],['Days',S.tot.days],['Places',S.tot.places],['States',S.tot.states]].map(function(x){ return '<div><b>'+x[1]+'</b><small>'+x[0]+'</small></div>'; }).join('')+'</div>'+
 
 
-        '<p class="pnote">Your details are saved only on this device. There\'s no account server yet, so nothing is uploaded; signing in will sync them across your phones once that\'s available.</p>';
-      $('prof-edit').onclick=function(e){ e.stopPropagation(); openSoc(); };
+        (signed?'<p class="pnote">Your details are saved to your account and stay the same on all of your devices.</p>':'<p class="pnote">Sign in to start earning travel points. Your trips, days and places count once you\'re signed in.</p>');
+      if($('prof-edit')) $('prof-edit').onclick=function(e){ e.stopPropagation(); openSoc(); }; if($('prof-signin')) $('prof-signin').onclick=function(e){ e.stopPropagation(); ps.hidden=true; $('scrim').hidden=true; var b=$('acct-signin'); if(b) b.click(); };
       var pv=box.querySelector('.pav'); if(pv){ pv.setAttribute('role','button'); pv.setAttribute('aria-label','Change profile picture'); pv.onclick=function(e){ e.stopPropagation(); window.__avatarSheet(); }; }
       drawContacts();
       if(window.__paintUses) window.__paintUses(box);
@@ -5812,6 +5837,10 @@ html:not(.pv-card) .pcards .pimg,html:not(.pv-card) .pcards .pimg::after{border-
 /* home card illustrations: cross-fade every 2 s */
 (function(){ var s=document.getElementById('hvstage'); if(!s) return; var k=s.children, i=0; if(k.length<2) return;
   setInterval(function(){ if(document.hidden) return; k[i].classList.remove('on'); i=(i+1)%k.length; k[i].classList.add('on'); },2000); })();
+
+/* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
+(function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
+  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },2000); },{passive:true}); })();
 
 </script>
 
