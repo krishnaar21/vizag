@@ -3551,6 +3551,16 @@ html.navhide .chatbub{transition:opacity .2s}
 #logout .lohead .s{font-size:.9rem;color:var(--muted);line-height:1.45;max-width:300px}
 .plancta{margin-bottom:-14px!important}
 
+/* ===== v101 ===== */
+/* every tab strip and date strip is the same height */
+.seg-days.dstrip,.seg-days.hseg,.seg-days.seg-5,.seg-days.seg-3,#v-days .seg-days.dstrip{height:50px!important;box-sizing:border-box!important;align-items:stretch!important}
+.seg-days.seg-5 > .chip,.seg-days.seg-3 > .chip{height:auto!important;padding-top:0!important;padding-bottom:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+/* log-out row: more room and slightly larger text */
+.acfoot{padding-top:14px!important;padding-bottom:14px!important}
+/* log-out text 10% larger */
+html #settings .acct .acfoot .abtn,html .acfoot .abtn{font-size:17px!important}
+html #lo-go,html #lo-cancel{font-size:19.8px!important}
+
 </style>
 </head>
 <body>
@@ -4430,7 +4440,7 @@ html.navhide .chatbub{transition:opacity .2s}
     if(ac&&ae){ ae.hidden=inn||!canSign; ac.hidden=!(inn||!canSign); }
     var lv=$('acct-lvl'); if(lv&&window.__profSummary) lv.textContent=pn.line||'Add a username';
     if(!inn&&!canSign&&lastEl) lastEl.textContent='Saved on this phone';
-    if(fbUser){ var lt=$('lo-title'), la=$('lo-av'); if(lt) lt.textContent='Log out of '+nm.textContent+'?'; if(la) la.textContent=av.textContent; }
+    
   }
   function status(label,note,on,title,icon){
     syncBtn.textContent=label; syncBtn.setAttribute('aria-pressed',on?'true':'false'); renderAcct();
@@ -5873,7 +5883,7 @@ html.navhide .chatbub{transition:opacity .2s}
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
 (function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
-  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },800); },{passive:true}); })();
+  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },600); },{passive:true}); })();
 
 </script>
 
