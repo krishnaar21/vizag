@@ -3813,6 +3813,11 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
 .qslider .qrange::-webkit-slider-thumb{width:30px!important;height:22px!important;margin-top:6px!important}
 .qslider .qrange::-moz-range-thumb{width:30px!important;height:22px!important}
 .qtrack i{width:14px!important;height:14px!important;margin:-3px 0 0 -7px!important}
+/* rolling weather label */
+.wxrot{display:inline-flex;vertical-align:bottom}
+.wxwin{display:inline-block;height:1.35em;line-height:1.35em;overflow:hidden;vertical-align:bottom;-webkit-mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(transparent,#000 22%,#000 78%,transparent)}
+.wxreel{display:flex;flex-direction:column;will-change:transform}
+.wxreel > span{display:block;height:1.35em;white-space:nowrap}
 
 </style>
 </head>
@@ -6207,6 +6212,18 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
   document.getElementById('dev-refresh').onclick=function(){ var j=[]; try{ if(navigator.serviceWorker) j.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(x){ return x.unregister(); })); })); if(window.caches) j.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); }catch(e){} Promise.all(j).catch(function(){}).then(function(){ location.replace(location.href.split('#')[0].replace(/[?&]_r=\d+/,'')+(location.search?'&':'?')+'_r='+Date.now()); }); };
   var armed=0, rb=document.getElementById('dev-reset'); rb.onclick=function(){ if(Date.now()-armed<3000){ try{ Object.keys(localStorage).filter(function(k){ return /^vizag/.test(k); }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} location.reload(); return; } armed=Date.now(); rb.textContent='Tap again'; setTimeout(function(){ rb.textContent='Reset'; },3000); };
   paint(); setTimeout(paint,300); })();
+/* weather text with several parts ("Misty dawn, mild day"): one slot that flips through each part every second */
+(function(){ var els=document.querySelectorAll('.wxtext'), rot=[];
+  Array.prototype.forEach.call(els,function(el){ var parts=el.textContent.split(/\s*,\s*/).filter(Boolean); if(parts.length<2) return;
+    parts=parts.map(function(p){ return p.charAt(0).toUpperCase()+p.slice(1); });
+    el.setAttribute('aria-label',parts.join(', ')); el.classList.add('wxrot');
+    el.innerHTML='<span class="wxwin" aria-hidden="true"><span class="wxreel">'+parts.concat([parts[0]]).map(function(p){ return '<span>'+p.replace(/</g,'&lt;')+'</span>'; }).join('')+'</span></span>';
+    var reel=el.querySelector('.wxreel'), w=0; reel.querySelectorAll('span').forEach(function(s){ w=Math.max(w,s.getBoundingClientRect().width); }); if(w) el.querySelector('.wxwin').style.width=Math.ceil(w)+'px';
+    rot.push({reel:reel,n:parts.length,i:0}); });
+  if(!rot.length) return;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setInterval(function(){ if(document.hidden) return; rot.forEach(function(r){ if(!r.reel.offsetParent) return; r.i++; r.reel.style.transition=reduce?'none':'transform .38s cubic-bezier(.3,.7,.2,1)'; r.reel.style.transform='translateY(-'+(r.i*100/(r.n+1))+'%)';
+    if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },1000); })();
 
 </script>
 
