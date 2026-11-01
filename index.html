@@ -3613,6 +3613,14 @@ html:root:root:not(.pv-card) .pcards .pcard + .pcard{background-size:4px 2px!imp
 :root:root body .vtog > button{border-radius:8px!important}
 :root:root body #v-days .seg-days.dstrip,:root:root body .ctv .seg-days{border-radius:var(--stripR)!important}
 
+/* ===== v107 ===== */
+/* header: 8% tighter, title row centred between equal top and bottom space */
+.pghead,.hometop,#v-home > .hometop{padding-top:16.5px!important;padding-bottom:16.5px!important;align-items:center!important}
+.pghead.pgflat{padding-top:16.5px!important;padding-bottom:8px!important}
+/* every full-size button gets the same soft 16px corners as "Plan a new trip" */
+:root:root body .btn,:root:root body .hgo,:root:root body .btn.full,:root:root body .pfoot .btn,:root:root body #pl-next,:root:root body .gmdone,:root:root body .psign:not(.x){border-radius:16px!important}
+:root:root body .psign{border-radius:999px!important}
+
 </style>
 </head>
 <body>
