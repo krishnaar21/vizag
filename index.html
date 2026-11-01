@@ -3605,6 +3605,14 @@ html:root:root:not(.pv-card) .pcards .pcard + .pcard{border-top:0!important;back
 #settings .acct,.acct,.acempty,.pcard1{border-radius:var(--rc)!important}
 html:root:root:not(.pv-card) .pcards .pcard + .pcard{background-size:4px 2px!important;background-image:radial-gradient(circle,color-mix(in srgb,var(--ink) 30%,transparent) .7px,transparent 1px)!important}
 
+/* ===== v106: perfectly nested corners in every strip/toggle (inner = outer − inset) ===== */
+:root{--stripR:20px;--stripIn:6px}
+:root:root body .seg-days,:root:root body .seg-days.dstrip,:root:root body .seg-days.hseg,:root:root body .seg-days.seg-5,:root:root body .seg-days.seg-3{border-radius:var(--stripR)!important}
+:root:root body .seg-days > .chip,:root:root body .seg-days.dstrip > .chip,:root:root body #v-days .seg-days.dstrip > .chip{border-radius:calc(var(--stripR) - var(--stripIn))!important}
+:root:root body .vtog{border-radius:12px!important}
+:root:root body .vtog > button{border-radius:8px!important}
+:root:root body #v-days .seg-days.dstrip,:root:root body .ctv .seg-days{border-radius:var(--stripR)!important}
+
 </style>
 </head>
 <body>
