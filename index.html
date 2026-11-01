@@ -3581,6 +3581,12 @@ html body .seg-days > .chip[aria-pressed="true"],html body .seg-days.dstrip > .c
 :root:root:root body .seg-days > .chip[aria-pressed="true"] *{color:var(--ink)!important}
 html #v-days .seg-days.dstrip > .chip{border-radius:13px!important}
 
+/* ===== v103 ===== */
+/* step tabs: no numbers */
+.pdots .pdot > b{display:none!important}
+/* 15% less rounding on cards (inner corners follow automatically) */
+:root{--rc:24px}
+
 </style>
 </head>
 <body>
@@ -5156,7 +5162,7 @@ html #v-days .seg-days.dstrip > .chip{border-radius:13px!important}
       $('pl-places').innerHTML=groupCards(list,STATES[st]||[],function(p,i){ var k=list.indexOf(p); var on=sel?sel.indexOf(p[0])>=0:k<6; return placeCard(p,on,i,fll); });
       loadImgs($('pl-places')); countSel(); if($('pl-q')) filterPlaces();
     }
-    function countSel(){ $$('#pl-places .pcard').forEach(function(c){ var cb=c.querySelector('input'); c.classList.toggle('on',cb.checked); }); $$('#pl-side [data-sv]').forEach(function(x){ var c=Array.prototype.filter.call($$('#pl-places input'),function(y){ return y.value===x.dataset.sv; })[0]; x.checked=!!(c&&c.checked); }); var n=$$('#pl-places input:checked').length; $('pl-count').textContent=n+' selected'; $('pl-go').disabled=!n; hints(); }
+    function countSel(){ var _bx=$$('#pl-places input'), _all=_bx.length&&_bx.every(function(b){ return b.checked; }); if($('pl-all')) $('pl-all').textContent=_all?'Unselect all':'Select all'; $$('#pl-places .pcard').forEach(function(c){ var cb=c.querySelector('input'); c.classList.toggle('on',cb.checked); }); $$('#pl-side [data-sv]').forEach(function(x){ var c=Array.prototype.filter.call($$('#pl-places input'),function(y){ return y.value===x.dataset.sv; })[0]; x.checked=!!(c&&c.checked); }); var n=$$('#pl-places input:checked').length; $('pl-count').textContent=n+' selected'; $('pl-go').disabled=!n; hints(); }
 
     /* ---------- Place cards (photos from Wikipedia when online) ---------- */
     var WC={}; try{ WC=JSON.parse(get('vizag-wimg')||'{}')||{}; }catch(e){}
