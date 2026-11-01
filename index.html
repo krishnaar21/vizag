@@ -3561,6 +3561,16 @@ html.navhide .chatbub{transition:opacity .2s}
 html #settings .acct .acfoot .abtn,html .acfoot .abtn{font-size:17px!important}
 html #lo-go,html #lo-cancel{font-size:19.8px!important}
 
+/* ===== v102 ===== */
+/* 1 · selected tab/date chip: soft lighter shade of the theme, like the navy look */
+html .seg-days > .chip[aria-pressed="true"],html .seg-days.dstrip > .chip[aria-pressed="true"],html #v-days .seg-days.dstrip > .chip[aria-pressed="true"],html .ctv .seg-days.dstrip > .chip[aria-pressed="true"],html .hseg.dstrip > .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 9%,var(--surface))!important;color:var(--ink)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 14%,transparent),0 2px 8px rgba(0,0,0,.08)!important}
+html .seg-days.dstrip > .chip[aria-pressed="true"] b,html .seg-days.dstrip > .chip[aria-pressed="true"] span,html .seg-days.dstrip > .chip[aria-pressed="true"] small{color:var(--ink)!important}
+:root[data-theme="dark"] .seg-days > .chip[aria-pressed="true"],:root[data-skin] .seg-days > .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 16%,transparent),0 4px 14px rgba(0,0,0,.35)!important}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .seg-days > .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 16%,transparent),0 4px 14px rgba(0,0,0,.35)!important} }
+/* 2 · log-out row: equal space above and below, balanced text */
+.acfoot{padding-top:14px!important;padding-bottom:14px!important;margin-bottom:-10px!important;align-items:center!important}
+.acfoot .as{font-size:15px!important}
+
 </style>
 </head>
 <body>
