@@ -3525,6 +3525,22 @@ html.navhide .chatbub{transition:opacity .2s}
 /* 6 · iOS-style smooth (squircle) corners where the browser supports it */
 .card,.summary,.stop,.setgrp,.acempty,.pcard1,.pcards,.pcard,.alert,.btn,.hgo,.sheet,.chatbox,.seg-days,.chip,.pimg,.tile,.swatch,.gchip,.csug,.plancta .btn,.pstats > div,.mprow,.dstrip,.chatbar input{corner-shape:superellipse(1.6)}
 
+/* ===== v99 ===== */
+/* 1 · one title size for every page and full-screen view; one icon size for back/close */
+.hometop h1,.pghead h2,#v-days > .pghead h2,.planner .phead h3,#pl-title{font-size:26px!important;line-height:1.15!important;letter-spacing:-.02em!important}
+.hback svg,.shclose svg,.hback .ph,.shclose .ph{width:20px!important;height:20px!important}
+.hback,.shclose{width:40px!important;height:40px!important}
+/* 2 · divider spans the card width; 35% more room under it */
+.plancta{padding-left:0!important;padding-right:0!important}
+.plancta::before{max-width:none!important;width:100%!important;margin-bottom:43px!important}
+.plancta > :not(.hvstage)::before{content:none}
+.plancta h3,.plancta p{padding-inline:22px}
+/* 3 · a little air between nav items */
+@media (max-width:1023px){ .nav ul{gap:10px!important;max-width:440px!important;padding-inline:8px!important} }
+/* 5 · rounder corners so buttons inside cards don't look sharp (still inner = outer − gap) */
+:root{--rc:28px}
+.plancta h3,.plancta p{padding-inline:0!important}.plancta p{max-width:320px!important}
+
 </style>
 </head>
 <body>
@@ -4611,7 +4627,7 @@ html.navhide .chatbub{transition:opacity .2s}
       status('Log in','Log in from the settings button to share ticks between your phones.',false);
       var firstAuth=true;
       fbAuth.onAuthStateChanged(function(u){
-        fbUser=u; if(unsub){ unsub(); unsub=null; }
+        fbUser=u; if(unsub){ unsub(); unsub=null; } if(u&&window.__profFromAccount) window.__profFromAccount(u);
         if(!u){
           push=function(){}; status('Log in','Log in from the settings button to share ticks between your phones.',false);
           if(firstAuth && get('vizag-skip-login2')!=='1') openLogin();
@@ -5630,6 +5646,13 @@ html.navhide .chatbub{transition:opacity .2s}
     var prof={name:'',rating:{}}; try{ prof=Object.assign(prof,JSON.parse(get('vizag-profile')||'{}')); }catch(e){}
     function saveP(){ set('vizag-places',JSON.stringify(places)); }
     function saveF(){ set('vizag-profile',JSON.stringify(prof)); }
+    /* after sign-in: fill name, username and photo from the account so they're never blank */
+    window.__profFromAccount=function(u){ if(!u) return; var em=(u.email||'').split('@')[0]||'', ch=false;
+      var nm=(u.displayName||'').trim()||em.replace(/[._-]+/g,' ').replace(/\b\w/g,function(c){ return c.toUpperCase(); }).trim()||'Traveller';
+      var un=em.toLowerCase().replace(/[^a-z0-9_.]/g,'')||nm.toLowerCase().replace(/[^a-z0-9]/g,'')||('traveller'+String(u.uid||'').slice(0,4));
+      if(!(prof.name||'').trim()){ prof.name=nm; ch=true; } if(!(prof.user||'').trim()){ prof.user=un; ch=true; }
+      if(!prof.photo&&u.photoURL){ prof.photo=u.photoURL; ch=true; } if(!prof.email&&u.email){ prof.email=u.email; ch=true; }
+      if(ch){ saveF(); if(window.__renderAcct) window.__renderAcct(); var pp=$('profile'); if(pp&&!pp.hidden) drawProfile(); } };
     /* "Current" = where you live now; "Home" = your native town (renamed from Home / Native town) */
     if(!get('vizag-places-v2')){ places.forEach(function(p){ if(p.kind==='Home'){ p.kind='Current'; if(p.label==='Home') p.label='Current'; } else if(p.kind==='Native town'){ p.kind='Home'; if(p.label==='Native town') p.label='Home'; } }); saveP(); set('vizag-places-v2','1'); }
     var ICONS={Current:'📍',Office:'🏢',Home:'🏠',Other:'📌'};
@@ -5840,7 +5863,7 @@ html.navhide .chatbub{transition:opacity .2s}
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
 (function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
-  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },2000); },{passive:true}); })();
+  window.addEventListener('scroll',function(){ var y=window.scrollY; if(Math.abs(y-lastY)<4) return; lastY=y; if(y>40) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); },1000); },{passive:true}); })();
 
 </script>
 
