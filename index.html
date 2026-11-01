@@ -6223,7 +6223,7 @@ html.notrips[data-view] main{padding-bottom:calc(var(--nav-h,54px) + max(env(saf
   if(!rot.length) return;
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   setInterval(function(){ if(document.hidden) return; rot.forEach(function(r){ if(!r.reel.offsetParent) return; r.i++; r.reel.style.transition=reduce?'none':'transform .38s cubic-bezier(.3,.7,.2,1)'; r.reel.style.transform='translateY(-'+(r.i*100/(r.n+1))+'%)';
-    if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },1000); })();
+    if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },3000); })();
 
 </script>
 
