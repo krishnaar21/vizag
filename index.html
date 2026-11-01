@@ -3001,6 +3001,32 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
 .psfav.on .pci + .pci{display:inline-block}
 .psfav.on{color:#E0245E!important}
 
+/* ===== v73 ===== */
+/* 1. no browser default (two-tone "outset") border on any button */
+:where(button){border-width:0;border-style:solid}
+.setbtn,.abtn,.dbtn{border:0!important}
+/* 2. travel face avatar */
+.tface{width:30px!important;height:30px!important;color:var(--ink)}
+.av .tface{width:30px;height:30px}
+.pav.face{background:color-mix(in srgb,var(--brand) 12%,var(--surface))!important}
+.pav.face .tface{width:32px!important;height:32px!important;color:var(--brand)}
+#settings-profile .acct .av:not(.has),#settings .acct .av:not(.has){background:color-mix(in srgb,var(--brand) 12%,var(--surface))!important;color:var(--brand)!important}
+#settings-profile .acct .av:not(.has) .tface{color:var(--brand)}
+/* 3. Saved > Recent trips: stars + review inline */
+.rtrow{align-items:center!important}
+.rtrow .mpt{flex:1;min-width:0}
+.rvq{display:block;margin-top:3px;font-style:italic;color:var(--ink)!important;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rtact{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.rstars.sm button{font-size:1rem!important;padding:0 1px!important;line-height:1}
+.rvbtn{appearance:none;border:0;background:none;padding:2px 0;font:inherit;font-size:.76rem;font-weight:600;color:var(--ink);cursor:pointer}
+.rvcard{display:block!important}
+.rvtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rvta{width:100%;margin-top:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:.88rem;line-height:1.4;resize:vertical;min-height:58px}
+.rvta:focus{outline:none;border-color:color-mix(in srgb,var(--ink) 40%,var(--line))}
+#more-lists #recent-list > .mprow:nth-child(2){border-bottom:0!important}
+.av .tface,#settings-profile .acct .av .tface,#settings .acct .av .tface{width:40px!important;height:40px!important}
+.pav.face .tface{width:42px!important;height:42px!important}
+
 </style>
 </head>
 <body>
@@ -3204,7 +3230,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     </div>
     <div class="acstats">
       <div class="acgrid" id="acct-grid"></div>
-      <div class="acfoot"><span class="as" id="last-sync">Not synced yet</span><button type="button" class="abtn" id="acct-btn">Log out</button><button type="button" class="acbtn" id="acct-hist"><svg class="ph" aria-hidden="true"><use data-p="history" href="#i-hugeicons-history"/></svg>Recent trips</button></div>
+      <div class="acfoot"><span class="as" id="last-sync">Not synced yet</span><button type="button" class="abtn" id="acct-btn">Log out</button></div>
     </div>
     <span id="prof-open" hidden></span>
     <button type="button" id="sync-btn" hidden aria-pressed="false">On this phone</button>
@@ -3287,7 +3313,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
   </div>
 </div>
 <div class="sheet lsheet psheet" id="rate-sheet" hidden role="dialog" aria-label="Rate your trips">
-  <div class="shtitle"><span>Rate your trips</span><button type="button" class="shclose" id="rate-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="shtitle"><span>Rate &amp; review trips</span><button type="button" class="shclose" id="rate-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
   <div id="rate-body"></div>
 </div>
 <div class="sheet lsheet psheet" id="grp-sheet" hidden role="dialog" aria-label="Travel group">
@@ -3848,9 +3874,10 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     var h=new Date().getHours();
     return h>=5&&h<12?'Good morning':h>=12&&h<17?'Good afternoon':h>=17&&h<21?'Good evening':'Good night';
   }
+  window.__FACE="<svg class=\"tface\" viewBox=\"0 0 48 48\" aria-hidden=\"true\"><path d=\"M8 19.5c0-1.6 7.2-3 16-3s16 1.4 16 3-7.2 2.6-16 2.6S8 21.1 8 19.5z\" fill=\"currentColor\" opacity=\".9\"/><path d=\"M15.5 17.2c.6-5.6 4.1-9.2 8.5-9.2s7.9 3.6 8.5 9.2\" fill=\"currentColor\" opacity=\".9\"/><path d=\"M15 15.2h18\" stroke=\"var(--surface)\" stroke-width=\"1.6\" stroke-linecap=\"round\"/><circle cx=\"24\" cy=\"29\" r=\"10.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/><rect x=\"16.2\" y=\"25.3\" width=\"6.4\" height=\"4.6\" rx=\"2.2\" fill=\"currentColor\"/><rect x=\"25.4\" y=\"25.3\" width=\"6.4\" height=\"4.6\" rx=\"2.2\" fill=\"currentColor\"/><path d=\"M22.6 27.2h2.8\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M20.5 33.6c1 1 2.2 1.5 3.5 1.5s2.5-.5 3.5-1.5\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"/></svg>";
   function renderAcct(){
     var nm=$('acct-name'), av=$('acct-av'), btn=$('acct-btn'); if(!nm) return;
-    var PERSON='<svg viewBox="0 0 24 24"><circle cx="12" cy="8.2" r="4.2"/><path d="M3.8 21a8.2 8.2 0 0 1 16.4 0z"/></svg>';
+    var PERSON=window.__FACE;
     var inn = mode==='claude' || !!fbUser;
     var pn=window.__profName?window.__profName():{name:'',user:''};
     if(pn.name){ nm.textContent=pn.name; av.textContent=pn.name.charAt(0).toUpperCase(); }
@@ -3986,7 +4013,7 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     ml.addEventListener('click',function(e){ var b=e.target.closest('.seeall'); if(!b) return; e.stopPropagation(); if(window.__listSheet) window.__listSheet(b.dataset.ttl,b.dataset.ico,b.dataset.see); }); })();
   (function(){ var ac=$('acct-top'); function op(e){ if(e.target.closest('#acct-edit')) return; var p=$('prof-open'); if(p) p.click(); }
     $('acct-edit').addEventListener('click',function(e){ e.stopPropagation(); if(window.__editProfile) window.__editProfile(); });
-    $('acct-hist').addEventListener('click',function(e){ e.stopPropagation(); if(window.__recentTrips) window.__recentTrips(); });
+
     ac.addEventListener('click',op); ac.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); op(e); } });
     $('acct-signin').addEventListener('click',function(e){ e.stopPropagation(); openLogin(); });
     $('acct-prof').addEventListener('click',function(e){ e.stopPropagation(); $('prof-open').click(); }); })();
@@ -5050,17 +5077,16 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     window.__idLine=idLine;
     function drawProfile(){
       var box=$('prof-body'); if(!box) return; var S=stats(), init=(prof.name||'').trim().charAt(0).toUpperCase();
-      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav">'+(init?esc(init):ic('user'))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div><button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button></div>'+
+      box.innerHTML='<div class="pcard1"><div class="phero pidcard"><span class="pav'+(init?'':' face')+'">'+(init?esc(init):(window.__FACE||ic('user')))+'</span><div class="pid"><b class="pnm">'+esc(prof.name||'Your name')+'</b><small>'+esc(idLine()||'Add a username and socials')+'</small></div><button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">'+ic('edit')+'</button></div>'+
         '<div id="prof-contacts"></div>'+
         '<div class="plevel"><div><div class="plv">'+LEVELS[S.lvl-1]+'</div><div class="pstars">'+stars(S.lvl)+'</div></div><div class="ppts"><b>'+S.pts+'</b><small>travel points'+(S.next?' · '+S.next+' to '+LEVELS[S.lvl]:'')+'</small></div></div></div>'+
         '<p class="pptsnote">Points: 1 per place, 2 per day, 5 per state.</p>'+
         '<div class="pstats">'+[['Trips',S.tot.trips],['Days',S.tot.days],['Places',S.tot.places],['States',S.tot.states]].map(function(x){ return '<div><b>'+x[1]+'</b><small>'+x[0]+'</small></div>'; }).join('')+'</div>'+
-        '<div class="pgl ptitle">Rate your trips<span class="pavg" id="prof-avg">'+(S.avg?' · average '+S.avg.toFixed(1)+' ★':'')+'</span></div>'+
-        '<div class="prates">'+S.all.map(function(t){ var r=prof.rating[t.id]||0; return '<div class="prate"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+t.days+' days · '+t.places+' places</small></div><div class="rstars" data-rt="'+esc(t.id)+'">'+[1,2,3,4,5].map(function(i){ return '<button type="button" data-r="'+i+'" class="'+(i<=r?'on':'')+'" aria-label="'+i+' star'+(i>1?'s':'')+'">★</button>'; }).join('')+'</div></div>'; }).join('')+'</div>'+
+
+
         '<p class="pnote">Your details are saved only on this device. There\'s no account server yet, so nothing is uploaded; signing in will sync them across your phones once that\'s available.</p>';
       $('prof-edit').onclick=function(e){ e.stopPropagation(); openSoc(); };
       drawContacts();
-      box.querySelectorAll('[data-rt]').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(){ var r=+b.dataset.r; prof.rating[g.dataset.rt]=(prof.rating[g.dataset.rt]===r&&r===1)?0:r; saveF(); var v=prof.rating[g.dataset.rt]||0; g.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',+x.dataset.r<=v); }); var S2=stats(); $('prof-avg').textContent=S2.avg?' · average '+S2.avg.toFixed(1)+' ★':''; }; }); });
       if(window.__paintUses) window.__paintUses(box);
     }
     var CF=[['email','Email','email','you@example.com','mail'],['instagram','Instagram','text','@username','insta'],['x','X','text','@username','xlogo'],['facebook','Facebook','text','Profile link or username','fb']];
@@ -5099,17 +5125,22 @@ html body .seg-days.dstrip.dstrip.more.lmore{-webkit-mask-image:linear-gradient(
     document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeProf(); });
     window.__acctGrid=function(){ var S=stats(); return [['Level',LEVELS[S.lvl-1]],['Points',String(S.pts)],['Trips',String(S.tot.trips)],['States',String(S.tot.states)]].map(function(x){ return '<div><b>'+esc(x[1])+'</b><small>'+x[0]+'</small></div>'; }).join(''); };
     var rs=$('rate-sheet');
-    function rateRows(){ var S=stats(), t0={vizag:'2026-12-05'}; var tr=[]; try{ tr=JSON.parse(get('vizag-trips')||'[]')||[]; }catch(e){} tr.forEach(function(t){ t0[t.id]=t.start||''; });
-      var all=S.all.slice().sort(function(a,b){ return (t0[b.id]||'').localeCompare(t0[a.id]||''); });
-      $('rate-body').innerHTML='<div class="prates">'+all.map(function(t){ var r=prof.rating[t.id]||0, d=t0[t.id]?new Date(t0[t.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; return '<div class="prate"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(d?d+' · ':'')+t.days+' days · '+t.places+' places</small></div><div class="rstars" data-rt="'+esc(t.id)+'">'+[1,2,3,4,5].map(function(i){ return '<button type="button" data-r="'+i+'" class="'+(i<=r?'on':'')+'" aria-label="'+i+' star'+(i>1?'s':'')+'">★</button>'; }).join('')+'</div></div>'; }).join('')+'</div>'+
+    function rateRows(focus){ var all=tripList(), S=stats();
+      $('rate-body').innerHTML='<div class="prates">'+all.map(function(t){ return '<div class="prate rvcard"><div class="rvtop"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days · '+t.places+' places</small></div>'+starBtns(t.id,prof.rating[t.id]||0)+'</div><textarea class="rvta" data-rvt="'+esc(t.id)+'" rows="2" maxlength="400" placeholder="How was it? Highlights, tips for next time…">'+esc(prof.review[t.id]||'')+'</textarea></div>'; }).join('')+'</div>'+
         '<p class="mcpnote" id="rate-avg">'+(S.avg?'Average '+S.avg.toFixed(1)+' ★ across rated trips':'No ratings yet')+'</p>';
-      $('rate-body').querySelectorAll('[data-rt]').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(){ prof.rating[g.dataset.rt]=+b.dataset.r; saveF(); var v=prof.rating[g.dataset.rt]; g.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',+x.dataset.r<=v); }); var S2=stats(); $('rate-avg').textContent=S2.avg?'Average '+S2.avg.toFixed(1)+' ★ across rated trips':'No ratings yet'; }; }); }); }
-    function drawRecent(){ var box=$('recent-list'); if(!box) return; var S=stats(), t0={vizag:'2026-12-05'}, tr=[]; try{ tr=JSON.parse(get('vizag-trips')||'[]')||[]; }catch(e){} tr.forEach(function(t){ t0[t.id]=t.start||''; });
-      var all=S.all.slice().sort(function(a,b){ return (t0[b.id]||'').localeCompare(t0[a.id]||''); });
-      box.innerHTML=all.map(function(t){ var r=prof.rating[t.id]||0, d=t0[t.id]?new Date(t0[t.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; return '<div class="mprow grow" data-rto="1" role="button" tabindex="0"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(d?d+' · ':'')+t.days+' days</small></div><span class="rmini">'+(r?'★ '+r+'.0':'Rate')+'</span></div>'; }).join('')||'<p class="mpempty">Trips you take show up here to rate.</p>';
-      box.querySelectorAll('[data-rto]').forEach(function(r){ r.onclick=function(e){ e.stopPropagation(); window.__recentTrips(); }; }); }
+      wireStars($('rate-body'),function(){ var S2=stats(); $('rate-avg').textContent=S2.avg?'Average '+S2.avg.toFixed(1)+' ★ across rated trips':'No ratings yet'; });
+      $$('#rate-body [data-rvt]').forEach(function(ta){ ta.addEventListener('input',function(){ var v=ta.value.trim(); if(v) prof.review[ta.dataset.rvt]=v; else delete prof.review[ta.dataset.rvt]; saveF(); }); });
+      if(focus){ var f=document.querySelector('#rate-body [data-rvt="'+focus.replace(/"/g,'')+'"]'); if(f) setTimeout(function(){ f.scrollIntoView({block:'center'}); f.focus(); },120); } }
+    prof.review=prof.review||{};
+    function tripList(){ var S=stats(), t0={vizag:'2026-12-05'}, tr=[]; try{ tr=JSON.parse(get('vizag-trips')||'[]')||[]; }catch(e){} tr.forEach(function(t){ t0[t.id]=t.start||''; });
+      return S.all.slice().sort(function(a,b){ return (t0[b.id]||'').localeCompare(t0[a.id]||''); }).map(function(t){ t.d=t0[t.id]?new Date(t0[t.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):''; return t; }); }
+    function starBtns(id,r){ return '<div class="rstars sm" data-rt="'+esc(id)+'">'+[1,2,3,4,5].map(function(i){ return '<button type="button" data-r="'+i+'" class="'+(i<=r?'on':'')+'" aria-label="'+i+' star'+(i>1?'s':'')+'">★</button>'; }).join('')+'</div>'; }
+    function wireStars(box,after){ box.querySelectorAll('[data-rt]').forEach(function(g){ g.querySelectorAll('button').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); prof.rating[g.dataset.rt]=+b.dataset.r; saveF(); var v=prof.rating[g.dataset.rt]; g.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',+x.dataset.r<=v); }); if(after) after(); }; }); }); }
+    function drawRecent(){ var box=$('recent-list'); if(!box) return; var all=tripList();
+      box.innerHTML=all.map(function(t){ var rv=prof.review[t.id]; return '<div class="mprow rtrow"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days</small>'+(rv?'<small class="rvq">“'+esc(rv)+'”</small>':'')+'</div><div class="rtact">'+starBtns(t.id,prof.rating[t.id]||0)+'<button type="button" class="rvbtn" data-rv="'+esc(t.id)+'">'+(rv?'Edit review':'Write a review')+'</button></div></div>'; }).join('')||'<p class="mpempty">Trips you take show up here to rate and review.</p>';
+      wireStars(box); box.querySelectorAll('[data-rv]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); window.__recentTrips(b.dataset.rv); }; }); }
     window.__drawRecent=drawRecent;
-    window.__recentTrips=function(){ rateRows(); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
+    window.__recentTrips=function(focus){ rateRows(focus); rs.hidden=false; $('scrim').hidden=false; rs.scrollTop=0; };
     function closeRate(){ rs.hidden=true; $('scrim').hidden=true; drawRecent(); }
     $('rate-close').addEventListener('click',closeRate); rs.addEventListener('click',function(e){ e.stopPropagation(); }); $('scrim').addEventListener('click',closeRate);
     window.__profName=function(){ return {name:(prof.name||'').trim(),user:prof.user||'',line:idLine()}; };
