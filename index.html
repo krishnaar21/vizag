@@ -2853,6 +2853,41 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
 .gmembers{gap:6px!important;margin-top:10px!important}
 .gmed{padding:0 12px 12px!important}
 
+/* ===== v67 ===== */
+/* 1. floating button a little bigger */
+.fab,.totop:not(.inplan){width:52px!important;height:52px!important}
+.fab .i-open,.fab .i-chat{width:24px!important;height:24px!important}
+@media (min-width:1024px){ .fab,.totop:not(.inplan){width:48px!important;height:48px!important} }
+/* 2. planner footer always on screen on phones */
+@media (max-width:899px){
+  .planner .pfoot{position:fixed!important;left:0;right:0;bottom:0;z-index:30;padding:14px var(--gr) calc(env(safe-area-inset-bottom,0px) + 14px) var(--gl)!important;margin:0!important}
+  .planner .pfoot::before{left:0;right:0}
+  .planner .pmain,.planner .pform.st0 .pmain{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 96px)!important}
+  .planner .pform{padding-bottom:0!important}
+}
+/* 5. "View summary" grids stay closed until tapped */
+.summary .sgrid[hidden],html body .summary .sgrid[hidden]{display:none!important}
+/* 7. taller date strips */
+html .seg-days.dstrip > .chip,html #v-days .seg-days.dstrip > .chip,html .ctv .seg-days.dstrip > .chip,html .hseg.dstrip > .chip{padding:11px 14px!important}
+html .seg-days.dstrip{padding:5px!important}
+/* 8. six tabs */
+.nav ul{grid-template-columns:repeat(6,1fr)!important}
+@media (max-width:1023px){ .nav button{font-size:.62rem!important} .nav button .icr,.nav button .icf{width:22px!important;height:22px!important} }
+#settings-profile{position:static!important;inset:auto!important;transform:none!important;max-height:none!important;width:auto!important;max-width:none!important;margin:0 var(--gr) 0 var(--gl)!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important;animation:none!important;z-index:auto!important;display:block!important}
+@media (min-width:672px) and (max-width:1023px){ #settings-profile{max-width:608px!important;margin-inline:auto!important} }
+@media (min-width:1024px){ #settings-profile{max-width:980px!important;margin-inline:auto!important} }
+#settings-profile .acct{display:block!important;padding:0!important;overflow:hidden;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
+#settings-profile .acct[hidden]{display:none!important}
+#settings-profile .acct .av{appearance:none;border:0;padding:0;cursor:pointer;flex:none;width:52px!important;height:52px!important;border-radius:16px!important;display:grid;place-items:center;font:inherit;font-size:1.2rem;font-weight:600;color:inherit}
+#settings-profile .acct .ai{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+#settings-profile .acct .an{font-size:1rem;font-weight:600;line-height:1.25}
+#settings-profile .acct .as,#settings-profile .acct .alv{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#settings-profile .acct .as{font-size:.74rem;color:var(--faint)}
+.mtcur{flex:none;font-size:.72rem;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--ink)}
+.gav{font-size:1rem}
+/* link sheet uses the place layout */
+.pshero[data-cat="food"]{--ph:20}
+
 </style>
 </head>
 <body>
@@ -3025,6 +3060,10 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
 <section id="v-more" class="view vmore" hidden>
   <div class="pghead"><h2>More</h2></div>
   <div id="more-slot"></div>
+</section>
+<section id="v-profile" class="view vmore" hidden>
+  <div class="pghead"><h2>Profile</h2></div>
+  <div id="prof-slot"></div>
   <div hidden><section class="sec danger" data-sec="danger"><h3 class="sech-wrap"><span class="sech static">Troubleshooting</span></h3><div class="secb"><div class="card dcard"><div class="drow"><div class="dt"><div class="t">Hard refresh</div><div class="s">Download the latest version of the plan. Your ticks and settings stay.</div></div><button type="button" class="dbtn" id="hard-refresh">Refresh</button></div><div class="drow"><div class="dt"><div class="t">Reset data</div><div class="s">Clear ticks, settings and saved alerts on this phone. If you're logged in, shared ticks come back from the cloud.</div></div><button type="button" class="dbtn red" id="reset-data">Reset</button></div></div></div></section></div>
   <div class="devnote">Dev note: Hard refresh and Reset data are hidden for now. Remove this note when they're brought back or deleted.</div>
 </section>
@@ -3064,12 +3103,17 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
     <button type="button" class="btn full" id="acct-signin">Sign in</button>
     <button type="button" class="acprof" id="acct-prof">View profile on this phone</button>
   </div>
+  <div id="more-lists">
+  <div class="setcap">My trips</div>
+  <div class="setgrp"><div class="mplist" id="mytrips-list"></div>
+    <div class="mpaddrow"><button type="button" class="setbtn" id="mytrips-new">＋ New trip</button></div></div>
   <div class="setcap">Travel groups</div>
   <div class="setgrp"><div class="mplist" id="grp-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="grp-new">＋ New group</button></div></div>
   <div class="setcap">My places</div>
   <div class="setgrp"><div class="mplist" id="mp-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="mp-new">＋ Add a place</button></div></div>
+  </div>
   <div class="setcap">Appearance</div>
   <div class="setgrp"><div class="setblock"><div class="setrow nob"><span class="setl">Theme</span><span class="setv" id="skin-name">Light</span></div><div class="swrow"><button type="button" class="swatch" data-skin="auto" aria-label="Auto" aria-pressed="false"><span class="sw auto" style="--sbg:#888;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="light" aria-label="Light" aria-pressed="false"><span class="sw" style="--sbg:#F2F2F4;--sac:#2563EB"></span></button><button type="button" class="swatch" data-skin="graphite" aria-label="Dark" aria-pressed="false"><span class="sw" style="--sbg:#101012;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="midnight" aria-label="Midnight" aria-pressed="false"><span class="sw" style="--sbg:#000000;--sac:#0A84FF"></span></button><button type="button" class="swatch" data-skin="navy" aria-label="Navy" aria-pressed="false"><span class="sw" style="--sbg:#0B1324;--sac:#5AA9FF"></span></button></div></div></div>
   <div class="setcap">Trip</div>
@@ -3089,6 +3133,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
     <label class="pf"><span>Name</span><input id="mp-label" type="text" value="Home" placeholder="e.g. Home"></label>
     <label class="pf"><span>Nearest city</span><select id="mp-city"></select></label>
     <label class="pf"><span>Address <small>(optional)</small></span><input id="mp-addr" type="text" placeholder="Street, area"></label>
+    <label class="pf"><span>Pincode <small>(optional)</small></span><input id="mp-pin" type="text" inputmode="numeric" pattern="[0-9]6" maxlength="6" placeholder="6-digit PIN" autocomplete="postal-code"></label>
     <button type="button" class="btn full" id="mp-add">Save place</button>
     <p class="mcpnote">Saved places appear first in “Starting from” when you plan a trip. Distances use the nearest city. Kept on this device only.</p>
   </div>
@@ -3246,11 +3291,12 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
   <li><button type="button" data-v="plan"><svg class="ph icr" aria-hidden="true"><use data-p="navbook" href="#i-hugeicons-navbook"/></svg>Plan</button></li>
   <li><button type="button" data-v="route"><svg class="ph icr" aria-hidden="true"><use data-p="navroute" href="#i-hugeicons-navroute"/></svg>Explore</button></li>
   <li><button type="button" data-v="more"><svg class="ph icr" aria-hidden="true"><use data-p="more" href="#i-hugeicons-more"/></svg>More</button></li>
+  <li><button type="button" data-v="profile"><svg class="ph icr" aria-hidden="true"><use data-p="user" href="#i-hugeicons-user"/></svg>Profile</button></li>
 </ul></nav>
 
 <script>
 (function(){
-  var VIEWS=['home','days','route','plan','alerts','more'];
+  var VIEWS=['home','days','route','plan','alerts','more','profile'];
   var SUBOF={book:'plan',pack:'plan',budget:'plan',places:'route',stays:'route',food:'route',shopping:'route'};
   function get(k){try{return localStorage.getItem(k);}catch(e){return null}}
   function set(k,v){try{localStorage.setItem(k,v);}catch(e){}}
@@ -3265,7 +3311,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
     VIEWS.forEach(function(n){ var el=$('v-'+n); if(el) el.hidden=(n!==v); });
     $$('.nav button[data-v]').forEach(function(b){ if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var hd=$('top-head'); if(hd) hd.hidden=(v!=='days');
-    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if(v==='more'&&window.__renderAcct) window.__renderAcct(); setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label',v==='home'?'New trip':'Ask AI about this page');
+    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if((v==='more'||v==='profile')&&window.__renderAcct) window.__renderAcct(); if(v==='more'&&window.__drawMyTrips) window.__drawMyTrips(); setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label',v==='home'?'New trip':'Ask AI about this page');
   }
   $$('.nav button[data-v]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); show(b.dataset.v); }); });
   document.addEventListener('click',function(e){ var g=e.target.closest&&e.target.closest('[data-goto]'); if(g){ e.preventDefault(); show(g.dataset.goto); } });
@@ -3347,9 +3393,11 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
   var fab=$('fab'), sheet=$('settings'), timer=null;
   function armTimer(){ clearTimeout(timer); timer=setTimeout(function(){ openSheet(false); },25000); }
   /* Settings live on the More page now */
-  (function(){ var slot=$('more-slot'); if(slot&&sheet){ slot.appendChild(sheet); sheet.hidden=false; sheet.classList.add('inpage'); sheet.removeAttribute('role'); var st=sheet.querySelector('.shtitle'); if(st) st.remove(); } })();
+  (function(){ var slot=$('more-slot'), ps=$('prof-slot'); if(slot&&sheet){ slot.appendChild(sheet); sheet.hidden=false; sheet.classList.add('inpage'); sheet.removeAttribute('role'); var st=sheet.querySelector('.shtitle'); if(st) st.remove();
+      /* More keeps trips, groups and places; account and settings live on Profile */
+      if(ps){ var box=document.createElement('div'); box.className='sheet inpage'; box.id='settings-profile'; Array.prototype.slice.call(sheet.children).forEach(function(c){ if(c.id!=='more-lists') box.appendChild(c); }); ps.appendChild(box); } } })();
   function openSheet(o){
-    if(o){ closeLogout(); show('more'); }
+    if(o){ closeLogout(); show('profile'); }
     $('scrim').hidden=$('logout').hidden;
     clearTimeout(timer);
   }
@@ -4231,10 +4279,16 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
       $('ts-list').addEventListener('click',function(e){ var b=e.target.closest('[data-tsi]'); if(!b) return; active=b.dataset.tsi; set('vizag-active-trip',active); closePlace(); render(); window.scrollTo(0,0); });
       $('ts-new').onclick=function(){ closePlace(); openPlanner(null); };
     }
+    function drawMyTrips(){ var box=$('mytrips-list'), cards=window.__tripCards||[]; if(!box) return;
+      box.innerHTML=cards.map(function(c){ return '<div class="mprow grow" data-mt="'+esc(c.id)+'" role="button" tabindex="0"><span class="gav">'+c.emo+'</span><div class="mpt"><b>'+esc(c.name)+'</b><small>'+esc(c.sub)+'</small></div>'+(c.id===active?'<span class="mtcur">Current</span>':'<span class="achev">'+icoT('chev')+'</span>')+'</div>'; }).join('');
+      box.querySelectorAll('[data-mt]').forEach(function(r){ r.onclick=function(){ active=r.dataset.mt; set('vizag-active-trip',active); render(); show('home'); }; });
+      if(window.__paintUses) window.__paintUses(box); }
+    window.__drawMyTrips=drawMyTrips;
+    var mtn=$('mytrips-new'); if(mtn) mtn.addEventListener('click',function(e){ e.stopPropagation(); openPlanner(null); });
     function renderTrips(){
       var box=$('trips'); if(!box) return;
       var cards=[{id:'vizag',emo:'🏞️',name:'Vizag · Araku · Vanjangi',sub:'5–8 Dec 2026 · 3 friends'}].concat(trips.map(function(t){ return {id:t.id,emo:(t.places[0]&&EMO[t.places[0][4]])||'🧭',name:t.name||(t.from[0]+' to '+t.state),sub:dlabel(t.start,0).long+' · '+t.places.length+' places · '+ppl(t).total+' people'}; }));
-      window.__tripCards=cards; box.innerHTML='<button type="button" id="trip-new" hidden></button>';
+      window.__tripCards=cards; box.innerHTML='<button type="button" id="trip-new" hidden></button>'; drawMyTrips();
       $('trip-new').onclick=function(){ openPlanner(null); }; window.__newTrip=function(){ openPlanner(null); };
     }
 
@@ -4417,7 +4471,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
       for(var dx=-1;dx<=1;dx++) for(var dy=-1;dy<=1;dy++) h+='<img alt="" loading="lazy" src="https://tile.openstreetmap.org/'+z+'/'+(x0+dx)+'/'+(y0+dy)+'.png" style="left:calc(50% + '+(dx*256-fx)+'px);top:calc(50% + '+(dy*256-fy)+'px)">';
       return h;
     }
-    function aboutMore(){ var a=$('ps-about'); if(!a) return; var old=a.nextElementSibling; if(old&&old.classList.contains('psmorebtn')) old.remove(); a.classList.add('clamp3'); requestAnimationFrame(function(){ if(a.scrollHeight>a.clientHeight+2){ var b=document.createElement('button'); b.type='button'; b.className='psmorebtn'; b.textContent='more'; b.onclick=function(){ var o=a.classList.toggle('clamp3'); b.textContent=o?'more':'less'; }; a.after(b); } }); }
+    function aboutMore(){ var a=$('ps-about'); if(!a) return; a.classList.add('clamp3'); requestAnimationFrame(function(){ var par=a.parentNode; if(!par) return; par.querySelectorAll('.psmorebtn').forEach(function(x){ x.remove(); }); a.classList.add('clamp3'); if(a.scrollHeight>a.clientHeight+2){ var b=document.createElement('button'); b.type='button'; b.className='psmorebtn'; b.textContent='more'; b.onclick=function(){ var o=a.classList.toggle('clamp3'); b.textContent=o?'more':'less'; }; a.after(b); } }); }
     function TIMES(k){ return ({temple:'6 AM–12 PM, 4–8:30 PM',fort:'9 AM–5:30 PM',palace:'9:30 AM–5:30 PM',monument:'Sunrise–sunset',museum:'10 AM–5 PM, often shut Mon',wildlife:'Safaris 6–10 AM, 3–6 PM',beach:'Open all day',lake:'Boating 9 AM–5:30 PM',cave:'9 AM–5 PM',waterfall:'8 AM–5 PM',garden:'9 AM–6 PM',hill:'Open all day',nature:'Open all day',city:'Open all day',market:'10 AM–9 PM',church:'7 AM–7 PM',monastery:'6 AM–6 PM',entertainment:'10 AM–8 PM',adventure:'8 AM–5 PM'})[k]||'Daytime'; }
     function openPlace(name,from,full){
       var p=findPlace(name); if(!p) return;
@@ -4434,7 +4488,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
           '<button type="button" class="hback psfav'+(FAV[name]?' on':'')+'" id="ps-fav" aria-label="Save">'+icoT('heart')+'</button></div>'+
         '<div class="pspanel"><div class="pshead"><div><h3>'+esc(name)+'</h3><p>'+esc(p[1])+(st?', '+esc(st):'')+'</p></div><div class="psdur"><b>'+hrs(p[5])+'</b><small>visit</small></div></div>'+
           '<div class="pschips"><span>'+icoT(({temple:'temple',hill:'mountain',beach:'beach',cave:'mountain',fort:'castle',nature:'leaf',waterfall:'waterfall',monastery:'monastery',wildlife:'paw',monument:'monument',museum:'monument',lake:'lake',palace:'castle',church:'church',city:'city',market:'bag',garden:'garden',entertainment:'ferris',adventure:'parachute',village:'house',desert:'camel',ceremony:'medal',train:'train'})[p[4]]||'pin')+esc(CATN[p[4]]||'Sight')+'</span>'+(tag?'<span class="hot">'+icoT('star')+tag+'</span>':'')+(d?'<span>'+icoT('car')+'~'+d.toLocaleString('en-IN')+' km away</span>':'')+(bestOf(p)?'<span>'+icoT('calendar')+'Best '+bestOf(p)+'</span>':'')+'</div>'+
-          '<h4>About</h4><p class="psabout clamp3" id="ps-about">'+esc(CATN[p[4]]||'Sight')+' in '+esc(p[1])+', '+esc(st)+'. Plan about '+hrs(p[5])+' here.</p><a class="psmore" id="ps-wiki" data-ext="1" href="https://en.wikipedia.org/w/index.php?search='+encodeURIComponent(name+' '+p[1])+'" target="_blank" rel="noopener" hidden>Read more on Wikipedia</a>'+
+          '<h4>About</h4><p class="psabout clamp3" id="ps-about">'+esc(CATN[p[4]]||'Sight')+' in '+esc(p[1])+', '+esc(st)+'. Plan about '+hrs(p[5])+' here.</p>'+
           '<div class="psfacts"><div><span>'+icoT('clock')+'Timings</span><b>'+TIMES(p[4])+'</b></div><div><span>'+icoT('note')+'Entry</span><b>'+esc((ENTRY[p[4]]||'Usually free').replace(/^Entry /,''))+'</b></div></div><p class="psfine">Typical for this kind of place. Check before you go.</p>'+
           '<h4>Location</h4><p class="psloc">'+esc(p[1])+', '+esc(st)+' · '+p[2].toFixed(3)+', '+p[3].toFixed(3)+'</p><a class="psmap" data-ext="1" href="'+gm(name+' '+p[1]+' '+st)+'" target="_blank" rel="noopener" aria-label="Open '+esc(name)+' in Google Maps"><span class="pstiles">'+tileMap(p[2],p[3])+'</span><span class="pspin">'+icoT('pin')+'</span><small>© OpenStreetMap</small></a>'+
         '</div>'+
@@ -4447,7 +4501,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
       $('ps-close').onclick=closePlace; $('ps-fav').onclick=function(){ FAV[name]=!FAV[name]; if(!FAV[name]) delete FAV[name]; set('vizag-favs',JSON.stringify(FAV)); this.classList.toggle('on',!!FAV[name]); };
       $('ps-act').onclick=function(){ if(card){ var i=card.querySelector('input'); i.checked=!i.checked; i.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(addp){ addp.checked=true; addp.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(!inTrip){ window.open(gm(name+' '+p[1]+' '+st),'_blank','noopener'); } };
       var key=name+'|'+p[1], hero=$('ps-hero');
-      function fill(v){ if(!v||!psh||psh.hidden||!psCtx||psCtx.name!==name) return; if(v.s&&!(gkey()&&hero.classList.contains('has'))){ hero.style.backgroundImage='url("'+v.s.replace(/"/g,'')+'")'; hero.classList.add('has'); } if(v.x){ $('ps-about').textContent=v.x; aboutMore(); } if(v.u){ var w=$('ps-wiki'); w.href=v.u; w.hidden=false; } }
+      function fill(v){ if(!v||!psh||psh.hidden||!psCtx||psCtx.name!==name) return; if(v.s&&!(gkey()&&hero.classList.contains('has'))){ hero.style.backgroundImage='url("'+v.s.replace(/"/g,'')+'")'; hero.classList.add('has'); } if(v.x){ $('ps-about').textContent=v.x; aboutMore(); }  }
       if(gkey()) gphoto(p[0]+' '+p[1],1200).then(function(u){ if(u&&psCtx&&psCtx.name===name){ hero.style.backgroundImage='url("'+u.replace(/"/g,'')+'")'; hero.classList.add('has'); } });
       if(WD[key]) fill(WD[key]);
       else if(navigator.onLine!==false&&window.fetch){
@@ -4475,21 +4529,29 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
       if(!t){ var h=a.closest('li,.stop,.drow,.card'), hh=h&&h.querySelector('h3,.t,b'); if(hh) t=hh.textContent.replace(/[↗↗]/g,'').trim(); }
       return t;
     }
+    var TOWNLL=null;
+    function townLL(txt){ if(!TOWNLL){ TOWNLL={}; Object.keys(STATES).forEach(function(s){ STATES[s].forEach(function(x){ if(!TOWNLL[x[1]]) TOWNLL[x[1]]=[x[2],x[3]]; }); }); CITIES.forEach(function(c){ if(!TOWNLL[c[0]]) TOWNLL[c[0]]=[c[1],c[2]]; }); TOWNLL.Vizag=TOWNLL.Visakhapatnam; }
+      var t=(txt||'').toLowerCase(), best=null; Object.keys(TOWNLL).forEach(function(k){ if(k.length>3&&t.indexOf(k.toLowerCase())>=0&&(!best||k.length>best.length)) best=k; }); return best?{name:best,ll:TOWNLL[best]}:null; }
     function openLink(a){
       var u=a.href, host=''; try{ host=new URL(u).hostname.replace(/^www\./,''); }catch(e){}
       var maps=/google\.[a-z.]+\/maps|maps\.app\.goo\.gl|maps\.google\./.test(u), q=maps?qOf(u):'';
       var title=linkTitle(a)||q||host, sm=a.querySelector('small'), li=a.closest('li'), sub=(sm&&sm.textContent)||(li&&li.querySelector('.s')&&li.querySelector('.s').textContent)||'';
+      var price=(a.querySelector('em')||{}).textContent||'';
       var known=findPlace(title); if(known){ openPlace(known[0]); return; }
-      var ll=null, m=(q||'').match(/^(-?\d+\.\d+),\s*(-?\d+\.\d+)$/); if(m) ll=[+m[1],+m[2]];
-      $('ps-body').innerHTML='<div class="lshead"><span class="lsico">'+icoT(maps?'mapq':'globe')+'</span><div class="lst"><h3>'+esc(title)+'</h3><p>'+esc(maps?'Google Maps':host)+'</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
-        '<div class="pspanel lspanel">'+(sub?'<p class="psabout">'+esc(sub)+'</p>':'')+
-        (maps?(ll?'<div class="psmap"><span class="pstiles">'+tileMap(ll[0],ll[1])+'</span><span class="pspin">'+icoT('pin')+'</span><small>© OpenStreetMap</small></div>':'<div class="lsq">'+icoT('search')+'<span>'+esc(q||title)+'</span></div>'):'<div class="lsq">'+icoT('link')+'<span>'+esc(u.replace(/^https?:\/\//,'').slice(0,80))+'</span></div>')+
-        '<p class="lsnote">'+(maps?'Opens the Google Maps app if it’s installed, otherwise a new browser tab.':'Opens in a new browser tab.')+'</p></div>'+
+      var m=(q||'').match(/^(-?\d+\.\d+),\s*(-?\d+\.\d+)$/), tw=m?null:townLL(title+' '+q), ll=m?[+m[1],+m[2]]:(tw&&tw.ll);
+      var kind=/restaurant|meal|veg|food|eat|cafe|tiffin|biryani/i.test(title+' '+q+' '+sub)?['food','food','Food']:/hotel|stay|resort|homestay|lodge/i.test(title+' '+q+' '+sub)?['hotel','city','Stay']:/shop|market|mall|craft|souvenir/i.test(title+' '+q+' '+sub)?['bag','market','Shopping']:maps?['pin','city','Place']:['globe','city','Link'];
+      $('ps-body').innerHTML=
+        '<div class="pshero" data-cat="'+kind[1]+'"><span class="pshemo">'+icoT(kind[0])+'</span><button type="button" class="hback psb" id="ps-close" aria-label="Close">'+icoT('back')+'</button></div>'+
+        '<div class="pspanel"><div class="pshead"><div><h3>'+esc(title)+'</h3><p>'+esc(tw?tw.name:(maps?'Google Maps':host))+'</p></div></div>'+
+          '<div class="pschips"><span>'+icoT(kind[0])+kind[2]+'</span>'+(price?'<span>'+icoT('wallet')+esc(price)+'</span>':'')+(maps?'<span>'+icoT('search')+'Live results in Maps</span>':'')+'</div>'+
+          (sub?'<h4>About</h4><p class="psabout">'+esc(sub)+'</p>':'')+
+          (maps?'<h4>Location</h4>'+(ll?'<p class="psloc">'+esc(tw?'Around '+tw.name:'Pinned location')+'</p><a class="psmap" data-ext="1" href="'+esc(u)+'" target="_blank" rel="noopener"><span class="pstiles">'+tileMap(ll[0],ll[1])+'</span><span class="pspin">'+icoT('pin')+'</span><small>© OpenStreetMap</small></a>':'<div class="lsq">'+icoT('search')+'<span>'+esc(q||title)+'</span></div>')+'<p class="psfine">Opens the Google Maps app if it’s installed, otherwise a new tab, with current listings, ratings and opening hours.</p>'
+            :'<h4>Link</h4><div class="lsq">'+icoT('link')+'<span>'+esc(u.replace(/^https?:\/\//,'').slice(0,80))+'</span></div>')+
+        '</div>'+
         '<div class="psfoot"><button type="button" class="btn ghost psdir" id="ls-copy">'+icoT('copy')+'Copy link</button><a class="btn psact" data-ext="1" href="'+esc(u)+'" target="_blank" rel="noopener">'+icoT('open')+(maps?'Open in Maps':'Open')+'</a></div>';
       if(window.__paintUses) window.__paintUses($('ps-body'));
-      aboutMore();
       $$('#ps-body .pstiles img').forEach(function(im){ im.addEventListener('error',function(){ im.remove(); }); });
-      psCtx={name:'link'}; psh.classList.remove('full','tpsheet'); psh.classList.add('lsheet'); psh.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ psh.classList.add('in'); });
+      psCtx={name:'link'}; psh.classList.remove('full','tpsheet','lsheet'); psh.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ psh.classList.add('in'); });
       $('ps-close').onclick=closePlace;
       $('ls-copy').onclick=function(){ var b=this; function done(){ b.lastChild.textContent='Copied'; setTimeout(function(){ b.lastChild.textContent='Copy link'; },1500); } try{ navigator.clipboard.writeText(u).then(done,function(){}); }catch(e){} };
       psh.querySelector('.psact').addEventListener('click',function(){ setTimeout(closePlace,300); });
@@ -4801,7 +4863,7 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
     /* Settings: list + add form */
     function drawPlaces(){
       var box=$('mp-list'); if(!box) return;
-      box.innerHTML=places.length?places.map(function(p,i){ return '<div class="mprow"><span class="emo">'+(ICONS[p.kind]||'📍')+'</span><div class="mpt"><b>'+esc(p.label)+'</b><small>'+esc(p.address||p.city)+(p.address?' · '+esc(p.city):'')+'</small></div><button type="button" class="mpdel" data-mpdel="'+i+'" aria-label="Remove '+esc(p.label)+'">×</button></div>'; }).join(''):'<p class="mpempty">Save home, office or your native town to start trips from them.</p>';
+      box.innerHTML=places.length?places.map(function(p,i){ return '<div class="mprow"><span class="emo">'+(ICONS[p.kind]||'📍')+'</span><div class="mpt"><b>'+esc(p.label)+'</b><small>'+esc([p.address,p.city,p.pin].filter(Boolean).join(' · '))+'</small></div><button type="button" class="mpdel" data-mpdel="'+i+'" aria-label="Remove '+esc(p.label)+'">×</button></div>'; }).join(''):'<p class="mpempty">Save home, office or your native town to start trips from them.</p>';
       box.querySelectorAll('[data-mpdel]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); var i=+b.dataset.mpdel, pl=places[i]; if(!pl) return; var go=function(){ places.splice(i,1); saveP(); drawPlaces(); drawProfile(); }; if(window.__confirm) window.__confirm('Delete '+pl.label+'?','This removes the saved address from your places. Trips that start from it keep their plan.','Delete',go); else go(); }; });
     }
     var cs=$('mp-city'); if(cs) cs.innerHTML=CITIES.map(function(c){ return '<option>'+esc(c[0])+'</option>'; }).join('');
@@ -4812,8 +4874,9 @@ html body .summary:has(.sumtog) .sgrid .mi.mi:nth-child(even){border-left:1px so
     $('mp-new').addEventListener('click',function(e){ e.stopPropagation(); mpOpen(); });
     $('mp-close').addEventListener('click',mpClose); mps.addEventListener('click',function(e){ e.stopPropagation(); }); $('scrim').addEventListener('click',mpClose);
     $('mp-add').addEventListener('click',function(){
-      var l=(lab.value||kindV).trim(), a=$('mp-addr').value.trim(), c=cs.value;
-      places.push({kind:kindV,label:l,address:a,city:c}); saveP(); $('mp-addr').value=''; drawPlaces(); drawProfile(); mpClose(); if(typeof openSheet==='function') openSheet(true); });
+      var l=(lab.value||kindV).trim(), a=$('mp-addr').value.trim(), c=cs.value, pin=($('mp-pin').value||'').replace(/\D/g,'').slice(0,6);
+      if(pin&&pin.length!==6){ $('mp-pin').focus(); return; }
+      places.push({kind:kindV,label:l,address:a,pin:pin,city:c}); saveP(); $('mp-addr').value=''; $('mp-pin').value=''; drawPlaces(); drawProfile(); mpClose(); if(typeof openSheet==='function') openSheet(true); });
 
     /* Profile */
     var LEVELS=['Newbie','Explorer','Voyager','Globetrotter','Legend'];
