@@ -3285,6 +3285,21 @@ html.kbd .chatsh.full .chatbar{padding-top:6px!important;padding-bottom:6px!impo
 #more-lists > .setcap:first-child{padding-top:0!important;margin-top:0!important}
 .mpaddrow .setbtn{font-weight:600!important}
 
+/* ===== v85 ===== */
+#planner.qlift #pl-places{padding-bottom:70vh}
+/* nav: idle icons light grey, current tab black */
+.nav button{color:color-mix(in srgb,var(--ink) 30%,transparent)!important}
+.nav button[aria-current="page"],.nav button.on{color:var(--ink)!important;background:transparent!important}
+/* selected items: thin 1px border at 25% strength */
+.swatch[aria-pressed="true"],.avopt[aria-pressed="true"],.ichip[aria-pressed="true"],.pseg button[aria-pressed="true"],.tcard.on,.aiopt.on,.gchip.on,
+.pcard.on,.pform .pcard.on,html.pv-card .pcards .pcard.on{border:1px solid color-mix(in srgb,var(--ink) 25%,transparent)!important;box-shadow:none!important}
+/* list cards: the added tick sits in the middle of the card's right side */
+html:not(.pv-card) .pcards .pcard{position:relative}
+html:not(.pv-card) .pcards .pcard.on .pbadge2{left:auto!important;right:14px!important;top:50%!important;transform:translateY(-50%)!important;width:26px!important;height:26px!important}
+html:not(.pv-card) .pcards .pcard.on .pbadge2 svg{width:15px!important;height:15px!important}
+html:not(.pv-card) .pcards .pcard.on .pbody,html:not(.pv-card) .pcards .pcard.on .pinfo{padding-right:34px}
+html:not(.pv-card) .pcards .pcard.on .pinf{padding-right:34px}
+
 </style>
 </head>
 <body>
@@ -3521,8 +3536,8 @@ html.kbd .chatsh.full .chatbar{padding-top:6px!important;padding-bottom:6px!impo
   <div class="setcap">Appearance</div>
   <div class="setgrp"><div class="setblock"><div class="setrow nob"><span class="setl">Theme</span><span class="setv" id="skin-name">Light</span></div><div class="swrow"><button type="button" class="swatch" data-skin="auto" aria-label="Auto" aria-pressed="false"><span class="sw auto" style="--sbg:#888;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="light" aria-label="Light" aria-pressed="false"><span class="sw" style="--sbg:#F2F2F4;--sac:#2563EB"></span></button><button type="button" class="swatch" data-skin="graphite" aria-label="Dark" aria-pressed="false"><span class="sw" style="--sbg:#101012;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="midnight" aria-label="Midnight" aria-pressed="false"><span class="sw" style="--sbg:#000000;--sac:#0A84FF"></span></button><button type="button" class="swatch" data-skin="navy" aria-label="Navy" aria-pressed="false"><span class="sw" style="--sbg:#0B1324;--sac:#5AA9FF"></span></button></div></div></div>
   <div class="setcap">Trip</div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Chat bubble<small>Floating AI chat button</small></span><div class="seg" role="group" aria-label="Chat bubble"><button type="button" data-cmode="bubble">On</button><button type="button" data-cmode="off">Off</button></div></div><p class="sethint">Pull down on any page to open AI Chat. Tap the bubble to open it, or drag it to the bottom of the screen to hide it.</p></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="on">On</button><button type="button" data-now="off">Off</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Chat bubble<small>Floating AI chat button</small></span><div class="seg" role="group" aria-label="Chat bubble"><button type="button" data-cmode="off">Off</button><button type="button" data-cmode="bubble">On</button></div></div><p class="sethint">Pull down on any page to open AI Chat. Tap the bubble to open it, or drag it to the bottom of the screen to hide it.</p></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setcap">AI suggestions</div>
   <div class="setgrp"><div class="setrow"><span class="setl">AI assistant<small id="ai-name">Off</small></span><button type="button" class="setbtn" id="ai-open">Choose</button></div></div>
 </div>
@@ -5148,7 +5163,14 @@ html.kbd .chatsh.full .chatbar{padding-top:6px!important;padding-bottom:6px!impo
     function setPV(v){ v=v==='card'?'card':'list'; root.classList.toggle('pv-card',v==='card'); set('vizag-pview',v); $$('[data-pv]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.pv===v?'true':'false'); }); }
     document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-pv]'); if(b){ e.preventDefault(); setPV(b.dataset.pv); } });
     setPV(get('vizag-pview')||'list');
-    $('pl-q').addEventListener('input',filterPlaces); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
+    $('pl-q').addEventListener('input',filterPlaces);
+    /* search focus: lift the search bar to the top so more results show; put the view back when the keyboard closes */
+    (function(){ var qi=$('pl-q'), saved=null, sc=null;
+      function scroller(el){ for(var n=el.parentElement;n;n=n.parentElement){ var s=getComputedStyle(n).overflowY; if((s==='auto'||s==='scroll')&&n.scrollHeight>n.clientHeight) return n; } return document.scrollingElement; }
+      function headBottom(){ var b=0; $$('#planner .phead,#planner .pdots').forEach(function(h){ if(h.offsetParent){ var r=h.getBoundingClientRect(); if(getComputedStyle(h).position==='sticky') b=Math.max(b,r.bottom); } }); return b; }
+      function lift(){ sc=scroller(qi); var box=qi.closest('.psearch')||qi.parentElement, r=box.getBoundingClientRect(), top=headBottom()+8, d=r.top-top; if(Math.abs(d)<4) return; document.getElementById('planner').classList.add('qlift'); sc.scrollTo({top:sc.scrollTop+d,behavior:'smooth'}); }
+      qi.addEventListener('focus',function(){ sc=scroller(qi); if(saved===null) saved=sc.scrollTop; setTimeout(lift,60); setTimeout(lift,380); });
+      qi.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement===qi) return; document.getElementById('planner').classList.remove('qlift'); if(sc&&saved!==null) sc.scrollTo({top:saved,behavior:'smooth'}); saved=null; },150); }); })(); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
     $('pl-close').addEventListener('click',closePlanner);
     $('pl-next').addEventListener('click',function(){ if(nDays(formTrip())<=0){ $('pl-end').focus(); hints(); return; } if(!nameOK()) return; goStep(2); });
     $('pl-name').addEventListener('input',function(){ this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
@@ -5337,7 +5359,7 @@ html.kbd .chatsh.full .chatbar{padding-top:6px!important;padding-bottom:6px!impo
       var br=bub.getBoundingClientRect(); zone.classList.toggle('hot',(br.top+br.height/2)>window.innerHeight*0.8); zone.querySelector('b').textContent=zone.classList.contains('hot')?'Release to close':'Drop to close chat'; });
     function bend(e){ if(bx===null) return; bx=null; bub.classList.remove('drag'); var hot=zone.classList.contains('hot'); zone.hidden=true; zone.classList.remove('hot');
       if(!moved){ bub.hidden=true; window.__chat(document.documentElement.dataset.view||'home'); return; }
-      if(hot){ bub.hidden=true; bpos(window.innerWidth-72,window.innerHeight*0.55); bub.classList.remove('left'); if(window.__toast) window.__toast('Bubble hidden'); return; }
+      if(hot){ bub.hidden=true; bpos(window.innerWidth-72,window.innerHeight*0.55); bub.classList.remove('left'); if(window.__toast) window.__toast('Chat hidden now'); return; }
       bsnap(true); }
     cmPaint();
     bub.addEventListener('pointerup',bend); bub.addEventListener('pointercancel',bend);
