@@ -3400,6 +3400,18 @@ html.stuck #v-days .vz > .chips,html.stuck #v-route .vz > .chips,html.stuck #v-p
 .hvill .hvs{fill:#F5B544!important;fill-opacity:1!important}
 .plancta{padding:36px 22px 32px!important}
 
+/* ===== v93 ===== */
+/* smoother illustration cross-fade */
+.hvill{transition:opacity 1.4s cubic-bezier(.45,0,.2,1),transform 2.2s cubic-bezier(.2,.6,.2,1)!important;transform:scale(.97);will-change:opacity,transform}
+.hvill.on{transform:scale(1)}
+/* day facts: open, airy grid with no dividers */
+html body .hday .summary > .sgrid.sgrid.sgrid,html body .ctday2 .summary > .sgrid.sgrid.sgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px 24px!important;padding-top:20px!important;padding-bottom:20px!important}
+@media (min-width:560px){ html body .hday .summary > .sgrid.sgrid.sgrid,html body .ctday2 .summary > .sgrid.sgrid.sgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:22px 20px!important} }
+html body .hday .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n),html body .ctday2 .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n){border:0!important;padding:0!important;margin:0!important;background:none!important;box-shadow:none!important;display:flex;flex-direction:column;gap:5px;min-width:0}
+html body .hday .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n)::before,html body .hday .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n)::after,html body .ctday2 .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n)::before,html body .ctday2 .summary > .sgrid.sgrid.sgrid > .mi.mi.mi:nth-child(n)::after{display:none!important}
+html body .hday .summary > .sgrid .mk,html body .ctday2 .summary > .sgrid .mk{font-size:.68rem;letter-spacing:.08em;color:var(--faint)}
+html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{font-size:.98rem;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+
 </style>
 </head>
 <body>
