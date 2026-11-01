@@ -3428,6 +3428,48 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
 @keyframes ptrtw{0%,100%{transform:scale(1)}50%{transform:scale(.4)}}
 .ptr b,.ptrc{display:none!important}
 
+/* ===== v95 ===== */
+/* 1 · add (+) button: drawn plus, always dead centre */
+.xout .pcard:not(.on)::after{content:''!important;font-size:0!important;background:linear-gradient(currentColor,currentColor) center/13px 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 13px no-repeat,var(--soft)!important;color:var(--ink)!important}
+/* 2 · stop sheet note */
+.senote{margin:10px 2px 2px;font-size:.78rem;line-height:1.45;color:var(--muted)}
+.senote b{color:var(--ink);font-weight:600}
+/* 3 · native pickers follow the theme */
+:root{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){color-scheme:dark} }
+/* 4 · added tick uses theme colours, not green */
+.pbadge2,html .pcards .pcard.on .pimg .pbadge2{background:var(--ink)!important;color:var(--surface)!important;box-shadow:0 0 0 2px var(--surface)!important}
+/* 5/6 · place cards: dotted by default, solid when selected, no doubled lines */
+html.pv-card .pcards .pcard::after{border:1px dotted color-mix(in srgb,var(--ink) 30%,transparent)!important}
+html.pv-card .pcards .pcard.on{border:0!important}
+html.pv-card .pcards .pcard.on::after{border:1px solid color-mix(in srgb,var(--ink) 25%,transparent)!important}
+html:not(.pv-card) .pcards .pimg{outline:1px dotted color-mix(in srgb,var(--ink) 30%,transparent)!important}
+html:not(.pv-card) .pcards .pimg::after{border:1px dotted color-mix(in srgb,var(--ink) 30%,transparent)!important}
+html:not(.pv-card) .pcards .pcard.on .pimg{outline:1px solid color-mix(in srgb,var(--ink) 25%,transparent)!important}
+html:not(.pv-card) .pcards .pcard.on .pimg::after{border-style:solid!important;border-color:transparent!important}
+html:not(.pv-card) .pcards .pcard{border-bottom:0!important}
+html:not(.pv-card) .pcards .pcard + .pcard{border-top:1px dotted color-mix(in srgb,var(--ink) 30%,transparent)!important}
+html:not(.pv-card) .pcards{border:1px dotted color-mix(in srgb,var(--ink) 30%,transparent)!important}
+/* 7 · nav: solid (not see-through) grey for idle icons */
+.nav button{color:color-mix(in srgb,var(--ink) 38%,var(--surface))!important}
+.nav button[aria-current="page"],.nav button.on{color:var(--ink)!important}
+/* 8 · profile avatar corners concentric with its card */
+.pidcard .pav{border-radius:12px!important}
+/* 9 · travel groups: title and line under it sit closer */
+.grow .mpt{gap:0!important}
+.grow .mpt b{line-height:1.25}
+.grow .mpt small{margin-top:1px!important;line-height:1.3}
+/* 10 · group members list in the planner */
+.gmlist{display:flex;flex-direction:column;gap:2px;margin-top:6px;padding:6px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.gmlist[hidden]{display:none}
+.gmli{display:flex;align-items:center;gap:12px;padding:8px 0}
+.gmli + .gmli{border-top:1px dotted color-mix(in srgb,var(--ink) 25%,transparent)}
+.gmli .gmav{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--soft);font-weight:600;font-size:.85rem}
+.gmli b{display:block;font-weight:600;font-size:.92rem;line-height:1.25}
+.gmli small{display:block;font-size:.76rem;color:var(--muted);line-height:1.3}
+.qguests[hidden],.pgrid[hidden]{display:none!important}
+
 </style>
 </head>
 <body>
@@ -3715,7 +3757,7 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
     <label class="pf"><span>Note</span><input id="se-note" type="text" placeholder="e.g. Book tickets online, meet guide at gate"></label>
     <label class="pf"><span>What to carry</span><input id="se-carry" type="text"></label>
     <button type="button" class="btn full" id="se-save">Save changes</button>
-    <div class="serow"><button type="button" class="btn ghost" id="se-reset">Reset to suggested</button><button type="button" class="btn ghost sedanger" id="se-remove">Remove from trip</button></div>
+    <div class="serow"><button type="button" class="btn ghost" id="se-reset">Reset</button><button type="button" class="btn ghost sedanger" id="se-remove">Remove</button></div><p class="senote"><b>Reset</b> puts back the suggested time and notes. <b>Remove</b> takes this stop out of your trip.</p>
   </div>
 </div>
 <div class="sheet lsheet psheet" id="av-sheet" hidden role="dialog" aria-label="Choose avatar">
@@ -4913,11 +4955,18 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
     var BLAB={budget:'Budget',mid:'Mid-range',premium:'Premium'}, MLAB={any:'Any transport',train:'Train',flight:'Flight',road:'Car',bus:'Bus'}, PLAB={relaxed:'Relaxed pace',moderate:'Moderate pace',packed:'Packed pace'};
     var QB=['budget','mid','premium'], QBI={budget:[1300,2450],mid:[2150,4450],premium:[4700,10000]}, qPpl=2;
     function drawGroupChips(){ var G=window.__groups?window.__groups():[];
-      [['q-groups',function(g){ if(window.__gcounts) g=window.__gcounts(g); QP={women:g.women||0,men:g.men||0,kids:g.kids||0}; ['women','men','kids'].forEach(function(k){ $('q-'+k).textContent=QP[k]; }); }],
-       ['pl-groups',function(g){ if(window.__gcounts) g=window.__gcounts(g); $('pl-women').value=g.women||0; $('pl-men').value=g.men||0; $('pl-kids').value=g.kids||0; hints(); }]].forEach(function(x){
-        var box=$(x[0]); if(!box) return; box.hidden=!G.length; if(!G.length){ box.innerHTML=''; return; }
-        box.innerHTML='<small>Your groups</small><div class="gcrow">'+G.map(function(g,i){ return '<button type="button" class="gchip" data-gc="'+i+'"><b>'+esc(g.name)+'</b><span>'+((g.women||0)+(g.men||0)+(g.kids||0))+'</span></button>'; }).join('')+'</div>';
-        box.querySelectorAll('[data-gc]').forEach(function(b){ b.onclick=function(){ box.querySelectorAll('.gchip').forEach(function(c){ c.classList.toggle('on',c===b); }); x[1](G[+b.dataset.gc]); }; }); }); }
+      [['q-groups','.qguests',function(g){ if(window.__gcounts) g=window.__gcounts(g); QP={women:g.women||0,men:g.men||0,kids:g.kids||0}; ['women','men','kids'].forEach(function(k){ $('q-'+k).textContent=QP[k]; }); }],
+       ['pl-groups','.pgrid.p3',function(g){ if(window.__gcounts) g=window.__gcounts(g); $('pl-women').value=g.women||0; $('pl-men').value=g.men||0; $('pl-kids').value=g.kids||0; hints(); }]].forEach(function(x){
+        var box=$(x[0]); if(!box) return; box.hidden=!G.length; var cards=box.parentNode.querySelector(x[1]); var mem=box.parentNode.querySelector('.gmlist');
+        if(!mem){ mem=document.createElement('div'); mem.className='gmlist'; mem.hidden=true; if(cards) cards.parentNode.insertBefore(mem,cards.nextSibling); }
+        if(!G.length){ box.innerHTML=''; mem.hidden=true; if(cards) cards.hidden=false; return; }
+        function nOf(g){ return g.members?g.members.length:((g.women||0)+(g.men||0)+(g.kids||0)); }
+        box.innerHTML='<small>Choose a group, or add people one by one</small><div class="gcrow"><button type="button" class="gchip on" data-gc="-1"><b>Add people</b></button>'+G.map(function(g,i){ return '<button type="button" class="gchip" data-gc="'+i+'"><b>'+esc(g.name)+'</b><span>'+nOf(g)+'</span></button>'; }).join('')+'</div>';
+        box.querySelectorAll('[data-gc]').forEach(function(b){ b.onclick=function(){ var i=+b.dataset.gc; box.querySelectorAll('.gchip').forEach(function(c){ c.classList.toggle('on',c===b); });
+          if(i<0){ mem.hidden=true; if(cards) cards.hidden=false; return; }
+          var g=G[i]; x[2](g); var ms=window.__gmembers?window.__gmembers(g):[];
+          mem.innerHTML=ms.length?ms.map(function(m){ return '<div class="gmli"><span class="gmav">'+esc(m.n.replace(/^@/,'').charAt(0).toUpperCase())+'</span><div><b>'+esc(m.n)+'</b><small>'+esc(m.t)+'</small></div></div>'; }).join(''):'<p class="gmempty">'+nOf(g)+' travellers in this group.</p>';
+          mem.hidden=false; if(cards) cards.hidden=true; }; }); }); }
     window.__drawGroupChips=drawGroupChips;
     function drawStart(){ drawGroupChips();
       $('pl-tpls').innerHTML=TPL.map(function(t,i){ return '<button type="button" class="tplr" data-q0tpl="'+i+'"><span class="tplci">'+t.e+'</span><span class="tplt"><b>'+esc(t.n)+'</b><small>'+esc(t.s)+' · '+t.d+' days · '+t.p.length+' places</small></span><span class="tplgo">'+icoT('chev')+'</span></button>'; }).join('');
@@ -5668,6 +5717,7 @@ html body .hday .summary > .sgrid .mv,html body .ctday2 .summary > .sgrid .mv{fo
       g.members.forEach(function(m){ if(m.age==='Under 13'||m.age==='kid') c.kids++; else if(m.gender==='woman') c.women++; else if(m.gender==='man') c.men++; else other++; });
       while(other-->0){ if(c.women<=c.men) c.women++; else c.men++; } return c; }
     window.__gcounts=counts;
+    window.__gmembers=function(g){ return (g&&g.members||[]).map(function(m){ return {n:mlabel(m),t:mmeta(m).txt}; }); };
     function gsum(g){ if(g.members){ var n=g.members.length, c=counts(g); return n+' '+(n===1?'person':'people')+(c.kids?' · '+c.kids+' kid'+(c.kids===1?'':'s'):''); }
       var a=[]; if(g.women) a.push(g.women+' wom'+(g.women===1?'an':'en')); if(g.men) a.push(g.men+' m'+(g.men===1?'an':'en')); if(g.kids) a.push(g.kids+' kid'+(g.kids===1?'':'s')); return a.join(', ')||'Nobody yet'; }
     window.__gsum=gsum;
