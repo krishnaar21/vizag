@@ -3079,6 +3079,28 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
 #rate-close.save .si{display:block}
 #rate-close.save{background:var(--ink)!important;color:var(--surface)!important;border-color:var(--ink)!important}
 
+/* ===== v76 ===== */
+/* 1/3. one floating chat button everywhere, smaller */
+html .fab .i-open{display:none!important}
+html .fab:not(.up) .i-chat{display:block!important}
+.fab,.totop:not(.inplan){width:46px!important;height:46px!important}
+.fab .i-chat,.totop:not(.inplan) svg{width:21px!important;height:21px!important}
+@media (max-width:1023px){ .fab,.totop:not(.inplan){width:clamp(44px,12vw,50px)!important;height:clamp(44px,12vw,50px)!important} .fab .i-chat{width:clamp(20px,5.6vw,23px)!important;height:clamp(20px,5.6vw,23px)!important} }
+/* 2. stronger trip switcher chevron */
+.tswitch svg{width:16px!important;height:16px!important;padding:4px;box-sizing:content-box;border-radius:50%;background:var(--soft);color:var(--ink)!important;margin-left:4px;stroke-width:2}
+/* pull to ask AI */
+.ptr{position:fixed;z-index:50;left:50%;top:calc(env(safe-area-inset-top,0px) - 46px);transform:translate(-50%,0);display:flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.12);font-size:.82rem;opacity:0;pointer-events:none;transition:opacity .15s}
+.ptr.on{opacity:1}
+.ptrc{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--soft);transition:background .15s,color .15s}
+.ptrc svg{width:16px;height:16px}
+.ptr.go .ptrc{background:var(--ink);color:var(--surface)}
+.ptr b{font-weight:600}
+/* 4/5. plain emoji avatars, letter avatar */
+.avpick.big .avopt:not(.avph):not(.avinit){background:var(--surface)!important}
+.avlet{display:grid;place-items:center;width:100%;height:100%;border-radius:inherit;background:var(--ink);color:var(--surface);font-weight:650;font-size:1.3rem;font-family:var(--font)}
+.avinit{background:none!important;padding:0!important}
+.avemo{background:color-mix(in srgb,var(--soft) 70%,var(--surface))}
+
 </style>
 </head>
 <body>
@@ -3511,7 +3533,7 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
     VIEWS.forEach(function(n){ var el=$('v-'+n); if(el) el.hidden=(n!==v); });
     $$('.nav button[data-v]').forEach(function(b){ if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     var hd=$('top-head'); if(hd) hd.hidden=(v!=='days');
-    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if((v==='more'||v==='profile')&&window.__renderAcct) window.__renderAcct(); if(v==='more'){ if(window.__drawMyTrips) window.__drawMyTrips(); if(window.__drawRecent) window.__drawRecent(); if(window.__drawFavs) window.__drawFavs(); } setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label',v==='home'?'New trip':'Ask AI about this page');
+    set('vizag-view2',v); window.scrollTo(0,0); document.documentElement.dataset.view=v; if((v==='more'||v==='profile')&&window.__renderAcct) window.__renderAcct(); if(v==='more'){ if(window.__drawMyTrips) window.__drawMyTrips(); if(window.__drawRecent) window.__drawRecent(); if(window.__drawFavs) window.__drawFavs(); } setTimeout(stripFit,60); var fb=$('fab'); if(fb) fb.setAttribute('aria-label','Ask AI about this page');
   }
   $$('.nav button[data-v]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); show(b.dataset.v); }); });
   document.addEventListener('click',function(e){ var g=e.target.closest&&e.target.closest('[data-goto]'); if(g){ e.preventDefault(); show(g.dataset.goto); } });
@@ -3615,7 +3637,7 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
       clearTimeout(upTimer); upTimer=setTimeout(function(){ setUp(false); },700); return;
     }
     var cv=document.documentElement.dataset.view||'home';
-    if(cv==='home'){ if(window.__newTrip) window.__newTrip(); } else if(window.__chat) window.__chat(cv);
+    if(window.__chat) window.__chat(cv);
   });
   function setLayout(l){ root.classList.toggle('sheet-bottom',l==='bottom'); }
   sheet.addEventListener('click',function(e){ e.stopPropagation(); armTimer(); });
@@ -5037,7 +5059,11 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
     var VNAME={home:'Home',days:'Days',plan:'Plan',route:'Explore',alerts:'Alerts',more:'More'};
     var chatEl=$('chat'), chatLog=$('chat-log'), chatView='home', chatHist=[];
     function viewText(v){ var el=$('v-'+v); if(!el) return ''; var t=cur(), box=t?el.querySelector('.ctv'):el.querySelector('.vz'); var s=((box||el).innerText||(box||el).textContent||'').replace(/[ \t]+/g,' ').replace(/\n{2,}/g,'\n').trim(); return s; }
-    function bubble(who,html){ var d=document.createElement('div'); d.className='cmsg cm-'+who.replace(' ',' cm-'); d.innerHTML=html; chatLog.appendChild(d); chatLog.scrollTop=chatLog.scrollHeight; return d; }
+    var CH={}; try{ CH=JSON.parse(get('vizag-chat')||'{}')||{}; }catch(e){}
+    var chatTrip=null;
+    function chatSave(){ if(!chatTrip) return; var keep=Array.prototype.filter.call(chatLog.children,function(d){ return !d.classList.contains('cm-typing'); }).slice(-40); CH[chatTrip]={h:keep.map(function(d){ return [d.className,d.innerHTML]; }),m:chatHist.slice(-12)}; try{ set('vizag-chat',JSON.stringify(CH)); }catch(e){} }
+    function chatLoad(){ var id=cur()?cur().id:'vizag'; if(chatTrip===id) return; chatTrip=id; var c=CH[id]||{h:[],m:[]}; chatLog.innerHTML=c.h.map(function(x){ return '<div class="'+x[0]+'">'+x[1]+'</div>'; }).join(''); chatHist=c.m||[]; chatLog.scrollTop=chatLog.scrollHeight; }
+    function bubble(who,html){ var d=document.createElement('div'); d.className='cmsg cm-'+who.replace(' ',' cm-'); d.innerHTML=html; chatLog.appendChild(d); chatLog.scrollTop=chatLog.scrollHeight; if(who.indexOf('typing')<0) setTimeout(chatSave,0); return d; }
     function gLink(q){ return '<a class="cgoogle" data-ext="1" target="_blank" rel="noopener" href="https://www.google.com/search?q='+encodeURIComponent(q)+'">'+icoT('google')+'Search Google for “'+esc(q.slice(0,60))+'”</a>'; }
     function fmt(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^[-•]\s?/gm,'• ').replace(/\n/g,'<br>'); }
     function localFind(q){
@@ -5066,18 +5092,25 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
         'Question: '+q+'\n\nRules: Answer briefly (under 120 words) in plain text, using facts from the current page first, then other pages, then general travel knowledge for India. Say which page the answer is on when it comes from another page. Do not invent bookings, prices or timings that are not on the pages; say when something should be rechecked. If the question has nothing to do with travel, places, this trip or this app, reply with exactly OFFTOPIC.';
       aiText(prompt).then(function(txt){ wait.remove(); txt=(txt||'').trim();
         if(!txt||/^OFFTOPIC\b/i.test(txt)){ bubble('ai','<p>That’s outside what I can help with here. Try Google:</p>'+gLink(q)); return; }
-        chatHist.push(['Traveller',q],['Assistant',txt]); bubble('ai','<p>'+fmt(txt)+'</p>');
+        chatHist.push(['Traveller',q],['Assistant',txt]); bubble('ai','<p>'+fmt(txt)+'</p>'); chatSave();
       }).catch(function(){ wait.remove(); bubble('ai','<p>The AI assistant didn’t respond. Check its setup in More → AI suggestions, or try Google:</p>'+gLink(q)); });
     }
     function P_days(t){ try{ return build(t).days.length; }catch(e){ return nDays(t)||''; } }
     var SUGG={days:['What time do we start today?','What should I carry?','Which stop can I skip if late?'],plan:['What’s left to book?','What should I pack for the hills?','How much will the trip cost?'],route:['Which places are must-see?','Where should we eat?','How far is the longest drive?'],alerts:['Anything urgent today?','What needs booking early?'],more:['How do I change the theme?','How do I add my home address?']};
-    window.__chat=function(v){
+    window.__chat=function(v){ chatLoad();
       chatView=VNAME[v]?v:'home'; $('chat-ctx').textContent='Looking at '+VNAME[chatView]+' first'+(aiReady()?'':' · AI off, searching the app');
       var s=$('chat-sugg'); s.innerHTML=(SUGG[chatView]||[]).map(function(x){ return '<button type="button" class="csug">'+esc(x)+'</button>'; }).join(''); s.hidden=!chatLog.children.length?false:true;
       if(!chatLog.children.length) bubble('ai','<p>Hi! Ask me anything about the <b>'+VNAME[chatView]+'</b> page or the rest of your trip.</p>');
       chatEl.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ chatEl.classList.add('in'); setTimeout(function(){ $('chat-q').focus({preventScroll:true}); },200); });
       if(window.__paintUses) window.__paintUses(chatEl);
     };
+    /* Home: pull down to refresh and open the chat */
+    (function(){ var ind=document.createElement('div'); ind.className='ptr'; ind.innerHTML='<span class="ptrc">'+icoT('chat')+'</span><b>Pull to ask AI</b>'; document.body.appendChild(ind);
+      var y0=null, dy=0, armed=false;
+      function home(){ return document.documentElement.dataset.view==='home'&&pl.hidden&&chatEl.hidden&&psh.hidden; }
+      window.addEventListener('touchstart',function(e){ if(!home()||window.scrollY>0||e.touches.length>1) return; y0=e.touches[0].clientY; dy=0; armed=false; },{passive:true});
+      window.addEventListener('touchmove',function(e){ if(y0===null) return; dy=e.touches[0].clientY-y0; if(dy<=0||window.scrollY>0){ ind.style.transform=''; ind.classList.remove('on','go'); return; } var d=Math.min(110,dy*0.5); ind.classList.add('on'); ind.style.transform='translate(-50%,'+d+'px)'; armed=d>=70; ind.classList.toggle('go',armed); ind.querySelector('b').textContent=armed?'Release to ask AI':'Pull to ask AI'; },{passive:true});
+      window.addEventListener('touchend',function(){ if(y0===null) return; y0=null; ind.style.transform=''; ind.classList.remove('on','go'); if(armed){ armed=false; render(); if(window.__chat) window.__chat('home'); } },{passive:true}); })();
     function chatClose(){ chatEl.classList.remove('in'); root.classList.remove('ps-open'); setTimeout(function(){ chatEl.hidden=true; },220); }
     chatEl.addEventListener('click',function(e){ if(e.target.closest('[data-chatclose]')) chatClose(); var sg=e.target.closest('.csug'); if(sg) ask(sg.textContent); });
     $('chat-form').addEventListener('submit',function(e){ e.preventDefault(); var q=$('chat-q'); ask(q.value); q.value=''; });
@@ -5134,22 +5167,22 @@ html.pv-card .pcards .pcard.on .pbadge2{right:10px!important;top:10px!important;
     function stars(n,cls){ var o=''; for(var i=1;i<=5;i++) o+='<span class="'+(cls||'st')+(i<=Math.round(n)?' on':'')+'">★</span>'; return o; }
     var GL={woman:'Woman',man:'Man',nb:'Non-binary'};
     /* avatar = symbol on its own colour tile */
-    var AVS=[['🏝️','#38bdf8','#0ea5e9'],['🏔️','#a5b4fc','#6366f1'],['🐯','#fdba74','#f97316'],['🦜','#86efac','#22c55e'],['🛶','#67e8f9','#06b6d4'],['🎒','#fda4af','#f43f5e'],['🌅','#fcd34d','#f59e0b'],['🚂','#c4b5fd','#8b5cf6'],['🪷','#f9a8d4','#ec4899'],['⛺','#bef264','#65a30d'],['🐘','#cbd5e1','#64748b'],['🧭','#fde68a','#d97706'],['🗺️','#99f6e4','#14b8a6'],['🛺','#fef08a','#eab308'],['🦚','#5eead4','#0d9488'],['☕','#d6b38a','#92400e']];
-    function avTile(a){ return 'background:linear-gradient(140deg,'+a[1]+','+a[2]+')'; }
+    var AVS=['😀','😎','🤠','🥳','🤓','😇','🤩','😜','🧐','🤗','😌','🥸','😴'].map(function(e){ return [e]; });
+    function avTile(a){ return ''; }
     function avFind(e){ return AVS.filter(function(a){ return a[0]===e; })[0]; }
-    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; var a=prof.avatar&&avFind(prof.avatar); if(a) return '<span class="avemo" data-noicon style="'+avTile(a)+'">'+a[0]+'</span>'; return ''; }
+    function avatarHTML(){ if(prof.photo) return '<img class="avimg" src="'+prof.photo+'" alt="">'; var a=prof.avatar&&avFind(prof.avatar); if(a) return '<span class="avemo" data-noicon>'+a[0]+'</span>'; if(prof.avatar==='aa'){ var l=(prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0).toUpperCase(); if(l) return '<span class="avlet">'+esc(l)+'</span>'; } return ''; }
     function initial(){ return (prof.name||'').trim().charAt(0).toUpperCase(); }
     var avs=$('av-sheet');
-    function drawAvSheet(){ var cur=prof.photo?'photo':(prof.avatar||'init');
+    function drawAvSheet(){ var cur=prof.photo?'photo':(prof.avatar||'');
       $('av-body').innerHTML='<div class="avpick big" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-pressed="'+(cur==='photo')+'" aria-label="Use a photo">'+(prof.photo?'<img src="'+prof.photo+'" alt="">':ic('camera'))+'</button>'+
-        '<button type="button" class="avopt avinit" data-init="1" aria-pressed="'+(cur==='init')+'" aria-label="Use my initial">'+(initial()||'Aa')+'</button>'+
+        '<button type="button" class="avopt avinit" data-init="1" aria-pressed="'+(cur==='aa')+'" aria-label="Letter from your username"><span class="avlet">'+esc(((prof.user||prof.name||'').replace(/^@/,'').trim().charAt(0)||'A').toUpperCase())+'</span></button>'+
         AVS.map(function(a){ return '<button type="button" class="avopt" data-av="'+a[0]+'" aria-pressed="'+(cur===a[0])+'" style="'+avTile(a)+'">'+a[0]+'</button>'; }).join('')+'</div>'+
         (prof.photo?'<button type="button" class="avclear" id="av-rmph">Remove photo</button>':'');
       if(window.__paintUses) window.__paintUses($('av-body'));
-      $('av-body').querySelectorAll('.avopt').forEach(function(b){ b.onclick=function(){ if(b.dataset.ph){ $('av-file').click(); return; } if(b.dataset.init){ prof.avatar=''; prof.photo=''; } else { prof.avatar=b.dataset.av; prof.photo=''; } avDone(); }; });
+      $('av-body').querySelectorAll('.avopt').forEach(function(b){ b.onclick=function(){ if(b.dataset.ph){ $('av-file').click(); return; } if(b.dataset.init){ prof.avatar='aa'; prof.photo=''; } else { prof.avatar=b.dataset.av; prof.photo=''; } avDone(); avClose(); }; });
       var rm=$('av-rmph'); if(rm) rm.onclick=function(){ prof.photo=''; avDone(); }; }
     function avDone(){ saveF(); drawAvSheet(); if(window.__renderAcct) window.__renderAcct(); if(!ps.hidden) drawProfile(); }
-    $('av-file').addEventListener('change',function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'), s=200, m=Math.min(im.width,im.height); c.width=c.height=s; c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s); prof.photo=c.toDataURL('image/jpeg',0.82); avDone(); }; im.src=r.result; }; r.readAsDataURL(f); this.value=''; });
+    $('av-file').addEventListener('change',function(){ var f=this.files&&this.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){ var im=new Image(); im.onload=function(){ var c=document.createElement('canvas'), s=200, m=Math.min(im.width,im.height); c.width=c.height=s; c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,s,s); prof.photo=c.toDataURL('image/jpeg',0.82); avDone(); avClose(); }; im.src=r.result; }; r.readAsDataURL(f); this.value=''; });
     var avBack=false;
     window.__avatarSheet=function(){ avBack=!ps.hidden; ps.hidden=true; drawAvSheet(); avs.hidden=false; $('scrim').hidden=false; };
     function avClose(){ avs.hidden=true; if(avBack){ drawProfile(); ps.hidden=false; } else $('scrim').hidden=true; }
