@@ -3573,6 +3573,9 @@ html .seg-days.dstrip > .chip[aria-pressed="true"] b,html .seg-days.dstrip > .ch
 /* lighter selection shadow */
 html .seg-days > .chip[aria-pressed="true"],html .seg-days.dstrip > .chip[aria-pressed="true"],html #v-days .seg-days.dstrip > .chip[aria-pressed="true"],html .ctv .seg-days.dstrip > .chip[aria-pressed="true"],html .hseg.dstrip > .chip[aria-pressed="true"],:root[data-theme="dark"] .seg-days > .chip[aria-pressed="true"],:root[data-skin] .seg-days > .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 10%,transparent),0 1px 2px rgba(0,0,0,.05)!important}
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .seg-days > .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 12%,transparent),0 1px 2px rgba(0,0,0,.2)!important} }
+/* selection: flat soft tint, hairline only */
+html body .seg-days > .chip[aria-pressed="true"],html body .seg-days.dstrip > .chip[aria-pressed="true"],html body #v-days .seg-days.dstrip > .chip[aria-pressed="true"],html body .ctv .seg-days.dstrip > .chip[aria-pressed="true"],html body .hseg.dstrip > .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent)!important}
+@media (prefers-color-scheme:dark){ html body:not(.x) .seg-days > .chip[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 8%,transparent)!important} }
 
 </style>
 </head>
