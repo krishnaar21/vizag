@@ -3253,6 +3253,12 @@ html:has(.chatsh.full:not([hidden])) body::before{background:var(--surface)!impo
 .chatbub.dk.drag::before{display:none}
 .chatbub.dk.drag svg{display:block}
 .chatsh.full .chatav{display:none}
+/* suggestions: one swipeable row */
+.chint{align-items:stretch!important}
+.chint .chico{align-self:center}
+.chint .chatsugg{flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto;scrollbar-width:none;margin:0 -28px;padding:0 16px 4px!important;scroll-padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 24px),transparent)}
+.chint .chatsugg::-webkit-scrollbar{display:none}
+.chint .csug{flex:none;white-space:nowrap}
 
 </style>
 </head>
