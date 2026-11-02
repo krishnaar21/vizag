@@ -4202,6 +4202,25 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
 .wx .wxhl{white-space:nowrap}
 .wx > .wxinl{display:none!important}
 
+/* ===== v135 ===== */
+/* ticket notches cut out of the card itself (true see-through curves) */
+.tkperf::before,.tkperf::after,.psperf::before,.psperf::after{display:none!important}
+.tkcard{--py:-40px;-webkit-mask:radial-gradient(circle 9px at 0 var(--py),#0000 97%,#000 100%) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% var(--py),#0000 97%,#000 100%) right/51% 100% no-repeat;mask:radial-gradient(circle 9px at 0 var(--py),#0000 97%,#000 100%) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% var(--py),#0000 97%,#000 100%) right/51% 100% no-repeat}
+.tkperf{margin:12px 2px 10px!important}
+.pstk{--py:0px}
+.pstk .psperf{margin:0 16px!important}
+.pstrip{font-size:1.2rem!important;line-height:1.2;margin-bottom:14px!important}
+.psgrid.g3{grid-template-columns:repeat(3,1fr)}
+.psday{padding:16px 18px 18px}
+.psday .psroute{margin:0 0 14px}
+.psday .psbot{padding:0;align-items:flex-start}
+.psday .psgrid{flex:1;min-width:0;grid-template-columns:1fr 1fr;gap:10px 12px}
+.psday .psgrid b{font-size:.86rem}
+.psday .psbot{flex-direction:column!important;align-items:stretch!important;gap:0!important}
+.psday .psgrid{grid-template-columns:repeat(3,1fr)!important}
+.psday .psqr{align-self:center;order:2;margin-top:16px}
+.psday .psqr .qrsvg{width:120px;height:120px}
+
 </style>
 </head>
 <body>
@@ -6703,7 +6722,7 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
   function decorate(sec){ var sh=sec.querySelector('.summary > .shead'); if(!sh||sh.querySelector('.tkqr')) return; var row=sh.querySelector('.trow'); if(!row) return;
     var ic=row.querySelector('.wxico'), wx=sh.querySelector('.wx'); if(ic&&wx){ wx.insertBefore(ic,wx.firstChild); ic.classList.add('wxinl'); }
     var b=document.createElement('button'); b.type='button'; b.className='tkqr'; b.setAttribute('aria-label','Open trip pass'); b.innerHTML=qr(sec.dataset.day+txt(sh,'h2'),84); row.appendChild(b);
-    var perf=document.createElement('div'); perf.className='tkperf'; row.after(perf); sh.classList.add('tkhead');
+    var perf=document.createElement('div'); perf.className='tkperf'; row.after(perf); sh.classList.add('tkhead'); var card=sec.querySelector('.summary'); function setPy(){ if(card&&perf.offsetParent) card.style.setProperty('--py',(perf.getBoundingClientRect().top-card.getBoundingClientRect().top)+'px'); } setTimeout(setPy,50); window.addEventListener('resize',setPy); new MutationObserver(setPy).observe(sec,{attributes:true,attributeFilter:['hidden']}); card&&card.classList.add('tkcard');
     b.addEventListener('click',function(e){ e.stopPropagation(); openPass(sec); }); }
   function openPass(sec){ var sh=sec.querySelector('.summary > .shead'), h2=sh.querySelector('h2'), parts=[]; h2.childNodes.forEach(function(n){ if(n.nodeType===3&&n.textContent.trim()) parts.push(n.textContent.trim()); }); if(parts.length<2) parts=[h2.textContent.trim(),''];
     var F=facts(sec), sp=[].map.call(sec.querySelectorAll('.hspan > span'),function(s){ return s.textContent.trim(); }), first=(sp[1]||'').replace(/^First\s*/,''), last=(sp[2]||'').replace(/^Last\s*/,'');
@@ -6712,12 +6731,13 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
     function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); setTimeout(function(){ ps.hidden=true; },220); }
     var box=ps.querySelector('.passbox');
+    var nd=document.querySelectorAll('#v-home .hseg .hchip').length||'';
     box.innerHTML='<div class="pshd"><span>Trip pass</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
-      '<div class="pstk"><div class="pstop"><small>'+trip+'</small><div class="psroute"><div><small>From</small><b>'+parts[0]+'</b></div><span class="psarr"><svg viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg></span><div class="r"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div>'+
-      '<div class="psgrid"><div><small>Date</small><b>'+date+'</b></div><div><small>Travellers</small><b>'+(who||'—')+'</b></div><div><small>First stop</small><b>'+(t1||'—')+'</b></div><div><small>Last stop</small><b>'+(t2||'—')+'</b></div><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div></div></div>'+
-      '<div class="psperf"></div><div class="psbot"><div class="psqr">'+qr(sec.dataset.day+h2.textContent,150)+'</div><div class="psinfo"><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div><div><small>Budget today</small><b>'+[F['stay cost'],F['food']].filter(Boolean).join(' + ')+'</b></div></div></div></div>'+
+      '<div class="pstk"><div class="pstop"><small>Trip</small><b class="pstrip">'+trip+'</b><div class="psgrid g3"><div><small>Travellers</small><b>'+(who||'—')+'</b></div><div><small>Day</small><b>'+(sec.dataset.day||'')+(nd?' of '+nd:'')+'</b></div><div><small>Budget today</small><b>'+[F['stay cost'],F['food']].filter(Boolean).map(function(x){ return x.replace(/,000/g,'k').replace(/(\d),(\d)00/g,'$1.$2k'); }).join(' + ')+'</b></div></div></div>'+
+      '<div class="psperf"></div><div class="psday"><div class="psroute"><div><small>From</small><b>'+parts[0]+'</b></div><span class="psarr"><svg viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg></span><div class="r"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div>'+
+      '<div class="psbot"><div class="psqr">'+qr(sec.dataset.day+h2.textContent,150)+'</div><div class="psgrid"><div><small>Date</small><b>'+date+'</b></div><div><small>First stop</small><b>'+(t1||'—')+'</b></div><div><small>Last stop</small><b>'+(t2||'—')+'</b></div><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></div></div>'+
       '<p class="psnote">Show this to your group to keep everyone on the same plan. The code is a trip reference, not a ticket.</p>';
-    box.querySelector('.shclose').onclick=close; ps.hidden=false; document.documentElement.classList.add('ps-open'); requestAnimationFrame(function(){ ps.classList.add('in'); }); }
+    box.querySelector('.shclose').onclick=close; var stk=box.querySelector('.pstk'), pf=box.querySelector('.psperf'); setTimeout(function(){ stk.style.setProperty('--py',(pf.getBoundingClientRect().top-stk.getBoundingClientRect().top)+'px'); stk.classList.add('tkcard'); },30); ps.hidden=false; document.documentElement.classList.add('ps-open'); requestAnimationFrame(function(){ ps.classList.add('in'); }); }
   document.querySelectorAll('.hday, #v-days .day').forEach(decorate); })();
 
 </script>
