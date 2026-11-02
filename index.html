@@ -3866,6 +3866,8 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
 :root:root body #v-home .seg-days.hseg > .chip{height:44px!important}
 /* dot mode = soft pill + dot (like Days), on every tabbed strip */
 :root:root:root.seldot body .seg-days > .chip[aria-pressed="true"],:root:root:root.seldot body #v-days .seg-days.dstrip > .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent)!important}
+/* tab labels vertically centred in every strip */
+:root:root:root body .seg-days > .chip{padding-top:0!important;padding-bottom:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
 
 </style>
 </head>
