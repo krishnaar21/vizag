@@ -4038,6 +4038,21 @@ html.tv-3 :is(.vzhero,.cthero) .tmeta{font-weight:400!important}
 /* Span / Spend replace the grid entirely */
 html.dv-span body :is(.hday,.ctday2) .summary > .sgrid.sgrid.sgrid,html.dv-spend body :is(.hday,.ctday2) .summary > .sgrid.sgrid.sgrid{display:none!important}
 
+/* ===== v129 ===== */
+.dsend{display:flex!important;flex-direction:column;gap:2px}
+.dsend.dsr{align-items:flex-end}
+.dsend small{order:-1}
+.dstrack{flex:1 1 auto;max-width:42%;margin:0 auto}
+.dsbar{gap:16px}
+html.tv-4 :is(.vzhero,.cthero) .ctedit svg{width:14px!important;height:14px!important}
+html.tv-4 :is(.vzhero,.cthero){grid-template-columns:66px 1fr!important}
+html.tv-4 :is(.vzhero,.cthero) .tdate::after{top:20px!important;bottom:20px!important}
+:is(.vzhero,.cthero) .ctedit svg{width:18px!important;height:18px!important}
+.dsend{align-items:flex-start!important;text-align:left}
+.dsend.dsr{align-items:flex-end!important;text-align:right}
+.dsbar{align-items:flex-end!important}
+.dstrack{margin-bottom:9px!important}
+
 </style>
 </head>
 <body>
@@ -6484,7 +6499,7 @@ html.dv-span body :is(.hday,.ctday2) .summary > .sgrid.sgrid.sgrid,html.dv-spend
   function build(g){ if(!g||g.__alt) return; g.__alt=1; var F={}; [].forEach.call(g.querySelectorAll('.mi'),function(m){ F[((m.querySelector('.mk')||{}).textContent||'').trim().toLowerCase()]=((m.querySelector('.mv')||{}).textContent||'').trim(); });
     var wake=F['wake up']||'', sleep=F['sleep']||F['lights out']||'', stay=F['stay']||'', sc=F['stay cost']||'', food=F['food']||'', tr=F['transport']||'';
     var sp=document.createElement('div'); sp.className='dalt dspan';
-    sp.innerHTML='<div class="dsbar"><span class="dsend">'+ic('sunrise')+'<b>'+wake+'</b><small>Up</small></span><i class="dstrack"></i><span class="dsend dsr">'+ic('moon')+'<b>'+sleep+'</b><small>Sleep</small></span></div>'+
+    sp.innerHTML='<div class="dsbar"><span class="dsend"><small>Wake</small><b>'+wake+'</b></span><i class="dstrack"></i><span class="dsend dsr"><small>Sleep</small><b>'+sleep+'</b></span></div>'+
       '<ul class="dsrows">'+(stay?'<li>'+ic('bed')+'<span>'+stay+'</span><em>'+sc+'</em></li>':'')+(food?'<li>'+ic('food')+'<span>Food</span><em>'+food+'</em></li>':'')+(tr?'<li>'+ic('car')+'<span>'+tr+'</span><em></em></li>':'')+'</ul>';
     var a1=rng(sc), a2=rng(food), tot=(a1||a2)?[(a1?a1[0]:0)+(a2?a2[0]:0),(a1?a1[1]:0)+(a2?a2[1]:0)]:null, share=(a1&&a2)?Math.round(100*(a1[0]+a1[1])/(a1[0]+a1[1]+a2[0]+a2[1])):60;
     var pe=document.createElement('div'); pe.className='dalt dspend';
