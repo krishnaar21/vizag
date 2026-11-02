@@ -5307,6 +5307,18 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
 #v-home .hometop.isoff{align-items:center!important}
 .qnone .btn{border:1px solid var(--line)!important;background:var(--surface)!important}
 
+/* ===== v183 ===== */
+.qnart{width:120px;height:100px;display:block;margin:0 auto 6px}
+.qnico{display:none}
+.offtag.on{color:#2e9d5b}
+.offtag.on > i{background:#2e9d5b;animation:none}
+.offtag.fade{opacity:0;transition:opacity .4s}
+.sigb{display:inline-flex;align-items:flex-end;gap:1.5px;height:10px;margin-right:2px}
+.sigb i{display:block;width:2.5px;border-radius:1px;background:currentColor;opacity:.2;animation:sigup .25s ease-out forwards}
+.sigb i:nth-child(1){height:3px;animation-delay:.15s}.sigb i:nth-child(2){height:5px;animation-delay:.45s}.sigb i:nth-child(3){height:7.5px;animation-delay:.75s}.sigb i:nth-child(4){height:10px;animation-delay:1.05s}
+@keyframes sigup{from{opacity:.2;transform:scaleY(.4)}to{opacity:1;transform:scaleY(1)}}
+.sigb i{transform-origin:bottom}
+
 </style>
 </head>
 <body>
@@ -5732,7 +5744,7 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
         <div class="psumc" id="pl-sum"></div>
         <div class="psrch"><label class="psearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="pl-q" type="search" placeholder="Search places, towns or types" autocomplete="off" enterkeyhint="search"><span class="pqn" id="pl-qn"></span></label></div>
         <div class="pplaces" id="pl-places"></div>
-        <div class="qnone" id="pl-qempty" hidden><span class="qnico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4M8.5 11h5"/></svg></span><b id="pl-qnt">No places found</b><span class="qns">Check the spelling, or search a town or a type like beach, fort or temple.</span><button type="button" class="btn ghost sm" id="pl-qclear">Clear search</button></div>
+        <div class="qnone" id="pl-qempty" hidden><svg class="qnart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="qndots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="90" cy="26" r="14" style="fill:#F8D66D;fill-opacity:.85"/><path d="M54 18a24 24 0 1 1 0 48a24 24 0 1 1 0-48zm0 8a16 16 0 1 0 0 32a16 16 0 1 0 0-32z" fill-rule="evenodd" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M54 18a24 24 0 1 1 0 48a24 24 0 1 1 0-48zm0 8a16 16 0 1 0 0 32a16 16 0 1 0 0-32z" fill-rule="evenodd" fill="url(#qndots)"/><path d="M71 59l5-5 14 14a3.5 3.5 0 0 1-5 5z" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M71 59l5-5 14 14a3.5 3.5 0 0 1-5 5z" fill="url(#qndots)"/><path d="M47 42h14" style="stroke:var(--ink);stroke-opacity:.5;stroke-width:3.2;stroke-linecap:round"/><g style="fill:url(#qndots)"><rect x="16" y="86" width="88" height="3.2" rx="1.6"/><rect x="28" y="91.5" width="64" height="2.8" rx="1.4"/><rect x="42" y="96.5" width="36" height="2.4" rx="1.2"/></g></svg><b id="pl-qnt">No places found</b><span class="qns">Check the spelling, or search a town or a type like beach, fort or temple.</span><button type="button" class="btn ghost sm" id="pl-qclear">Clear search</button></div>
       </div>
      </div>
     </div>
@@ -9603,7 +9615,12 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 
 /* Offline mode tag under the Home title */
 (function(){ var top=document.querySelector('#v-home .hometop h1'); if(!top) return; var tag=document.createElement('button'); tag.type='button'; tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=true; var tw=document.createElement('div'); tw.className='htitle'; top.parentNode.insertBefore(tw,top); tw.appendChild(top); tw.appendChild(tag);
-  var wrap=tw.parentNode; function upd(){ var off=navigator.onLine===false; tag.hidden=!off; wrap.classList.toggle('isoff',off); }
+  var wrap=tw.parentNode, was=navigator.onLine===false, t=0;
+  function bars(){ return '<span class="sigb" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'; }
+  function upd(){ var off=navigator.onLine===false; if(!off&&!was&&tag.classList.contains('on')&&!tag.hidden) return; clearTimeout(t);
+    if(off){ tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=false; wrap.classList.add('isoff'); }
+    else if(was){ tag.className='offtag on'; tag.innerHTML=bars()+'Online mode<i></i>'; tag.hidden=false; wrap.classList.add('isoff'); t=setTimeout(function(){ tag.classList.add('fade'); setTimeout(function(){ tag.hidden=true; wrap.classList.remove('isoff'); tag.classList.remove('fade'); },400); },4000); }
+    else { tag.hidden=true; wrap.classList.remove('isoff'); } was=off; }
   tag.onclick=function(e){ e.stopPropagation(); var s=document.getElementById('off-sheet'), sc=document.getElementById('scrim'); if(s){ s.hidden=false; if(sc) sc.hidden=false; } };
   window.addEventListener('online',upd); window.addEventListener('offline',upd); upd(); })();
 
