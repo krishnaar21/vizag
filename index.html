@@ -5280,6 +5280,17 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
 .stop.freeday .tile{background:var(--surface)!important}
 .stop.freeday a[href*="maps"],.stop.freeday .ext,.stop.freeday .row2 a,.stop.freeday h3 a,.stop.freeday .ttl a{display:none!important}
 
+/* ===== v181 ===== */
+:root:root .pcards .pimg,:root:root .pcards .pimg::after{border-radius:10px!important;overflow:hidden}
+.offtag{display:inline-flex;align-items:center;gap:6px;appearance:none;border:0;background:none;padding:2px 0 0;margin:0;font:inherit;font-size:.78rem;font-weight:600;color:var(--muted);cursor:pointer}
+.offtag i{width:7px;height:7px;border-radius:50%;background:#e5484d;animation:offblink 1.2s ease-in-out infinite}
+.offtag[hidden]{display:none}
+@keyframes offblink{50%{opacity:.2}}
+#v-home .hometop.isoff{align-items:flex-start}
+#v-home .hometop.isoff h1{margin-bottom:0}
+#v-home .hometop{flex-wrap:wrap}
+#v-home .hometop .offtag{order:3;flex-basis:100%}
+
 </style>
 </head>
 <body>
@@ -8200,6 +8211,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function countSel(){ var _bx=$$('#pl-places input'), _all=_bx.length&&_bx.every(function(b){ return b.checked; }); if($('pl-all')) $('pl-all').textContent=_all?'Unselect all':'Select all'; $$('#pl-places .pcard').forEach(function(c){ var cb=c.querySelector('input'); c.classList.toggle('on',cb.checked); }); $$('#pl-side [data-sv]').forEach(function(x){ var c=Array.prototype.filter.call($$('#pl-places input'),function(y){ return y.value===x.dataset.sv; })[0]; x.checked=!!(c&&c.checked); }); var n=$$('#pl-places input:checked').length; $('pl-count').textContent=n+' selected'; $('pl-go').disabled=!n; hints(); }
 
     /* ---------- Place cards (photos from Wikipedia when online) ---------- */
+    try{ if(localStorage.getItem('vizag-wimg-v')!=='2'){ localStorage.removeItem('vizag-wimg'); localStorage.setItem('vizag-wimg-v','2'); } }catch(e){}
     var WC={}; try{ WC=JSON.parse(get('vizag-wimg')||'{}')||{}; }catch(e){}
     var CATN={temple:'Temple',hill:'Hills',beach:'Beach',cave:'Caves',fort:'Fort',nature:'Nature',waterfall:'Waterfall',monastery:'Monastery',wildlife:'Wildlife',monument:'Monument',museum:'Museum',lake:'Lake',palace:'Palace',church:'Church',city:'City walk',market:'Market',garden:'Garden',entertainment:'Fun',adventure:'Adventure',village:'Village',desert:'Desert',ceremony:'Ceremony',train:'Heritage train'};
     function placeCard(p,on,i,fromLL){
@@ -8303,7 +8315,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       $('ps-close').onclick=closePlace; $('ps-fav').onclick=function(){ favToggle(name,{n:name,k:'place',s:(CATN[p[4]]||'Place')+' · '+p[1]},this); };
       $('ps-act').onclick=function(){ if(card){ var i=card.querySelector('input'); i.checked=!i.checked; i.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(addp){ addp.checked=true; addp.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(!inTrip){ window.open(gm(name+' '+p[1]+' '+st),'_blank','noopener'); } };
       var key=name+'|'+p[1], hero=$('ps-hero');
-      (function(){ var wc=WC[p[0]+' '+p[1]]; if(!wc||!wc.c) return; var c=document.createElement('p'); c.className='pscredit'; c.innerHTML=(wc.l?'<a href="'+esc(wc.l)+'" target="_blank" rel="noopener">':'')+esc(wc.c)+(wc.l?'</a>':''); $('ps-body').appendChild(c); })();
+      (function(){ var wc=WC[p[0]+' '+p[1]]; if(!wc||!wc.c) return; var c=document.createElement('p'); c.className='pscredit'; c.innerHTML=(wc.l?'<a href="'+esc(wc.l)+'" target="_blank" rel="noopener">':'')+esc(wc.c)+(wc.l?'</a>':''); var sp=$('ps-body').querySelectorAll('.pspanel'); (sp[sp.length-1]||$('ps-body')).appendChild(c); })();
       function fill(v){ if(!v||!psh||psh.hidden||!psCtx||psCtx.name!==name) return; if(v.s&&!(gkey()&&hero.classList.contains('has'))){ hero.style.backgroundImage='url("'+v.s.replace(/"/g,'')+'")'; hero.classList.add('has'); } if(v.x){ $('ps-about').textContent=v.x; aboutMore(); }  }
       if(gkey()) gphoto(p[0]+' '+p[1],1200).then(function(u){ if(u&&psCtx&&psCtx.name===name){ hero.style.backgroundImage='url("'+u.replace(/"/g,'')+'")'; hero.classList.add('has'); } });
       if(WD[key]) fill(WD[key]);
@@ -9518,7 +9530,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var ab=sheet('about-sheet','About & legal','<div class="pfgrp abgrp"><div class="abrow"><b>Trip planner</b><span>'+ver+'</span></div>'+
     '<details class="abd"><summary>Privacy policy</summary><p><i>Sample text. Replace with your reviewed policy before launch.</i></p><p>Your trips, places and profile are stored on this phone. If you sign in, they are also saved to your account so they show up on your other devices. We don’t sell your data. Weather comes from Open-Meteo using only the trip’s coordinates.</p></details>'+
     '<details class="abd"><summary>Terms of use</summary><p><i>Sample text. Replace with your reviewed terms before launch.</i></p><p>Plans, timings and prices are estimates to help you plan. Check opening hours, tickets and travel conditions before you go.</p></details>'+
-    '<details class="abd"><summary>Licences and credits</summary><ul class="ablic"><li><b>Hugeicons</b> (free set) · MIT licence · hugeicons.com</li><li><b>Katika icons</b> · MIT licence</li><li><b>Nunito</b> and <b>JetBrains Mono</b> fonts · SIL Open Font Licence 1.1 · via Google Fonts</li><li><b>Noto Emoji</b> · Apache 2.0 / SIL OFL · Google</li><li><b>QR Code generator</b> · Kazuhiko Arase · MIT. “QR Code” is a registered trademark of DENSO WAVE.</li><li><b>Weather data</b> · Open-Meteo.com · CC BY 4.0</li><li><b>Place photos</b> · from Wikipedia / Wikimedia Commons and Openverse under their Creative Commons licences. All credit goes to the original photographers; each photo\u2019s source is listed at the bottom of its place details.</li><li><b>Maps and directions</b> · open in Google Maps or Apple Maps under their terms</li><li><b>Illustrations</b> · drawn for this app</li></ul></details>'+'<details class="abd"><summary>Contact</summary><p>Support: <a href="mailto:'+(window.SUPPORT_EMAIL||'support@example.com')+'">'+(window.SUPPORT_EMAIL||'support@example.com')+'</a><br>Company name and address go here.</p></details></div>');
+    '<details class="abd"><summary>Licences and credits</summary><ul class="ablic"><li><b>Hugeicons</b> (free set) · MIT licence · hugeicons.com</li><li><b>Katika icons</b> · MIT licence</li><li><b>Nunito</b> and <b>JetBrains Mono</b> fonts · SIL Open Font Licence 1.1 · via Google Fonts</li><li><b>Noto Emoji</b> · Apache 2.0 / SIL OFL · Google</li><li><b>QR Code generator</b> · Kazuhiko Arase · MIT. “QR Code” is a registered trademark of DENSO WAVE.</li><li><b>Weather data</b> · Open-Meteo.com · CC BY 4.0</li><li><b>Place photos</b> · from Wikipedia / Wikimedia Commons and Openverse under their Creative Commons licences. All credit goes to the original photographers; each photo\u2019s source is listed at the bottom of its place details.</li><li><b>Map previews</b> · © OpenStreetMap contributors · ODbL</li><li><b>Maps and directions</b> · open in Google Maps or Apple Maps under their terms</li><li><b>Illustrations</b> · drawn for this app</li></ul></details>'+'<details class="abd"><summary>Contact</summary><p>Support: <a href="mailto:'+(window.SUPPORT_EMAIL||'support@example.com')+'">'+(window.SUPPORT_EMAIL||'support@example.com')+'</a><br>Company name and address go here.</p></details></div>');
   document.getElementById('ab-open').onclick=function(e){ e.stopPropagation(); open(ab); };
   (function(){ var r=ab.querySelector('.abrow span'), n=0, t=0; if(!r) return; r.style.cursor='default'; r.addEventListener('click',function(){ n++; clearTimeout(t); t=setTimeout(function(){ n=0; },1500); if(n>=3&&n<7&&window.__toast) window.__toast((7-n)+' more taps for developer options',1200); if(n>=7){ n=0; S('vizag-dev-unlock','1'); S('vizag-dev','1'); var g=document.getElementById('devgrp'), c=document.querySelector('.devcap'); if(g){ g.hidden=false; g.classList.add('on'); } if(c) c.hidden=false; if(window.__toast) window.__toast('Developer options are on'); } }); })();
   var ANDROID=/Android/i.test(navigator.userAgent), SE=window.SUPPORT_EMAIL||'support@example.com', FQ=[['Does the app work offline?','Yes. Your trips, day plans, checklist ticks (packing and bookings) and trip passes all work offline. Weather, place photos and AI chat need internet. Maps work offline too if you\u2019ve downloaded offline maps for your trip\u2019s places in '+(ANDROID?'Google Maps':'Apple Maps or Google Maps')+'.'],['Where is my trip pass?','On Home, tap the QR code on your trip card. The trip pass opens with a section for each day.'],['How do I share a trip?','Open the trip pass (tap the QR code on your Home trip card), then tap the share button at the top right.'],['Can I change dates after a trip starts?','Once the first day of a trip has begun, its start date is fixed, but you can still move the end date. After the last day of the trip has passed, its dates can\u2019t be changed.'],['How do I cancel Pro?','Tap your Pro plan card in Settings, then Cancel Pro.'],['Where is my data stored?','On this phone, and in your account if you sign in.']];
@@ -9570,6 +9582,12 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     else { var w=document.querySelector('#v-days .day:not([hidden]) .wx[data-date]')||document.querySelector('#v-home .hday:not([hidden]) .wx[data-date]'); y=w?w.dataset.date.slice(0,4):'2026'; }
     pill.textContent=y; pill.hidden=!y; }
   upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.querySelector('main'),{attributes:true,subtree:true,attributeFilter:['aria-pressed','hidden']}); })();
+
+/* Offline mode tag under the Home title */
+(function(){ var top=document.querySelector('#v-home .hometop h1'); if(!top) return; var tag=document.createElement('button'); tag.type='button'; tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=true; top.after(tag);
+  var wrap=top.parentNode; function upd(){ var off=navigator.onLine===false; tag.hidden=!off; wrap.classList.toggle('isoff',off); }
+  tag.onclick=function(e){ e.stopPropagation(); var s=document.getElementById('off-sheet'), sc=document.getElementById('scrim'); if(s){ s.hidden=false; if(sc) sc.hidden=false; } };
+  window.addEventListener('online',upd); window.addEventListener('offline',upd); upd(); })();
 
 </script>
 
