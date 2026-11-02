@@ -4406,6 +4406,44 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
 .passbox{transition:transform .3s cubic-bezier(.4,0,.75,1)!important}
 .passsh.in .passbox{transition:transform .38s cubic-bezier(.32,.72,0,1)!important}
 
+/* ===== v141 ===== */
+/* Home: "Annavaram" / "to" / "Vizag" */
+.summary h2.two br.b3{display:none}
+#v-home .hday .summary h2.two br.b3{display:block}
+#v-home .hday .summary h2.two .tto{margin-left:0;display:inline-block;font-size:.74em;line-height:1.25}
+/* spend bar breathing room */
+.dpbar{margin-top:14px!important}
+/* big date in a soft square */
+.dpdate{width:58px;height:58px;min-width:0;padding:0!important;border-right:0!important;border-radius:14px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.dpdate b{font-size:1.55rem}
+.dpdate small{margin-top:3px}
+/* stops ticker under the tear line */
+.tkticker{overflow:hidden;white-space:nowrap;font-size:.86rem;color:var(--muted);-webkit-mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent);mask:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 24px),transparent)}
+.tktrack{display:inline-flex;animation:tkrun 22s linear infinite}
+.tkrun{display:inline-flex;align-items:baseline;gap:8px;padding-right:28px}
+.tkrun > span:first-child{font-weight:700;color:var(--ink)}
+.tkrun time{font-family:var(--mono);font-size:.8rem;color:var(--ink)}
+.tkdot{font-style:normal;opacity:.6}
+@keyframes tkrun{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){ .tktrack{animation:none} }
+.hspan.hsgone{display:none!important}
+.wx.wxmoved{display:block!important;border-top:1px dashed var(--line);padding:12px 0 2px!important;margin:0!important;font-size:.86rem}
+/* pass: clearer centred note; time rule matches the tear line, centred on the numbers */
+.psnote{justify-content:center!important;text-align:center!important;font-weight:500}
+.pstimes{align-items:flex-end!important}
+.pstimes i{height:1px!important;border:0!important;margin:0 0 .72rem!important;background:repeating-linear-gradient(90deg,var(--line) 0 5px,transparent 5px 8px)}
+/* status strip fades with the backdrop */
+body::before{transition:background-color .3s}
+html.ps-closing body::before{background:var(--bg)!important}
+html.ps-closing .psbg2{opacity:0}
+:root:root:root:root:root body #v-home .hday .hspan.hsgone{display:none!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved{border:0!important;border-top:1px dashed var(--line)!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:12px 0 2px!important;margin:0!important;font-size:.86rem!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;color:var(--muted)}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxhl{font-size:inherit!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxtext{font-size:inherit!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxtext{font-weight:500!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxn::before{content:'·';display:inline-block;margin:0 6px;opacity:.7}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxdot{margin:0 6px!important;opacity:.7}
+
 </style>
 </head>
 <body>
@@ -8183,10 +8221,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       '<div class="psperf"></div><div class="psday"><div class="psgrid"><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></section>'; }
   function openPass(sec){ var all=[].slice.call(document.querySelectorAll('#v-home .hday')); if(!all.length) all=[sec]; var trip=txt(sec,'.trip span')||'Your trip';
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
-    function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')) ps.hidden=true; },340); }
+    function close(){ ps.classList.remove('in'); document.documentElement.classList.add('ps-closing'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')){ ps.hidden=true; document.documentElement.classList.remove('ps-open','ps-closing'); } },300); }
     var box=ps.querySelector('.passbox');
     box.innerHTML='<div class="pshd"><div class="pshl"><b>Trip pass</b><small>'+trip+' · '+all.length+' days</small></div><div class="pshr"><button type="button" class="shclose psshare" aria-label="Share trip"><svg viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12"/></svg></button><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>'+
-      '<p class="psnote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg><span>Scan a code to open that day. Not a ticket.</span></p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
+      '<p class="psnote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg><span>Scan a day\'s code to open its plan</span></p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
     box.querySelector('.shclose:not(.psshare)').onclick=close;
     if(!box.__drag){ box.__drag=1; var sy=null,dd=0; box.addEventListener('touchstart',function(e){ sy=box.scrollTop<=0?e.touches[0].clientY:null; dd=0; },{passive:true}); box.addEventListener('touchmove',function(e){ if(sy===null) return; dd=e.touches[0].clientY-sy; if(dd>0&&box.scrollTop<=0){ box.style.transition='none'; box.style.transform='translateY('+dd*0.6+'px)'; } },{passive:true}); box.addEventListener('touchend',function(){ if(sy===null) return; sy=null; box.style.transition=''; box.style.transform=''; if(dd>90) ps.__close(); },{passive:true}); }
     ps.__close=close;
@@ -8206,7 +8244,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 
 /* day titles read "Annavaram to Vizag" with capitalised places; weather line says where it's for */
 (function(){ function cap(s){ return s.replace(/(^|\s)([a-z])/g,function(m,p,c){ return p+c.toUpperCase(); }); }
-  document.querySelectorAll('.hday .summary h2, #v-days .day .summary h2').forEach(function(h){ if(h.dataset.parts) return; var ps=[]; h.childNodes.forEach(function(n){ if(n.nodeType===3&&n.textContent.trim()) ps.push(cap(n.textContent.trim())); }); if(ps.length<2) return; h.dataset.parts=ps.join('|'); h.innerHTML=ps.slice(0,-1).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto"> to </span>')+'<span class="tto"> to</span><br><span>'+ps[ps.length-1]+'</span>'; h.classList.add('two'); });
+  document.querySelectorAll('.hday .summary h2, #v-days .day .summary h2').forEach(function(h){ if(h.dataset.parts) return; var ps=[]; h.childNodes.forEach(function(n){ if(n.nodeType===3&&n.textContent.trim()) ps.push(cap(n.textContent.trim())); }); if(ps.length<2) return; h.dataset.parts=ps.join('|'); h.innerHTML=ps.slice(0,-1).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto"> to </span>')+'<br class="b3"><span class="tto"> to</span><br><span>'+ps[ps.length-1]+'</span>'; h.classList.add('two'); });
   var P=[['Vizag',17.69,83.22],['Araku',18.33,82.87],['Vanjangi',18.05,82.7],['Annavaram',17.28,82.4]];
   document.querySelectorAll('.wx[data-lat]').forEach(function(w){ if(w.querySelector('.wxloc')) return; var la=+w.dataset.lat, lo=+w.dataset.lon, best=null, bd=1e9; P.forEach(function(p){ var d=Math.hypot(p[1]-la,p[2]-lo); if(d<bd){ bd=d; best=p[0]; } }); if(!best||bd>.3) return; var s=document.createElement('span'); s.className='wxloc'; s.textContent=best; var d=document.createElement('span'); d.className='wxdot'; d.textContent='·'; w.insertBefore(d,w.firstChild); w.insertBefore(s,w.firstChild); }); })();
 /* Home opens on today's day of the trip when the trip is under way */
@@ -8233,6 +8271,12 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   document.querySelectorAll('.dalt.dspend').forEach(function(pe){ var tot=pe.querySelector('.dptot'), w=pe.closest('.hday,.day'), wx=w&&w.querySelector('.wx[data-date]'); if(!tot||!wx||pe.querySelector('.dpdate')) return; var p=wx.dataset.date.split('-');
     var row=document.createElement('div'); row.className='dptop'; row.innerHTML='<div class="dpdate"><b>'+(+p[2])+'</b><small>'+M[+p[1]-1]+'</small></div>'; tot.parentNode.insertBefore(row,tot); row.appendChild(tot); }); })();
+
+/* Home ticket: the day's stops run as a ticker under the tear line; the weather for that day's place sits where the stops line was */
+(function(){ document.querySelectorAll('#v-home .hday').forEach(function(sec){ var sh=sec.querySelector('.summary > .shead.tkhead'), wx=sh&&sh.querySelector('.wx'), hs=sec.querySelector('.hspan'); if(!wx||!hs||sec.querySelector('.tkticker')) return;
+  var items=[].map.call(hs.querySelectorAll(':scope > span'),function(s){ return '<span>'+s.innerHTML+'</span>'; }).join('<i class="tkdot">·</i>');
+  var tk=document.createElement('div'); tk.className='tkticker'; tk.setAttribute('aria-label',hs.textContent.replace(/\s+/g,' ').trim()); tk.innerHTML='<div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div>';
+  wx.parentNode.insertBefore(tk,wx); hs.parentNode.insertBefore(wx,hs); wx.classList.add('wxmoved'); hs.classList.add('hsgone'); }); })();
 
 </script>
 
