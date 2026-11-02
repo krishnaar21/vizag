@@ -4444,6 +4444,30 @@ html.ps-closing .psbg2{opacity:0}
 :root:root:root:root:root body #v-home .hday .wx.wxmoved .wxn::before{content:'·';display:inline-block;margin:0 6px;opacity:.7}
 :root:root:root:root:root body #v-home .hday .wx.wxmoved .wxdot{margin:0 6px!important;opacity:.7}
 
+/* ===== v142 ===== */
+:root:root.ts-pill .oktoast{box-shadow:0 0 0 2px color-mix(in srgb,var(--ink) 5%,transparent),0 0 22px color-mix(in srgb,var(--ink) 14%,transparent),0 10px 30px rgba(0,0,0,.26)!important}
+.dpdate{border:1px solid var(--line)}
+.dpleg{margin-bottom:6px!important}
+.dpmeta{margin-top:18px!important}
+/* place and weather as icon rows under the hotel */
+.wxlocrow{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.88rem;color:var(--muted)}
+.wxlocrow svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.wxlocrow .wxloc{font-weight:500}
+html:not(.dv-spend) .wxlocrow{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved{border-top:0!important;padding:0!important;margin:8px 0 2px!important;display:flex!important;align-items:center;gap:0}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico{display:inline-flex!important;align-items:center;margin-right:8px;flex:none}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico .ie{display:none!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico .il{display:inline-flex!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico .ph{width:16px!important;height:16px!important;color:var(--muted)}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxhl{font-weight:600!important;color:var(--ink)}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico .ic{border:0!important;background:none!important;box-shadow:none!important;width:auto!important;height:auto!important;padding:0!important;border-radius:0!important;display:inline-flex!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved{min-height:22px}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxrowico{border:0!important;background:none!important;box-shadow:none!important;width:16px!important;height:16px!important;padding:0!important;border-radius:0!important;margin-left:0!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved{font-size:.88rem!important}
+.wxlocrow{margin-top:8px!important}
+html:not(.dv-spend) .wxlocrow{margin-top:12px!important}
+
 </style>
 </head>
 <body>
@@ -8276,7 +8300,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ document.querySelectorAll('#v-home .hday').forEach(function(sec){ var sh=sec.querySelector('.summary > .shead.tkhead'), wx=sh&&sh.querySelector('.wx'), hs=sec.querySelector('.hspan'); if(!wx||!hs||sec.querySelector('.tkticker')) return;
   var items=[].map.call(hs.querySelectorAll(':scope > span'),function(s){ return '<span>'+s.innerHTML+'</span>'; }).join('<i class="tkdot">·</i>');
   var tk=document.createElement('div'); tk.className='tkticker'; tk.setAttribute('aria-label',hs.textContent.replace(/\s+/g,' ').trim()); tk.innerHTML='<div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div>';
-  wx.parentNode.insertBefore(tk,wx); hs.parentNode.insertBefore(wx,hs); wx.classList.add('wxmoved'); hs.classList.add('hsgone'); }); })();
+  wx.parentNode.insertBefore(tk,wx); hs.parentNode.insertBefore(wx,hs); wx.classList.add('wxmoved'); hs.classList.add('hsgone');
+  var loc=wx.querySelector('.wxloc'); if(loc){ var d=loc.nextElementSibling; if(d&&d.classList.contains('wxdot')) d.remove(); var lr=document.createElement('div'); lr.className='wxlocrow'; lr.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>'; lr.appendChild(loc); wx.parentNode.insertBefore(lr,wx); }
+  var ico=wx.querySelector('.wxinl'); if(ico){ ico.classList.remove('wxinl'); ico.classList.add('wxrowico'); } }); })();
 
 </script>
 
