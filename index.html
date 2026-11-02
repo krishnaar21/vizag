@@ -4841,6 +4841,15 @@ html:not([data-view="profile"]) .setbeach{display:none!important}
 #settings-profile{padding-bottom:96px}
 .ctrows{border-top:0!important;padding-top:0!important;margin-top:10px!important}
 
+/* ===== v157 ===== */
+.tki .tkm{font-size:.8rem!important;color:var(--muted)}
+html.homeone #v-home .vzhero .shead h2{gap:0!important;padding-left:0!important}
+html.homeone #v-home .vzhero .shead h2 .vzmeta{margin:0!important;padding:0!important}
+/* weather roll: one clean line */
+:root:root:root body #v-home .wx.wxmoved .wxroll{display:block!important;height:22px!important;line-height:22px!important;overflow:hidden!important;flex:1;min-width:0}
+:root:root:root body #v-home .wx.wxmoved .wxrr > span{display:block!important;height:22px!important;line-height:22px!important}
+html.homeone #v-home .vzhero .shead,html.homeone #v-home .vzhero .shead h2,html.homeone #v-home .vzhero .shead h2 .vzmeta{text-align:left!important}
+
 </style>
 </head>
 <body>
@@ -8483,7 +8492,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
 (function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
-  var lt=performance.now(), v=0; window.addEventListener('scroll',function(){ var y=window.scrollY, now=performance.now(), dt=Math.max(1,now-lt), dy=Math.abs(y-lastY); lastY=y; lt=now; v=v*0.6+(dy/dt)*0.4; if(y>40&&v>1.6) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); v=0; },600); },{passive:true}); })();
+  var lt=performance.now(), v=0; window.addEventListener('scroll',function(){ var y=window.scrollY, now=performance.now(), dt=Math.max(1,now-lt), dy=Math.abs(y-lastY); lastY=y; lt=now; v=v*0.6+(dy/dt)*0.4; if(y>40&&v>1.6&&['home','more','profile'].indexOf(r.dataset.view)<0) r.classList.add('navhide'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('navhide'); v=0; },600); },{passive:true}); })();
 
 
 /* back-to-top sits on <body> so it is positioned against the screen, not a scrolling container */
@@ -8592,7 +8601,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     if(reel.__i===n){ setTimeout(function(){ reel.style.transition='none'; reel.style.transform='translateY(0)'; reel.__i=0; },420); } }); },3000); })();
 /* Home layout: trip card and day card as one card */
 (function(){ var r=document.documentElement, k='vizag-homeone', v='sep'; try{ v=localStorage.getItem(k)||'sep'; }catch(e){}
-  function set(x){ v=x; r.classList.toggle('pref-one',x==='one'); r.classList.toggle('homeone',x==='one'&&!r.classList.contains('ct-on')); if(x==='one'&&set.ready){ var tb=document.querySelector('[data-tview="3"]'), db=document.querySelector('[data-dview="spend"]'); if(tb&&tb.getAttribute('aria-pressed')!=='true') tb.click(); if(db&&db.getAttribute('aria-pressed')!=='true') db.click(); } document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  function set(x){ v=x; r.classList.toggle('pref-one',x==='one'); r.classList.toggle('homeone',x==='one'&&!r.classList.contains('ct-on')); if(x==='one'){ var tb=document.querySelector('[data-tview="3"]'), db=document.querySelector('[data-dview="spend"]'); if(tb&&tb.getAttribute('aria-pressed')!=='true') tb.click(); if(db&&db.getAttribute('aria-pressed')!=='true') db.click(); } document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); set.ready=1;
   /* merged applies to the sample trip's card; planner trips keep split cards */
   new MutationObserver(function(){ var want=v==='one'&&!r.classList.contains('ct-on'); if(r.classList.contains('homeone')!==want) r.classList.toggle('homeone',want); }).observe(r,{attributes:true,attributeFilter:['class']}); })();
@@ -8616,7 +8625,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* day header as a ticket: route on the left, a trip-pass QR on the right; tap the QR for the pass */
 (function(){ function hash(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
   var BASE=/github\.io$/.test(location.hostname)?location.origin+location.pathname.replace(/[^\/]*$/,''):'https://krishnaar21.github.io/vizag/';
-  function dayURL(sec){ return BASE+'#day-'+(sec.dataset.day||1); }
+  function dayURL(sec){ return sec.dataset.day?BASE+'#day-'+sec.dataset.day:BASE; }
   function qr(text,size){ var q; try{ q=new VZQR.QRCode(-1,VZQR.L.M); q.addData(text); q.make(); }catch(e){ return ''; }
     var n=q.getModuleCount(), m=2, t=n+m*2, d='';
     for(var y=0;y<n;y++) for(var x=0;x<n;x++) if(q.isDark(y,x)) d+='M'+(x+m)+' '+(y+m)+'h1v1h-1z';
@@ -8630,15 +8639,15 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     b.addEventListener('click',function(e){ e.stopPropagation(); openPass(sec); });
     var pl=function(){ notch(sec.querySelector('.summary'),perf); }; setTimeout(pl,60); window.addEventListener('resize',pl); new MutationObserver(pl).observe(sec,{attributes:true,attributeFilter:['hidden']}); }
   function notch(c,perf){ if(!c||!perf||!perf.offsetParent) return; var cr=c.getBoundingClientRect(), pr=perf.getBoundingClientRect(), cs=getComputedStyle(c); perf.style.setProperty('--nl',(cr.left-pr.left)+'px'); perf.style.setProperty('--nr',(pr.right-cr.right)+'px'); perf.style.setProperty('--bw',cs.borderLeftWidth); }
-  window.__notch=notch;
+  window.__notch=notch; window.__qr=function(t,s){ return qr(t,s); }; window.__openPass=function(s){ openPass(s); };
   function dayHTML(sec,idx,total){ var sh=sec.querySelector('.summary > .shead'), h2=sh.querySelector('h2'), parts=(h2.dataset.parts||h2.textContent).split('|');
     var F=facts(sec), sp=[].map.call(sec.querySelectorAll('.hspan > span'),function(s){ return s.textContent.trim(); }), re=/\d{1,2}:\d{2}\s*[AP]M|\d{2}:\d{2}/;
     var t1=((sp[1]||'').match(re)||[''])[0], t2=((sp[2]||'').match(re)||[''])[0], date=txt(sh,'.label').replace(/\s*·.*$/,'');
-    return '<section class="pstk" data-pd="'+sec.dataset.day+'"><div class="pstop"><div class="psdate"><span>Day '+(idx+1)+' of '+total+'</span><span>'+date+'</span></div>'+
+    return '<section class="pstk" data-pd="'+(sec.dataset.day||sec.dataset.chv)+'"><div class="pstop"><div class="psdate"><span>Day '+(idx+1)+' of '+total+'</span><span>'+date+'</span></div>'+
       '<div class="psmain"><div class="psrt"><div class="pxst"><small>From</small><b>'+parts[0]+'</b></div><div class="pxst"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div><div class="psqr">'+qr(dayURL(sec),96)+'</div></div>'+
       '<div class="pstimes"><div><small>First stop</small><b>'+(t1||'—')+'</b></div><i></i><div class="r"><small>Last stop</small><b>'+(t2||'—')+'</b></div></div></div>'+
       '<div class="psperf"></div><div class="psday"><div class="psgrid"><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></section>'; }
-  function openPass(sec){ var all=[].slice.call(document.querySelectorAll('#v-home .hday')); if(!all.length) all=[sec]; var trip=txt(sec,'.trip span')||'Your trip';
+  function openPass(sec){ var all=[].slice.call(document.querySelectorAll(document.documentElement.classList.contains('ct-on')?'#v-home .ctv .hday':'#v-home .vz .hday')); if(!all.length) all=[sec]; var trip=txt(sec,'.trip span')||((document.querySelector('#v-home .ctv .cthero .tswitch')||{}).textContent||'').trim()||'Your trip';
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
     function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')) ps.hidden=true; },320); }
     var box=ps.querySelector('.passbox');
@@ -8649,7 +8658,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     ps.__close=close;
     box.querySelector('.psshare').onclick=function(){ var data={title:trip,text:trip+' · '+all.length+' days. Day by day plan:',url:BASE}; if(navigator.share){ navigator.share(data).catch(function(){}); return; } try{ navigator.clipboard.writeText(BASE).then(function(){ window.__toast&&window.__toast('Trip link copied'); }); }catch(e){} };
     ps.hidden=false; document.documentElement.classList.add('ps-open');
-    requestAnimationFrame(function(){ ps.classList.add('in'); box.querySelectorAll('.pstk').forEach(function(s){ notch(s,s.querySelector('.psperf')); }); var t=box.querySelector('[data-pd="'+sec.dataset.day+'"]'); if(t) box.scrollTop=(t===box.querySelector('.pstk'))?0:t.offsetTop-80; }); }
+    requestAnimationFrame(function(){ ps.classList.add('in'); box.querySelectorAll('.pstk').forEach(function(s){ notch(s,s.querySelector('.psperf')); }); var t=box.querySelector('[data-pd="'+(sec.dataset.day||sec.dataset.chv)+'"]'); if(t) box.scrollTop=(t===box.querySelector('.pstk'))?0:t.offsetTop-80; }); }
   document.querySelectorAll('.hday, #v-days .day').forEach(decorate); })();
 
 /* combined card: day route + QR on top, trip name + date roller sits under it */
@@ -8720,10 +8729,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var meta=[mi('days')&&mi('days')+' days',mi('places')&&mi('places')+' places',mi('distance')].filter(Boolean).join(' · ');
   var ed=document.getElementById('vz-edit'), pen=ed?ed.innerHTML:'';
   document.querySelectorAll('#v-home .hday .tkhead').forEach(function(h){ if(h.querySelector('.tkinfo')) return; var row=h.querySelector('.trow'); if(!row) return;
-    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+((h.querySelector('.tkqr')||{}).innerHTML||'')+'</button>';
+    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small><small class="tkm">'+meta+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+((h.querySelector('.tkqr')||{}).innerHTML||'')+'</button>';
     h.insertBefore(d,row); d.querySelector('.tkqr2').onclick=function(e){ e.stopPropagation(); var q=h.querySelector('.tkqr'); if(q) q.click(); };
     d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
-  var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; mt.textContent=meta; h2.appendChild(mt); }
+  var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; var seen=[]; document.querySelectorAll('#v-home .vz .hday .summary h2').forEach(function(t){ (t.dataset.parts||t.textContent).split('|').forEach(function(p){ p=p.trim().replace(/\s+(sights|home)$/i,''); if(p&&!/^home$/i.test(p)&&seen.indexOf(p)<0) seen.push(p); }); }); mt.textContent=seen.join(' \u00b7 ')||meta; h2.appendChild(mt); }
   /* the day's route heads the day details, just above the bar */
   document.querySelectorAll('#v-home .vz .hday').forEach(function(sec){ var t=sec.querySelector('.summary h2'); if(!t||sec.querySelector('.dayroute')) return; var ps=(t.dataset.parts||t.textContent).split('|');
     var html=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
@@ -8816,18 +8825,21 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     if(on){ var hero=ct.querySelector('.cthero'); if(hero){ var name=((hero.querySelector('.tswitch')||{}).textContent||'').trim(), dates=((hero.querySelector('.shead .label')||{}).textContent||'').trim();
       var mv=function(k){ var v=''; hero.querySelectorAll('.sgrid .mi').forEach(function(m){ if(((m.querySelector('.mk')||{}).textContent||'').trim().toLowerCase()===k) v=((m.querySelector('.mv')||{}).textContent||'').trim(); }); return v; };
       var meta=[mv('days')&&mv('days')+' days',mv('places')&&mv('places')+' places',mv('distance')].filter(Boolean).join(' \u00b7 ');
+      var tw=[]; ct.querySelectorAll('.ctday2 .summary > .shead h2').forEach(function(h){ h.textContent.split(/\s*\u2192\s*/).forEach(function(p){ p=p.trim(); if(p&&p!=='Travel day'&&tw.indexOf(p)<0) tw.push(p); }); }); var towns=tw.join(' \u00b7 ')||meta;
       var days=[].slice.call(ct.querySelectorAll('.ctday2')), N=days.length, M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
       days.forEach(function(sec,i){ var sum=sec.querySelector('.summary'); if(!sum||sum.querySelector('.ctmhead')) return; var sh=sum.querySelector('.shead'), lab=((sh&&sh.querySelector('.label'))||{}).textContent||'', h2=((sh&&sh.querySelector('h2'))||{}).textContent||'';
         var hs=sum.querySelector('.hspan'), items=hs?[].map.call(hs.querySelectorAll(':scope > span'),function(s){ return '<span>'+s.innerHTML+'</span>'; }).join('<i class="tkdot">\u00b7</i>'):'';
-        var head=document.createElement('div'); head.className='ctmhead tkhead'; head.innerHTML='<div class="tkinfo"><button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button></div><div class="tkperf"></div>'+(items?'<div class="tkticker"><div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div></div>':'');
-        var row=document.createElement('div'); row.className='ctmrow'; row.innerHTML='<span class="ctmeta">'+meta+'</span><div class="ctpick"><button type="button" class="dpa" data-cm="-1" aria-label="Previous day"'+(i?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><b>'+(i+1)+'/'+N+'</b><button type="button" class="dpa" data-cm="1" aria-label="Next day"'+(i<N-1?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
+        var h2el=sh&&sh.querySelector('h2'); if(h2el&&!h2el.dataset.parts) h2el.dataset.parts=h2.split(/\s*\u2192\s*/).join('|');
+        var head=document.createElement('div'); head.className='ctmhead tkhead'; head.innerHTML='<div class="tkinfo"><button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small><small class="tkm">'+meta+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+(window.__qr?window.__qr(location.href.split('#')[0],84):'')+'</button></div><div class="tkperf"></div>'+(items?'<div class="tkticker"><div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div></div>':'');
+        var row=document.createElement('div'); row.className='ctmrow'; row.innerHTML='<span class="ctmeta">'+towns+'</span><div class="ctpick"><button type="button" class="dpa" data-cm="-1" aria-label="Previous day"'+(i?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><b>'+(i+1)+'/'+N+'</b><button type="button" class="dpa" data-cm="1" aria-label="Next day"'+(i<N-1?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
         sum.insertBefore(row,sum.firstChild); sum.insertBefore(head,row); sum.classList.add('tkcard');
         head.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=hero.querySelector('.tswitch'); if(s) s.click(); };
+        head.querySelector('.tkqr2').onclick=function(e){ e.stopPropagation(); if(window.__openPass) window.__openPass(sec); };
         row.querySelectorAll('[data-cm]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); var c=ct.querySelector('[data-chd="'+(i+ +b.dataset.cm)+'"]'); if(c){ c.click(); window.scrollTo(0,0); } }; });
         var rt=document.createElement('div'); rt.className='dayroute ctroute'; rt.innerHTML=h2.split(/\s*\u2192\s*/).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
         var bar=sum.querySelector('.dspend .dpbar'), sb=sum.querySelector('.dspan .dsbar'); if(bar) bar.parentNode.insertBefore(rt.cloneNode(true),bar); if(sb) sb.parentNode.insertBefore(rt,sb);
         var tot=sum.querySelector('.dspend .dptot'), dm=lab.match(/(\d{1,2})\s+([A-Za-z]{3})/); if(tot&&dm&&!sum.querySelector('.dpdate')){ var mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(dm[2].toLowerCase()); var t2=document.createElement('div'); t2.className='dptop'; t2.innerHTML='<div class="dpdate"><b>'+(+dm[1])+'</b><small>'+(M[mi]||'')+'</small></div>'; tot.parentNode.insertBefore(t2,tot); t2.appendChild(tot); }
-        var sp=sum.querySelector('.dspend'); if(sp&&!sum.querySelector('.ctrows')){ var towns=h2.split(/\s*\u2192\s*/), town=towns[towns.length-1]||'', st=sp.querySelector('.dpstay'), dm2=sp.querySelector('.dpmeta');
+        var sp=sum.querySelector('.dspend'); if(sp&&!sum.querySelector('.ctrows')){ var dtw=h2.split(/\s*\u2192\s*/), town=dtw[dtw.length-1]||'', st=sp.querySelector('.dpstay'), dm2=sp.querySelector('.dpmeta');
           var rows=document.createElement('div'); rows.className='ctrows'; rows.innerHTML='<div class="wxlocrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span class="wxloc">'+town+'</span></div>';
           sp.appendChild(rows); if(st) rows.appendChild(st); if(dm2) rows.appendChild(dm2);
           var w=document.createElement('div'); w.className='wxlocrow ctwx'; w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/></svg><span>Forecast shows up two weeks before the day</span>'; rows.appendChild(w); }
