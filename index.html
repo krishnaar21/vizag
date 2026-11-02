@@ -5201,6 +5201,23 @@ html.navwave .nav{box-shadow:0 -8px 10px -8px color-mix(in srgb,var(--bg) 70%,tr
 :root:root .gav{border-radius:12px!important;corner-shape:superellipse(1.6)}
 #q-werr:not([hidden]){display:block;color:var(--danger);font-size:.8rem;margin-top:6px}
 
+/* ===== v178 ===== */
+/* planner selections use the theme ink for the selected border */
+#planner [aria-pressed="true"],#planner .pcard.on,#planner .tplr.cur,#planner .gchip.on,#planner input:focus,#planner select:focus,#planner textarea:focus{border-color:var(--ink)!important;box-shadow:0 0 0 1px var(--ink) inset!important;outline:0!important}
+#planner input:focus,#planner select:focus,#planner textarea:focus{box-shadow:0 0 0 1px var(--ink)!important}
+/* placeholders always visible */
+input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:1!important;-webkit-text-fill-color:var(--muted)}
+/* new screens */
+.abgrp .abrow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed var(--line)}
+.abrow span{color:var(--muted);font-size:.86rem}
+.abd{border-bottom:1px dashed var(--line);padding:12px 0}
+.abd summary{font-weight:600;cursor:pointer;list-style:none}
+.abd summary::after{content:'\203A';float:right;color:var(--muted);transition:transform .2s}
+.abd[open] summary::after{transform:rotate(90deg)}
+.abd p{color:var(--muted);font-size:.88rem;line-height:1.5;margin:8px 0 0}
+.plancard.pro{cursor:pointer}
+.btn .inr{margin-left:.28em}
+
 </style>
 </head>
 <body>
@@ -8773,7 +8790,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function closeSoc(save){ if(save){ prof.social=prof.social||{}; $$('#soc-body [data-pfk]').forEach(function(i){ var v=i.value.trim(); if(i.dataset.pfk==='email'){ if(v&&v!==prof.email){ if(!prof.emailPending||prof.emailPending.e!==v) prof.emailPending={e:v,t:Date.now()}; if(window.__toast) window.__toast('Verification link sent'); } else if(!v){ prof.emailPending=null; prof.email=''; prof.social.email=''; } return; } prof.social[i.dataset.pfk]=v; });
         prof.name=$('ep-name').value.trim(); prof.user=$('ep-user').value.trim(); prof.gender=eG; prof.age=$('ep-age').value; saveF(); if(window.__renderAcct) window.__renderAcct(); }
       soc.hidden=true; if(fromProf){ drawProfile(); ps.hidden=false; } else $('scrim').hidden=true; }
-    $('soc-save').addEventListener('click',function(){ closeSoc(true); }); $('soc-back').addEventListener('click',function(){ closeSoc(false); });
+    $('soc-save').addEventListener('click',function(){ var u=$('ep-user'), av=$('ep-uav'); if(u&&av&&/\bno\b/.test(av.className)&&u.value.trim()!==(prof.user||'')){ u.focus(); av.scrollIntoView({block:'center'}); return; } closeSoc(true); }); $('soc-back').addEventListener('click',function(){ closeSoc(false); });
     soc.addEventListener('click',function(e){ e.stopPropagation(); });
     function openProf(){ if(typeof openSheet==='function') openSheet(false); drawProfile(); ps.hidden=false; $('scrim').hidden=false; }
     function closeProf(){ ps.hidden=true; $('scrim').hidden=true; }
@@ -9405,6 +9422,56 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* first paint: skeleton until the page has settled */
 (function(){ var r=document.documentElement; r.classList.add('skel','skel-boot'); function done(){ setTimeout(function(){ r.classList.add('skel-out'); r.classList.remove('skel','skel-boot'); setTimeout(function(){ r.classList.remove('skel-out'); },450); },350); }
   if(document.readyState==='complete') done(); else window.addEventListener('load',done); setTimeout(done,2500); })();
+
+/* ---------- New screens: About & legal, Notifications, Delete data, Plans checkout / manage ---------- */
+(function(){ var sp=document.getElementById('settings-profile'); if(!sp) return; var sc=document.getElementById('scrim');
+  function G(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } } function S(k,v){ try{ v==null?localStorage.removeItem(k):localStorage.setItem(k,v); }catch(e){} }
+  var X='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  function sheet(id,title,body,full){ var s=document.createElement('div'); s.className='sheet lsheet psheet'+(full?' full plansheet':''); s.id=id; s.hidden=true; s.setAttribute('role','dialog'); s.setAttribute('aria-label',title);
+    s.innerHTML='<div class="shtitle"><span>'+title+'</span><button type="button" class="shclose" aria-label="Close">'+X+'</button></div>'+body; document.body.appendChild(s);
+    s.querySelector('.shclose').onclick=function(){ close(s); }; s.addEventListener('click',function(e){ e.stopPropagation(); }); return s; }
+  function open(s){ document.querySelectorAll('.sheet:not(.inpage):not([hidden])').forEach(function(o){ if(o!==s) o.hidden=true; }); s.hidden=false; if(sc) sc.hidden=false; s.scrollTop=0; }
+  function close(s){ s.hidden=true; if(sc&&!document.querySelector('.sheet:not(.inpage):not([hidden])')) sc.hidden=true; }
+  if(sc) sc.addEventListener('click',function(){ ['about-sheet','notif-sheet','checkout-sheet','manage-sheet'].forEach(function(i){ var s=document.getElementById(i); if(s&&!s.hidden) close(s); }); });
+  /* Help group gets About & legal; Account group gets Notifications and Delete data */
+  var help=document.getElementById('cs-open'), hg=help&&help.closest('.setgrp');
+  if(hg) hg.insertAdjacentHTML('beforeend','<div class="setrow"><span class="setl">About &amp; legal<small>Version, privacy policy and terms</small></span><button type="button" class="setbtn" id="ab-open">Open</button></div>');
+  var dev=sp.querySelector('.devcap'); var acap=document.createElement('div'); acap.className='setcap'; acap.textContent='Notifications & data'; var ag=document.createElement('div'); ag.className='setgrp';
+  ag.innerHTML='<div class="setrow"><span class="setl">Notifications<small>Trip-day reminders, weather and renewals</small></span><button type="button" class="setbtn" id="nt-open">Manage</button></div><div class="setrow"><span class="setl">Delete my data<small>Removes trips, places and profile from this phone</small></span><button type="button" class="setbtn devdanger" id="del-open">Delete</button></div>';
+  var hcap=[].find.call(sp.querySelectorAll('.setcap'),function(c){ return c.textContent.trim()==='Help'; }); var anchor=hcap||dev; if(anchor){ sp.insertBefore(acap,anchor); sp.insertBefore(ag,anchor); } else { sp.appendChild(acap); sp.appendChild(ag); }
+  /* About */
+  var ver='Beta · build '+((document.querySelector('meta[name=build]')||{}).content||new Date().toISOString().slice(0,10));
+  var ab=sheet('about-sheet','About & legal','<div class="pfgrp abgrp"><div class="abrow"><b>Trip planner</b><span>'+ver+'</span></div>'+
+    '<details class="abd"><summary>Privacy policy</summary><p>Your trips, places and profile are stored on this phone. If you sign in, they are also saved to your account so they show up on your other devices. We don’t sell your data. Weather comes from Open-Meteo using only the trip’s coordinates.</p></details>'+
+    '<details class="abd"><summary>Terms of use</summary><p>Plans, timings and prices are estimates to help you plan. Check opening hours, tickets and travel conditions before you go.</p></details>'+
+    '<details class="abd"><summary>Licences</summary><p>QR codes by Kazuhiko Arase (MIT). Icons from Hugeicons, Phosphor and Lucide. Place photos from Wikipedia and Openverse under their own licences.</p></details></div>');
+  document.getElementById('ab-open').onclick=function(e){ e.stopPropagation(); open(ab); };
+  /* Notifications */
+  var NT=[['trip','Trip-day reminders','A morning note with the day’s first stop'],['weather','Weather alerts','Rain or heat warnings on trip days'],['renew','Plan renewals','Two days before Pro renews'],['tips','Tips and ideas','Occasional trip ideas for places you like']];
+  var nt=sheet('notif-sheet','Notifications','<div class="pfgrp">'+NT.map(function(n){ return '<div class="setrow"><span class="setl">'+n[1]+'<small>'+n[2]+'</small></span><div class="seg" role="group" aria-label="'+n[1]+'"><button type="button" data-nt="'+n[0]+'" data-v="0">Off</button><button type="button" data-nt="'+n[0]+'" data-v="1">On</button></div></div>'; }).join('')+'</div><p class="csnote">Phone notifications need the app added to your Home Screen.</p>');
+  function ntPaint(){ var st={}; try{ st=JSON.parse(G('vizag-notif')||'{}'); }catch(e){} nt.querySelectorAll('[data-nt]').forEach(function(b){ var on=st[b.dataset.nt]!==false&&!(b.dataset.nt==='tips'&&st.tips!==true); b.setAttribute('aria-pressed',(b.dataset.v==='1')===on?'true':'false'); }); return st; }
+  nt.addEventListener('click',function(e){ var b=e.target.closest('[data-nt]'); if(!b) return; var st=ntPaint(); st[b.dataset.nt]=b.dataset.v==='1'; S('vizag-notif',JSON.stringify(st)); ntPaint(); });
+  document.getElementById('nt-open').onclick=function(e){ e.stopPropagation(); ntPaint(); open(nt); };
+  /* Delete data */
+  document.getElementById('del-open').onclick=function(e){ e.stopPropagation(); if(window.__confirm) window.__confirm('Delete all your data?','Your trips, saved places, groups and profile will be removed from this phone. This can’t be undone.','Delete everything',function(){ try{ Object.keys(localStorage).filter(function(k){ return /^vizag-/.test(k); }).forEach(function(k){ localStorage.removeItem(k); }); }catch(x){} location.reload(); },'page'); };
+  /* Plans: checkout, success, manage, expired */
+  var co=sheet('checkout-sheet','Upgrade to Pro','<div class="plcard pro"><div class="plh"><b>Pro · monthly</b><span>₹99 / month</span></div><ul><li>Cancel any time in Settings</li><li>Renews every month on the same date</li></ul></div><button type="button" class="btn full" id="co-pay">Pay ₹99</button><p class="csnote">Test checkout. No money is taken.</p>');
+  co.querySelector('#co-pay').onclick=function(){ var b=this; b.disabled=true; b.textContent='Processing…'; setTimeout(function(){ b.disabled=false; b.textContent='Pay ₹99'; var r=new Date(); r.setMonth(r.getMonth()+1); S('vizag-plan',JSON.stringify({plan:'pro',renew:r.toISOString().slice(0,10)})); close(co); if(window.__paintPlan) window.__paintPlan(); if(window.__toast) window.__toast('You’re on Pro now'); },1200); };
+  var up=document.getElementById('pl-upgrade'); if(up) up.onclick=function(){ var ps=document.getElementById('plans-sheet'); if(ps) ps.hidden=true; open(co); };
+  var mg=sheet('manage-sheet','Your plan','<div class="plcard pro"><div class="plh"><b>Pro</b><span id="mg-renew"></span></div><ul><li>Unlimited trips and groups</li><li>AI suggestions and chat</li></ul></div><button type="button" class="btn ghost full" id="mg-cancel">Cancel Pro</button>');
+  mg.querySelector('#mg-cancel').onclick=function(){ close(mg); window.__confirm&&window.__confirm('Cancel Pro?','You’ll keep Pro until the renewal date, then move to Free. Your trips stay.','Cancel Pro',function(){ S('vizag-plan',null); if(window.__paintPlan) window.__paintPlan(); if(window.__toast) window.__toast('Pro cancelled'); },'page'); };
+  document.addEventListener('click',function(e){ var c=e.target.closest&&e.target.closest('.plancard.pro'); if(!c) return; var p={}; try{ p=JSON.parse(G('vizag-plan')||'{}'); }catch(x){} var r=mg.querySelector('#mg-renew'); r.textContent=p.renew?'Renews '+new Date(p.renew+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'Active'; open(mg); });
+  /* expired Pro shows as an expired card */
+  var op=window.__paintPlan; if(op){ window.__paintPlan=function(){ op(); var p={}; try{ p=JSON.parse(G('vizag-plan')||'{}'); }catch(x){} if(p.plan==='pro'&&p.renew&&p.renew<new Date().toISOString().slice(0,10)){ var t=document.querySelector('.plantop'); if(t) t.innerHTML='<div class="plancard soon"><div><b>Pro has ended</b><span>You’re back on Free. Renew to get Pro features back.</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Renew</button></div>'; } }; window.__paintPlan(); }
+  /* dev: simulate expired Pro */
+  var drow=document.querySelector('[data-devpro]'); drow=drow&&drow.closest('.setrow'); if(drow) drow.insertAdjacentHTML('afterend','<div class="setrow"><span class="setl">Simulate expired Pro<small>Pro that ended yesterday</small></span><button type="button" class="setbtn devbtn" id="dev-exp">Set</button></div>');
+  var de=document.getElementById('dev-exp'); if(de) de.onclick=function(e){ e.stopPropagation(); var r=new Date(); r.setDate(r.getDate()-1); S('vizag-plan',JSON.stringify({plan:'pro',renew:r.toISOString().slice(0,10)})); window.__paintPlan&&window.__paintPlan(); window.__toast&&window.__toast('Pro set to expired'); }; })();
+
+/* ---------- Edge cases ---------- */
+/* old or out-of-range day links (#day-N) open the nearest valid day instead of nothing */
+(function(){ var m=location.hash.match(/^#day-(\d+)$/); if(!m) return; setTimeout(function(){ var cs=[].slice.call(document.querySelectorAll('#v-days .chip[data-d], #v-home .hseg .hchip')); if(!cs.length) return; var n=Math.max(1,Math.min(+m[1],cs.length)); var c=cs[n-1]; if(c&&c.getAttribute('aria-pressed')!=='true') c.click(); },600); })();
+/* saving while offline: say where it went */
+(function(){ var t0=window.__toast; if(!t0) return; window.__toast=function(m){ if(navigator.onLine===false&&/^(Trip (created|updated)|Review saved|Rating saved)/.test(m||'')) m=m+' on this phone. It will sync when you’re online'; return t0(m); }; })();
 
 </script>
 
