@@ -4084,10 +4084,10 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
 .dpmeta .dproll .wxreel > span{height:1.45em}
 .dpmeta b{font-weight:600;color:var(--muted);margin-right:4px}
 /* Home cards combined */
-html.homeone #v-home .vz > .vzhero,html.homeone #v-home .ctv .cthero{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;margin-bottom:0!important;border-bottom:0!important}
+html.homeone #v-home .vzhero,html.homeone #v-home .ctv .cthero{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;margin-bottom:0!important;border-bottom:0!important}
 html.homeone #v-home .vz > .chips{padding:0!important;background:none!important;position:static!important}
 html.homeone #v-home .vz > .chips .seg-days.hseg{border-radius:0!important;border-top:1px dashed var(--line)!important}
-html.homeone #v-home .vz > .vzhero + .tvdots + .chips,html.homeone #v-home .vz > .vzhero + .chips{margin-top:0!important}
+html.homeone #v-home .vzhero + .tvdots + .chips,html.homeone #v-home .vzhero + .chips{margin-top:0!important}
 html.homeone #v-home .vz > .chips .seg-days.hseg{border-left:1px solid var(--line)!important;border-right:1px solid var(--line)!important}
 
 /* ===== v132 ===== */
@@ -4095,11 +4095,11 @@ html.homeone #v-home .vz > .chips .seg-days.hseg{border-left:1px solid var(--lin
 .dpmeta .dproll .wxreel > span{display:flex!important;align-items:center;gap:8px}
 .dpmeta .dproll .ph{width:16px;height:16px;color:var(--muted)}
 /* Combined Home card: one compact card — trip name, days, then the day */
-html.homeone :root, html.homeone #v-home .vz > .vzhero{display:block!important;padding:0!important}
-html.homeone #v-home .vz > .vzhero > :is(.tdate,.ctcover,.sgrid),html.homeone #v-home .vz > .vzhero .tmeta,html.homeone #v-home .vz > .vzhero .hdesc,html.homeone #v-home .vz > .vzhero .shead .label{display:none!important}
-html.homeone body #v-home .vz > .vzhero > .shead{margin:0!important;padding:14px 56px 4px 16px!important;background:none!important}
-html.homeone body #v-home .vz > .vzhero .shead h2{font-size:.95rem!important;color:var(--muted)!important;font-weight:600!important}
-html.homeone body #v-home .vz > .vzhero .ctedit{top:8px!important;transform:none!important;width:32px!important;height:32px!important;border:0!important;background:none!important}
+html.homeone :root, html.homeone #v-home .vzhero{display:block!important;padding:0!important}
+html.homeone #v-home .vzhero > :is(.tdate,.ctcover,.sgrid),html.homeone #v-home .vzhero .tmeta,html.homeone #v-home .vzhero .hdesc,html.homeone #v-home .vzhero .shead .label{display:none!important}
+html.homeone:root body #v-home .vzhero > .shead{margin:0!important;padding:14px 56px 4px 16px!important;background:none!important}
+html.homeone:root body #v-home .vzhero .shead h2{font-size:.95rem!important;color:var(--muted)!important;font-weight:600!important}
+html.homeone:root body #v-home .vzhero .ctedit{top:8px!important;transform:none!important;width:32px!important;height:32px!important;border:0!important;background:none!important}
 html.homeone #v-home .vz > .chips .seg-days.hseg{border-top:0!important;background:var(--surface)!important;height:52px!important}
 html.homeone #v-home .hday .summary .shead .label,html.homeone #v-home .hday .hspan{display:none!important}
 html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
@@ -4130,12 +4130,12 @@ html.homeone #v-home .vzhero .dpick{display:flex;align-items:center;gap:2px;posi
 .dpitem{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:transform .3s cubic-bezier(.3,.7,.2,1),opacity .3s}
 .dpitem b{font-size:.9rem;font-weight:700}
 .dpitem small{font-size:.66rem;color:var(--muted)}
-html.homeone body #v-home .vz > .vzhero > .shead{padding:14px 150px 10px 16px!important}
-html.homeone body #v-home .vz > .vzhero .shead h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-html.homeone #v-home .vz > .vzhero{border-bottom:1px solid var(--line)!important}
+html.homeone:root body #v-home .vzhero > .shead{padding:14px 150px 10px 16px!important}
+html.homeone:root body #v-home .vzhero .shead h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.homeone #v-home .vzhero{border-bottom:1px solid var(--line)!important}
 html.homeone #v-home .vz > .hday{margin-top:0!important}
 html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:0!important}
-:root:root:root.homeone body #v-home .vz > .vzhero > .shead{padding:14px 150px 10px 16px!important}
+:root:root:root:root.homeone body #v-home .vzhero > .shead{padding:14px 150px 10px 16px!important}
 .wx{column-gap:0!important;flex-wrap:nowrap!important;white-space:nowrap}
 .wxn{gap:0!important;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .wx > .wxdot{padding:0 6px}
@@ -4145,8 +4145,8 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
 .wxn{overflow:visible!important}
 .wxrot{display:inline-block!important;height:1.35em!important;vertical-align:-.36em!important}
 .wxrot .wxwin{top:0!important;vertical-align:top!important}
-:root:root:root.homeone body #v-home .vz > .vzhero .shead h2{max-width:calc(100% - 4px)}
-:root:root:root.homeone body #v-home .vz > .vzhero .tswitch{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:block}
+:root:root:root:root.homeone body #v-home .vzhero .shead h2{max-width:calc(100% - 4px)}
+:root:root:root:root.homeone body #v-home .vzhero .tswitch{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:block}
 .wx > .wxn{display:inline!important}
 .wx > .wxtext:not(.wxrot),.wx > .wxhl,.wx > .wxdot{vertical-align:baseline!important;position:static!important;top:auto!important;line-height:inherit!important}
 .wxrot{vertical-align:-.12em!important}
@@ -4240,6 +4240,12 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
 .psday .psgrid{grid-template-columns:1fr 1fr!important;gap:12px 16px!important}
 .psday .psqr{align-self:center;margin:0!important}
 .pstop .psarr{flex:none;margin:0 10px}.pstop .psroute > div{min-width:0}.pstop .psroute b{overflow-wrap:anywhere}
+/* trip row tucked inside the day card (combined) */
+html.homeone #v-home .vzhero.inday{border:0!important;border-top:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;margin:0!important}
+html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:var(--rc)!important;border-top-right-radius:var(--rc)!important;border-top:1px solid var(--line)!important}
+html.homeone #v-home .hday .summary > .shead{padding-top:16px!important}
+:root:root:root:root.homeone body #v-home .vzhero{display:block!important;padding:0!important;grid-template-columns:none!important}
+:root:root:root:root.homeone body #v-home .vzhero > :is(.tdate,.ctcover,.sgrid){display:none!important}
 
 </style>
 </head>
@@ -6761,6 +6767,15 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
       '<p class="psnote">The code is a reference for this day of the plan, not a ticket.</p>';
     box.querySelector('.shclose').onclick=close; var stk=box.querySelector('.pstk'), pf=box.querySelector('.psperf'); setTimeout(function(){ stk.style.setProperty('--py',(pf.getBoundingClientRect().top-stk.getBoundingClientRect().top)+'px'); },30); ps.hidden=false; document.documentElement.classList.add('ps-open'); requestAnimationFrame(function(){ ps.classList.add('in'); }); }
   document.querySelectorAll('.hday, #v-days .day').forEach(decorate); })();
+
+/* combined card: day route + QR on top, trip name + date roller sits under it */
+(function(){ var r=document.documentElement, card=document.querySelector('#v-home .vzhero'); if(!card) return; var home=card.parentNode, anchor=document.createComment('vzhero');
+  home.insertBefore(anchor,card);
+  function place(){ if(r.classList.contains('homeone')){ var d=[].find.call(document.querySelectorAll('#v-home .hday'),function(x){ return !x.hidden&&x.offsetParent!==null; })||document.querySelector('#v-home .hday:not([hidden])'); var sh=d&&d.querySelector('.summary > .shead'); if(sh&&card.previousElementSibling!==sh){ sh.after(card); card.classList.add('inday'); } }
+    else if(card.classList.contains('inday')){ anchor.after(card); card.classList.remove('inday'); } }
+  new MutationObserver(function(){ requestAnimationFrame(place); }).observe(r,{attributes:true,attributeFilter:['class']});
+  document.querySelectorAll('#v-home .hday').forEach(function(d){ new MutationObserver(function(){ requestAnimationFrame(place); }).observe(d,{attributes:true,attributeFilter:['hidden']}); });
+  setTimeout(place,60); })();
 
 </script>
 
