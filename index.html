@@ -4586,6 +4586,39 @@ html.dim body::before{transition:background-color .3s ease,z-index 0s linear 0s!
 .dpleg i{display:inline-block!important;vertical-align:middle!important;position:relative!important;top:-1px!important}
 :root:root.ts-pill .oktoast > span{white-space:nowrap}
 
+/* ===== v148 ===== */
+/* header icons balanced */
+:root:root:root:root:root body .hometop .ctedit.hedit svg,:root:root body #v-home > .hometop .hbell svg{width:21px!important;height:21px!important;display:block}
+/* weather row: conditions roll with daylight */
+.wxroll{display:inline-block;height:1.4em;line-height:1.4em;overflow:hidden;vertical-align:top;min-width:0}
+.wxrr{display:flex;flex-direction:column;animation:wxroll 9s cubic-bezier(.6,0,.3,1) infinite}
+.wxroll.still .wxrr{animation:none}
+.wxrr > span{display:block;height:1.4em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wxrr > span:not(.wxdl){font-weight:500;color:var(--ink)}
+.wxdl{color:var(--muted)}
+@keyframes wxroll{0%,40%{transform:translateY(0)}50%,90%{transform:translateY(-1.4em)}100%{transform:translateY(-2.8em)}}
+@media (prefers-reduced-motion:reduce){ .wxrr{animation:none} }
+/* icon rows: icon and label share one centre line */
+:root:root:root body #v-home .wxlocrow,:root:root:root body #v-home .dpstay,:root:root:root body #v-home .hday .wx.wxmoved{display:flex!important;align-items:center!important;line-height:1.4!important;min-height:22px}
+:root:root:root body #v-home .wxlocrow svg,:root:root:root body #v-home .dpstay svg,:root:root:root body #v-home .dpstay .ph,:root:root:root body #v-home .wx.wxmoved .wxrowico,:root:root:root body #v-home .wx.wxmoved .wxrowico svg,:root:root:root body #v-home .dpmeta .ph{display:block!important;flex:none;width:16px!important;height:16px!important;margin-top:0!important;margin-bottom:0!important;vertical-align:middle!important;position:static!important;top:auto!important}
+:root:root:root body #v-home .dpmeta .dproll{height:22px!important;line-height:22px!important}
+:root:root:root body #v-home .dpmeta .dproll .wxreel > span{height:22px!important;display:flex!important;align-items:center!important;gap:8px}
+:root:root:root body #v-home .wx.wxmoved .wxroll{height:22px;line-height:22px}
+:root:root:root body #v-home .wx.wxmoved .wxrr > span{height:22px}
+@keyframes wxroll{0%,40%{transform:translateY(0)}50%,90%{transform:translateY(-22px)}100%{transform:translateY(-44px)}}
+/* big date: dashed edge */
+.dptop .dpdate{border-style:dashed!important}
+/* planner place cards: no dotted frame on photos, lighter dividers */
+html:root:root:not(.pv-card) .pcards .pimg{overflow:hidden}
+html:root:root:not(.pv-card) .pcards .pimg.has::after{background:none!important;border:0!important}
+html:root:root:not(.pv-card) .pcards .pcard.on .pimg.has::after{border:0!important}
+html:root:root:not(.pv-card) .pcards .pcard + .pcard{background-image:repeating-linear-gradient(90deg,color-mix(in srgb,var(--ink) 14%,transparent) 0 3px,transparent 3px 6px)!important;background-size:100% 1px!important;background-repeat:no-repeat!important}
+/* nav: small nudge at the first / last page */
+nav.nav.navedge-l > ul{animation:navnudge-l .3s ease}
+nav.nav.navedge-r > ul{animation:navnudge-r .3s ease}
+@keyframes navnudge-l{40%{transform:translateX(8px)}}
+@keyframes navnudge-r{40%{transform:translateX(-8px)}}
+
 </style>
 </head>
 <body>
@@ -4837,17 +4870,13 @@ html.dim body::before{transition:background-color .3s ease,z-index 0s linear 0s!
   <div class="setcap">Appearance</div>
   <div class="setgrp"><div class="setblock"><div class="setrow nob"><span class="setl">Theme</span><span class="setv" id="skin-name">Light</span></div><div class="swrow"><button type="button" class="swatch" data-skin="auto" aria-label="Auto" aria-pressed="false"><span class="sw auto" style="--sbg:#888;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="light" aria-label="Light" aria-pressed="false"><span class="sw" style="--sbg:#F2F2F4;--sac:#2563EB"></span></button><button type="button" class="swatch" data-skin="graphite" aria-label="Dark" aria-pressed="false"><span class="sw" style="--sbg:#101012;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="midnight" aria-label="Midnight" aria-pressed="false"><span class="sw" style="--sbg:#000000;--sac:#0A84FF"></span></button><button type="button" class="swatch" data-skin="navy" aria-label="Navy" aria-pressed="false"><span class="sw" style="--sbg:#0B1324;--sac:#5AA9FF"></span></button></div></div></div>
   <div class="setcap">Trip</div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Chat bubble<small>Floating AI chat button</small></span><div class="seg" role="group" aria-label="Chat bubble"><button type="button" data-cmode="off">Off</button><button type="button" data-cmode="bubble">On</button></div></div><p class="sethint">Pull down on any page to open AI Chat. Tap the bubble to open it, or drag it to the bottom of the screen to hide it.</p></div><div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div>
-<div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
+  <div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div><div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
-
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Home cards<small>Trip and day as one card</small></span><div class="seg" role="group" aria-label="Home cards"><button type="button" data-homeone="sep">Separate</button><button type="button" data-homeone="one">Combined</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Layout of the Home trip card</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Layout of each day&#39;s facts</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div></div>
-  
-  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
+  <div class="setcap">Customisation</div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Chat bubble<small>Floating AI chat button</small></span><div class="seg" role="group" aria-label="Chat bubble"><button type="button" data-cmode="off">Off</button><button type="button" data-cmode="bubble">On</button></div></div><div class="setrow"><span class="setl">Home cards<small>Trip and day as one card</small></span><div class="seg" role="group" aria-label="Home cards"><button type="button" data-homeone="sep">Separate</button><button type="button" data-homeone="one">Combined</button></div></div><div class="setrow"><span class="setl">Trip card<small>Layout of the Home trip card</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Layout of each day&#39;s facts</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div><p class="sethint">Pull down on any page to open AI Chat. Tap the bubble to open it, or drag it to the bottom of the screen to hide it.</p></div>
   <div class="setcap">AI suggestions</div>
   <div class="setgrp"><div class="setrow"><span class="setl">AI assistant<small id="ai-name">Off</small></span><button type="button" class="setbtn" id="ai-open">Choose</button></div></div>
 </div>
@@ -8425,7 +8454,17 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var loc=wx.querySelector('.wxloc'); if(loc){ var d=loc.nextElementSibling; if(d&&d.classList.contains('wxdot')) d.remove(); var lr=document.createElement('div'); lr.className='wxlocrow'; lr.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>'; lr.appendChild(loc); wx.parentNode.insertBefore(lr,wx); }
   var ico=wx.querySelector('.wxinl'); if(ico){ ico.classList.remove('wxinl'); ico.classList.add('wxrowico'); }
   var lr2=sec.querySelector('.wxlocrow'), dm=sec.querySelector('.dspend .dpmeta'), ds=sec.querySelector('.dspend .dpstay'); if(lr2){ if(ds){ ds.classList.add('mv'); lr2.after(ds); } if(dm){ dm.classList.add('mv'); lr2.after(dm); } }
-  var sw=wx.querySelector('.wxtext'); if(sw){ var st=document.createElement('span'); st.className='wxstatic'; st.textContent=(sw.getAttribute('aria-label')||sw.textContent).split(/\s*,\s*/).join(' · '); sw.after(st); sw.classList.add('wxhide'); } }); })();
+  var sw=wx.querySelector('.wxtext'), wn=wx.querySelector('.wxn'); if(sw){ var words=(sw.getAttribute('aria-label')||sw.textContent).split(/\s*,\s*/).join(' · '), dl=wn?wn.innerHTML:'';
+    var st=document.createElement('span'); st.className='wxroll'+(dl?'':' still'); st.innerHTML='<span class="wxrr"><span>'+words+'</span>'+(dl?'<span class="wxdl">'+dl+'</span><span>'+words+'</span>':'')+'</span>'; sw.after(st); sw.classList.add('wxhide'); if(wn) wn.classList.add('wxhide'); }
+  /* order: place, wake/sleep, weather, hotel */
+  var dsv=sec.querySelector('.dpstay.mv'); if(dsv) wx.after(dsv); var dmv=sec.querySelector('.dpmeta.mv'); if(dmv&&lr2) lr2.after(dmv); if(dmv) dmv.after(wx); else if(lr2) lr2.after(wx); if(dsv) wx.after(dsv); }); })();
+/* swipe along the bottom bar to step through pages; stops at the first and last */
+(function(){ var nav=document.querySelector('nav.nav'); if(!nav) return; var x0=null,y0=0;
+  nav.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  nav.addEventListener('touchend',function(e){ if(x0===null) return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null; if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)*1.3) return;
+    var bs=[].filter.call(nav.querySelectorAll('[data-v]'),function(b){ return b.offsetParent; }), v=document.documentElement.dataset.view, i=-1; bs.forEach(function(b,k){ if(b.dataset.v===v) i=k; });
+    var j=i+(dx<0?1:-1); if(i<0||j<0||j>=bs.length){ nav.classList.remove('navedge-l','navedge-r'); void nav.offsetWidth; nav.classList.add(dx<0?'navedge-r':'navedge-l'); setTimeout(function(){ nav.classList.remove('navedge-l','navedge-r'); },320); return; }
+    e.preventDefault(); bs[j].click(); }); })();
 
 /* Combined card: the ticket top carries the trip (name, days, places, distance, dates) with the edit pencil;
    the row below shows the day's route; tap it for the trip pass */
