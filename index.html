@@ -4719,6 +4719,50 @@ html.kbd .chatsh .chatbox{border-radius:0!important}
 .tmr{display:inline-block}
 html.tv-3 #v-home :is(.cthero,.vzhero) .shead h2,html.tv-3 #v-home :is(.cthero,.vzhero) .tswitch{text-align:center!important;margin-inline:auto}
 
+/* ===== v154 ===== */
+/* settings subtext never cut */
+.setl small{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;display:block}
+.setl{min-width:0;flex:1}
+/* edit lives in the header only */
+#v-home :is(.cthero,.vzhero) .ctedit,#v-home .tkinfo .tkedit{display:none!important}
+#home-edit[hidden]{display:none!important}
+/* view pills + preview sheet */
+.vphide{display:none!important}
+.vpill{flex:none;appearance:none;display:inline-flex;align-items:center;gap:4px;height:36px;padding:0 10px 0 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.vpill svg{width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+.vpsheet .vpgrid{display:grid;gap:10px;margin:4px 0 16px}
+.vpopt{appearance:none;display:flex;align-items:center;gap:14px;width:100%;padding:10px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.vpopt.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.vpv{flex:none;width:104px;height:84px;border-radius:12px;background:var(--bg);padding:7px;display:flex;flex-direction:column;gap:5px;box-sizing:border-box}
+.vpn{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.vpn b{font-size:1rem}
+.vpn small{font-size:.82rem;color:var(--muted);line-height:1.3}
+.vpck{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);box-sizing:border-box}
+.vpopt.on .vpck{border:6px solid var(--ink)}
+.vpv i{display:block;font-style:normal}
+.vpv .vb{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:5px;display:flex;flex-direction:column;gap:4px;box-sizing:border-box}
+.vpv .s1{height:22px}.vpv .s2{flex:1}.vpv .s3,.vpv .s4,.vpv .s5{flex:1}
+.vpv .vl{height:4px;border-radius:2px;background:color-mix(in srgb,var(--ink) 18%,transparent)}
+.vpv .vl.sm{height:3px;opacity:.7}.vpv .vl.big{height:7px;background:color-mix(in srgb,var(--ink) 40%,transparent)}.vpv .vl.c{margin-inline:auto}
+.vpv .w2{width:22%}.vpv .w3{width:34%}.vpv .w4{width:48%}.vpv .w5{width:62%}.vpv .w6{width:80%}
+.vpv .vchips{height:8px;border-radius:4px;background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--ink) 14%,transparent) 0 14px,transparent 14px 18px)}
+.vpv .vdash{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 3px,transparent 3px 5px);margin:1px 0}
+.vpv .vgrid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:2px}.vpv .vgrid i{height:8px;border-radius:3px;background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.vpv .ban{padding:0;overflow:hidden;align-items:stretch}.vpv .vimg{height:26px;background:color-mix(in srgb,var(--ink) 6%,transparent);position:relative}.vpv .vsun{position:absolute;left:50%;top:6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#F8D66D}
+.vpv .ban .vl{margin:3px auto 0}.vpv .vpill{all:unset;display:block;height:7px;width:70%;margin:2px auto 5px;border-radius:4px;background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.vpv .s5{flex-direction:row;align-items:center;gap:6px}.vpv .vdate{width:22px;display:flex;flex-direction:column;align-items:center;gap:3px;border-right:1px dashed var(--line);padding-right:5px}.vpv .vdate b{display:block;width:12px;height:10px;border-radius:2px;background:color-mix(in srgb,var(--ink) 45%,transparent)}.vpv .vdate i{width:12px;height:3px;border-radius:2px;background:color-mix(in srgb,var(--ink) 20%,transparent)}
+.vpv .vtx{flex:1;display:flex;flex-direction:column;gap:4px}
+.vpv .vrow{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.vpv .vgrad{height:3px;border-radius:2px;background:linear-gradient(90deg,#F2D46A,color-mix(in srgb,var(--ink) 25%,transparent))}
+.vpv .vtile{width:16px;height:16px;border-radius:4px;border:1px dashed color-mix(in srgb,var(--ink) 30%,transparent)}
+.vpv .vbar{height:4px;border-radius:2px;background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}.vpv .vbar i{width:60%;height:100%;background:var(--ink)}
+/* confirm art: the ✕ only on discard prompts, and softer */
+#confirm:not(.isdiscard) .cfart .cfx{display:none}
+#confirm .cfart .cfx circle{stroke:color-mix(in srgb,var(--ink) 35%,transparent)!important}
+#confirm .cfart .cfx path{stroke:color-mix(in srgb,var(--ink) 45%,transparent)!important}
+:root:root:root:root:root:root body #v-home :is(.cthero,.vzhero) .ctedit{display:none!important}
+html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:128px!important}
+
 </style>
 </head>
 <body>
@@ -4914,7 +4958,7 @@ html.tv-3 #v-home :is(.cthero,.vzhero) .shead h2,html.tv-3 #v-home :is(.cthero,.
   <div class="pghead"><h2>Profile</h2></div>
   <div id="prof-slot"></div>
   <div hidden><section class="sec danger" data-sec="danger"><h3 class="sech-wrap"><span class="sech static">Troubleshooting</span></h3><div class="secb"><div class="card dcard"><div class="drow"><div class="dt"><div class="t">Hard refresh</div><div class="s">Download the latest version of the plan. Your ticks and settings stay.</div></div><button type="button" class="dbtn" id="hard-refresh">Refresh</button></div><div class="drow"><div class="dt"><div class="t">Reset data</div><div class="s">Clear ticks, settings and saved alerts on this phone. If you're logged in, shared ticks come back from the cloud.</div></div><button type="button" class="dbtn red" id="reset-data">Reset</button></div></div></div></section></div>
-  <div class="devnote">Dev note: Hard refresh and Reset data are hidden for now. Remove this note when they're brought back or deleted.</div>
+
 </section>
 
 
@@ -5057,7 +5101,7 @@ html.tv-3 #v-home :is(.cthero,.vzhero) .shead h2,html.tv-3 #v-home :is(.cthero,.
   <div id="prof-body"></div>
 </div>
 <div class="sheet lsheet" id="confirm" hidden role="alertdialog" aria-labelledby="cf-title">
-  <div class="lohead locent"><svg class="cfart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="cfdots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8h0a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="86" cy="28" r="17" style="fill:#F8D66D;fill-opacity:.85"/><ellipse cx="60" cy="89" rx="46" ry="7" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><ellipse cx="60" cy="89" rx="46" ry="7" fill="url(#cfdots)"/><path d="M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z" fill="url(#cfdots)"/><path d="M70 16v9a4 4 0 0 0 4 4h9" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2;stroke-linejoin:round"/><path d="M45 42h22M45 52h28M45 62h16" style="fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:3.2;stroke-linecap:round"/><circle cx="82" cy="76" r="11" style="fill:var(--surface);stroke:var(--ink);stroke-width:2"/><path d="M78 72l8 8M86 72l-8 8" style="fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round"/></svg><div><div class="t" id="cf-title">Are you sure?</div><div class="s" id="cf-text"></div></div></div>
+  <div class="lohead locent"><svg class="cfart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="cfdots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8h0a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="86" cy="28" r="17" style="fill:#F8D66D;fill-opacity:.85"/><ellipse cx="60" cy="89" rx="46" ry="7" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><ellipse cx="60" cy="89" rx="46" ry="7" fill="url(#cfdots)"/><path d="M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z" fill="url(#cfdots)"/><path d="M70 16v9a4 4 0 0 0 4 4h9" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2;stroke-linejoin:round"/><path d="M45 42h22M45 52h28M45 62h16" style="fill:none;stroke:var(--ink);stroke-opacity:.55;stroke-width:3.2;stroke-linecap:round"/><g class="cfx"><circle cx="82" cy="76" r="11" style="fill:var(--surface);stroke:var(--ink);stroke-width:2"/><path d="M78 72l8 8M86 72l-8 8" style="fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round"/></g></svg><div><div class="t" id="cf-title">Are you sure?</div><div class="s" id="cf-text"></div></div></div>
   <button type="button" class="btn full danger" id="cf-go">Continue</button>
   <button type="button" class="btn ghost full" id="cf-cancel">Cancel</button>
 </div>
@@ -6551,7 +6595,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   $('scrim').addEventListener('click',function(e){ e.stopPropagation(); closeLogout(); openSheet(false); });
   /* Confirmation sheet + Troubleshooting (hard refresh, reset data) */
   var cf=$('confirm'), cfGo=null;
-  function openConfirm(title,text,btn,fn){ openSheet(false); closeLogout(); $('cf-title').textContent=title; $('cf-text').textContent=text; $('cf-go').textContent=btn; cfGo=fn; cf.hidden=false; $('scrim').hidden=false; }
+  function openConfirm(title,text,btn,fn){ openSheet(false); closeLogout(); $('cf-title').textContent=title; $('cf-text').textContent=text; $('cf-go').textContent=btn; cf.classList.toggle('isdiscard',/^discard/i.test(btn||'')); cfGo=fn; cf.hidden=false; $('scrim').hidden=false; }
   window.__confirm=function(t,x,b,fn){ openConfirm(t,x,b,fn); };
   function closeConfirm(){ if(cf.hidden) return; cf.hidden=true; if(lo.hidden) $('scrim').hidden=true; }
   cf.addEventListener('click',function(e){ e.stopPropagation(); });
@@ -8455,8 +8499,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     if(reel.__i===n){ setTimeout(function(){ reel.style.transition='none'; reel.style.transform='translateY(0)'; reel.__i=0; },420); } }); },3000); })();
 /* Home layout: trip card and day card as one card */
 (function(){ var r=document.documentElement, k='vizag-homeone', v='sep'; try{ v=localStorage.getItem(k)||'sep'; }catch(e){}
-  function set(x){ r.classList.toggle('homeone',x==='one'); document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
-  document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); })();
+  function set(x){ v=x; r.classList.toggle('homeone',x==='one'&&!r.classList.contains('ct-on')); if(x==='one'&&set.ready){ var tb=document.querySelector('[data-tview="3"]'), db=document.querySelector('[data-dview="spend"]'); if(tb&&tb.getAttribute('aria-pressed')!=='true') tb.click(); if(db&&db.getAttribute('aria-pressed')!=='true') db.click(); } document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); set.ready=1;
+  /* merged applies to the sample trip's card; planner trips keep split cards */
+  new MutationObserver(function(){ var want=v==='one'&&!r.classList.contains('ct-on'); if(r.classList.contains('homeone')!==want) r.classList.toggle('homeone',want); }).observe(r,{attributes:true,attributeFilter:['class']}); })();
 
 /* Combined card: date roller on the right of the trip row, swipe the card for next / previous day */
 (function(){ var r=document.documentElement, card=document.querySelector('#v-home .vzhero'); if(!card) return;
@@ -8516,7 +8562,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* combined card: day route + QR on top, trip name + date roller sits under it */
 (function(){ var r=document.documentElement, card=document.querySelector('#v-home .vzhero'); if(!card) return; var home=card.parentNode, anchor=document.createComment('vzhero');
   home.insertBefore(anchor,card);
-  function place(){ if(r.classList.contains('homeone')){ var d=[].find.call(document.querySelectorAll('#v-home .hday'),function(x){ return !x.hidden&&x.offsetParent!==null; })||document.querySelector('#v-home .hday:not([hidden])'); var sh=d&&d.querySelector('.summary > .shead'); if(sh&&card.previousElementSibling!==sh){ sh.after(card); card.classList.add('inday'); } }
+  function place(){ if(r.classList.contains('homeone')){ var d=[].find.call(document.querySelectorAll('#v-home .vz .hday'),function(x){ return !x.hidden&&x.offsetParent!==null; })||document.querySelector('#v-home .vz .hday:not([hidden])'); var sh=d&&d.querySelector('.summary > .shead'); if(sh&&card.previousElementSibling!==sh){ sh.after(card); card.classList.add('inday'); } }
     else if(card.classList.contains('inday')){ anchor.after(card); card.classList.remove('inday'); } }
   new MutationObserver(function(){ requestAnimationFrame(place); }).observe(r,{attributes:true,attributeFilter:['class']});
   document.querySelectorAll('#v-home .hday').forEach(function(d){ new MutationObserver(function(){ requestAnimationFrame(place); }).observe(d,{attributes:true,attributeFilter:['hidden']}); });
@@ -8537,7 +8583,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* combined card: the edit-trip pencil lives in the Home header, beside alerts */
 (function(){ var card=document.querySelector('#v-home .vzhero'), ed=card&&card.querySelector('.ctedit'), top=document.querySelector('#v-home .hometop'), bell=top&&top.querySelector('.hbell'); if(!ed||!top) return; var home=document.createComment('ctedit'); ed.parentNode.insertBefore(home,ed);
   var wrap=document.createElement('div'); wrap.className='htacts'; top.insertBefore(wrap,bell); wrap.appendChild(bell);
-  function place(){ var on=document.documentElement.classList.contains('homeone'); if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
+  function place(){ var on=false; if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
   place(); new MutationObserver(place).observe(document.documentElement,{attributes:true,attributeFilter:['class']}); })();
 
 /* ₹ drawn as an even-stroke mark (the font's glyph has uneven strokes); the character stays in the text for copy and screen readers */
@@ -8633,6 +8679,38 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     el.classList.remove('tick'); el.innerHTML='<span class="tmr">'+t+'</span>'; if(!on||!el.offsetParent) return; var r=el.querySelector('.tmr'), cs=getComputedStyle(el), inner=el.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight); if(r.getBoundingClientRect().width>inner+1){ el.classList.add('tick'); el.innerHTML='<span class="tmtrack"><span>'+t+'</span><span>'+t+'</span></span>'; } }); }
   var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,120); } soon(); window.addEventListener('resize',soon);
   new MutationObserver(function(ms){ if(ms.some(function(m){ return m.type==='attributes'||[].some.call(m.addedNodes,function(n){ return n.nodeType===1&&!n.closest('.tmeta')&&(n.matches('.tmeta,.cthero,.vzhero')||n.querySelector&&n.querySelector('.tmeta')); }); })) soon(); }).observe(document.documentElement,{attributes:true,attributeFilter:['class'],childList:true,subtree:true}); })();
+
+/* Home header edit: always beside alerts; edits whichever trip is on Home */
+(function(){ var top=document.querySelector('#v-home .hometop'), wrap=top&&top.querySelector('.htacts'), bell=top&&top.querySelector('.hbell'), src=document.getElementById('vz-edit'); if(!top||!bell||!src) return;
+  if(!wrap){ wrap=document.createElement('div'); wrap.className='htacts'; top.insertBefore(wrap,bell); wrap.appendChild(bell); }
+  var b=document.createElement('button'); b.type='button'; b.className='ctedit hedit'; b.id='home-edit'; b.setAttribute('aria-label','Edit trip'); b.innerHTML=src.innerHTML; wrap.insertBefore(b,bell);
+  b.addEventListener('click',function(e){ e.stopPropagation(); var ct=document.documentElement.classList.contains('ct-on'), t=ct?document.querySelector('#v-home .ctv [data-ctedit]'):src; if(t) t.click(); });
+  function vis(){ b.hidden=document.documentElement.classList.contains('notrips'); } vis(); new MutationObserver(vis).observe(document.documentElement,{attributes:true,attributeFilter:['class']}); })();
+
+/* Settings: Home cards, Trip card and Day details show the current view as a pill; tap for a sheet of previews */
+(function(){ var PV={
+  'Split':'<i class="vb s1"><i class="vl w5"></i><i class="vl w3"></i></i><i class="vchips"></i><i class="vb s2"><i class="vl w4"></i><i class="vl w6"></i><i class="vl w5"></i></i>',
+  'Merged':'<i class="vb s3"><i class="vl w5"></i><i class="vl w3"></i><i class="vdash"></i><i class="vl w6"></i><i class="vl w4"></i><i class="vl w5"></i></i>',
+  'Classic':'<i class="vb s4"><i class="vl w3 sm"></i><i class="vl w6"></i><i class="vgrid"><i></i><i></i><i></i><i></i></i></i>',
+  'Banner':'<i class="vb s4 ban"><i class="vimg"><i class="vsun"></i></i><i class="vl w5 c"></i><i class="vpill"></i></i>',
+  'Ticket':'<i class="vb s5"><i class="vdate"><b></b><i></i></i><i class="vtx"><i class="vl w6"></i><i class="vl w4"></i></i></i>',
+  'Span':'<i class="vb s4"><i class="vrow"><i class="vl w2"></i><i class="vl w2"></i></i><i class="vgrad"></i><i class="vl w5"></i><i class="vl w4"></i></i>',
+  'Spend':'<i class="vb s4"><i class="vrow"><i class="vtx"><i class="vl w2 sm"></i><i class="vl w5 big"></i></i><i class="vtile"></i></i><i class="vbar"><i></i></i><i class="vl w4"></i></i>'};
+  var DESC={'Split':'Trip and day as two cards, with the date strip between them','Merged':'One card: trip on top, the chosen day below','Classic':'Trip name with its key facts in a grid','Banner':'An illustration on top, name and facts below','Ticket':'Start date on the left, trip name and facts beside it','Span':'The day as a wake-up to sleep bar','Spend':'What the day costs, first'};
+  var sh=document.createElement('div'); sh.className='sheet lsheet psheet vpsheet'; sh.id='view-sheet'; sh.hidden=true; sh.setAttribute('role','dialog');
+  sh.innerHTML='<div class="shtitle"><span id="vp-title">Choose a view</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="vpgrid"></div><button type="button" class="btn full" id="vp-apply">Apply</button>';
+  document.body.appendChild(sh); var sc=document.getElementById('scrim'), cur=null, pick=null;
+  function close(){ sh.hidden=true; if(sc) sc.hidden=true; cur=null; }
+  sh.querySelector('.shclose').onclick=close; sh.addEventListener('click',function(e){ e.stopPropagation(); }); if(sc) sc.addEventListener('click',function(){ if(!sh.hidden) close(); });
+  sh.querySelector('#vp-apply').onclick=function(){ if(cur&&pick){ var b=cur.seg.querySelectorAll('button')[pick]; if(b&&b.getAttribute('aria-pressed')!=='true') b.click(); } close(); paintAll(); };
+  function open(o){ cur=o; var bs=[].slice.call(o.seg.querySelectorAll('button')); pick=null; bs.forEach(function(b,i){ if(b.getAttribute('aria-pressed')==='true') pick=i; });
+    sh.querySelector('#vp-title').textContent=o.name; var g=sh.querySelector('.vpgrid'); g.innerHTML=bs.map(function(b,i){ var n=b.textContent.trim(); return '<button type="button" class="vpopt'+(i===pick?' on':'')+'" data-i="'+i+'"><span class="vpv">'+(PV[n]||'')+'</span><span class="vpn"><b>'+n+'</b><small>'+(DESC[n]||'')+'</small></span><span class="vpck" aria-hidden="true"></span></button>'; }).join('');
+    g.querySelectorAll('.vpopt').forEach(function(x){ x.onclick=function(){ pick=+x.dataset.i; g.querySelectorAll('.vpopt').forEach(function(y){ y.classList.toggle('on',y===x); }); }; });
+    sh.hidden=false; if(sc) sc.hidden=false; }
+  var rows=[]; ['Home cards','Trip card','Day details'].forEach(function(nm){ var seg=document.querySelector('.seg[aria-label="'+nm+'"]'); if(!seg) return; var row=seg.closest('.setrow');
+    var p=document.createElement('button'); p.type='button'; p.className='vpill'; seg.after(p); seg.classList.add('vphide'); var o={name:nm,seg:seg,pill:p}; p.onclick=function(e){ e.stopPropagation(); open(o); }; rows.push(o); });
+  function paintAll(){ rows.forEach(function(o){ var on=o.seg.querySelector('[aria-pressed="true"]'); o.pill.innerHTML='<span>'+(on?on.textContent.trim():'Choose')+'</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>'; }); }
+  paintAll(); new MutationObserver(paintAll).observe(document.querySelector('.hcgrp')||document.body,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); })();
 
 </script>
 
