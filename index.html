@@ -3852,6 +3852,19 @@ html.seldot .seg-days > .chip[aria-pressed="true"]{font-weight:700}
 :root:root:root.seldot body .seg-days > .chip[aria-pressed="true"]::after{bottom:4px!important}
 .wxrot .wxwin{top:.18em}
 
+/* ===== v122 ===== */
+/* place/stay/food/shop icons: neutral, theme-coloured */
+:root:root body .pcards .pimg:not(.has),:root:root body .pshero:not(.has){background:var(--soft)!important}
+:root:root body .pcards .pimg:not(.has) .pemo svg,:root:root body .pshero:not(.has) .pshemo svg,:root:root body .pcards .pemo svg{color:var(--muted)!important;opacity:1!important}
+/* selected tab dot sits to the left of the label */
+:root:root:root.seldot body .seg-days > .chip{padding-bottom:0!important}
+:root:root:root.seldot body .seg-days > .chip[aria-pressed="true"]::after{display:none!important}
+html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ink);margin-right:7px;vertical-align:middle;position:relative;top:-1px}
+:root:root body .places .emo,:root:root body .places .emo svg,:root:root body .list2 .emo,:root:root body .list2 .emo svg,:root:root body .places .emo .il svg{color:var(--muted)!important}
+:root:root body .places a .arr,:root:root body .places .ext,:root:root body .places .ext svg{color:var(--muted)!important}
+:root:root body #v-home .seg-days.hseg{align-items:center!important}
+:root:root body #v-home .seg-days.hseg > .chip{height:44px!important}
+
 </style>
 </head>
 <body>
