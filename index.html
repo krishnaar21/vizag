@@ -3834,6 +3834,24 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
 .wxrot .wxwin{position:relative;top:.1em}
 .wxrot .wxwin{top:.3em}
 
+/* ===== v121 ===== */
+/* Dark = true black */
+:root[data-skin="graphite"]{--bg:#000000!important;--surface:#0E0E10!important;--soft:#1A1A1D!important;--line:#232326!important;--band:#0E0E10!important}
+@media (prefers-color-scheme:dark){ :root[data-skin="auto"]:not([data-theme="light"]),:root:not([data-skin]):not([data-theme="light"]){--bg:#000000;--surface:#0E0E10;--soft:#1A1A1D;--line:#232326} }
+/* taller date strip on Home */
+:root:root body #v-home .seg-days.hseg{height:60px!important}
+/* selected tab shown as a dot */
+:root:root html.seldot body .seg-days > .chip[aria-pressed="true"],html.seldot body .seg-days > .chip[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+html.seldot .seg-days > .chip{position:relative}
+html.seldot .seg-days > .chip[aria-pressed="true"]::after{content:''!important;position:absolute!important;left:50%!important;right:auto!important;bottom:5px!important;top:auto!important;width:5px!important;height:5px!important;margin-left:-2.5px;border-radius:50%!important;background:var(--ink)!important;display:block!important}
+html.seldot .seg-days > .chip:not([aria-pressed="true"]){color:var(--muted)!important}
+html.seldot .seg-days > .chip:not([aria-pressed="true"]) *{color:var(--muted)!important}
+html.seldot .seg-days > .chip[aria-pressed="true"]{font-weight:700}
+:root:root:root.seldot body .seg-days > .chip[aria-pressed="true"]{background:transparent!important;box-shadow:none!important}
+:root:root:root.seldot body .seg-days > .chip{padding-bottom:9px!important}
+:root:root:root.seldot body .seg-days > .chip[aria-pressed="true"]::after{bottom:4px!important}
+.wxrot .wxwin{top:.18em}
+
 </style>
 </head>
 <body>
@@ -4090,6 +4108,7 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Fill</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setcap">AI suggestions</div>
   <div class="setgrp"><div class="setrow"><span class="setl">AI assistant<small id="ai-name">Off</small></span><button type="button" class="setbtn" id="ai-open">Choose</button></div></div>
@@ -5308,7 +5327,7 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
     window.__sceneFor=sceneFor; window.__sceneSVG=sceneSVG;
     function drawMyTrips(){ var box=$('mytrips-list'), cards=(window.__tripCards||[]).slice().sort(function(a,b){ return (b.id===active)-(a.id===active); }); if(!box) return;
       box.innerHTML=cards.map(function(c){ return '<div class="mprow grow" data-mt="'+esc(c.id)+'" role="button" tabindex="0"><span class="gav">'+c.emo+'</span><div class="mpt"><b>'+esc(c.name)+'</b><small>'+esc(c.sub)+'</small></div>'+(c.id===active?'<span class="mtcur">Current</span>':'<span class="achev">'+icoT('chev')+'</span>')+'</div>'; }).join('');
-      box.querySelectorAll('[data-mt]').forEach(function(r){ r.onclick=function(){ active=r.dataset.mt; set('vizag-active-trip',active); render(); show('home'); }; });
+      box.querySelectorAll('[data-mt]').forEach(function(r){ r.onclick=function(){ try{ sessionStorage.removeItem('vizag-dev-empty'); localStorage.removeItem('vizag-dev-empty'); }catch(e){} active=r.dataset.mt; set('vizag-active-trip',active); render(); show('home'); }; });
       if(window.__paintUses) window.__paintUses(box); }
     window.__drawMyTrips=drawMyTrips;
     var hnw=$('home-new'); if(hnw) hnw.addEventListener('click',function(e){ e.stopPropagation(); openPlanner(null); });
@@ -6217,16 +6236,16 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
 /* developer mode (hidden on the live site) */
 (function(){ var g=document.getElementById('devgrp'); if(!g) return; var live=/github\.io$/.test(location.hostname)&&!/\/beta\//.test(location.pathname); if(live){ g.remove(); return; }
   var r=document.documentElement, G=function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, S=function(k,v){ try{ v==null?localStorage.removeItem(k):localStorage.setItem(k,v); }catch(e){} };
-  function paint(){ var on=G('vizag-dev')==='1', em=G('vizag-dev-empty')==='1'; g.classList.toggle('on',on);
+  function paint(){ var on=G('vizag-dev')==='1', em=(function(){ try{ return sessionStorage.getItem('vizag-dev-empty')==='1'; }catch(e){ return false; } })(); g.classList.toggle('on',on);
     g.querySelectorAll('[data-dev]').forEach(function(b){ b.setAttribute('aria-pressed',(b.dataset.dev==='on')===on?'true':'false'); });
     g.querySelectorAll('[data-devempty]').forEach(function(b){ b.setAttribute('aria-pressed',(b.dataset.devempty==='on')===em?'true':'false'); });
     if(em) r.classList.add('notrips'); else if(window.__tripCards&&window.__tripCards.length) r.classList.remove('notrips'); }
-  g.querySelectorAll('[data-dev]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S('vizag-dev',b.dataset.dev==='on'?'1':null); if(b.dataset.dev==='off') S('vizag-dev-empty',null); paint(); }; });
-  g.querySelectorAll('[data-devempty]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S('vizag-dev-empty',b.dataset.devempty==='on'?'1':null); paint(); }; });
+  g.querySelectorAll('[data-dev]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); S('vizag-dev',b.dataset.dev==='on'?'1':null); if(b.dataset.dev==='off'){ try{ sessionStorage.removeItem('vizag-dev-empty'); }catch(e){} } paint(); }; });
+  g.querySelectorAll('[data-devempty]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); try{ b.dataset.devempty==='on'?sessionStorage.setItem('vizag-dev-empty','1'):sessionStorage.removeItem('vizag-dev-empty'); }catch(e){} paint(); }; });
   document.getElementById('dev-restore').onclick=function(){ S('vizag-hide-vz',null); S('vizag-active-trip','vizag'); location.reload(); };
-  document.getElementById('dev-refresh').onclick=function(){ var j=[]; try{ if(navigator.serviceWorker) j.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(x){ return x.unregister(); })); })); if(window.caches) j.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); }catch(e){} Promise.all(j).catch(function(){}).then(function(){ location.replace(location.href.split('#')[0].replace(/[?&]_r=\d+/,'')+(location.search?'&':'?')+'_r='+Date.now()); }); };
+  document.getElementById('dev-refresh').onclick=function(){ var j=[]; try{ if(navigator.serviceWorker) j.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(x){ return x.unregister(); })); })); if(window.caches) j.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); }catch(e){} Promise.all(j).catch(function(){}).then(function(){ var u=new URL(location.href); u.hash=''; u.searchParams.set('_r',Date.now()); location.replace(u.toString()); }); };
   var armed=0, rb=document.getElementById('dev-reset'); rb.onclick=function(){ if(Date.now()-armed<3000){ try{ Object.keys(localStorage).filter(function(k){ return /^vizag/.test(k); }).forEach(function(k){ localStorage.removeItem(k); }); }catch(e){} location.reload(); return; } armed=Date.now(); rb.textContent='Tap again'; setTimeout(function(){ rb.textContent='Reset'; },3000); };
-  paint(); setTimeout(paint,300); })();
+  S('vizag-dev-empty',null); paint(); setTimeout(paint,300); })();
 /* weather text with several parts ("Misty dawn, mild day"): one slot that flips through each part every second */
 (function(){ var els=document.querySelectorAll('.wxtext'), rot=[];
   Array.prototype.forEach.call(els,function(el){ var parts=el.textContent.split(/\s*,\s*/).filter(Boolean); if(parts.length<2) return;
@@ -6239,6 +6258,11 @@ html.notrips.navhide .totop:not(.inplan){bottom:calc(76px + env(safe-area-inset-
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   setInterval(function(){ if(document.hidden) return; rot.forEach(function(r){ if(!r.reel.offsetParent) return; r.i++; r.reel.style.transition=reduce?'none':'transform .38s cubic-bezier(.3,.7,.2,1)'; r.reel.style.transform='translateY(-'+(r.i*100/(r.n+1))+'%)';
     if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },5000); })();
+
+/* tab selection style: dot (default) or filled */
+(function(){ var r=document.documentElement, k='vizag-tabsel', v='dot'; try{ v=localStorage.getItem(k)||'dot'; }catch(e){}
+  function set(x){ v=x; r.classList.toggle('seldot',x==='dot'); document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.tabsel===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.tabsel); }); }); set(v); })();
 
 </script>
 
