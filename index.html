@@ -4805,6 +4805,42 @@ html.ctmerge #v-home .ctday2 .dpdate{display:flex!important}
 #settings-profile{isolation:isolate}
 .setbeach{z-index:-1!important}
 
+/* ===== v156 ===== */
+/* better Span / Spend previews */
+.vpv .spn,.vpv .spd{gap:5px;justify-content:center}
+.vpv .vrow.mid{gap:4px}
+.vpv .vv{width:14px;height:6px;border-radius:2px;background:color-mix(in srgb,var(--ink) 45%,transparent);flex:none}
+.vpv .vrow.mid .vgrad{flex:1}
+.vpv .vsep{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 3px,transparent 3px 5px);margin:1px 0}
+.vpv .vic{display:flex;align-items:center;gap:4px}
+.vpv .vd{width:5px;height:5px;border-radius:50%;flex:none;background:color-mix(in srgb,var(--ink) 25%,transparent)}
+.vpv .vd.k{background:var(--ink)}
+.vpv .vtile{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:18px!important;height:18px!important;flex:none}
+.vpv .vtile i{width:8px;height:3px;border-radius:1px;background:color-mix(in srgb,var(--ink) 35%,transparent)}
+.vpv .vtile i + i{width:6px;height:2px;opacity:.6}
+.vpv .vleg{display:flex;align-items:center;gap:3px}
+.vpv .vleg .vl{flex:none}
+/* settings rows follow Home cards choice */
+:root:root .hcgrp .hcsub{display:flex!important}
+:root:root .hcgrp.hcone .hcsub{display:none!important}
+/* planner merged: hide stray route buttons, style the rows */
+html.ctmerge #v-home .ctday2 .dayroute:not(.ctroute){display:none!important}
+.ctrows{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.ctrows > *{display:flex!important;align-items:center!important;gap:8px;margin-top:8px!important;font-size:.88rem!important;color:var(--muted);line-height:1.4;min-height:22px}
+.ctrows > :first-child{margin-top:0!important}
+.ctrows .dpmeta{border-top:0!important;padding-top:0!important}
+.ctrows svg,.ctrows .ph{display:block;flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+html.ctmerge #v-home .ctday2 .dspend > .dpmeta,html.ctmerge #v-home .ctday2 .dspend > .dpstay{display:none!important}
+/* no back-to-top or chat bubble over sheets */
+html.sheet-open .totop,html.sheet-open .chatbub{opacity:0!important;pointer-events:none!important;visibility:hidden!important}
+/* settings beach: fixed above the bar, behind cards, steps away while scrolling */
+.setbeach{position:fixed!important;left:0;right:0;margin:0!important;bottom:calc(env(safe-area-inset-bottom,0px) + 58px)!important;transition:transform .35s ease,bottom .3s ease,opacity .35s ease!important}
+html.navhide .setbeach{bottom:0!important}
+html.scrolling .setbeach{transform:translateY(110%);opacity:0}
+html:not([data-view="profile"]) .setbeach{display:none!important}
+#settings-profile{padding-bottom:96px}
+.ctrows{border-top:0!important;padding-top:0!important;margin-top:10px!important}
+
 </style>
 </head>
 <body>
@@ -5056,7 +5092,7 @@ html.ctmerge #v-home .ctday2 .dpdate{display:flex!important}
   <div class="setcap">Appearance</div>
   <div class="setgrp"><div class="setblock"><div class="setrow nob"><span class="setl">Theme</span><span class="setv" id="skin-name">Light</span></div><div class="swrow"><button type="button" class="swatch" data-skin="auto" aria-label="Auto" aria-pressed="false"><span class="sw auto" style="--sbg:#888;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="light" aria-label="Light" aria-pressed="false"><span class="sw" style="--sbg:#F2F2F4;--sac:#2563EB"></span></button><button type="button" class="swatch" data-skin="graphite" aria-label="Dark" aria-pressed="false"><span class="sw" style="--sbg:#101012;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="midnight" aria-label="Midnight" aria-pressed="false"><span class="sw" style="--sbg:#000000;--sac:#0A84FF"></span></button><button type="button" class="swatch" data-skin="navy" aria-label="Navy" aria-pressed="false"><span class="sw" style="--sbg:#0B1324;--sac:#5AA9FF"></span></button></div></div></div>
   <div class="setcap">Trip</div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the whole plan</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the current plan</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div><div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
@@ -6637,8 +6673,18 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   $('scrim').addEventListener('click',function(e){ e.stopPropagation(); closeLogout(); openSheet(false); });
   /* Confirmation sheet + Troubleshooting (hard refresh, reset data) */
   var cf=$('confirm'), cfGo=null;
-  function openConfirm(title,text,btn,fn){ openSheet(false); closeLogout(); $('cf-title').textContent=title; $('cf-text').textContent=text; $('cf-go').textContent=btn; cf.classList.toggle('isdiscard',/^discard/i.test(btn||'')); cfGo=fn; cf.hidden=false; $('scrim').hidden=false; }
-  window.__confirm=function(t,x,b,fn){ openConfirm(t,x,b,fn); };
+  function cfArt(k){ var KB='fill:color-mix(in srgb,var(--ink) 10%,var(--bg))', D='url(#cfdots)', L='fill:none;stroke:var(--ink);stroke-opacity:.5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round';
+    function fill(d){ return '<path d="'+d+'" style="'+KB+'"/><path d="'+d+'" fill="'+D+'"/>'; }
+    var S={
+      user:fill('M60 18a15 15 0 1 1 0 30a15 15 0 1 1 0-30z')+fill('M32 84c0-17 12.5-28 28-28s28 11 28 28z'),
+      address:fill('M38 30h32v54H38z')+fill('M70 46h16v38H70z')+'<path d="M45 40h6M57 40h6M45 51h6M57 51h6M45 62h6M57 62h6M75 56h6M75 66h6" style="'+L+';stroke-width:2.6"/><path d="M50 84V73h8v11" style="'+L+';stroke-width:2.4"/>',
+      group:fill('M46 26a12 12 0 1 1 0 24a12 12 0 1 1 0-24z')+fill('M24 84c0-14 10-23 22-23s22 9 22 23z')+fill('M76 30a11 11 0 1 1 0 22a11 11 0 1 1 0-22z')+fill('M58 84c0-13 8.5-21 19-21s19 8 19 21z'),
+      trip:fill('M60 14c-13 0-23 10-23 23c0 17 23 41 23 41s23-24 23-41c0-13-10-23-23-23z')+'<circle cx="60" cy="37" r="8" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2.4"/><path d="M28 86c14-6 26 2 38-2s20-6 28-2" style="'+L+';stroke-dasharray:4 5;stroke-width:2.4"/>',
+      stop:fill('M42 22h36a6 6 0 0 1 6 6v44a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V28a6 6 0 0 1 6-6z')+'<circle cx="60" cy="48" r="15" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2.6"/><path d="M60 40v9l6 4" style="'+L+';stroke-width:2.6"/>',
+      page:fill('M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z')+'<path d="M45 42h22M45 52h28M45 62h16" style="'+L+'"/>'};
+    return '<svg class="cfart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="cfdots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="88" cy="26" r="15" style="fill:#F8D66D;fill-opacity:.85"/><ellipse cx="60" cy="89" rx="40" ry="5" style="fill:color-mix(in srgb,var(--ink) 8%,var(--bg))"/>'+(S[k]||S.page)+'<g class="cfx"><circle cx="86" cy="76" r="10" style="fill:var(--surface);stroke-width:2"/><path d="M82.5 72.5l7 7M89.5 72.5l-7 7" style="fill:none;stroke-width:2.2;stroke-linecap:round"/></g></svg>'; }
+  function openConfirm(title,text,btn,fn,art){ var oa=cf.querySelector('.cfart'); if(oa) oa.outerHTML=cfArt(art||'page'); openSheet(false); closeLogout(); $('cf-title').textContent=title; $('cf-text').textContent=text; $('cf-go').textContent=btn; cf.classList.toggle('isdiscard',/^discard/i.test(btn||'')); cfGo=fn; cf.hidden=false; $('scrim').hidden=false; }
+  window.__confirm=function(t,x,b,fn,art){ openConfirm(t,x,b,fn,art); };
   function closeConfirm(){ if(cf.hidden) return; cf.hidden=true; if(lo.hidden) $('scrim').hidden=true; }
   cf.addEventListener('click',function(e){ e.stopPropagation(); });
   $('cf-cancel').addEventListener('click',closeConfirm);
@@ -7987,7 +8033,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       function lift(){ sc=scroller(qi); var box=qi.closest('.psearch')||qi.parentElement, r=box.getBoundingClientRect(), top=headBottom()+8, d=r.top-top; if(Math.abs(d)<4) return; document.getElementById('planner').classList.add('qlift'); sc.scrollTo({top:sc.scrollTop+d,behavior:'smooth'}); }
       qi.addEventListener('focus',function(){ sc=scroller(qi); if(saved===null) saved=sc.scrollTop; setTimeout(lift,60); setTimeout(lift,380); });
       qi.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement===qi) return; document.getElementById('planner').classList.remove('qlift'); if(sc&&saved!==null) sc.scrollTo({top:saved,behavior:'smooth'}); saved=null; },150); }); })(); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
-    $('pl-close').addEventListener('click',function(){ if(pl.__snap&&plSnap()!==pl.__snap){ var go=function(){ pl.__snap=null; closePlanner(); }; if(window.__confirm) setTimeout(function(){ var tn=($('pl-name').value||'').trim(); if(editing||($('pl-title').textContent||'').indexOf('Edit')===0) window.__confirm('Discard trip changes?','New dates, travellers and place picks for '+(tn||'this trip')+' won\u2019t be saved. The trip stays as it was.','Discard changes',go); else window.__confirm('Discard this new trip?',(tn?'\u201c'+tn+'\u201d':'This trip')+' and the places you picked won\u2019t be created.','Discard trip',go); },0); else go(); return; } closePlanner(); });
+    $('pl-close').addEventListener('click',function(){ if(pl.__snap&&plSnap()!==pl.__snap){ var go=function(){ pl.__snap=null; closePlanner(); }; if(window.__confirm) setTimeout(function(){ var tn=($('pl-name').value||'').trim(); if(editing||($('pl-title').textContent||'').indexOf('Edit')===0) window.__confirm('Discard trip changes?','New dates, travellers and place picks for '+(tn||'this trip')+' won\u2019t be saved. The trip stays as it was.','Discard changes',go,'trip'); else window.__confirm('Discard this new trip?',(tn?'\u201c'+tn+'\u201d':'This trip')+' and the places you picked won\u2019t be created.','Discard trip',go,'trip'); },0); else go(); return; } closePlanner(); });
     $('pl-next').addEventListener('click',function(){ if(nDays(formTrip())<=0){ $('pl-end').focus(); hints(); return; } if(!nameOK()) return; goStep(2); });
     $('pl-name').addEventListener('input',function(){ this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
     $('pl-hback').addEventListener('click',function(){ if(step===2) goStep(1); else if(step===1&&!editing){ drawStart(); goStep(0); } else closePlanner(); });
@@ -8428,7 +8474,11 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var s=document.getElementById('hvstage'); if(!s) return; var isl=s.querySelector('.hvone'), pl=[].slice.call(s.querySelectorAll('.hvpl')), mo=[];
   if(isl){ var n=isl.querySelectorAll('.hvsc').length; for(var k=0;k<n;k++){ var c=isl.cloneNode(true); c.classList.remove('hvone','off'); c.classList.add('hvpl','hvmo'); [].forEach.call(c.querySelectorAll('.hvsc'),function(g,x){ if(x!==k) g.remove(); else g.classList.add('on'); }); mo.push(c); s.insertBefore(c,isl); } isl.remove(); }
   var mix=[['m',0],['p',0],['m',1],['p',3],['m',2],['p',1],['m',3],['p',4],['p',2]], seq=[]; mix.forEach(function(it){ var el=(it[0]==='m'?mo:pl)[it[1]]; if(el) seq.push(el); }); if(!seq.length) return;
-  var all=mo.concat(pl), i=0; function show(el){ all.forEach(function(x){ x.classList.toggle('on',x===el); }); } show(seq[0]); if(seq.length<2) return;
+  var all=mo.concat(pl), i=0;
+  function fit(){ var bbs=all.map(function(sv){ try{ var g=sv.getBBox(); return g.width?g:null; }catch(e){ return null; } }); var S=0; bbs.forEach(function(b){ if(b) S=Math.max(S,b.width,b.height); }); if(!S) return; S*=1.04;
+    all.forEach(function(sv,k){ var b=bbs[k]; if(!b) return; sv.setAttribute('viewBox',(b.x+b.width/2-S/2).toFixed(1)+' '+(b.y+b.height-S).toFixed(1)+' '+S.toFixed(1)+' '+S.toFixed(1)); sv.setAttribute('preserveAspectRatio','xMidYMax meet'); }); }
+  requestAnimationFrame(fit); setTimeout(fit,400);
+  function show(el){ all.forEach(function(x){ x.classList.toggle('on',x===el); }); } show(seq[0]); if(seq.length<2) return;
   setInterval(function(){ if(document.hidden) return; i=(i+1)%seq.length; show(seq[i]); },4200); })();
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
@@ -8675,7 +8725,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
   var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; mt.textContent=meta; h2.appendChild(mt); }
   /* the day's route heads the day details, just above the bar */
-  document.querySelectorAll('#v-home .hday').forEach(function(sec){ var t=sec.querySelector('.summary h2'); if(!t||sec.querySelector('.dayroute')) return; var ps=(t.dataset.parts||t.textContent).split('|');
+  document.querySelectorAll('#v-home .vz .hday').forEach(function(sec){ var t=sec.querySelector('.summary h2'); if(!t||sec.querySelector('.dayroute')) return; var ps=(t.dataset.parts||t.textContent).split('|');
     var html=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
     function mk(cls){ var b=document.createElement('button'); b.type='button'; b.className='dayroute '+cls; b.innerHTML=html; b.setAttribute('aria-label','Trip pass for '+ps.join(' to ')); b.onclick=function(e){ e.stopPropagation(); var q=sec.querySelector('.tkqr'); if(q) q.click(); }; return b; }
     var bar=sec.querySelector('.dspend .dpbar'); if(bar) bar.parentNode.insertBefore(mk('rs'),bar);
@@ -8709,7 +8759,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   document.addEventListener('click',function(e){ if(pass||!e.target.closest) return; var t=e.target.closest('.shclose,.hback,#scrim'); if(!t) return;
     if(cf&&!cf.hidden){ if(t.id==='scrim'){ e.preventDefault(); e.stopImmediatePropagation(); el('cf-cancel').click(); } return; }
     var s=dirty(); if(!s||(t.id!=='scrim'&&!s.contains(t))) return; e.preventDefault(); e.stopImmediatePropagation();
-    var m=msg(s); setTimeout(function(){ window.__confirm(m[0],m[1],m[2],function(){ snap[s.id]=null; pass=true; t.click(); pass=false; }); if(sc) sc.hidden=false; },0); },true);
+    var m=msg(s), ART={'mp-sheet':'address','grp-sheet':'group','soc-sheet':'user','profile':'user','stop-edit':'stop'}; setTimeout(function(){ window.__confirm(m[0],m[1],m[2],function(){ snap[s.id]=null; pass=true; t.click(); pass=false; },ART[s.id]); if(sc) sc.hidden=false; },0); },true);
   var cc=el('cf-cancel'); if(cc) cc.addEventListener('click',function(){ if(open()&&sc) sc.hidden=false; }); })();
 
 /* One sheet at a time: opening a sheet over another hides the one below; closing the top brings it back */
@@ -8737,8 +8787,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   'Classic':'<i class="vb s4 cls"><i class="vl w3 sm"></i><i class="vl w6"></i><i class="vgrid"><i></i><i></i><i></i><i></i></i></i>',
   'Banner':'<i class="vb s4 ban"><i class="vimg"><i class="vsun"></i></i><i class="vl w5 c"></i><i class="vpill"></i></i>',
   'Ticket':'<i class="vb s5"><i class="vdate"><b></b><i></i></i><i class="vtx"><i class="vl w6"></i><i class="vl w4"></i><i class="vl w5 sm"></i></i><i class="vn t"></i><i class="vn b"></i></i>',
-  'Span':'<i class="vb s4"><i class="vrow"><i class="vl w2"></i><i class="vl w2"></i></i><i class="vgrad"></i><i class="vl w5"></i><i class="vl w4"></i></i>',
-  'Spend':'<i class="vb s4"><i class="vrow"><i class="vtx"><i class="vl w2 sm"></i><i class="vl w5 big"></i></i><i class="vtile"></i></i><i class="vbar"><i></i></i><i class="vl w4"></i></i>'};
+  'Span':'<i class="vb s4 spn"><i class="vrow"><i class="vl w2 sm"></i><i class="vl w2 sm"></i></i><i class="vrow mid"><i class="vv"></i><i class="vgrad"></i><i class="vv"></i></i><i class="vsep"></i><i class="vic"><i class="vd"></i><i class="vl w5"></i></i><i class="vic"><i class="vd"></i><i class="vl w4"></i></i></i>',
+  'Spend':'<i class="vb s4 spd"><i class="vrow"><i class="vtx"><i class="vl w3 sm"></i><i class="vl w6 big"></i></i><i class="vtile"><i></i><i></i></i></i><i class="vbar"><i></i></i><i class="vleg"><i class="vd k"></i><i class="vl w3"></i><i class="vd"></i><i class="vl w3"></i></i></i>'};
   var DESC={'Split':'Trip and day as two cards, with the date strip between them','Merged':'One card: trip on top, the chosen day below','Classic':'Trip name with its key facts in a grid','Banner':'An illustration on top, name and facts below','Ticket':'Start date on the left, trip name and facts beside it','Span':'The day as a wake-up to sleep bar','Spend':'What the day costs, first'};
   var sh=document.createElement('div'); sh.className='sheet lsheet psheet vpsheet'; sh.id='view-sheet'; sh.hidden=true; sh.setAttribute('role','dialog');
   sh.innerHTML='<div class="shtitle"><span id="vp-title">Choose a view</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="vpgrid"></div><button type="button" class="btn full" id="vp-apply">Apply</button>';
@@ -8777,6 +8827,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
         var rt=document.createElement('div'); rt.className='dayroute ctroute'; rt.innerHTML=h2.split(/\s*\u2192\s*/).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
         var bar=sum.querySelector('.dspend .dpbar'), sb=sum.querySelector('.dspan .dsbar'); if(bar) bar.parentNode.insertBefore(rt.cloneNode(true),bar); if(sb) sb.parentNode.insertBefore(rt,sb);
         var tot=sum.querySelector('.dspend .dptot'), dm=lab.match(/(\d{1,2})\s+([A-Za-z]{3})/); if(tot&&dm&&!sum.querySelector('.dpdate')){ var mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(dm[2].toLowerCase()); var t2=document.createElement('div'); t2.className='dptop'; t2.innerHTML='<div class="dpdate"><b>'+(+dm[1])+'</b><small>'+(M[mi]||'')+'</small></div>'; tot.parentNode.insertBefore(t2,tot); t2.appendChild(tot); }
+        var sp=sum.querySelector('.dspend'); if(sp&&!sum.querySelector('.ctrows')){ var towns=h2.split(/\s*\u2192\s*/), town=towns[towns.length-1]||'', st=sp.querySelector('.dpstay'), dm2=sp.querySelector('.dpmeta');
+          var rows=document.createElement('div'); rows.className='ctrows'; rows.innerHTML='<div class="wxlocrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span class="wxloc">'+town+'</span></div>';
+          sp.appendChild(rows); if(st) rows.appendChild(st); if(dm2) rows.appendChild(dm2);
+          var w=document.createElement('div'); w.className='wxlocrow ctwx'; w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/></svg><span>Forecast shows up two weeks before the day</span>'; rows.appendChild(w); }
         setTimeout(function(){ if(window.__notch) window.__notch(sum,head.querySelector('.tkperf')); },60); }); } }
     busy=false; }
   var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,80); } soon();
@@ -8788,6 +8842,14 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   d.innerHTML='<svg viewBox="0 0 390 90" preserveAspectRatio="xMidYMax slice"><circle cx="318" cy="30" r="15" style="fill:#F8D66D;fill-opacity:.85"/><g class="bw1">'+w(44,5,'sw1')+'</g><g class="bw2">'+w(54,4,'sw2')+'</g><g class="bw3">'+w(64,3,'sw3')+'</g><path d="M0 74 Q120 66 230 72 T390 70 V90 H0z" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M0 74 Q120 66 230 72 T390 70 V90 H0z" fill="url(#esdots)"/></svg>';
   st.appendChild(d); }
   function all(){ add(document.getElementById('settings-profile')); } all(); setTimeout(all,600); setTimeout(all,2000); })();
+
+/* Settings: trip/day layout rows follow the Home cards choice */
+(function(){ var g=document.querySelector('.hcgrp'); if(!g) return; function upd(){ var one=document.querySelector('[data-homeone="one"]'); g.classList.toggle('hcone',!!one&&one.getAttribute('aria-pressed')==='true'); }
+  upd(); new MutationObserver(upd).observe(g,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); })();
+/* While a sheet is open: no back-to-top or chat bubble over it; the settings beach steps away while you scroll */
+(function(){ var r=document.documentElement; function upd(){ var open=!!document.querySelector('.sheet:not(.inpage):not([hidden]),.passsh:not([hidden]),#planner:not([hidden])')||r.classList.contains('ps-open'); r.classList.toggle('sheet-open',open); }
+  upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['hidden','class']});
+  var t=0; window.addEventListener('scroll',function(){ r.classList.add('scrolling'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('scrolling'); },500); },{passive:true}); })();
 
 </script>
 
