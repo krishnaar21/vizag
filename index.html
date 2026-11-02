@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="manifest" href="manifest.webmanifest">
 <style>:root{--gmin:14px;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Vizag · Araku · Vanjangi</title>
@@ -4942,6 +4942,32 @@ html.skel main .view:not([hidden]) :is(.card,.summary,.chips) :is(h1,h2,h3,h4,b,
 html.skel main .view:not([hidden]) :is(.card,.summary,.chips) span:not(:has(*)):not(:empty){color:transparent!important;-webkit-text-fill-color:transparent!important;background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;border-radius:6px!important}
 html.skel main .view:not([hidden]) :is(.card,.summary,.chips) .dpleg i{opacity:.15}
 
+/* ===== v163 ===== */
+/* notches: a real cut in the card, outlined by a thin arc */
+:root:root .tkcard.notched,:root:root .pstk.notched{-webkit-mask:radial-gradient(circle 10px at 0 var(--py),#0000 8.6px,#000 9px) left/51% 100% no-repeat,radial-gradient(circle 10px at 100% var(--py),#0000 8.6px,#000 9px) right/51% 100% no-repeat!important;mask:radial-gradient(circle 10px at 0 var(--py),#0000 8.6px,#000 9px) left/51% 100% no-repeat,radial-gradient(circle 10px at 100% var(--py),#0000 8.6px,#000 9px) right/51% 100% no-repeat!important}
+.tkperf::before,.tkperf::after,.psperf::before,.psperf::after{width:22px!important;height:22px!important;top:-11px!important;background:transparent!important;border:1px solid var(--line)!important;border-radius:50%!important;box-sizing:border-box!important}
+.tkperf::before,.psperf::before{left:calc(var(--nl,-17px) - 11px)!important;border-left:1px solid var(--line)!important}
+.tkperf::after,.psperf::after{right:calc(var(--nr,-17px) - 11px)!important;border-right:1px solid var(--line)!important}
+/* no zoom, no sideways scroll */
+html,body{overflow-x:clip!important;max-width:100%}
+/* beach: shorter sand that tucks under the nav */
+.setbeach{height:160px!important;margin-bottom:-40px!important}
+/* skeleton: no stray text, smooth reveal */
+html.skel main .view:not([hidden]) :is(.card,.summary,.chips) :is(.dpleg span,.dpmeta .wxreel > span,.dpstay,.hspan > span,.wx,.wxlocrow span,.tkticker){color:transparent!important;-webkit-text-fill-color:transparent!important;background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;border-radius:6px!important}
+html.skel main .view:not([hidden]) :is(.card,.summary,.chips) :is(.dpleg span,.dpmeta,.dpstay,.wx,.wxlocrow) *{opacity:0!important}
+html.skel main .view:not([hidden]){transition:none}
+html.skel-out main .view:not([hidden]) :is(.card,.summary,.chips){animation:skelin .45s ease-out both}
+@keyframes skelin{from{opacity:.35}to{opacity:1}}
+
+.setbeach{margin-bottom:-72px!important}
+
+.tkperf::before,.tkperf::after,.psperf::before,.psperf::after{width:20px!important;height:20px!important;top:-10px!important}
+.tkperf::before,.psperf::before{left:calc(var(--nl,-17px) - 10px)!important}
+.tkperf::after,.psperf::after{right:calc(var(--nr,-17px) - 10px)!important}
+.setbeach{margin-bottom:-50px!important}
+.tkperf::before,.psperf::before{width:10px!important;height:20px!important;left:var(--nl,-17px)!important;border-radius:0 10px 10px 0!important;border-left:0!important;border-right:1px solid var(--line)!important}
+.tkperf::after,.psperf::after{width:10px!important;height:20px!important;right:var(--nr,-17px)!important;border-radius:10px 0 0 10px!important;border-right:0!important;border-left:1px solid var(--line)!important}
+
 </style>
 </head>
 <body>
@@ -5195,6 +5221,7 @@ html.skel main .view:not([hidden]) :is(.card,.summary,.chips) .dpleg i{opacity:.
   <div class="setcap">Trip</div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the current plan</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div><div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
+<div class="setrow"><span class="setl">Pinch to zoom<small>Allow zooming the app in and out</small></span><div class="seg" role="group" aria-label="Pinch to zoom"><button type="button" data-devzoom="off">Off</button><button type="button" data-devzoom="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
@@ -7675,7 +7702,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       psCtx={name:'trips'}; psh.classList.remove('full','tpsheet'); psh.classList.add('lsheet'); psh.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ psh.classList.add('in'); });
       $('ps-close').onclick=closePlace;
       $('ts-q').addEventListener('input',function(){ var q=this.value.trim().toLowerCase(), n=0; $$('#ts-list .tplr').forEach(function(b){ var ok=!q||b.dataset.q.indexOf(q)>=0; b.hidden=!ok; if(ok) n++; }); $('ts-none').hidden=!!n; });
-      $('ts-list').addEventListener('click',function(e){ var b=e.target.closest('[data-tsi]'); if(!b) return; active=b.dataset.tsi; set('vizag-active-trip',active); closePlace(); if(window.__skel) window.__skel(650); setTimeout(function(){ render(); window.scrollTo(0,0); },60); });
+      $('ts-list').addEventListener('click',function(e){ var b=e.target.closest('[data-tsi]'); if(!b) return; active=b.dataset.tsi; set('vizag-active-trip',active); closePlace(); if(window.__skel) window.__skel(700); setTimeout(function(){ render(); if(window.__ctmergeNow) window.__ctmergeNow(); window.scrollTo(0,0); },40); });
       $('ts-new').onclick=function(){ closePlace(); openPlanner(null); };
     }
     /* trip → matching halftone scene (beach, hills, lake, cave, road trip…) */
@@ -8733,7 +8760,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     var perf=document.createElement('div'); perf.className='tkperf'; row.after(perf); sh.classList.add('tkhead'); var card=sec.querySelector('.summary'); function setPy(){ if(card&&perf.offsetParent) card.style.setProperty('--py',(perf.getBoundingClientRect().top-card.getBoundingClientRect().top)+'px'); } setTimeout(setPy,50); window.addEventListener('resize',setPy); new MutationObserver(setPy).observe(sec,{attributes:true,attributeFilter:['hidden']}); card&&card.classList.add('tkcard');
     b.addEventListener('click',function(e){ e.stopPropagation(); openPass(sec); });
     var pl=function(){ notch(sec.querySelector('.summary'),perf); }; setTimeout(pl,60); window.addEventListener('resize',pl); new MutationObserver(pl).observe(sec,{attributes:true,attributeFilter:['hidden']}); }
-  function notch(c,perf){ if(!c||!perf||!perf.offsetParent) return; var cr=c.getBoundingClientRect(), pr=perf.getBoundingClientRect(), cs=getComputedStyle(c); perf.style.setProperty('--nl',(cr.left-pr.left)+'px'); perf.style.setProperty('--nr',(pr.right-cr.right)+'px'); perf.style.setProperty('--bw',cs.borderLeftWidth); }
+  function notch(c,perf){ if(!c||!perf||!perf.offsetParent) return; var cr=c.getBoundingClientRect(), pr=perf.getBoundingClientRect(), cs=getComputedStyle(c); c.style.setProperty('--py',(pr.top-cr.top+pr.height/2).toFixed(1)+'px'); c.classList.add('notched'); perf.style.setProperty('--nl',(cr.left-pr.left)+'px'); perf.style.setProperty('--nr',(pr.right-cr.right)+'px'); perf.style.setProperty('--bw',cs.borderLeftWidth); }
   window.__notch=notch; window.__qr=function(t,s){ return qr(t,s); }; window.__openPass=function(s){ openPass(s); };
   function dayHTML(sec,idx,total){ var sh=sec.querySelector('.summary > .shead'), h2=sh.querySelector('h2'), parts=(h2.dataset.parts||h2.textContent).split('|');
     var F=facts(sec), sp=[].map.call(sec.querySelectorAll('.hspan > span'),function(s){ return s.textContent.trim(); }), re=/\d{1,2}:\d{2}\s*[AP]M|\d{2}:\d{2}/;
@@ -8940,7 +8967,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
           var w=document.createElement('div'); w.className='wxlocrow ctwx'; w.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/></svg><span>Forecast shows up two weeks before the day</span>'; rows.appendChild(w); }
         setTimeout(function(){ if(window.__notch) window.__notch(sum,head.querySelector('.tkperf')); },60); }); } }
     busy=false; }
-  var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,80); } soon();
+  var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,0); } soon(); window.__ctmergeNow=run;
   new MutationObserver(soon).observe(ct,{childList:true,subtree:true}); new MutationObserver(soon).observe(r,{attributes:true,attributeFilter:['class']}); })();
 
 /* Settings: a calm beach at the very end, resting above the bottom bar */
@@ -8970,14 +8997,14 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   /* a bird: body plus two wings that flap; the whole bird glides along */
   function bird(c,s,y){ return '<g class="bzb '+c+'" style="--y:'+y+'px"><g transform="scale('+s+')"><path class="wl" d="M0 0 C-4 -6 -10 -7 -15 -3 C-10 -4 -5 -2 0 1z" style="fill:'+INK+';fill-opacity:.62"/><path class="wr" d="M0 0 C4 -6 10 -7 15 -3 C10 -4 5 -2 0 1z" style="fill:'+INK+';fill-opacity:.62"/><ellipse cx="0" cy="0.6" rx="2.6" ry="1.3" style="fill:'+INK+';fill-opacity:.7"/></g></g>'; }
   var w=function(y,a,cls){ var p='M0 '+y; for(var x=0;x<780;x+=65){ p+=' q16.25 '+(-a)+' 32.5 0 t32.5 0'; } return '<path class="'+cls+'" d="'+p+' V210 H0z"/>'; };
-  d.innerHTML='<svg viewBox="0 0 390 210" preserveAspectRatio="xMidYMax slice">'+defs+
-    '<path class="cl1" style="fill:var(--muted);fill-opacity:.22" d="M100 46a9 9 0 0 1 10-8a13 13 0 0 1 24-1a9 9 0 0 1 6 15h-38a7 7 0 0 1-2-6z"/>'+
-    '<path class="cl2" style="fill:var(--muted);fill-opacity:.18" d="M196 26a7 7 0 0 1 8-6a10 10 0 0 1 18-1a7 7 0 0 1 4 11h-28a5 5 0 0 1-2-4z"/>'+
+  d.innerHTML='<svg viewBox="0 0 390 160" preserveAspectRatio="xMidYMax slice">'+defs+
+    '<g class="cl1" style="fill:var(--muted);fill-opacity:.22"><ellipse cx="30" cy="44" rx="20" ry="7"/><circle cx="24" cy="39" r="8"/><circle cx="36" cy="36" r="10"/></g>'+
+    '<g class="cl2" style="fill:var(--muted);fill-opacity:.18"><ellipse cx="74" cy="26" rx="14" ry="5"/><circle cx="70" cy="23" r="5.5"/><circle cx="79" cy="21" r="7"/></g>'+
     /* big sunset behind the far mountains */ '<g clip-path="url(#bzSky)"><circle cx="312" cy="100" r="40" style="fill:#F8D66D;fill-opacity:.85"/></g>'+
-    sh('M190 108 L214 92 L228 98 L250 80 L268 90 L284 76 L304 88 L322 82 L344 94 L362 86 L390 96 V110 H190z','bzM')+
+    '<path d="M196 110 C214 100 226 96 240 94 C254 92 262 84 276 80 C290 76 300 82 310 86 C322 90 330 84 344 82 C358 80 372 86 390 90 V110z" style="fill:color-mix(in srgb,var(--ink) 6%,var(--bg))"/><path d="M196 110 C214 100 226 96 240 94 C254 92 262 84 276 80 C290 76 300 82 310 86 C322 90 330 84 344 82 C358 80 372 86 390 90 V110z" fill="url(#bzM)"/>'+sh('M206 110 C224 104 238 100 252 101 C266 102 274 94 288 92 C302 90 312 98 326 100 C342 102 354 96 370 97 C380 98 386 100 390 101 V112 H206z','bzH')+
     bird('k1',1,34)+bird('k2',.8,46)+bird('k3',.9,26)+bird('k4',.7,56)+
     '<g class="bw1">'+w(104,4,'sw1')+'</g><g class="bw2">'+w(112,3,'sw2')+'</g><g class="bw3">'+w(120,2.5,'sw3')+'</g>'+
-    '<path d="M0 128 Q110 118 220 124 T390 122 V210 H0z" style="'+KB+'"/><path d="M0 128 Q110 118 220 124 T390 122 V210 H0z" fill="url(#bzS)"/>'+
+    '<path d="M0 128 Q110 118 220 124 T390 122 V160 H0z" style="'+KB+'"/><path d="M0 128 Q110 118 220 124 T390 122 V160 H0z" fill="url(#bzS)"/>'+
     /* rocks: a wider cliff with boulders running right */ sh('M0 70 L10 62 L22 72 L34 86 L44 104 L54 122 L60 132 L0 132z','bzR')+sh('M36 132 L48 112 L66 104 L84 112 L96 126 L100 134 L36 134z','bzR')+sh('M88 134 L98 120 L114 116 L128 124 L134 136 L88 136z','bzR')+
       '<path d="M8 82 L18 90 M14 100 L28 106 M22 118 L36 122 M58 116 L70 120 M104 124 L116 128" style="fill:none;stroke:var(--bg);stroke-opacity:.6;stroke-width:1.2;stroke-linecap:round"/>'+
     palm(112,130,76,10,1.05)+palm(200,126,62,-10,.9)+palm(156,132,46,4,.72)+
@@ -9003,7 +9030,14 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   new MutationObserver(soon).observe(document.body,{attributes:true,subtree:true,attributeFilter:['hidden']}); window.addEventListener('resize',soon); document.addEventListener('click',function(){ setTimeout(soon,30); },true); soon(); })();
 
 /* Skeleton: while a small sheet changes what's behind it (switching trips), the page shows placeholders until the new content is in */
-(function(){ var t=0; window.__skel=function(ms){ var r=document.documentElement; r.classList.add('skel'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('skel'); },ms||600); }; })();
+(function(){ var t=0, t2=0; window.__skel=function(ms){ var r=document.documentElement; r.classList.remove('skel-out'); r.classList.add('skel'); clearTimeout(t); clearTimeout(t2); t=setTimeout(function(){ r.classList.add('skel-out'); r.classList.remove('skel'); t2=setTimeout(function(){ r.classList.remove('skel-out'); },450); },ms||600); }; })();
+
+/* zoom: off by default; developer option turns pinch-zoom back on */
+(function(){ var K='vizag-zoom', on=false; try{ on=localStorage.getItem(K)==='1'; }catch(e){} var m=document.getElementById('vpmeta');
+  function apply(){ if(m) m.setAttribute('content','width=device-width,initial-scale=1,'+(on?'':'maximum-scale=1,user-scalable=no,')+'viewport-fit=cover'); document.querySelectorAll('[data-devzoom]').forEach(function(b){ b.setAttribute('aria-pressed',(b.dataset.devzoom==='on')===on?'true':'false'); }); }
+  ['gesturestart','gesturechange'].forEach(function(ev){ document.addEventListener(ev,function(e){ if(!on) e.preventDefault(); },{passive:false}); });
+  document.addEventListener('touchmove',function(e){ if(!on&&e.touches&&e.touches.length>1) e.preventDefault(); },{passive:false});
+  document.querySelectorAll('[data-devzoom]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); on=b.dataset.devzoom==='on'; try{ localStorage.setItem(K,on?'1':'0'); }catch(x){} apply(); }); }); apply(); })();
 
 </script>
 
