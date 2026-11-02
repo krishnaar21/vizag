@@ -4076,6 +4076,20 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
 :root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .shead{padding-left:22px!important;padding-right:50px!important}
 :root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) .shead h2{font-size:1.04rem!important}
 
+/* ===== v131 ===== */
+/* nav: soft fade above so content doesn't clash behind it */
+.nav{box-shadow:0 -18px 22px -6px color-mix(in srgb,var(--bg) 92%,transparent),0 -1px 12px rgba(0,0,0,.05)!important}
+/* Spend: rolling line */
+.dpmeta .dproll{height:1.45em;line-height:1.45em}
+.dpmeta .dproll .wxreel > span{height:1.45em}
+.dpmeta b{font-weight:600;color:var(--muted);margin-right:4px}
+/* Home cards combined */
+html.homeone #v-home .vz > .vzhero,html.homeone #v-home .ctv .cthero{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;margin-bottom:0!important;border-bottom:0!important}
+html.homeone #v-home .vz > .chips{padding:0!important;background:none!important;position:static!important}
+html.homeone #v-home .vz > .chips .seg-days.hseg{border-radius:0!important;border-top:1px dashed var(--line)!important}
+html.homeone #v-home .vz > .vzhero + .tvdots + .chips,html.homeone #v-home .vz > .vzhero + .chips{margin-top:0!important}
+html.homeone #v-home .vz > .chips .seg-days.hseg{border-left:1px solid var(--line)!important;border-right:1px solid var(--line)!important}
+
 </style>
 </head>
 <body>
@@ -4333,6 +4347,7 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
 
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Home cards<small>Trip and day as one card</small></span><div class="seg" role="group" aria-label="Home cards"><button type="button" data-homeone="sep">Separate</button><button type="button" data-homeone="one">Combined</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Layout of the Home trip card</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Layout of each day&#39;s facts</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
@@ -6528,7 +6543,7 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
     var a1=rng(sc), a2=rng(food), tot=(a1||a2)?[(a1?a1[0]:0)+(a2?a2[0]:0),(a1?a1[1]:0)+(a2?a2[1]:0)]:null, share=(a1&&a2)?Math.round(100*(a1[0]+a1[1])/(a1[0]+a1[1]+a2[0]+a2[1])):60;
     var pe=document.createElement('div'); pe.className='dalt dspend';
     pe.innerHTML=(tot?'<div class="dptot"><small>Spend today</small><b>₹'+k(tot[0])+'–'+k(tot[1])+'</b></div><div class="dpbar"><i style="width:'+share+'%"></i></div><div class="dpleg"><span><i class="a"></i>Stay '+sc+'</span><span><i class="b"></i>Food '+food+'</span></div>':'')+
-      '<div class="dpmeta">'+[wake?'Wake up '+wake:'',sleep?'Sleep '+sleep:'',tr].filter(Boolean).join(' · ')+'</div>'+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
+      (function(){ var it=[wake?'<b>Wake up</b> '+wake:'',sleep?'<b>Sleep</b> '+sleep:'',tr?'<b>Getting around</b> '+tr:''].filter(Boolean); if(!it.length) return ''; return '<div class="dpmeta"><span class="wxwin dproll"><span class="wxreel">'+it.concat([it[0]]).map(function(x){ return '<span>'+x+'</span>'; }).join('')+'</span></span></div>'; })()+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
     g.after(sp); sp.after(pe); }
   function all(){ document.querySelectorAll('.hday .summary > .sgrid,.ctday2 .summary > .sgrid').forEach(build); }
   function set(x){ v=x; L.forEach(function(n){ r.classList.toggle('dv-'+n,n===x); }); ['list','chips'].forEach(function(n){ r.classList.remove('dv-'+n); }); document.querySelectorAll('[data-dview]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.dview===x?'true':'false'); }); try{ localStorage.setItem(K,x); }catch(e){} all(); }
@@ -6542,6 +6557,15 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
 (function(){ var r=document.documentElement, k='vizag-navedge2', v='wave'; try{ v=localStorage.getItem(k)||'wave'; }catch(e){}
   function set(x){ r.classList.toggle('navwave',x==='wave'); document.querySelectorAll('[data-navedge]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.navedge===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-navedge]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.navedge); }); }); set(v); })();
+
+/* Spend view: wake / sleep / transport roll in one line */
+(function(){ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setInterval(function(){ if(document.hidden) return; document.querySelectorAll('.dproll .wxreel').forEach(function(reel){ if(!reel.offsetParent) return; var n=reel.children.length-1; reel.__i=(reel.__i||0)+1; reel.style.transition=reduce?'none':'transform .38s cubic-bezier(.3,.7,.2,1)'; reel.style.transform='translateY(-'+(reel.__i*100/(n+1))+'%)';
+    if(reel.__i===n){ setTimeout(function(){ reel.style.transition='none'; reel.style.transform='translateY(0)'; reel.__i=0; },420); } }); },3000); })();
+/* Home layout: trip card and day card as one card */
+(function(){ var r=document.documentElement, k='vizag-homeone', v='sep'; try{ v=localStorage.getItem(k)||'sep'; }catch(e){}
+  function set(x){ r.classList.toggle('homeone',x==='one'); document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); })();
 
 </script>
 
