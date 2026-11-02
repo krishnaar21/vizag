@@ -5319,6 +5319,22 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
 @keyframes sigup{from{opacity:.2;transform:scaleY(.4)}to{opacity:1;transform:scaleY(1)}}
 .sigb i{transform-origin:bottom}
 
+/* ===== v184 ===== */
+.offtag{position:relative}
+.offtag .otx{display:inline-block}
+.offtag.on > i{background:#2e9d5b;animation:none}
+.offtag.on{color:var(--muted)}
+.netroll{position:absolute;left:0;top:50%;width:14px;height:14px;margin-top:-7px;fill:none;stroke:#2e9d5b;stroke-width:2;animation:netroll 1.5s cubic-bezier(.5,0,.3,1) forwards}
+@keyframes netroll{0%{transform:translateX(0) rotate(0);opacity:1}80%{opacity:1}100%{transform:translateX(96px) rotate(540deg);opacity:0}}
+.offtag.reveal .otx,.offtag.reveal > i{animation:netrev 1.5s cubic-bezier(.5,0,.3,1) both}
+@keyframes netrev{0%{clip-path:inset(0 100% 0 0)}100%{clip-path:inset(0 0 0 0)}}
+.offtag.reveal > i{animation:netdot .3s 1.3s both}
+@keyframes netdot{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+html.ctmerge #v-home .ctv > .ctwarn{display:none!important}
+.ctwarn2{display:flex;align-items:flex-start;gap:8px;margin:2px 0 10px;padding:10px 12px;border-radius:12px;background:var(--warn-soft);color:var(--warn);font-size:.84rem;line-height:1.4}
+.ctwarn2 svg{flex:none;width:16px;height:16px;margin-top:1px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html:not(.ctmerge) .ctwarn2{display:none}
+
 </style>
 </head>
 <body>
@@ -9360,6 +9376,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
         var rt=document.createElement('div'); rt.className='dayroute ctroute'; rt.innerHTML=h2.split(/\s*\u2192\s*/).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
         var bar=sum.querySelector('.dspend .dpbar'), sb=sum.querySelector('.dspan .dsbar'); if(bar) bar.parentNode.insertBefore(rt.cloneNode(true),bar); if(sb) sb.parentNode.insertBefore(rt,sb);
         var tot=sum.querySelector('.dspend .dptot'), dm=lab.match(/(\d{1,2})\s+([A-Za-z]{3})/); if(tot&&dm&&!sum.querySelector('.dpdate')){ var mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(dm[2].toLowerCase()); var t2=document.createElement('div'); t2.className='dptop'; t2.innerHTML='<div class="dpdate"><b>'+(+dm[1])+'</b><small>'+(M[mi]||'')+'</small></div>'; tot.parentNode.insertBefore(t2,tot); t2.appendChild(tot); }
+        var cw=ct.querySelector('.ctwarn'); if(cw&&!sum.querySelector('.ctwarn2')){ var w2=document.createElement('div'); w2.className='ctwarn2'; w2.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.2v.1"/></svg><span>'+cw.textContent+'</span>'; row.after(w2); }
         var sp=sum.querySelector('.dspend'); if(sp&&!sum.querySelector('.ctrows')){ var dtw=h2.split(/\s*\u2192\s*/), town=dtw[dtw.length-1]||'', st=sp.querySelector('.dpstay'), dm2=sp.querySelector('.dpmeta');
           var rows=document.createElement('div'); rows.className='ctrows'; rows.innerHTML='<div class="wxlocrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span class="wxloc">'+town+'</span></div>';
           sp.appendChild(rows); if(st) rows.appendChild(st); if(dm2) rows.appendChild(dm2);
@@ -9615,12 +9632,12 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 
 /* Offline mode tag under the Home title */
 (function(){ var top=document.querySelector('#v-home .hometop h1'); if(!top) return; var tag=document.createElement('button'); tag.type='button'; tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=true; var tw=document.createElement('div'); tw.className='htitle'; top.parentNode.insertBefore(tw,top); tw.appendChild(top); tw.appendChild(tag);
-  var wrap=tw.parentNode, was=navigator.onLine===false, t=0;
-  function bars(){ return '<span class="sigb" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'; }
-  function upd(){ var off=navigator.onLine===false; if(!off&&!was&&tag.classList.contains('on')&&!tag.hidden) return; clearTimeout(t);
-    if(off){ tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=false; wrap.classList.add('isoff'); }
-    else if(was){ tag.className='offtag on'; tag.innerHTML=bars()+'Online mode<i></i>'; tag.hidden=false; wrap.classList.add('isoff'); t=setTimeout(function(){ tag.classList.add('fade'); setTimeout(function(){ tag.hidden=true; wrap.classList.remove('isoff'); tag.classList.remove('fade'); },400); },4000); }
-    else { tag.hidden=true; wrap.classList.remove('isoff'); } was=off; }
+  var wrap=tw.parentNode, was=navigator.onLine===false;
+  var GLOBE='<svg class="netroll" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg>';
+  function upd(){ var off=navigator.onLine===false; tag.hidden=false; wrap.classList.add('isoff');
+    if(off){ tag.className='offtag'; tag.innerHTML='<span class="otx">Offline mode</span><i></i>'; }
+    else { tag.className='offtag on'+(was?' reveal':''); tag.innerHTML=(was?GLOBE:'')+'<span class="otx">Online mode</span><i></i>'; if(was) setTimeout(function(){ tag.classList.remove('reveal'); var g=tag.querySelector('.netroll'); if(g) g.remove(); },1700); }
+    was=off; }
   tag.onclick=function(e){ e.stopPropagation(); var s=document.getElementById('off-sheet'), sc=document.getElementById('scrim'); if(s){ s.hidden=false; if(sc) sc.hidden=false; } };
   window.addEventListener('online',upd); window.addEventListener('offline',upd); upd(); })();
 
