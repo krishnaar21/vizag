@@ -4657,6 +4657,23 @@ html.login-open #scrim{z-index:135!important}
 :root:root:root body .psnote > span:last-child{padding-left:0!important;margin:0!important;text-indent:0!important}
 :root:root:root body .psnote{text-wrap:wrap!important}
 
+/* ===== v151 ===== */
+/* chat bar sits right on the keyboard */
+html.kbd .chatbar{padding-top:6px!important;padding-bottom:6px!important}
+html.kbd .chatsh .chatbox{padding-bottom:0!important;margin-bottom:0!important}
+/* confirm sheet: Cancel and the action side by side */
+#confirm:not([hidden]){display:grid!important;grid-template-columns:1fr 1fr;column-gap:10px;row-gap:0;align-items:end}
+#confirm .lohead{grid-column:1 / -1;margin-bottom:16px}
+#confirm #cf-cancel{grid-row:2;grid-column:1;margin:0!important;width:100%}
+#confirm #cf-go{grid-row:2;grid-column:2;margin:0!important;width:100%}
+#confirm{overflow:hidden!important;max-height:none!important}
+/* one-step sheets: close only */
+#mp-sheet .shtitle .hback,#ai-sheet .shtitle .hback{display:none!important}
+#soc-sheet .shtitle{display:flex}
+#soc-sheet #soc-back{order:3;margin-left:auto}
+#confirm:not([hidden]){align-content:start!important;height:auto!important;min-height:0!important}
+#confirm .lohead{margin-bottom:18px!important;padding-bottom:0!important}
+
 </style>
 </head>
 <body>
@@ -4986,7 +5003,7 @@ html.login-open #scrim{z-index:135!important}
   <button type="button" class="pdel" id="grp-del" hidden>Delete group</button>
 </div>
 <div class="sheet lsheet psheet" id="soc-sheet" hidden role="dialog" aria-label="Social and email">
-  <div class="shtitle"><button type="button" class="hback" id="soc-back" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg></button><span>Edit profile</span></div>
+  <div class="shtitle"><button type="button" class="hback" id="soc-back" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><span>Edit profile</span></div>
   <div id="soc-body"></div>
   <button type="button" class="btn full" id="soc-save" style="margin-top:14px">Save</button>
 </div>
@@ -8534,6 +8551,19 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var cb=document.querySelector('[data-cmode]'), crow=cb&&cb.closest('.setrow'), hint=crow&&crow.parentNode.querySelector('.sethint'), ai=document.getElementById('ai-open'), ag=ai&&ai.closest('.setgrp');
   if(crow&&ag){ ag.appendChild(crow); if(hint) ag.appendChild(hint); }
   var dg=document.getElementById('devgrp'); if(dg&&ag){ var cap=document.createElement('div'); cap.className='setcap devcap'; cap.textContent='Developer'; ag.after(cap); cap.after(dg); } })();
+
+/* Unsaved edits in Address, Profile, Group, Edit profile and Edit stop sheets ask before closing */
+(function(){ var IDS=['mp-sheet','profile','grp-sheet','soc-sheet','stop-edit'], snap={}, cf=document.getElementById('confirm'), sc=document.getElementById('scrim'), pass=false;
+  function el(id){ return document.getElementById(id); }
+  function ser(s){ return [].map.call(s.querySelectorAll('input,select,textarea'),function(e){ return e.type==='checkbox'||e.type==='radio'?(e.checked?1:0):e.value; }).join('|')+'#'+[].map.call(s.querySelectorAll('[aria-pressed="true"],[aria-checked="true"],[aria-selected="true"]'),function(b){ return (b.textContent||'').trim().slice(0,24); }).join(','); }
+  IDS.forEach(function(id){ var s=el(id); if(!s) return; new MutationObserver(function(){ snap[id]=null; if(!s.hidden) setTimeout(function(){ if(!s.hidden) snap[id]=ser(s); },250); }).observe(s,{attributes:true,attributeFilter:['hidden']}); });
+  function open(){ for(var i=0;i<IDS.length;i++){ var s=el(IDS[i]); if(s&&!s.hidden) return s; } return null; }
+  function dirty(){ var s=open(); return s&&snap[s.id]!=null&&ser(s)!==snap[s.id]?s:null; }
+  document.addEventListener('click',function(e){ if(pass||!e.target.closest) return; var t=e.target.closest('.shclose,.hback,#scrim'); if(!t) return;
+    if(cf&&!cf.hidden){ if(t.id==='scrim'){ e.preventDefault(); e.stopImmediatePropagation(); el('cf-cancel').click(); } return; }
+    var s=dirty(); if(!s||(t.id!=='scrim'&&!s.contains(t))) return; e.preventDefault(); e.stopImmediatePropagation();
+    setTimeout(function(){ window.__confirm('Discard changes?','What you changed here won\'t be saved.','Discard',function(){ snap[s.id]=null; pass=true; t.click(); pass=false; }); if(sc) sc.hidden=false; },0); },true);
+  var cc=el('cf-cancel'); if(cc) cc.addEventListener('click',function(){ if(open()&&sc) sc.hidden=false; }); })();
 
 </script>
 
