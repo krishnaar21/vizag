@@ -4053,6 +4053,18 @@ html.tv-4 :is(.vzhero,.cthero) .tdate::after{top:20px!important;bottom:20px!impo
 .dsbar{align-items:flex-end!important}
 .dstrack{margin-bottom:9px!important}
 
+/* ===== v130 ===== */
+.dstrack{height:2.5px!important;max-width:56%!important}
+/* Ticket: divider centred between the date and the text */
+html.tv-4 :is(.vzhero,.cthero){grid-template-columns:auto 1fr!important}
+html.tv-4 :is(.vzhero,.cthero) .tdate{padding:14px 20px!important}
+html.tv-4 :is(.vzhero,.cthero) .shead{padding-left:20px!important}
+/* nav: wavy top edge */
+html.navwave .nav{border-top-color:transparent!important;overflow:visible}
+html.navwave .nav::before,html.navwave .nav::after{content:'';position:absolute;left:0;right:0;pointer-events:none;-webkit-mask-repeat:repeat-x;mask-repeat:repeat-x;-webkit-mask-size:16px 6px;mask-size:16px 6px}
+html.navwave .nav::before{top:-6px;height:6px;background:var(--surface);-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3 V6 H0Z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3 V6 H0Z'/%3E%3C/svg%3E")}
+html.navwave .nav::after{top:-6px;height:6px;background:var(--line);-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3' fill='none' stroke='black' stroke-width='1.2'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6' viewBox='0 0 16 6'%3E%3Cpath d='M0 3 Q4 0 8 3 T16 3' fill='none' stroke='black' stroke-width='1.2'/%3E%3C/svg%3E")}
+
 </style>
 </head>
 <body>
@@ -4311,6 +4323,7 @@ html.tv-4 :is(.vzhero,.cthero) .tdate::after{top:20px!important;bottom:20px!impo
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Or swipe the card on Home</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Or swipe the facts on a day</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setcap">AI suggestions</div>
@@ -6513,6 +6526,11 @@ html.tv-4 :is(.vzhero,.cthero) .tdate::after{top:20px!important;bottom:20px!impo
   document.addEventListener('touchend',function(e){ if(x0===null) return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){ var i=(L.indexOf(v)+(dx<0?1:-1)+L.length)%L.length; set(L[i]); if(window.__toast) window.__toast({grid:'Grid',span:'Day span',spend:'Spend first'}[L[i]]+' layout'); } },{passive:true});
   var ct=document.getElementById('ct-home'); if(ct) new MutationObserver(function(){ all(); }).observe(ct,{childList:true,subtree:true});
   set(v); })();
+
+/* nav bar top edge: straight line or gentle wave */
+(function(){ var r=document.documentElement, k='vizag-navedge', v='line'; try{ v=localStorage.getItem(k)||'line'; }catch(e){}
+  function set(x){ r.classList.toggle('navwave',x==='wave'); document.querySelectorAll('[data-navedge]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.navedge===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  document.querySelectorAll('[data-navedge]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.navedge); }); }); set(v); })();
 
 </script>
 
