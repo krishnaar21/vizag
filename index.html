@@ -4347,17 +4347,17 @@ html.homeone #v-home .vzhero .dpick{right:0!important}
 .pgroup[data-pg="when"] input[type=date]::-webkit-date-and-time-value{text-align:left}
 /* trip pass */
 .pshd{position:sticky!important;top:-14px;z-index:5;background:var(--bg);margin:-14px -16px 12px!important;padding:14px 16px 10px!important}
-.psnote{background:#fff4c2;color:#5c4a00;border:1px solid #f0dc8a;border-radius:14px;padding:10px 12px;font-size:.82rem;line-height:1.35;margin:0 0 14px!important;text-align:left!important}
-:root[data-theme=dark] .psnote{background:#2e2709;color:#f3e3a0;border-color:#4a3f12}
-@media (prefers-color-scheme:dark){ :root:not([data-theme=light]) .psnote{background:#2e2709;color:#f3e3a0;border-color:#4a3f12} }
+.pxnote{background:#fff4c2;color:#5c4a00;border:1px solid #f0dc8a;border-radius:14px;padding:10px 12px;font-size:.82rem;line-height:1.35;margin:0 0 14px!important;text-align:left!important}
+:root[data-theme=dark] .pxnote{background:#2e2709;color:#f3e3a0;border-color:#4a3f12}
+@media (prefers-color-scheme:dark){ :root:not([data-theme=light]) .pxnote{background:#2e2709;color:#f3e3a0;border-color:#4a3f12} }
 .psmain{display:flex;align-items:center;gap:14px;margin:12px 0 4px}
 .psrt{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;position:relative;padding-left:16px}
 .psrt::before{content:'';position:absolute;left:3px;top:8px;bottom:30px;border-left:2px dotted var(--line)}
-.psst{position:relative;min-width:0}
-.psst::before{content:'';position:absolute;left:-16px;top:5px;width:8px;height:8px;border-radius:50%;border:2px solid var(--ink);box-sizing:border-box;background:var(--surface)}
-.psst + .psst::before{background:var(--ink)}
-.psst small{margin-bottom:1px}
-.psst b{font-size:1.2rem!important;line-height:1.2;word-break:normal;overflow-wrap:anywhere;margin-top:1px!important}
+.pxst{position:relative;min-width:0}
+.pxst::before{content:'';position:absolute;left:-16px;top:5px;width:8px;height:8px;border-radius:50%;border:2px solid var(--ink);box-sizing:border-box;background:var(--surface)}
+.pxst + .pxst::before{background:var(--ink)}
+.pxst small{margin-bottom:1px}
+.pxst b{font-size:1.2rem!important;line-height:1.2;word-break:normal;overflow-wrap:anywhere;margin-top:1px!important}
 .psmain .psqr{flex:none;margin:0!important;padding:0!important;line-height:0}
 .psmain .psqr .qrsvg{width:96px!important;height:96px!important}
 .psday .psqr{display:none}
@@ -4365,10 +4365,10 @@ html.homeone #v-home .vzhero .dpick{right:0!important}
 .inr{color:inherit!important;-webkit-text-fill-color:currentColor;position:relative;background:currentColor!important}
 .inr > i{position:absolute;inset:0;opacity:0;font-style:normal;font-size:1em;line-height:1}
 .psrt{display:flex!important;flex-direction:column!important;align-items:stretch!important}
-.psst{display:block!important;text-align:left!important}
-.psst small,.psst b{display:block!important;text-align:left!important}
+.pxst{display:block!important;text-align:left!important}
+.pxst small,.pxst b{display:block!important;text-align:left!important}
 .psrt::before{top:9px;bottom:auto;height:calc(50% - 4px)}
-.psst::before{top:4px}
+.pxst::before{top:4px}
 :root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:152px!important}
 
 /* ===== v140 ===== */
@@ -4397,8 +4397,8 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
 .dpdate b{font-size:1.9rem;font-weight:800;letter-spacing:-.03em}
 .dpdate small{font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--muted);margin-top:4px}
 /* info note */
-.psnote{display:flex!important;align-items:center;gap:8px;padding:10px 14px!important;font-size:.84rem!important;text-wrap:balance}
-.psnote svg{flex:none;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.pxnote{display:flex!important;align-items:center;gap:8px;padding:10px 14px!important;font-size:.84rem!important;text-wrap:balance}
+.pxnote svg{flex:none;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 /* sheet slides away instead of fading */
 .passbox{opacity:1!important;transform:translateY(105%);transition:transform .34s cubic-bezier(.32,.72,0,1)!important;will-change:transform}
 .passsh.in .passbox{transform:none}
@@ -4429,7 +4429,7 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
 .hspan.hsgone{display:none!important}
 .wx.wxmoved{display:block!important;border-top:1px dashed var(--line);padding:12px 0 2px!important;margin:0!important;font-size:.86rem}
 /* pass: clearer centred note; time rule matches the tear line, centred on the numbers */
-.psnote{justify-content:center!important;text-align:center!important;font-weight:500}
+.pxnote{justify-content:center!important;text-align:center!important;font-weight:500}
 .pstimes{align-items:flex-end!important}
 .pstimes i{height:1px!important;border:0!important;margin:0 0 .72rem!important;background:repeating-linear-gradient(90deg,var(--line) 0 5px,transparent 5px 8px)}
 /* status strip fades with the backdrop */
@@ -4553,6 +4553,38 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
 /* toast action a bit larger */
 :root:root.ts-pill .oktoast button{padding:9px 20px!important;font-size:1.02rem!important;font-weight:600}
 .tki b{font-size:1.2rem!important}
+
+/* ===== v147 ===== */
+/* order under the bar: place, wake/sleep, hotel, weather */
+.wxlocrow{margin-top:14px!important;padding-top:12px!important;border-top:1px dashed var(--line)!important}
+.dpmeta.mv{margin-top:8px!important;padding-top:0!important;border-top:0!important}
+html:not(.dv-spend) .dpmeta.mv,html:not(.dv-spend) .dpstay.mv{display:none!important}
+:root:root:root:root:root body #v-home .hday .wx.wxmoved .wxhide{display:none!important}
+.wxstatic{font-weight:500;color:var(--ink)}
+/* legend squares centred on their labels */
+.dpleg span{display:inline-flex!important;align-items:center!important;gap:6px}
+.dpleg i{display:block!important;flex:none;margin:0!important;vertical-align:middle;position:static!important;top:auto!important}
+/* pass note: plain, centred */
+.pxnote{display:block!important;text-align:center!important;text-wrap:balance}
+/* sheet headers breathe */
+.shtitle{padding-left:6px!important;padding-right:4px!important;padding-bottom:12px!important}
+.sheet:not(.lsheet) > .shtitle{padding-top:16px!important}
+.lshead{padding:22px 22px 12px!important}
+.pshd{padding:18px 20px 12px!important;margin:-14px -16px 12px!important}
+/* status strip: colour fades; it drops below sheets only after the fade */
+body::before{transition:background-color .3s ease,z-index 0s linear .3s!important}
+html.dim body::before{transition:background-color .3s ease,z-index 0s linear 0s!important}
+.dpleg span{gap:0!important}
+.dpleg i{margin-right:6px!important}
+:root:root:root body #v-home .dpmeta.mv,:root:root:root body #v-home .dpstay.mv{font-size:.88rem!important;font-weight:400!important}
+:root:root:root body #v-home .dpstay.mv{color:var(--muted)!important}
+:root:root:root body #v-home .dpmeta.mv b{font-weight:600!important;font-size:inherit!important}
+:root:root:root body #v-home .dpmeta.mv .wxreel > span{font-size:inherit!important}
+.psst + .psnote,.psnote{text-wrap:balance}
+:root:root .oktoast{z-index:130!important}
+.dpleg span{display:inline-block!important;white-space:nowrap}
+.dpleg i{display:inline-block!important;vertical-align:middle!important;position:relative!important;top:-1px!important}
+:root:root.ts-pill .oktoast > span{white-space:nowrap}
 
 </style>
 </head>
@@ -6824,7 +6856,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   /* dim the status bar strip (and Safari's tint) while any sheet or overlay is open */
   (function(){ var tc=document.querySelector('meta[name="theme-color"]'), base=tc?tc.getAttribute('content'):''; var sc=$('scrim');
     function upd(){ var ch=document.getElementById('chat'), dk=ch&&!ch.hidden&&ch.classList.contains('full')&&window.innerWidth<1024; var on=!dk&&(document.documentElement.classList.contains('ps-open')||(sc&&!sc.hidden)); document.documentElement.classList.toggle('dim',on);
-      if(tc){ if(dk){ if(!upd.dk){ upd.base=tc.getAttribute('content'); } tc.setAttribute('content',getComputedStyle(ch.querySelector('.chathead')).backgroundColor.indexOf('rgba(0, 0, 0, 0)')<0?getComputedStyle(ch.querySelector('.chathead')).backgroundColor:getComputedStyle(ch.querySelector('.chatbox')).backgroundColor); upd.dk=true; return; } else if(upd.dk){ upd.dk=false; tc.setAttribute('content',upd.base); } if(on){ if(!upd.on){ base=tc.getAttribute('content'); } var c=getComputedStyle(document.body,'::before').backgroundColor||''; var m=c.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/); if(m) c='rgb('+[m[1],m[2],m[3]].map(function(v){ return Math.round(v*255); }).join(',')+')'; tc.setAttribute('content',c||'#000'); } else if(upd.on) tc.setAttribute('content',base); } upd.on=on; }
+      if(tc){ if(dk){ if(!upd.dk){ upd.base=tc.getAttribute('content'); } tc.setAttribute('content',getComputedStyle(ch.querySelector('.chathead')).backgroundColor.indexOf('rgba(0, 0, 0, 0)')<0?getComputedStyle(ch.querySelector('.chathead')).backgroundColor:getComputedStyle(ch.querySelector('.chatbox')).backgroundColor); upd.dk=true; return; } else if(upd.dk){ upd.dk=false; tc.setAttribute('content',upd.base); } if(on){ if(!upd.on){ base=tc.getAttribute('content'); } var c=getComputedStyle(document.body,'::before').backgroundColor||''; var m=c.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)/); if(m) c='rgb('+[m[1],m[2],m[3]].map(function(v){ return Math.round(v*255); }).join(',')+')'; fadeTC(c||'#000'); } else if(upd.on) fadeTC(base); } upd.on=on; }
+    function rgb(x){ var d=document.createElement('i'); d.style.color=x; document.body.appendChild(d); var m=(getComputedStyle(d).color.match(/[\d.]+/g)||[0,0,0]).slice(0,3).map(Number); d.remove(); return m; }
+    function fadeTC(to){ var f=rgb(tc.getAttribute('content')||'#fff'), t=rgb(to), t0=performance.now(); cancelAnimationFrame(fadeTC.r); (function step(n){ var k=Math.min(1,(n-t0)/300), e=1-Math.pow(1-k,2); tc.setAttribute('content','rgb('+f.map(function(v,i){ return Math.round(v+(t[i]-v)*e); }).join(',')+')'); if(k<1) fadeTC.r=requestAnimationFrame(step); else tc.setAttribute('content',to); })(t0); }
     new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
     if(sc) new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(sc,{attributes:true,attributeFilter:['hidden']}); })();
   /* DEBUG (beta only): double-tap "My trips" to force a fresh copy: clears offline caches and reloads.
@@ -7315,7 +7349,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function openPlanner(t,asNew){
       editing=asNew?null:t; extra=t?t.places.filter(function(p){ return p[6]; }):[];
       $$('.pgroup.pcol').forEach(function(g){ g.classList.remove('pcol'); });
-      $('pl-title').textContent=t?'Edit trip':'Plan a new trip';
+      $('pl-title').textContent=t?'Edit trip':'Plan a new trip'; $('pl-go').textContent=t?'Update plan':'Create plan';
       var mp=(window.__myPlaces?window.__myPlaces():[]);
       $('pl-from').innerHTML=(mp.length?'<optgroup label="My places">'+mp.map(function(p,i){ return opt('@'+i,p.emo+' '+p.label,t?t.from[0]===p.label:i===0); }).join('')+'</optgroup><optgroup label="Cities">':'')+
         CITIES.map(function(c){ return opt(c[0],c[0],t?t.from[0]===c[0]:(!mp.length&&c[0]==='Hyderabad')); }).join('')+(mp.length?'</optgroup>':'');
@@ -7327,8 +7361,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       drawGroupChips(); $('pl-name').value=t?(t.name||''):''; $('pl-name').dataset.touched=t?'1':''; $('pl-nerr').hidden=true; $('pl-name').classList.remove('bad'); if(!t) autoName();
       vzEditing=false; $('pl-del').hidden=!editing;
       drawPlaces(t?t.places.map(function(p){ return p[0]; }):null);
-      if(!t) drawStart(); drawSide('own'); goStep(t?1:0); pl.hidden=false; root.classList.add('login-open'); topReset();
+      if(!t) drawStart(); drawSide('own'); goStep(t?1:0); pl.hidden=false; root.classList.add('login-open'); topReset(); setTimeout(function(){ pl.__snap=plSnap(); },120);
     }
+    function plSnap(){ return [].map.call(pl.querySelectorAll('input,select,textarea'),function(e){ return e.type==='checkbox'||e.type==='radio'?(e.checked?1:0):e.value; }).join('|')+'#'+[].map.call(pl.querySelectorAll('[aria-pressed="true"]'),function(b){ return b.textContent.trim(); }).join(','); }
     function headFit(){ var h=pl.querySelector('.phead'); if(h) plForm.style.setProperty('--phh',h.offsetHeight+'px'); }
     window.addEventListener('resize',headFit);
     function topReset(){ headFit(); [pl,plForm,$('pl-main'),$('pl-side')].forEach(function(el){ if(el) el.scrollTop=0; }); requestAnimationFrame(function(){ [pl,plForm,$('pl-main')].forEach(function(el){ if(el) el.scrollTop=0; }); }); }
@@ -7732,7 +7767,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       function lift(){ sc=scroller(qi); var box=qi.closest('.psearch')||qi.parentElement, r=box.getBoundingClientRect(), top=headBottom()+8, d=r.top-top; if(Math.abs(d)<4) return; document.getElementById('planner').classList.add('qlift'); sc.scrollTo({top:sc.scrollTop+d,behavior:'smooth'}); }
       qi.addEventListener('focus',function(){ sc=scroller(qi); if(saved===null) saved=sc.scrollTop; setTimeout(lift,60); setTimeout(lift,380); });
       qi.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement===qi) return; document.getElementById('planner').classList.remove('qlift'); if(sc&&saved!==null) sc.scrollTo({top:saved,behavior:'smooth'}); saved=null; },150); }); })(); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
-    $('pl-close').addEventListener('click',closePlanner);
+    $('pl-close').addEventListener('click',function(){ if(pl.__snap&&plSnap()!==pl.__snap){ toast('Discard changes?','Discard',function(){ pl.__snap=null; closePlanner(); }); return; } closePlanner(); });
     $('pl-next').addEventListener('click',function(){ if(nDays(formTrip())<=0){ $('pl-end').focus(); hints(); return; } if(!nameOK()) return; goStep(2); });
     $('pl-name').addEventListener('input',function(){ this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
     $('pl-hback').addEventListener('click',function(){ if(step===2) goStep(1); else if(step===1&&!editing){ drawStart(); goStep(0); } else closePlanner(); });
@@ -8326,15 +8361,15 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     var F=facts(sec), sp=[].map.call(sec.querySelectorAll('.hspan > span'),function(s){ return s.textContent.trim(); }), re=/\d{1,2}:\d{2}\s*[AP]M|\d{2}:\d{2}/;
     var t1=((sp[1]||'').match(re)||[''])[0], t2=((sp[2]||'').match(re)||[''])[0], date=txt(sh,'.label').replace(/\s*·.*$/,'');
     return '<section class="pstk" data-pd="'+sec.dataset.day+'"><div class="pstop"><div class="psdate"><span>Day '+(idx+1)+' of '+total+'</span><span>'+date+'</span></div>'+
-      '<div class="psmain"><div class="psrt"><div class="psst"><small>From</small><b>'+parts[0]+'</b></div><div class="psst"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div><div class="psqr">'+qr(dayURL(sec),96)+'</div></div>'+
+      '<div class="psmain"><div class="psrt"><div class="pxst"><small>From</small><b>'+parts[0]+'</b></div><div class="pxst"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div><div class="psqr">'+qr(dayURL(sec),96)+'</div></div>'+
       '<div class="pstimes"><div><small>First stop</small><b>'+(t1||'—')+'</b></div><i></i><div class="r"><small>Last stop</small><b>'+(t2||'—')+'</b></div></div></div>'+
       '<div class="psperf"></div><div class="psday"><div class="psgrid"><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></section>'; }
   function openPass(sec){ var all=[].slice.call(document.querySelectorAll('#v-home .hday')); if(!all.length) all=[sec]; var trip=txt(sec,'.trip span')||'Your trip';
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
-    function close(){ ps.classList.remove('in'); document.documentElement.classList.add('ps-closing'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')){ ps.hidden=true; document.documentElement.classList.remove('ps-open','ps-closing'); } },300); }
+    function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')) ps.hidden=true; },320); }
     var box=ps.querySelector('.passbox');
     box.innerHTML='<div class="pshd"><div class="pshl"><b>Trip pass</b><small>'+trip+' · '+all.length+' days</small></div><div class="pshr"><button type="button" class="shclose psshare" aria-label="Share trip"><svg viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12"/></svg></button><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>'+
-      '<p class="psnote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg><span>Scan a day\'s code to open its plan</span></p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
+      '<p class="pxnote">Scan a day\'s code with any phone camera to open that day\'s plan</p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
     box.querySelector('.shclose:not(.psshare)').onclick=close;
     if(!box.__drag){ box.__drag=1; var sy=null,dd=0; box.addEventListener('touchstart',function(e){ sy=box.scrollTop<=0?e.touches[0].clientY:null; dd=0; },{passive:true}); box.addEventListener('touchmove',function(e){ if(sy===null) return; dd=e.touches[0].clientY-sy; if(dd>0&&box.scrollTop<=0){ box.style.transition='none'; box.style.transform='translateY('+dd*0.6+'px)'; } },{passive:true}); box.addEventListener('touchend',function(){ if(sy===null) return; sy=null; box.style.transition=''; box.style.transform=''; if(dd>90) ps.__close(); },{passive:true}); }
     ps.__close=close;
@@ -8388,7 +8423,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var tk=document.createElement('div'); tk.className='tkticker'; tk.setAttribute('aria-label',hs.textContent.replace(/\s+/g,' ').trim()); tk.innerHTML='<div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div>';
   wx.parentNode.insertBefore(tk,wx); hs.parentNode.insertBefore(wx,hs); wx.classList.add('wxmoved'); hs.classList.add('hsgone');
   var loc=wx.querySelector('.wxloc'); if(loc){ var d=loc.nextElementSibling; if(d&&d.classList.contains('wxdot')) d.remove(); var lr=document.createElement('div'); lr.className='wxlocrow'; lr.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>'; lr.appendChild(loc); wx.parentNode.insertBefore(lr,wx); }
-  var ico=wx.querySelector('.wxinl'); if(ico){ ico.classList.remove('wxinl'); ico.classList.add('wxrowico'); } }); })();
+  var ico=wx.querySelector('.wxinl'); if(ico){ ico.classList.remove('wxinl'); ico.classList.add('wxrowico'); }
+  var lr2=sec.querySelector('.wxlocrow'), dm=sec.querySelector('.dspend .dpmeta'), ds=sec.querySelector('.dspend .dpstay'); if(lr2){ if(ds){ ds.classList.add('mv'); lr2.after(ds); } if(dm){ dm.classList.add('mv'); lr2.after(dm); } }
+  var sw=wx.querySelector('.wxtext'); if(sw){ var st=document.createElement('span'); st.className='wxstatic'; st.textContent=(sw.getAttribute('aria-label')||sw.textContent).split(/\s*,\s*/).join(' · '); sw.after(st); sw.classList.add('wxhide'); } }); })();
 
 /* Combined card: the ticket top carries the trip (name, days, places, distance, dates) with the edit pencil;
    the row below shows the day's route; tap it for the trip pass */
