@@ -4067,6 +4067,14 @@ html.navwave .nav::after{top:-6px;height:6px;background:var(--line);-webkit-mask
 .tvdots{display:none!important}
 html.tv-4 body :is(.vzhero,.cthero) .tdate{padding:14px 20px!important}
 html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .shead{padding-left:20px!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero){grid-template-columns:86px minmax(0,1fr)!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .tdate{padding:14px 0!important;width:86px;box-sizing:border-box}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .shead{margin:0!important;padding:14px 52px 14px 20px!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero){grid-template-columns:80px minmax(0,1fr)!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .tdate{width:80px;padding-left:6px!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) > .shead{padding-left:22px!important;padding-right:50px!important}
+:root:root:root.tv-4 body #v-home :is(.vzhero,.cthero) .shead h2{font-size:1.04rem!important}
 
 </style>
 </head>
@@ -4325,7 +4333,7 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
 
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Or swipe the card on Home</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Or swipe the facts on a day</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Layout of the Home trip card</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Layout of each day&#39;s facts</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
@@ -6489,17 +6497,17 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
   document.querySelectorAll('[data-toast]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.toast,true); }); }); set(v,false); })();
 
 /* Home trip card: swipe sideways on the card to compare layouts */
-(function(){ var r=document.documentElement, K='vizag-tview2', N=3, v=1; try{ v=+(localStorage.getItem(K)||1)||1; }catch(e){} if(v>3) v=1;
+(function(){ var r=document.documentElement, K='vizag-tview3', N=3, v=3; try{ v=+(localStorage.getItem(K)||3)||3; }catch(e){} if(v>3) v=3;
   var NAMES=['Classic','Banner','Ticket'];
   function meta(card){ if(!card||card.querySelector('.tmeta')) return; var vals=[].map.call(card.querySelectorAll('.sgrid .mi'),function(m){ var k=(m.querySelector('.mk')||{}).textContent||'', val=(m.querySelector('.mv')||{}).textContent||''; k=k.toLowerCase(); return k==='days'?val+' days':k==='places'?val+' places':k==='per person'?val+' pp':val; });
     var lab=card.querySelector('.shead .label'), d=document.createElement('div'); d.className='tmeta'; d.textContent=vals.join(' · '); var sh=card.querySelector('.shead'); if(sh) sh.appendChild(d);
     if(lab&&!card.querySelector('.tdate')){ var m=lab.textContent.match(/(\d{1,2})\D+?(\d{1,2})?\s*([A-Za-z]{3})[a-z]*\s*(\d{4})?/); var t=document.createElement('div'); t.className='tdate'; var mm=lab.textContent.match(/[A-Z][a-z]{2}(?=\s+\d{4})|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*/i), dd=lab.textContent.match(/\d{1,2}/); t.innerHTML='<b>'+(dd?dd[0]:'')+'</b><span>'+(mm?mm[0].slice(0,3).toUpperCase():'')+'</span>'; card.insertBefore(t,card.firstChild); }
-    var dots=document.createElement('div'); dots.className='tvdots'; dots.innerHTML=NAMES.map(function(n,i){ return '<i title="'+n+'"></i>'; }).join('')+'<span class="tvname"></span>'; card.after(dots); paint(); }
+    var dots=null; if(0){ dots=document.createElement('div'); dots.className='tvdots'; dots.innerHTML=NAMES.map(function(n,i){ return '<i title="'+n+'"></i>'; }).join('')+'<span class="tvname"></span>'; card.after(dots); } paint(); }
   function paint(){ var MAP=[1,3,4]; [1,2,3,4,5].forEach(function(i){ r.classList.toggle('tv-'+i,i===MAP[v-1]); }); document.querySelectorAll('[data-tview]').forEach(function(b){ b.setAttribute('aria-pressed',+b.dataset.tview===v?'true':'false'); }); document.querySelectorAll('.tvdots').forEach(function(d){ [].forEach.call(d.querySelectorAll('i'),function(x,i){ x.classList.toggle('on',i===v-1); }); var nm=d.querySelector('.tvname'); nm.textContent=NAMES[v-1]; d.classList.remove('flash'); void d.offsetWidth; d.classList.add('flash'); }); }
   function go(dir){ v=((v-1+dir+N)%N)+1; try{ localStorage.setItem(K,v); }catch(e){} paint(); }
   function wire(card){ if(!card||card.__tv) return; card.__tv=1; meta(card); var x0=null,y0=0;
     card.addEventListener('touchstart',function(e){ var t=e.touches[0]; x0=t.clientX; y0=t.clientY; },{passive:true});
-    card.addEventListener('touchend',function(e){ if(x0===null) return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1); },{passive:true}); }
+    }
   document.addEventListener('click',function(e){ var c=e.target.closest&&e.target.closest('#v-home .vzhero,#v-home .cthero'); if(!c||e.target.closest('.ctedit,.tswitch,a,button')) return; var s=c.querySelector('.tswitch'); if(s) s.click(); });
   wire(document.querySelector('.vzhero'));
   var ct=document.getElementById('ct-home'); if(ct) new MutationObserver(function(){ wire(ct.querySelector('.cthero')); }).observe(ct,{childList:true,subtree:true});
@@ -6515,23 +6523,23 @@ html.tv-4 body :is(.vzhero,.cthero) .shead{padding-left:20px!important}
   function build(g){ if(!g||g.__alt) return; g.__alt=1; var F={}; [].forEach.call(g.querySelectorAll('.mi'),function(m){ F[((m.querySelector('.mk')||{}).textContent||'').trim().toLowerCase()]=((m.querySelector('.mv')||{}).textContent||'').trim(); });
     var wake=F['wake up']||'', sleep=F['sleep']||F['lights out']||'', stay=F['stay']||'', sc=F['stay cost']||'', food=F['food']||'', tr=F['transport']||'';
     var sp=document.createElement('div'); sp.className='dalt dspan';
-    sp.innerHTML='<div class="dsbar"><span class="dsend"><small>Wake</small><b>'+wake+'</b></span><i class="dstrack"></i><span class="dsend dsr"><small>Sleep</small><b>'+sleep+'</b></span></div>'+
+    sp.innerHTML='<div class="dsbar"><span class="dsend"><small>Wake up</small><b>'+wake+'</b></span><i class="dstrack"></i><span class="dsend dsr"><small>Sleep</small><b>'+sleep+'</b></span></div>'+
       '<ul class="dsrows">'+(stay?'<li>'+ic('bed')+'<span>'+stay+'</span><em>'+sc+'</em></li>':'')+(food?'<li>'+ic('food')+'<span>Food</span><em>'+food+'</em></li>':'')+(tr?'<li>'+ic('car')+'<span>'+tr+'</span><em></em></li>':'')+'</ul>';
     var a1=rng(sc), a2=rng(food), tot=(a1||a2)?[(a1?a1[0]:0)+(a2?a2[0]:0),(a1?a1[1]:0)+(a2?a2[1]:0)]:null, share=(a1&&a2)?Math.round(100*(a1[0]+a1[1])/(a1[0]+a1[1]+a2[0]+a2[1])):60;
     var pe=document.createElement('div'); pe.className='dalt dspend';
     pe.innerHTML=(tot?'<div class="dptot"><small>Spend today</small><b>₹'+k(tot[0])+'–'+k(tot[1])+'</b></div><div class="dpbar"><i style="width:'+share+'%"></i></div><div class="dpleg"><span><i class="a"></i>Stay '+sc+'</span><span><i class="b"></i>Food '+food+'</span></div>':'')+
-      '<div class="dpmeta">'+[wake?'Up '+wake:'',sleep?'Sleep '+sleep:'',tr].filter(Boolean).join(' · ')+'</div>'+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
+      '<div class="dpmeta">'+[wake?'Wake up '+wake:'',sleep?'Sleep '+sleep:'',tr].filter(Boolean).join(' · ')+'</div>'+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
     g.after(sp); sp.after(pe); }
   function all(){ document.querySelectorAll('.hday .summary > .sgrid,.ctday2 .summary > .sgrid').forEach(build); }
   function set(x){ v=x; L.forEach(function(n){ r.classList.toggle('dv-'+n,n===x); }); ['list','chips'].forEach(function(n){ r.classList.remove('dv-'+n); }); document.querySelectorAll('[data-dview]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.dview===x?'true':'false'); }); try{ localStorage.setItem(K,x); }catch(e){} all(); }
   document.querySelectorAll('[data-dview]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.dview); }); });
   var x0=null,y0=0; document.addEventListener('touchstart',function(e){ var g=e.target.closest&&e.target.closest('.hday .summary > .sgrid,.ctday2 .summary > .sgrid,.dalt'); if(!g){ x0=null; return; } x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
-  document.addEventListener('touchend',function(e){ if(x0===null) return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){ var i=(L.indexOf(v)+(dx<0?1:-1)+L.length)%L.length; set(L[i]); if(window.__toast) window.__toast({grid:'Grid',span:'Day span',spend:'Spend first'}[L[i]]+' layout'); } },{passive:true});
+  
   var ct=document.getElementById('ct-home'); if(ct) new MutationObserver(function(){ all(); }).observe(ct,{childList:true,subtree:true});
   set(v); })();
 
 /* nav bar top edge: straight line or gentle wave */
-(function(){ var r=document.documentElement, k='vizag-navedge', v='line'; try{ v=localStorage.getItem(k)||'line'; }catch(e){}
+(function(){ var r=document.documentElement, k='vizag-navedge2', v='wave'; try{ v=localStorage.getItem(k)||'wave'; }catch(e){}
   function set(x){ r.classList.toggle('navwave',x==='wave'); document.querySelectorAll('[data-navedge]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.navedge===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-navedge]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.navedge); }); }); set(v); })();
 
