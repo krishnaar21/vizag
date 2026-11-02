@@ -5218,6 +5218,47 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:1!
 .plancard.pro{cursor:pointer}
 .btn .inr{margin-left:.28em}
 
+/* ===== v179 ===== */
+.abgrp .abd:last-child,.abgrp > :last-child{border-bottom:0!important}
+.ablic{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.86rem;line-height:1.55}
+.ablic li{margin-bottom:4px}.ablic b{color:var(--ink);font-weight:600}
+.faqmail{text-align:center;font-size:.88rem;color:var(--muted);margin:14px 0 4px}
+#notif-sheet .pfgrp > .setrow:first-child{border-top:0!important}
+.setbtn.devdanger,#del-open{background:color-mix(in srgb,var(--danger) 14%,var(--surface))!important;color:color-mix(in srgb,var(--danger) 80%,#000)!important;border:1px solid color-mix(in srgb,var(--danger) 30%,transparent)!important}
+html.darkbg .setbtn.devdanger,html.darkbg #del-open{color:color-mix(in srgb,var(--danger) 70%,#fff)!important}
+.selwrap{position:relative}
+.selwrap select{width:100%;appearance:none;-webkit-appearance:none;padding-right:36px!important}
+.selwrap::after{content:'';position:absolute;right:14px;top:50%;width:8px;height:8px;margin-top:-6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);pointer-events:none}
+.selwrap select:invalid,.selwrap select option[disabled]{color:var(--muted)}
+.cserr{border:1px solid color-mix(in srgb,var(--danger) 35%,transparent);background:color-mix(in srgb,var(--danger) 8%,var(--surface));color:var(--ink);border-radius:12px;padding:10px 12px;font-size:.86rem;margin:4px 0 12px;line-height:1.45}
+.cserr[hidden]{display:none}
+/* places list: slightly darker panel */
+#planner .pcards{background:color-mix(in srgb,var(--ink) 3%,var(--surface))!important}
+/* selection: undo the heavy outline on cards and view icons; borders only on option buttons */
+#planner .pcard.on,#planner .vtog button[aria-pressed="true"],#planner .pdot[aria-pressed="true"]{border-color:revert-layer!important;box-shadow:revert-layer!important}
+#planner [aria-pressed="true"],#planner .pcard.on,#planner .tplr.cur,#planner .gchip.on{box-shadow:none!important}
+#planner .pcard.on{border-color:var(--line)!important}
+#planner .vtog button[aria-pressed="true"]{border-color:transparent!important}
+#planner .vtog{border:1px solid var(--line)}
+#planner .vtog button[aria-pressed="true"]{outline:1px solid var(--ink);outline-offset:-1px}
+#planner .seg button[aria-pressed="true"],#planner .pills button[aria-pressed="true"],#planner .gchip.on{border-color:var(--ink)!important}
+#planner input:focus,#planner select:focus,#planner textarea:focus{box-shadow:none!important;border-color:var(--ink)!important}
+/* locked past trip */
+#pl-go.locked{opacity:.45}
+/* offline: one line */
+.offline.oline{align-items:center;padding-block:8px!important}
+.offline.oline .otile,.offline.oline #offline-ok{display:none!important}
+.offline.oline .t{font-size:.9rem;font-weight:600}
+.offline .omore{flex:none}
+/* free day: option A (dashed, tinted) */
+.stop.freeday{border:1.5px dashed color-mix(in srgb,#2e9d5b 45%,var(--line))!important;background:color-mix(in srgb,#2e9d5b 6%,var(--surface))!important;box-shadow:none!important}
+.stop.freeday .tile{background:color-mix(in srgb,#2e9d5b 16%,transparent)!important}
+html.fd-b .stop.freeday{border:0!important;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink) 4%,var(--surface)) 0 10px,var(--surface) 10px 20px)!important}
+html.fd-b .stop.freeday .tile{background:var(--surface)!important}
+html.fd-c .stop.freeday{border:1px solid var(--line)!important;background:var(--surface)!important;text-align:center}
+html.fd-c .stop.freeday .row1{justify-content:center}
+html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68rem;font-weight:800;letter-spacing:.14em;color:#2e9d5b;margin-bottom:6px}
+
 </style>
 </head>
 <body>
@@ -5226,7 +5267,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)!important;opacity:1!
 
 <div class="offline wrap" id="offline" hidden role="status">
   <span class="otile" aria-hidden="true"><span class="ic"><span class="ie" data-e="1f4e1">📡️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="wifioff" href="#i-hugeicons-wifioff"/></svg></span></span></span>
-  <div class="otext"><div class="t">You're using the offline version</div><div class="s">Some features may not work as expected until you're back online. For maps, download offline maps in your Maps app for a better experience.</div></div>
+  <div class="otext"><div class="t">You're offline. Some features may not work.</div></div>
   <button type="button" class="obtn" id="offline-ok">Use offline</button>
 </div>
 
@@ -7807,6 +7848,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       var places=d.stops.filter(function(s){ return s.kind!=='travel'&&s.kind!=='food'&&s.kind!=='free'; }), first=d.stops[0], last=d.stops[d.stops.length-1];
       var modes={}; d.stops.forEach(function(s){ if(s.km>0) legModes(s.km).slice(0,1).forEach(function(m){ modes[m[1]]=1; }); });
       var stay=i<P.days.length-1?(d.night||'—'):'Heading home';
+      if(d.free) return [['Wake up','Your call'],['Sleep','Your call'],['Stay',stay],['Stay cost','₹'+bd[0].toLocaleString('en-IN')+'–'+bd[1].toLocaleString('en-IN')+' / room'],['Food','₹'+bd[2].toLocaleString('en-IN')+'–'+bd[3].toLocaleString('en-IN')+' pp'],['Transport','None planned']];
       return [['Wake up',hm(Math.max(4*60,(first?first.t:480)-45))],['Sleep',i<P.days.length-1?hm(Math.min(23*60,(last?last.t:1140)+150)):'On the way home'],['Stay',stay],['Stay cost',i<P.days.length-1?'₹'+bd[0].toLocaleString('en-IN')+'–'+bd[1].toLocaleString('en-IN')+' / room':'—'],['Food','₹'+bd[2].toLocaleString('en-IN')+'–'+bd[3].toLocaleString('en-IN')+' pp'],['Transport',Object.keys(modes).join(', ')||'Local cab']];
     }
     function dayTips(t,P,d,i){
@@ -7819,7 +7861,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       return out;
     }
     function stopHTML(t,s,i,di){
-      var ed=(t.edits||{})[s.title]||{}, place=s.kind!=='travel'&&s.kind!=='food';
+      var ed=(t.edits||{})[s.title]||{}, place=s.kind!=='travel'&&s.kind!=='food'&&s.kind!=='free';
       var mo=s.km>0?'<div class="modes"><span class="ml">Get there by</span><ol>'+legModes(s.km).map(function(m){ return '<li>'+m[0]+' '+esc(m[1])+'</li>'; }).join('')+'</ol></div>':'';
       var pills='';
       if(place&&ENTRY[s.kind]) pills+='<span class="cost">'+esc(ENTRY[s.kind])+'</span>';
@@ -7828,7 +7870,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       if(carry) pills+='<span class="carry">Carry – '+esc(carry)+'</span>';
       if(ed.note) pills+='<span class="cost cnote">Note – '+esc(ed.note)+'</span>';
       var skip=place&&s.t>=16.5*60&&(STATES[t.state]||[]).map(function(p){ return p[0]; }).indexOf(s.title)>=3;
-      return '<li class="stop"><div class="row1"><span class="tile"'+(place?' data-pn="'+esc(s.title)+'" role="button" tabindex="0" aria-label="About '+esc(s.title)+'"':' aria-hidden="true"')+'>'+s.emo+'</span><span class="rt">'+(skip?'<span class="skip">Skip if late</span>':'')+(s.ai?'<span class="skip">AI pick</span>':'')+'<time>'+hm(s.t)+'</time>'+(place?'<button type="button" class="sedit" data-sedit="'+esc(s.title)+'" aria-label="Edit '+esc(s.title)+'">Edit</button>':'')+'</span></div><h3>'+(place?'<span class="pnlink plain" data-pn="'+esc(s.title)+'" role="button" tabindex="0">'+esc(s.title)+'</span>':esc(s.title))+' <a class="ext" href="'+gm(s.q)+'" target="_blank" rel="noopener" aria-label="Open in Google Maps">↗</a></h3><p class="desc">'+esc(s.desc)+(s.km>0&&place?' · '+s.km+' km from the last stop':'')+'</p>'+mo+(pills?'<div class="pills">'+pills+'</div>':'')+'</li>';
+      return '<li class="stop'+(s.kind==='free'?' freeday':'')+'"><div class="row1"><span class="tile"'+(place?' data-pn="'+esc(s.title)+'" role="button" tabindex="0" aria-label="About '+esc(s.title)+'"':' aria-hidden="true"')+'>'+s.emo+'</span><span class="rt">'+(skip?'<span class="skip">Skip if late</span>':'')+(s.ai?'<span class="skip">AI pick</span>':'')+'<time>'+hm(s.t)+'</time>'+(place?'<button type="button" class="sedit" data-sedit="'+esc(s.title)+'" aria-label="Edit '+esc(s.title)+'">Edit</button>':'')+'</span></div><h3>'+(place?'<span class="pnlink plain" data-pn="'+esc(s.title)+'" role="button" tabindex="0">'+esc(s.title)+'</span>':esc(s.title))+' <a class="ext" href="'+gm(s.q)+'" target="_blank" rel="noopener" aria-label="Open in Google Maps">↗</a></h3><p class="desc">'+esc(s.desc)+(s.km>0&&place?' · '+s.km+' km from the last stop':'')+'</p>'+mo+(pills?'<div class="pills">'+pills+'</div>':'')+'</li>';
     }
     function render(){
       var t=cur(); root.classList.toggle('ct-on',!!t); renderTrips();
@@ -8023,8 +8065,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       drawGroupChips(); $('pl-name').value=t?cleanName(t.name||'').trim():''; $('pl-name').dataset.touched=t?'1':''; $('pl-nerr').hidden=true; $('pl-name').classList.remove('bad'); if(!t) autoName();
       vzEditing=false; $('pl-del').hidden=!editing;
       drawPlaces(t?t.places.map(function(p){ return p[0]; }):null);
-      (function(){ var s=$('pl-start'), e=$('pl-end'), nt=$('pl-dlock'); s.disabled=false; e.disabled=false; $('pl-go').disabled=false; $('pl-next').disabled=false; if(nt) nt.hidden=true; if(!t||asNew) return; var now=Date.now(), st=new Date(t.start+'T00:00:00').getTime(), en=new Date(($('pl-end').value||t.start)+'T23:59:59').getTime()+864e5;
-        if(now>en){ s.disabled=true; e.disabled=true; $('pl-go').disabled=true; if(nt){ nt.textContent='This trip has ended, so it can\u2019t be changed.'; nt.hidden=false; } } else if(now>=st){ s.disabled=true; if(nt){ nt.textContent='This trip has started. You can still change the end date.'; nt.hidden=false; } } })();
+      (function(){ var s=$('pl-start'), e=$('pl-end'), nt=$('pl-dlock'); s.disabled=false; e.disabled=false; $('pl-go').classList.remove('locked'); $('pl-next').disabled=false; if(nt) nt.hidden=true; if(!t||asNew) return; var now=Date.now(), st=new Date(t.start+'T00:00:00').getTime(), en=new Date(($('pl-end').value||t.start)+'T23:59:59').getTime()+864e5;
+        if(now>en){ s.disabled=true; e.disabled=true; $('pl-go').classList.add('locked'); if(nt){ nt.textContent='This trip has ended, so it can\u2019t be changed.'; nt.hidden=false; } } else if(now>=st){ s.disabled=true; if(nt){ nt.textContent='This trip has started. You can still change the end date.'; nt.hidden=false; } } })();
       if(!t) drawStart(); drawSide('own'); goStep(t?1:0); setTimeout(dateErr,0); pl.hidden=false; root.classList.add('login-open'); topReset(); setTimeout(function(){ pl.__snap=plSnap(); pl.__dirty=false; },120);
     }
     function plSnap(){ return [].map.call(pl.querySelectorAll('input,select,textarea'),function(e){ return e.type==='checkbox'||e.type==='radio'?(e.checked?1:0):e.value; }).join('|')+'#'+[].map.call(pl.querySelectorAll('[aria-pressed="true"]'),function(b){ return b.textContent.trim(); }).join(','); }
@@ -8103,8 +8145,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     });
     $$('[data-pgopen]').forEach(function(b){ b.addEventListener('click',function(){ var g=b.closest('.pgroup'); sumGroups(); $$('.pgroup.pexp').forEach(function(o){ if(o!==g){ o.classList.add('pcol'); o.classList.remove('pexp'); } }); g.classList.remove('pcol'); g.classList.add('pexp'); }); });
     $$('[data-pgdone]').forEach(function(b){ b.addEventListener('click',function(){ var g=b.closest('.pgroup'); sumGroups(); g.classList.add('pcol'); g.classList.remove('pexp'); }); });
-    window.__toast=function(m){ toast(m,'OK',function(){}); };
-    function toast(msg,btn,fn){ var el=$('ok-toast'); if(!el) return; el.querySelector('span').textContent=msg; var b=el.querySelector('button'); b.textContent=btn; b.onclick=function(){ el.hidden=true; fn&&fn(); }; el.hidden=false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); clearTimeout(toast.t); toast.t=setTimeout(function(){ el.hidden=true; },4800);
+    window.__toast=function(m,ms){ toast(m,'OK',function(){},ms); };
+    function toast(msg,btn,fn,ms){ var el=$('ok-toast'); if(!el) return; el.querySelector('span').textContent=msg; var b=el.querySelector('button'); b.textContent=btn; b.onclick=function(){ el.hidden=true; fn&&fn(); }; el.hidden=false; el.classList.remove('in'); void el.offsetWidth; el.classList.add('in'); clearTimeout(toast.t); toast.t=setTimeout(function(){ el.hidden=true; },ms||4800);
       if(!el.dataset.sw){ el.dataset.sw='1'; var x0=null,y0=0; el.addEventListener('pointerdown',function(e){ if(e.target.closest('button')) return; x0=e.clientX; y0=e.clientY; });
         el.addEventListener('pointermove',function(e){ if(x0===null) return; var dx=e.clientX-x0, dy=e.clientY-y0; el.style.transform='translate('+dx+'px,'+Math.max(0,dy)+'px)'; el.style.opacity=String(1-Math.min(1,Math.abs(dx)/200)); });
         function end(e){ if(x0===null) return; var dx=e.clientX-x0, dy=e.clientY-y0; x0=null; if(Math.abs(dx)>70||dy>40){ el.hidden=true; clearTimeout(toast.t); } el.style.transform=''; el.style.opacity=''; }
@@ -8441,7 +8483,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       qi.addEventListener('focus',function(){ sc=scroller(qi); if(saved===null) saved=sc.scrollTop; setTimeout(lift,60); setTimeout(lift,380); });
       qi.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement===qi) return; document.getElementById('planner').classList.remove('qlift'); if(sc&&saved!==null) sc.scrollTo({top:saved,behavior:'smooth'}); saved=null; },150); }); })(); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
     pl.addEventListener('input',function(){ pl.__dirty=true; },true); pl.addEventListener('change',function(){ pl.__dirty=true; },true); pl.addEventListener('click',function(e){ var b=e.target.closest('button,.pcard,[role=button],label'); if(!b||b.closest('#pl-close,#pl-hback,#pl-back,#pl-next,.pdot,[data-pgopen],[data-pgdone],.pnav')) return; pl.__dirty=true; },true);
-    $('pl-close').addEventListener('click',function(){ if(pl.__dirty||(pl.__snap&&plSnap()!==pl.__snap)){ var go=function(){ pl.__snap=null; pl.__dirty=false; closePlanner(); }; if(window.__confirm) setTimeout(function(){ var tn=($('pl-name').value||'').trim(); if(editing||($('pl-title').textContent||'').indexOf('Edit')===0) window.__confirm('Discard trip changes?','New dates, travellers and place picks for '+(tn||'this trip')+' won\u2019t be saved. The trip stays as it was.','Discard changes',go,'trip'); else window.__confirm('Discard this new trip?',(tn?'\u201c'+tn+'\u201d':'This trip')+' and the places you picked won\u2019t be created.','Discard trip',go,'trip'); },0); else go(); return; } closePlanner(); });
+    $('pl-close').addEventListener('click',function(){ if($('pl-go').classList.contains('locked')){ closePlanner(); return; } if(pl.__dirty||(pl.__snap&&plSnap()!==pl.__snap)){ var go=function(){ pl.__snap=null; pl.__dirty=false; closePlanner(); }; if(window.__confirm) setTimeout(function(){ var tn=($('pl-name').value||'').trim(); if(editing||($('pl-title').textContent||'').indexOf('Edit')===0) window.__confirm('Discard trip changes?','New dates, travellers and place picks for '+(tn||'this trip')+' won\u2019t be saved. The trip stays as it was.','Discard changes',go,'trip'); else window.__confirm('Discard this new trip?',(tn?'\u201c'+tn+'\u201d':'This trip')+' and the places you picked won\u2019t be created.','Discard trip',go,'trip'); },0); else go(); return; } closePlanner(); });
     $('pl-next').addEventListener('click',function(){ if(!dateErr()){ $('pl-end').focus(); return; } if(nDays(formTrip())<=0){ $('pl-end').focus(); hints(); return; } if(!nameOK()) return; goStep(2); });
     $('pl-name').addEventListener('input',function(){ var c=cleanName(this.value), er=$('pl-nerr'); if(c.length>25){ c=c.slice(0,25); this.value=c; er.textContent='Trip names can be up to 25 characters.'; er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; },2800); this.dataset.touched='1'; return; } if(c!==this.value){ var pos=this.selectionStart-(this.value.length-c.length); this.value=c; try{ this.setSelectionRange(pos,pos); }catch(e){} er.textContent='Only letters (a\u2013z) and numbers are allowed.'; er.hidden=false; this.classList.add('bad'); clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; $('pl-name').classList.remove('bad'); },2800); return; } this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
     $('pl-hback').addEventListener('click',function(){ if(step===2) goStep(1); else if(step===1&&!editing){ drawStart(); goStep(0); } else closePlanner(); });
@@ -8450,7 +8492,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     $('pl-back').addEventListener('click',function(){ if(step===2) goStep(1); else { drawSide('start'); goStep(0); } });
     $('pl-all').addEventListener('click',function(){ var boxes=$$('#pl-places input'), all=boxes.every(function(b){ return b.checked; }); boxes.forEach(function(b){ b.checked=!all; }); countSel(); });
     $('pl-del').addEventListener('click',function(){ if(!editing&&vzEditing){ vzGone=true; set('vizag-hide-vz','1'); active='vizag'; fixActive(); closePlanner(); render(); show('home'); if(window.__toast) window.__toast('Trip deleted'); return; } if(!editing) return; trips=trips.filter(function(x){ return x.id!==editing.id; }); save(); active=vzGone?(trips[0]?trips[0].id:'none'):'vizag'; if(vzGone) fixActive(); set('vizag-active-trip',active); closePlanner(); render(); show('home'); });
-    plForm.addEventListener('submit',function(e){ e.preventDefault(); if(!dateErr()){ goStep(1); return; } if(!nameOK()) return; if(step===1){ goStep(2); return; }
+    plForm.addEventListener('submit',function(e){ e.preventDefault(); if($('pl-go').classList.contains('locked')){ toast('Past trips can\u2019t be edited','OK',function(){}); return; } if(!dateErr()){ goStep(1); return; } if(!nameOK()) return; if(step===1){ goStep(2); return; }
       var f=formTrip(), t=editing||{id:'t'+Date.now().toString(36)};
       Object.keys(f).forEach(function(k){ t[k]=f[k]; }); t.name=cleanName($('pl-name').value).trim(); t.days=nDays(f); t.people=ppl(t).total;
       var isNew=!editing; if(!editing) trips.push(t); save(); active=t.id; set('vizag-active-trip',active); closePlanner(); render(); show('home');
@@ -9056,7 +9098,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   window.__notch=notch; window.__qr=function(t,s){ return qr(t,s); }; window.__openPass=function(s){ openPass(s); };
   function dayHTML(sec,idx,total){ var sh=sec.querySelector('.summary > .shead'), h2=sh.querySelector('h2'), parts=(h2.dataset.parts||h2.textContent).split('|');
     var F=facts(sec), sp=[].map.call(sec.querySelectorAll('.hspan > span'),function(s){ return s.textContent.trim(); }), re=/\d{1,2}:\d{2}\s*[AP]M|\d{2}:\d{2}/;
-    var t1=((sp[1]||'').match(re)||[''])[0], t2=((sp[2]||'').match(re)||[''])[0], date=txt(sh,'.label').replace(/\s*·.*$/,'');
+    var fd=/^Free day/.test(sp[0]||''), t1=fd?'':((sp[1]||'').match(re)||[''])[0], t2=fd?'':((sp[2]||'').match(re)||[''])[0], date=txt(sh,'.label').replace(/\s*·.*$/,'');
     return '<section class="pstk" data-pd="'+(sec.dataset.day||sec.dataset.chv)+'"><div class="pstop"><div class="psdate"><span>Day '+(idx+1)+' of '+total+'</span><span>'+date+'</span></div>'+
       '<div class="psmain"><div class="psrt"><div class="pxst"><small>From</small><b>'+parts[0]+'</b></div><div class="pxst"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div><div class="psqr">'+qr(dayURL(sec),96)+'</div></div>'+
       '<div class="pstimes"><div><small>First stop</small><b>'+(t1||'—')+'</b></div><i></i><div class="r"><small>Last stop</small><b>'+(t2||'—')+'</b></div></div></div>'+
@@ -9397,20 +9439,29 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var sh=document.createElement('div'); sh.className='sheet lsheet psheet'; sh.id='cs-sheet'; sh.hidden=true; sh.setAttribute('role','dialog'); sh.setAttribute('aria-label','Contact support');
   var a=2+Math.floor(Math.random()*7), b=3+Math.floor(Math.random()*6);
   sh.innerHTML='<div class="shtitle"><span>Contact support</span><button type="button" class="shclose" id="cs-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
-    '<div class="pfgrp csform"><label class="pf"><span>Name</span><input id="cs-name" maxlength="25" autocomplete="name"></label><label class="pf"><span>Email</span><input id="cs-email" type="email" inputmode="email" autocomplete="email"></label>'+
-    '<label class="pf"><span>Category</span><select id="cs-cat"><option value="">Choose one</option><option>Issue</option><option>Feature request</option><option>Billing</option><option>Account</option><option>Technical</option><option>Other</option></select></label>'+
-    '<label class="pf"><span>Subject</span><input id="cs-subj" maxlength="80"></label><label class="pf"><span>Message</span><textarea id="cs-msg" rows="5" maxlength="2000"></textarea></label>'+
-    '<label class="pf cscap"><span>Quick check: what is '+a+' + '+b+'?</span><input id="cs-cap" inputmode="numeric" maxlength="2" autocomplete="off"></label></div>'+
+    '<div class="pfgrp csform"><label class="pf"><span>Name</span><input id="cs-name" maxlength="25" autocomplete="name" placeholder="Your name"></label><label class="pf"><span>Email</span><input id="cs-email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com"></label>'+
+    '<label class="pf"><span>Category</span><div class="selwrap"><select id="cs-cat"><option value="" disabled selected>Choose a category</option><option>Issue</option><option>Feature request</option><option>Billing</option><option>Account</option><option>Technical</option><option>Other</option></select></div></label>'+
+    '<label class="pf"><span>Subject</span><input id="cs-subj" maxlength="80" placeholder="A short summary"></label><label class="pf"><span>Message</span><textarea id="cs-msg" rows="5" maxlength="2000" placeholder="Tell us what happened or what you\u2019d like"></textarea></label>'+
+    '<label class="pf cscap"><span>Quick check: what is '+a+' + '+b+'?</span><input id="cs-cap" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="Answer"></label></div>'+
     '<button type="button" class="btn full" id="cs-send" disabled>Send message</button><p class="csnote">We reply by email, usually within 2 working days.</p>';
   document.body.appendChild(sh); var sc=document.getElementById('scrim');
   function $(i){ return document.getElementById(i); }
   function ok(){ var em=$('cs-email').value.trim(); return $('cs-name').value.trim().length>1&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)&&$('cs-cat').value&&$('cs-subj').value.trim().length>2&&$('cs-msg').value.trim().length>9&&+$('cs-cap').value===a+b; }
   sh.addEventListener('input',function(){ $('cs-send').disabled=!ok(); }); sh.addEventListener('change',function(){ $('cs-send').disabled=!ok(); });
   function close(){ sh.hidden=true; if(sc) sc.hidden=true; }
-  $('cs-open').onclick=function(e){ e.stopPropagation(); try{ var pr=JSON.parse(localStorage.getItem('vizag-profile')||'{}'); if(pr.name&&!$('cs-name').value) $('cs-name').value=pr.name; if(pr.email&&!$('cs-email').value) $('cs-email').value=pr.email; }catch(x){} sh.hidden=false; if(sc) sc.hidden=false; };
+  $('cs-open').onclick=function(e){ e.stopPropagation(); sh.hidden=false; if(sc) sc.hidden=false; };
   $('cs-close').onclick=close; sh.addEventListener('click',function(e){ e.stopPropagation(); });
-  $('cs-send').onclick=function(){ if(!ok()) return; var body='Name: '+$('cs-name').value.trim()+'\nEmail: '+$('cs-email').value.trim()+'\nCategory: '+$('cs-cat').value+'\n\n'+$('cs-msg').value.trim();
-    location.href='mailto:'+(window.SUPPORT_EMAIL||'')+'?subject='+encodeURIComponent('['+$('cs-cat').value+'] '+$('cs-subj').value.trim())+'&body='+encodeURIComponent(body); close(); if(window.__toast) window.__toast('Message sent'); }; })();
+  function err(msg){ var e=$('cs-err'); if(!e){ e=document.createElement('div'); e.id='cs-err'; e.className='cserr'; $('cs-send').before(e); } e.innerHTML=msg; e.hidden=false; }
+  function post(url,data){ return fetch(url,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data)}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r; }); }
+  $('cs-send').onclick=function(){ if(!ok()) return; var btn=this, E=window.SUPPORT_EMAIL||'support@example.com', data={name:$('cs-name').value.trim(),email:$('cs-email').value.trim(),category:$('cs-cat').value,subject:'['+$('cs-cat').value+'] '+$('cs-subj').value.trim(),message:$('cs-msg').value.trim(),app:'Trip planner',version:document.documentElement.dataset.build||'beta',device:navigator.userAgent};
+    var e0=$('cs-err'); if(e0) e0.hidden=true; btn.disabled=true; btn.textContent='Sending\u2026';
+    var go=window.SUPPORT_ENDPOINT?post(window.SUPPORT_ENDPOINT,data):Promise.reject(new Error('Support endpoint not set'));
+    go.then(function(){ btn.textContent='Send message'; close(); ['cs-subj','cs-msg','cs-cap'].forEach(function(i){ $(i).value=''; }); if(window.__toast) window.__toast('Message sent',6000); })
+      .catch(function(x){ btn.disabled=false; btn.textContent='Send message';
+        err('<b>We couldn\u2019t send your message.</b> Please email us at <a href="mailto:'+E+'">'+E+'</a>. We\u2019ve told the team about this.');
+        var rep={subject:'[URGENT] Trip planner \u2013 support form failed to send',error:String(x&&x.message||x),when:new Date().toISOString(),user_email:data.email,category:data.category,device:data.device,
+          possible_fixes:['Check SUPPORT_ENDPOINT is set in sync-config.js','Check the form service is up and its access key is valid','Check CORS allows this site','If the user is offline the request cannot leave the phone; it will need a retry']};
+        if(window.ERROR_ENDPOINT) post(window.ERROR_ENDPOINT,rep).catch(function(){}); try{ var q=JSON.parse(localStorage.getItem('vizag-errq')||'[]'); q.push(rep); localStorage.setItem('vizag-errq',JSON.stringify(q.slice(-20))); }catch(y){} }); }; })();
 
 /* time format: also rewrite times inside built summaries (wake/sleep roll, ticker, span, pass) */
 (function(){ var RE=/\b(\d{1,2}):(\d{2})(?:\s?([AP]M))?(?![\d:])/g, SK={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,OPTION:1};
@@ -9435,20 +9486,23 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   if(sc) sc.addEventListener('click',function(){ ['about-sheet','notif-sheet','checkout-sheet','manage-sheet'].forEach(function(i){ var s=document.getElementById(i); if(s&&!s.hidden) close(s); }); });
   /* Help group gets About & legal; Account group gets Notifications and Delete data */
   var help=document.getElementById('cs-open'), hg=help&&help.closest('.setgrp');
-  if(hg) hg.insertAdjacentHTML('beforeend','<div class="setrow"><span class="setl">About &amp; legal<small>Version, privacy policy and terms</small></span><button type="button" class="setbtn" id="ab-open">Open</button></div>');
+  if(hg) hg.insertAdjacentHTML('beforeend','<div class="setrow"><span class="setl">FAQ<small>Common questions and our support email</small></span><button type="button" class="setbtn" id="faq-open">Open</button></div><div class="setrow"><span class="setl">About &amp; legal<small>Version, privacy policy and terms</small></span><button type="button" class="setbtn" id="ab-open">Open</button></div>');
   var dev=sp.querySelector('.devcap'); var acap=document.createElement('div'); acap.className='setcap'; acap.textContent='Notifications & data'; var ag=document.createElement('div'); ag.className='setgrp';
   ag.innerHTML='<div class="setrow"><span class="setl">Notifications<small>Trip-day reminders, weather and renewals</small></span><button type="button" class="setbtn" id="nt-open">Manage</button></div><div class="setrow"><span class="setl">Delete my data<small>Removes trips, places and profile from this phone</small></span><button type="button" class="setbtn devdanger" id="del-open">Delete</button></div>';
   var hcap=[].find.call(sp.querySelectorAll('.setcap'),function(c){ return c.textContent.trim()==='Help'; }); var anchor=hcap||dev; if(anchor){ sp.insertBefore(acap,anchor); sp.insertBefore(ag,anchor); } else { sp.appendChild(acap); sp.appendChild(ag); }
   /* About */
   var ver='Beta · build '+((document.querySelector('meta[name=build]')||{}).content||new Date().toISOString().slice(0,10));
   var ab=sheet('about-sheet','About & legal','<div class="pfgrp abgrp"><div class="abrow"><b>Trip planner</b><span>'+ver+'</span></div>'+
-    '<details class="abd"><summary>Privacy policy</summary><p>Your trips, places and profile are stored on this phone. If you sign in, they are also saved to your account so they show up on your other devices. We don’t sell your data. Weather comes from Open-Meteo using only the trip’s coordinates.</p></details>'+
-    '<details class="abd"><summary>Terms of use</summary><p>Plans, timings and prices are estimates to help you plan. Check opening hours, tickets and travel conditions before you go.</p></details>'+
-    '<details class="abd"><summary>Licences</summary><p>QR codes by Kazuhiko Arase (MIT). Icons from Hugeicons, Phosphor and Lucide. Place photos from Wikipedia and Openverse under their own licences.</p></details></div>');
+    '<details class="abd"><summary>Privacy policy</summary><p><i>Sample text. Replace with your reviewed policy before launch.</i></p><p>Your trips, places and profile are stored on this phone. If you sign in, they are also saved to your account so they show up on your other devices. We don’t sell your data. Weather comes from Open-Meteo using only the trip’s coordinates.</p></details>'+
+    '<details class="abd"><summary>Terms of use</summary><p><i>Sample text. Replace with your reviewed terms before launch.</i></p><p>Plans, timings and prices are estimates to help you plan. Check opening hours, tickets and travel conditions before you go.</p></details>'+
+    '<details class="abd"><summary>Licences and credits</summary><ul class="ablic"><li><b>Hugeicons</b> (free set) · MIT licence · hugeicons.com</li><li><b>Katika icons</b> · MIT licence</li><li><b>Nunito</b> and <b>JetBrains Mono</b> fonts · SIL Open Font Licence 1.1 · via Google Fonts</li><li><b>Noto Emoji</b> · Apache 2.0 / SIL OFL · Google</li><li><b>QR Code generator</b> · Kazuhiko Arase · MIT. “QR Code” is a registered trademark of DENSO WAVE.</li><li><b>Weather data</b> · Open-Meteo.com · CC BY 4.0</li><li><b>Place photos</b> · Wikipedia / Wikimedia Commons and Openverse · each under its own Creative Commons licence; author and licence shown on the photo</li><li><b>Maps and directions</b> · open in Google Maps or Apple Maps under their terms</li><li><b>Illustrations</b> · drawn for this app</li></ul></details>'+'<details class="abd"><summary>Contact</summary><p>Support: <a href="mailto:'+(window.SUPPORT_EMAIL||'support@example.com')+'">'+(window.SUPPORT_EMAIL||'support@example.com')+'</a><br>Company name and address go here.</p></details></div>');
   document.getElementById('ab-open').onclick=function(e){ e.stopPropagation(); open(ab); };
+  var SE=window.SUPPORT_EMAIL||'support@example.com', FQ=[['Does the app work offline?','Yes. Your plan, ticks and passes work offline. Weather, photos and maps need internet.'],['How do I share a trip?','Open the trip pass and tap the share button at the top.'],['Can I change dates after a trip starts?','You can change the end date while a trip is on. Ended trips can\u2019t be changed.'],['How do I cancel Pro?','Tap your Pro plan card in Settings, then Cancel Pro.'],['Where is my data stored?','On this phone, and in your account if you sign in.']];
+  var fq=sheet('faq-sheet','FAQ','<div class="pfgrp abgrp">'+FQ.map(function(q){ return '<details class="abd"><summary>'+q[0]+'</summary><p>'+q[1]+'</p></details>'; }).join('')+'</div><div class="faqmail">Still stuck? Email <a href="mailto:'+SE+'">'+SE+'</a></div>');
+  document.getElementById('faq-open').onclick=function(e){ e.stopPropagation(); open(fq); };
   /* Notifications */
   var NT=[['trip','Trip-day reminders','A morning note with the day’s first stop'],['weather','Weather alerts','Rain or heat warnings on trip days'],['renew','Plan renewals','Two days before Pro renews'],['tips','Tips and ideas','Occasional trip ideas for places you like']];
-  var nt=sheet('notif-sheet','Notifications','<div class="pfgrp">'+NT.map(function(n){ return '<div class="setrow"><span class="setl">'+n[1]+'<small>'+n[2]+'</small></span><div class="seg" role="group" aria-label="'+n[1]+'"><button type="button" data-nt="'+n[0]+'" data-v="0">Off</button><button type="button" data-nt="'+n[0]+'" data-v="1">On</button></div></div>'; }).join('')+'</div><p class="csnote">Phone notifications need the app added to your Home Screen.</p>');
+  var nt=sheet('notif-sheet','Notifications','<div class="pfgrp">'+NT.map(function(n){ return '<div class="setrow"><span class="setl">'+n[1]+'<small>'+n[2]+'</small></span><div class="seg" role="group" aria-label="'+n[1]+'"><button type="button" data-nt="'+n[0]+'" data-v="0">Off</button><button type="button" data-nt="'+n[0]+'" data-v="1">On</button></div></div>'; }).join('')+'</div><p class="csnote">Notifications arrive like any app\u2019s on your lock screen. On iPhone, add the app to your Home Screen first (Share \u2192 Add to Home Screen), then allow notifications.</p>');
   function ntPaint(){ var st={}; try{ st=JSON.parse(G('vizag-notif')||'{}'); }catch(e){} nt.querySelectorAll('[data-nt]').forEach(function(b){ var on=st[b.dataset.nt]!==false&&!(b.dataset.nt==='tips'&&st.tips!==true); b.setAttribute('aria-pressed',(b.dataset.v==='1')===on?'true':'false'); }); return st; }
   nt.addEventListener('click',function(e){ var b=e.target.closest('[data-nt]'); if(!b) return; var st=ntPaint(); st[b.dataset.nt]=b.dataset.v==='1'; S('vizag-notif',JSON.stringify(st)); ntPaint(); });
   document.getElementById('nt-open').onclick=function(e){ e.stopPropagation(); ntPaint(); open(nt); };
@@ -9472,6 +9526,13 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var m=location.hash.match(/^#day-(\d+)$/); if(!m) return; setTimeout(function(){ var cs=[].slice.call(document.querySelectorAll('#v-days .chip[data-d], #v-home .hseg .hchip')); if(!cs.length) return; var n=Math.max(1,Math.min(+m[1],cs.length)); var c=cs[n-1]; if(c&&c.getAttribute('aria-pressed')!=='true') c.click(); },600); })();
 /* saving while offline: say where it went */
 (function(){ var t0=window.__toast; if(!t0) return; window.__toast=function(m){ if(navigator.onLine===false&&/^(Trip (created|updated)|Review saved|Rating saved)/.test(m||'')) m=m+' on this phone. It will sync when you’re online'; return t0(m); }; })();
+
+/* Offline: one-line banner with View more; details and Use offline live in a sheet */
+(function(){ var off=document.getElementById('offline'); if(!off) return; var ok=document.getElementById('offline-ok'); var more=document.createElement('button'); more.type='button'; more.className='obtn omore'; more.textContent='View more'; off.appendChild(more); off.classList.add('oline');
+  var sh=document.createElement('div'); sh.className='sheet lsheet'; sh.id='off-sheet'; sh.hidden=true; sh.setAttribute('role','dialog');
+  sh.innerHTML='<div class="lohead locent"><div class="t">You\u2019re offline</div><div class="s">Your plan, ticks and trip passes work as usual. Weather, photos and AI chat need internet. For maps, download offline maps in your Maps app before you go.</div></div><button type="button" class="btn full" id="off-use">Use offline</button><button type="button" class="btn ghost full" id="off-close">Close</button>';
+  document.body.appendChild(sh); var sc=document.getElementById('scrim'); function cl(){ sh.hidden=true; if(sc) sc.hidden=true; }
+  more.onclick=function(){ sh.hidden=false; if(sc) sc.hidden=false; }; sh.querySelector('#off-close').onclick=cl; sh.querySelector('#off-use').onclick=function(){ cl(); if(ok) ok.click(); }; sh.addEventListener('click',function(e){ e.stopPropagation(); }); })();
 
 </script>
 
