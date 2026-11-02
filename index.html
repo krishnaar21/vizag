@@ -4540,6 +4540,20 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
 :root:root:root:root body .pav:not(.pic){background:color-mix(in srgb,var(--ink) 5%,var(--surface))!important;border:1px solid var(--line)!important;color:var(--ink)!important;box-shadow:none!important}
 :root:root:root:root body .pav:not(.pic) svg{color:var(--ink)!important}
 
+/* ===== v146 ===== */
+/* QR back on the ticket; edit sits beside alerts */
+.tkqr2{flex:none;appearance:none;border:1px solid var(--line);background:#fff;border-radius:12px;padding:4px;line-height:0;cursor:pointer}
+.tkqr2 .qrsvg{width:58px!important;height:58px!important}
+:root:root:root:root:root body .hometop .ctedit.hedit{width:42px!important;height:42px!important}
+:root:root:root:root:root body .hometop .ctedit.hedit svg{width:20px!important;height:20px!important}
+/* big date as a soft tile */
+.dptop .dpdate{border:1px solid var(--line)!important;border-left:1px solid var(--line)!important;background:color-mix(in srgb,var(--ink) 5%,var(--surface))!important;border-radius:16px!important;width:64px!important;height:64px!important;min-width:0!important;padding:0!important;align-items:center!important;justify-content:center!important;text-align:center}
+.dptop .dpdate b{font-size:1.75rem!important}
+.dptop .dpdate small{font-size:.7rem!important;margin-top:3px!important}
+/* toast action a bit larger */
+:root:root.ts-pill .oktoast button{padding:9px 20px!important;font-size:1.02rem!important;font-weight:600}
+.tki b{font-size:1.2rem!important}
+
 </style>
 </head>
 <body>
@@ -8353,7 +8367,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* combined card: the edit-trip pencil lives in the Home header, beside alerts */
 (function(){ var card=document.querySelector('#v-home .vzhero'), ed=card&&card.querySelector('.ctedit'), top=document.querySelector('#v-home .hometop'), bell=top&&top.querySelector('.hbell'); if(!ed||!top) return; var home=document.createComment('ctedit'); ed.parentNode.insertBefore(home,ed);
   var wrap=document.createElement('div'); wrap.className='htacts'; top.insertBefore(wrap,bell); wrap.appendChild(bell);
-  function place(){ var on=false; if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
+  function place(){ var on=document.documentElement.classList.contains('homeone'); if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
   place(); new MutationObserver(place).observe(document.documentElement,{attributes:true,attributeFilter:['class']}); })();
 
 /* ₹ drawn as an even-stroke mark (the font's glyph has uneven strokes); the character stays in the text for copy and screen readers */
@@ -8384,8 +8398,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var meta=[mi('days')&&mi('days')+' days',mi('places')&&mi('places')+' places',mi('distance')].filter(Boolean).join(' · ');
   var ed=document.getElementById('vz-edit'), pen=ed?ed.innerHTML:'';
   document.querySelectorAll('#v-home .hday .tkhead').forEach(function(h){ if(h.querySelector('.tkinfo')) return; var row=h.querySelector('.trow'); if(!row) return;
-    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkedit" aria-label="Edit trip">'+pen+'</button>';
-    h.insertBefore(d,row); d.querySelector('.tkedit').onclick=function(e){ e.stopPropagation(); var b=document.getElementById('vz-edit'); if(b) b.click(); };
+    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+((h.querySelector('.tkqr')||{}).innerHTML||'')+'</button>';
+    h.insertBefore(d,row); d.querySelector('.tkqr2').onclick=function(e){ e.stopPropagation(); var q=h.querySelector('.tkqr'); if(q) q.click(); };
     d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
   var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; mt.textContent=meta; h2.appendChild(mt); }
   /* the day's route heads the day details, just above the bar */
