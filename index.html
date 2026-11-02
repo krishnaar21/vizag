@@ -3864,6 +3864,8 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
 :root:root body .places a .arr,:root:root body .places .ext,:root:root body .places .ext svg{color:var(--muted)!important}
 :root:root body #v-home .seg-days.hseg{align-items:center!important}
 :root:root body #v-home .seg-days.hseg > .chip{height:44px!important}
+/* dot mode = soft pill + dot (like Days), on every tabbed strip */
+:root:root:root.seldot body .seg-days > .chip[aria-pressed="true"],:root:root:root.seldot body #v-days .seg-days.dstrip > .chip[aria-pressed="true"]{background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent)!important}
 
 </style>
 </head>
@@ -4121,7 +4123,7 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Fill</button></div></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setcap">AI suggestions</div>
   <div class="setgrp"><div class="setrow"><span class="setl">AI assistant<small id="ai-name">Off</small></span><button type="button" class="setbtn" id="ai-open">Choose</button></div></div>
