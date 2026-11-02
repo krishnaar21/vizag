@@ -4499,6 +4499,27 @@ html.homeone #v-home .vzhero .shead h2 .vzroute{display:block;appearance:none;bo
 .dsbar{margin-top:16px!important;margin-bottom:16px!important}
 :root:root:root body .tkinfo .tki{align-items:flex-start!important;text-align:left!important;justify-content:flex-start!important;display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
 
+/* ===== v144 ===== */
+html,body{touch-action:manipulation}
+/* trip meta in the row under the ticket */
+.vzmeta{display:none}
+html.homeone #v-home .vzhero .shead h2 .vzmeta{display:block;font-size:.9rem;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* day route above the bar */
+.dayroute{display:none}
+html.homeone #v-home .hday .dayroute{display:block;appearance:none;border:0;background:none;padding:0;margin:16px 0 0;font:inherit;font-size:1.05rem;font-weight:600;color:var(--ink);text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:pointer}
+html.homeone #v-home .hday .dayroute.rg{margin:14px 0 4px}
+html.homeone:not(.dv-grid) #v-home .hday .dayroute.rg{display:none}
+.dayroute .tto{margin:0 .3em;font-size:.82em;font-weight:500}
+html.homeone #v-home .hday .dayroute + .dpbar{margin-top:10px!important}
+html.homeone #v-home .hday .dayroute + .dsbar{margin-top:10px!important}
+/* big date like the trip list: bare numeral, dashed rule, then spend */
+.dptop{gap:18px!important;align-items:center!important}
+.dpdate{width:auto!important;height:auto!important;min-width:52px!important;background:none!important;border:0!important;border-radius:0!important;padding:2px 18px 2px 0!important;border-right:2px dashed var(--line)!important;align-items:center}
+.dpdate b{font-size:2.3rem!important;font-weight:800!important;letter-spacing:-.03em;line-height:1}
+.dpdate small{font-size:.76rem!important;font-weight:700!important;letter-spacing:.14em!important;color:var(--muted);margin-top:6px!important}
+html.homeone #v-home .vzhero .shead h2 .vzmeta{font-size:.86rem}
+html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:112px!important}
+
 </style>
 </head>
 <body>
@@ -8343,14 +8364,17 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var meta=[mi('days')&&mi('days')+' days',mi('places')&&mi('places')+' places',mi('distance')].filter(Boolean).join(' · ');
   var ed=document.getElementById('vz-edit'), pen=ed?ed.innerHTML:'';
   document.querySelectorAll('#v-home .hday .tkhead').forEach(function(h){ if(h.querySelector('.tkinfo')) return; var row=h.querySelector('.trow'); if(!row) return;
-    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small>'+meta+'</small><small class="tkd">'+dates+'</small></button><button type="button" class="tkedit" aria-label="Edit trip">'+pen+'</button>';
+    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkedit" aria-label="Edit trip">'+pen+'</button>';
     h.insertBefore(d,row); d.querySelector('.tkedit').onclick=function(e){ e.stopPropagation(); var b=document.getElementById('vz-edit'); if(b) b.click(); };
     d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
-  var h2=vz.querySelector('.shead h2'); if(!h2) return; var rt=document.createElement('button'); rt.type='button'; rt.className='vzroute'; h2.appendChild(rt);
-  function vis(){ return [].slice.call(document.querySelectorAll('#v-home .hday')).filter(function(s){ return !s.hidden; })[0]; }
-  function upd(){ var s=vis(), t=s&&s.querySelector('.summary h2'); if(!t) return; var ps=(t.dataset.parts||t.textContent).split('|'); rt.innerHTML=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>'); rt.setAttribute('aria-label','Trip pass for '+ps.join(' to ')); }
-  rt.onclick=function(e){ e.stopPropagation(); var s=vis(), q=s&&s.querySelector('.tkqr'); if(q) q.click(); };
-  upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.querySelector('#v-home .hseg')||document.body,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); })();
+  var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; mt.textContent=meta; h2.appendChild(mt); }
+  /* the day's route heads the day details, just above the bar */
+  document.querySelectorAll('#v-home .hday').forEach(function(sec){ var t=sec.querySelector('.summary h2'); if(!t||sec.querySelector('.dayroute')) return; var ps=(t.dataset.parts||t.textContent).split('|');
+    var html=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
+    function mk(cls){ var b=document.createElement('button'); b.type='button'; b.className='dayroute '+cls; b.innerHTML=html; b.setAttribute('aria-label','Trip pass for '+ps.join(' to ')); b.onclick=function(e){ e.stopPropagation(); var q=sec.querySelector('.tkqr'); if(q) q.click(); }; return b; }
+    var bar=sec.querySelector('.dspend .dpbar'); if(bar) bar.parentNode.insertBefore(mk('rs'),bar);
+    var sb=sec.querySelector('.dspan .dsbar'); if(sb) sb.parentNode.insertBefore(mk('rp'),sb);
+    var g=sec.querySelector('.summary > .sgrid'); if(g) g.parentNode.insertBefore(mk('rg'),g); }); })();
 
 </script>
 
