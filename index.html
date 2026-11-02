@@ -4619,6 +4619,29 @@ nav.nav.navedge-r > ul{animation:navnudge-r .3s ease}
 @keyframes navnudge-l{40%{transform:translateX(8px)}}
 @keyframes navnudge-r{40%{transform:translateX(-8px)}}
 
+/* ===== v149 ===== */
+/* settings: layout options only for Separate */
+html.homeone .hcgrp .hcsub{display:none!important}
+.hcgrp{margin-top:12px}
+/* smaller pencil */
+:root:root:root:root:root body .hometop .ctedit.hedit svg{width:18px!important;height:18px!important}
+/* planner note: icon and text on one centre line */
+.psnote{display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;text-align:left!important}
+.psnote .hi{flex:none;display:inline-flex!important;align-items:center;justify-content:center;line-height:1!important;margin:0!important}
+.psnote .hi svg,.psnote .hi img{display:block;width:18px;height:18px}
+.psnote > span:last-child{line-height:1.35}
+/* planner card view: card edge carries the border, photos clipped to the corners */
+html:root:root.pv-card .pcards .pcard{overflow:hidden!important;position:relative!important}
+html:root:root.pv-card .pcards .pcard::after{content:''!important;display:block!important;position:absolute!important;inset:0!important;width:auto!important;height:auto!important;border-radius:inherit!important;background:none!important;border:1px dashed color-mix(in srgb,var(--ink) 28%,transparent)!important;pointer-events:none;z-index:5}
+html:root:root.pv-card .pcards .pcard.on::after{border:1px solid color-mix(in srgb,var(--ink) 22%,transparent)!important}
+html:root:root.pv-card .pcards .pimg{border-radius:0!important;outline:0!important}
+html:root:root.pv-card .pcards .pimg::after{display:none!important;background:none!important;border:0!important}
+/* planner footer hugs the bottom */
+@media (max-width:899px){ :root:root body .planner .pfoot{padding-bottom:max(12px,calc(env(safe-area-inset-bottom,0px) - 8px))!important} }
+/* big date: tighter, darker dashes */
+.dptop .dpdate{border:0!important;position:relative}
+.dptop .dpdate::before{content:'';position:absolute;inset:0;border-radius:16px;background:color-mix(in srgb,var(--ink) 40%,transparent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='.6' y='.6' width='62.8' height='62.8' rx='15.4' fill='none' stroke='%23000' stroke-width='1.2' stroke-dasharray='2.6 2'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='.6' y='.6' width='62.8' height='62.8' rx='15.4' fill='none' stroke='%23000' stroke-width='1.2' stroke-dasharray='2.6 2'/%3E%3C/svg%3E") center/100% 100% no-repeat;pointer-events:none}
+
 </style>
 </head>
 <body>
@@ -8457,7 +8480,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var sw=wx.querySelector('.wxtext'), wn=wx.querySelector('.wxn'); if(sw){ var words=(sw.getAttribute('aria-label')||sw.textContent).split(/\s*,\s*/).join(' · '), dl=wn?wn.innerHTML:'';
     var st=document.createElement('span'); st.className='wxroll'+(dl?'':' still'); st.innerHTML='<span class="wxrr"><span>'+words+'</span>'+(dl?'<span class="wxdl">'+dl+'</span><span>'+words+'</span>':'')+'</span>'; sw.after(st); sw.classList.add('wxhide'); if(wn) wn.classList.add('wxhide'); }
   /* order: place, wake/sleep, weather, hotel */
-  var dsv=sec.querySelector('.dpstay.mv'); if(dsv) wx.after(dsv); var dmv=sec.querySelector('.dpmeta.mv'); if(dmv&&lr2) lr2.after(dmv); if(dmv) dmv.after(wx); else if(lr2) lr2.after(wx); if(dsv) wx.after(dsv); }); })();
+  /* order: place, hotel, wake/sleep, weather */
+  var dsv=sec.querySelector('.dpstay.mv'), dmv=sec.querySelector('.dpmeta.mv'), prev=lr2; [dsv,dmv,wx].forEach(function(el){ if(el&&prev){ prev.after(el); prev=el; } }); }); })();
 /* swipe along the bottom bar to step through pages; stops at the first and last */
 (function(){ var nav=document.querySelector('nav.nav'); if(!nav) return; var x0=null,y0=0;
   nav.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
@@ -8485,6 +8509,11 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     var bar=sec.querySelector('.dspend .dpbar'); if(bar) bar.parentNode.insertBefore(mk('rs'),bar);
     var sb=sec.querySelector('.dspan .dsbar'); if(sb) sb.parentNode.insertBefore(mk('rp'),sb);
     var g=sec.querySelector('.summary > .sgrid'); if(g) g.parentNode.insertBefore(mk('rg'),g); }); })();
+
+/* Settings: Home cards with its own layout options in one group; trip card and day layouts show only for Separate */
+(function(){ var hc=document.querySelector('[data-homeone]'), row=hc&&hc.closest('.setrow'); if(!row) return; var grp=row.closest('.setgrp');
+  var tv=document.querySelector('.seg[aria-label="Trip card"]'), dv=document.querySelector('.seg[aria-label="Day details"]');
+  var g=document.createElement('div'); g.className='setgrp hcgrp'; grp.after(g); g.appendChild(row); [tv,dv].forEach(function(s){ var r=s&&s.closest('.setrow'); if(r){ r.classList.add('hcsub'); g.appendChild(r); } }); })();
 
 </script>
 
