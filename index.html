@@ -4371,6 +4371,41 @@ html.homeone #v-home .vzhero .dpick{right:0!important}
 .psst::before{top:4px}
 :root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:152px!important}
 
+/* ===== v140 ===== */
+.tto{margin-left:.18em}
+/* hairline tear line */
+.tkperf,.psperf{height:1px!important;background:repeating-linear-gradient(90deg,var(--line) 0 5px,transparent 5px 8px)!important}
+.tkperf::before,.tkperf::after,.psperf::before,.psperf::after{top:-10px!important;border-width:1px!important}
+/* one divider between weather and the trip row */
+html.homeone #v-home .vzhero.inday{border-top:0!important}
+/* date pill: bigger, flush right, roomier row */
+:root:root:root:root:root.homeone body #v-home .vzhero.inday .dpick{right:0!important;padding:4px!important}
+:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding:20px 160px 20px 2px!important}
+.dpa{width:32px!important;height:32px!important}
+.dpa svg{width:17px!important;height:17px!important}
+.dpwin{height:32px!important;min-width:92px!important}
+.dpitem{padding-top:0!important;align-items:center!important}
+.dpitem b{font-size:1rem!important}
+.dpitem small{font-size:.8rem!important}
+html.dv-spend .dpitem .dpd{display:none}
+html.dv-spend .dpitem small{font-size:.95rem!important;font-weight:700;color:var(--ink)}
+html.dv-spend .dpwin{min-width:52px!important}
+html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:120px!important}
+/* Spend: big date before the total */
+.dptop{display:flex;align-items:center;gap:14px}
+.dpdate{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;padding-right:14px;border-right:1px solid var(--line);line-height:1}
+.dpdate b{font-size:1.9rem;font-weight:800;letter-spacing:-.03em}
+.dpdate small{font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--muted);margin-top:4px}
+/* info note */
+.psnote{display:flex!important;align-items:center;gap:8px;padding:10px 14px!important;font-size:.84rem!important;text-wrap:balance}
+.psnote svg{flex:none;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+/* sheet slides away instead of fading */
+.passbox{opacity:1!important;transform:translateY(105%);transition:transform .34s cubic-bezier(.32,.72,0,1)!important;will-change:transform}
+.passsh.in .passbox{transform:none}
+.psbg2{transition:opacity .3s!important}
+.passbox{transition:transform .3s cubic-bezier(.4,0,.75,1)!important}
+.passsh.in .passbox{transition:transform .38s cubic-bezier(.32,.72,0,1)!important}
+
 </style>
 </head>
 <body>
@@ -8111,7 +8146,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var dp=document.createElement('div'); dp.className='dpick'; dp.innerHTML='<button type="button" class="dpa" data-dp="-1" aria-label="Previous day"><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><span class="dpwin"><span class="dpreel"></span></span><button type="button" class="dpa" data-dp="1" aria-label="Next day"><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button>';
   card.appendChild(dp); var reel=dp.querySelector('.dpreel'), last=-1;
   function cur(){ var c=chips(); for(var i=0;i<c.length;i++) if(c[i].getAttribute('aria-pressed')==='true') return i; return 0; }
-  function label(i){ var c=chips()[i]; return c?'<b>'+(c.querySelector('span')||c).textContent.trim()+'</b><small>'+(i+1)+'/'+chips().length+'</small>':''; }
+  function label(i){ var c=chips()[i]; return c?'<b class="dpd">'+(c.querySelector('span')||c).textContent.trim()+'</b><small>'+(i+1)+'/'+chips().length+'</small>':''; }
   function paint(){ var i=cur(); if(i===last) return; var dir=last<0?0:(i>last?1:-1); var n=document.createElement('span'); n.className='dpitem'; n.innerHTML=label(i);
     if(dir&&reel.firstChild){ var o=reel.firstChild; n.style.transform='translateY('+(dir*100)+'%)'; n.style.opacity='0'; reel.appendChild(n); requestAnimationFrame(function(){ o.style.transform='translateY('+(-dir*100)+'%)'; o.style.opacity='0'; n.style.transform='translateY(0)'; n.style.opacity='1'; setTimeout(function(){ if(o.parentNode) o.remove(); },320); }); }
     else { reel.innerHTML=''; reel.appendChild(n); } last=i; var L=chips().length; dp.querySelector('[data-dp="-1"]').disabled=i<=0; dp.querySelector('[data-dp="1"]').disabled=i>=L-1; }
@@ -8148,10 +8183,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       '<div class="psperf"></div><div class="psday"><div class="psgrid"><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></section>'; }
   function openPass(sec){ var all=[].slice.call(document.querySelectorAll('#v-home .hday')); if(!all.length) all=[sec]; var trip=txt(sec,'.trip span')||'Your trip';
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
-    function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); setTimeout(function(){ ps.hidden=true; },220); }
+    function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); clearTimeout(ps.__t); ps.__t=setTimeout(function(){ if(!ps.classList.contains('in')) ps.hidden=true; },340); }
     var box=ps.querySelector('.passbox');
     box.innerHTML='<div class="pshd"><div class="pshl"><b>Trip pass</b><small>'+trip+' · '+all.length+' days</small></div><div class="pshr"><button type="button" class="shclose psshare" aria-label="Share trip"><svg viewBox="0 0 24 24"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12"/></svg></button><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>'+
-      '<p class="psnote">Scan a code to open that day of the plan. These are references, not tickets.</p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
+      '<p class="psnote"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg><span>Scan a code to open that day. Not a ticket.</span></p>'+all.map(function(s,i){ return dayHTML(s,i,all.length); }).join('');
     box.querySelector('.shclose:not(.psshare)').onclick=close;
     if(!box.__drag){ box.__drag=1; var sy=null,dd=0; box.addEventListener('touchstart',function(e){ sy=box.scrollTop<=0?e.touches[0].clientY:null; dd=0; },{passive:true}); box.addEventListener('touchmove',function(e){ if(sy===null) return; dd=e.touches[0].clientY-sy; if(dd>0&&box.scrollTop<=0){ box.style.transition='none'; box.style.transform='translateY('+dd*0.6+'px)'; } },{passive:true}); box.addEventListener('touchend',function(){ if(sy===null) return; sy=null; box.style.transition=''; box.style.transform=''; if(dd>90) ps.__close(); },{passive:true}); }
     ps.__close=close;
@@ -8193,6 +8228,11 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     var w=+getComputedStyle(p).fontWeight||400, f=document.createDocumentFragment(); s.split('\u20b9').forEach(function(part,i){ if(i){ var r=document.createElement('span'); r.className='inr'+(w>=600?' b':''); r.innerHTML='<i>\u20b9</i>'; f.appendChild(r); } if(part) f.appendChild(document.createTextNode(part)); }); p.replaceChild(f,t); }
   function scan(root){ if(root.nodeType===3){ wrap(root); return; } if(root.nodeType!==1||SKIP[root.nodeName]) return; var tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(n){ return n.nodeValue.indexOf('\u20b9')>=0?1:3; }}), list=[]; while(tw.nextNode()) list.push(tw.currentNode); list.forEach(wrap); }
   scan(document.body); var q=[], pend=false; new MutationObserver(function(ms){ ms.forEach(function(m){ if(m.type==='characterData') q.push(m.target); else m.addedNodes.forEach(function(n){ q.push(n); }); }); if(!pend){ pend=true; requestAnimationFrame(function(){ pend=false; var l=q; q=[]; l.forEach(function(n){ if(n.isConnected) scan(n); }); }); } }).observe(document.body,{childList:true,subtree:true,characterData:true}); })();
+
+/* Spend view: a big date sits before "Spend today" */
+(function(){ var M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.querySelectorAll('.dalt.dspend').forEach(function(pe){ var tot=pe.querySelector('.dptot'), w=pe.closest('.hday,.day'), wx=w&&w.querySelector('.wx[data-date]'); if(!tot||!wx||pe.querySelector('.dpdate')) return; var p=wx.dataset.date.split('-');
+    var row=document.createElement('div'); row.className='dptop'; row.innerHTML='<div class="dpdate"><b>'+(+p[2])+'</b><small>'+M[+p[1]-1]+'</small></div>'; tot.parentNode.insertBefore(row,tot); row.appendChild(tot); }); })();
 
 </script>
 
