@@ -3869,6 +3869,27 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
 /* tab labels vertically centred in every strip */
 :root:root:root body .seg-days > .chip{padding-top:0!important;padding-bottom:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
 
+/* ===== v123: toast variants ===== */
+.tstyles{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 12px}
+.tstyles button{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-size:.82rem;font-weight:600;padding:7px 12px;border-radius:999px;cursor:pointer}
+.tstyles button[aria-pressed="true"]{color:var(--ink);background:color-mix(in srgb,var(--ink) 8%,var(--surface));border-color:color-mix(in srgb,var(--ink) 18%,transparent)}
+:root:root .oktoast{transition:transform .15s,opacity .15s}
+/* Soft: card colour, hairline, gentle shadow */
+:root:root.ts-soft .oktoast{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:0 8px 28px rgba(0,0,0,.14)!important;border-radius:16px!important}
+:root:root.ts-soft .oktoast button{color:var(--ink)!important;background:color-mix(in srgb,var(--ink) 7%,var(--surface))!important;padding:6px 12px!important;border-radius:999px!important}
+/* Glass: frosted, sits over content */
+:root:root.ts-glass .oktoast{background:color-mix(in srgb,var(--surface) 72%,transparent)!important;color:var(--ink)!important;border:1px solid color-mix(in srgb,var(--ink) 10%,transparent)!important;-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 10px 30px rgba(0,0,0,.12)!important;border-radius:18px!important}
+:root:root.ts-glass .oktoast button{color:var(--ink)!important;font-weight:700!important}
+/* Tinted: soft step off the page colour, no shadow */
+:root:root.ts-tint .oktoast{background:color-mix(in srgb,var(--ink) 9%,var(--bg))!important;color:var(--ink)!important;border:0!important;box-shadow:none!important;border-radius:14px!important}
+:root:root.ts-tint .oktoast button{color:var(--ink)!important;font-weight:700!important}
+/* Pill: compact, centred, card colour */
+:root:root.ts-pill .oktoast{left:50%!important;right:auto!important;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);padding:8px 8px 8px 16px!important;background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:0 6px 20px rgba(0,0,0,.14)!important;border-radius:999px!important}
+:root:root.ts-pill .oktoast button{color:var(--surface)!important;background:var(--ink)!important;border-radius:999px!important;padding:6px 12px!important}
+/* Solid: the old high-contrast look */
+:root:root.ts-ink .oktoast{background:var(--ink)!important;color:var(--surface)!important;border:0!important}
+:root:root.ts-pill .oktoast{left:0!important;right:0!important;margin-inline:auto!important;transform:none}
+
 </style>
 </head>
 <body>
@@ -4123,6 +4144,7 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
   <div class="setgrp"><div class="setrow"><span class="setl">Chat bubble<small>Floating AI chat button</small></span><div class="seg" role="group" aria-label="Chat bubble"><button type="button" data-cmode="off">Off</button><button type="button" data-cmode="bubble">On</button></div></div><p class="sethint">Pull down on any page to open AI Chat. Tap the bubble to open it, or drag it to the bottom of the screen to hide it.</p></div><div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div>
 <div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
+<div class="setrow"><span class="setl">Toast style<small>Tap one to preview</small></span></div><div class="tstyles"><button type="button" data-toast="soft">Soft</button><button type="button" data-toast="glass">Glass</button><button type="button" data-toast="tint">Tinted</button><button type="button" data-toast="pill">Pill</button><button type="button" data-toast="ink">Solid</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
 <div class="setrow"><span class="setl">Reset all data<small>Trips, places, profile and settings</small></span><button type="button" class="setbtn devbtn devdanger" id="dev-reset">Reset</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
@@ -6280,6 +6302,11 @@ html.seldot .seg-days > .chip[aria-pressed="true"] > span::before{content:'';dis
 (function(){ var r=document.documentElement, k='vizag-tabsel', v='dot'; try{ v=localStorage.getItem(k)||'dot'; }catch(e){}
   function set(x){ v=x; r.classList.toggle('seldot',x==='dot'); document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.tabsel===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.tabsel); }); }); set(v); })();
+
+/* toast style variants (preview from developer mode) */
+(function(){ var r=document.documentElement, k='vizag-toast', v='soft'; try{ v=localStorage.getItem(k)||'soft'; }catch(e){}
+  function set(x,show){ v=x; ['soft','glass','tint','pill','ink'].forEach(function(s){ r.classList.toggle('ts-'+s,s===x); }); document.querySelectorAll('[data-toast]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.toast===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} if(show&&window.__toast) window.__toast('Saved to My places'); }
+  document.querySelectorAll('[data-toast]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.toast,true); }); }); set(v,false); })();
 
 </script>
 
