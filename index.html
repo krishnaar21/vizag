@@ -4763,6 +4763,48 @@ html.tv-3 #v-home :is(.cthero,.vzhero) .shead h2,html.tv-3 #v-home :is(.cthero,.
 :root:root:root:root:root:root body #v-home :is(.cthero,.vzhero) .ctedit{display:none!important}
 html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:128px!important}
 
+/* ===== v155 ===== */
+/* home illustrations: whole pictures cross-fade slowly */
+:root:root:root #hvstage .hvpl{clip-path:none!important;filter:none!important;opacity:0;transition:opacity 1.8s ease-in-out!important}
+:root:root:root #hvstage .hvpl.on{opacity:1}
+/* tips: empty hint */
+.tipnone{margin:0;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;background:color-mix(in srgb,var(--ink) 3%,transparent);color:var(--muted);font-size:.9rem;line-height:1.4}
+/* view sheet tweaks */
+.vpv .vchips{height:3px!important;width:72%;margin:0 auto;border-radius:2px}
+.vpv .cls .vgrid{flex:1;grid-auto-rows:1fr}
+.vpv .s5{position:relative;overflow:visible}
+.vpv .vn{position:absolute;left:31px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1px solid var(--line);box-sizing:border-box}
+.vpv .vn.t{top:-5px}.vpv .vn.b{bottom:-5px}
+.vpck{display:none!important}
+#vp-apply:disabled{opacity:.35;pointer-events:none}
+/* merged hides the layout rows by preference */
+html.pref-one .hcgrp .hcsub{display:none!important}
+html:not(.pref-one) .hcgrp .hcsub{display:flex!important}
+/* merged card for planner trips */
+html.ctmerge #v-home .ctv > .cthero,html.ctmerge #v-home .ctv > .chips{display:none!important}
+html.ctmerge #v-home .ctday2 .summary > .shead,html.ctmerge #v-home .ctday2 .hspan{display:none!important}
+html.ctmerge #v-home .ctday2 .summary{padding-top:0!important;overflow:visible}
+.ctmhead{margin:0 -14px 0;padding:16px 14px 12px;background:color-mix(in srgb,var(--ink) 3%,var(--surface));border-top-left-radius:inherit;border-top-right-radius:inherit}
+html.ctmerge #v-home .ctmhead .tkinfo{display:flex!important;align-items:center}
+.ctmhead .tkperf{margin:14px -14px 12px!important}
+.ctmrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 0;border-bottom:1px solid var(--line);margin-bottom:6px}
+.ctmeta{min-width:0;flex:1;font-size:.86rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctpick{flex:none;display:flex;align-items:center;gap:6px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.ctpick b{min-width:40px;text-align:center;font-size:.95rem}
+html.ctmerge #v-home .ctday2 .dayroute{display:block;font-size:1.05rem;font-weight:600;margin:16px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.ctmerge #v-home .ctday2 .dayroute + .dpbar,html.ctmerge #v-home .ctday2 .dayroute + .dsbar{margin-top:10px!important}
+/* settings beach */
+.setbeach{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 58px);height:90px;margin:24px -16px 0;pointer-events:none;z-index:1;transition:bottom .3s ease;-webkit-mask:linear-gradient(180deg,transparent,#000 30%);mask:linear-gradient(180deg,transparent,#000 30%)}
+html.navhide .setbeach{bottom:0}
+.setbeach svg{display:block;width:100%;height:100%;overflow:hidden}
+.setbeach .sw1{fill:color-mix(in srgb,var(--ink) 7%,var(--bg))}.setbeach .sw2{fill:color-mix(in srgb,var(--ink) 10%,var(--bg))}.setbeach .sw3{fill:color-mix(in srgb,var(--ink) 13%,var(--bg))}
+.setbeach .bw1{animation:bwave 14s linear infinite}.setbeach .bw2{animation:bwave 10s linear infinite reverse}.setbeach .bw3{animation:bwave 7s linear infinite}
+@keyframes bwave{to{transform:translateX(-390px)}}
+@media (prefers-reduced-motion:reduce){ .setbeach g{animation:none!important} }
+html.ctmerge #v-home .ctday2 .dpdate{display:flex!important}
+#settings-profile{isolation:isolate}
+.setbeach{z-index:-1!important}
+
 </style>
 </head>
 <body>
@@ -5014,7 +5056,7 @@ html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .she
   <div class="setcap">Appearance</div>
   <div class="setgrp"><div class="setblock"><div class="setrow nob"><span class="setl">Theme</span><span class="setv" id="skin-name">Light</span></div><div class="swrow"><button type="button" class="swatch" data-skin="auto" aria-label="Auto" aria-pressed="false"><span class="sw auto" style="--sbg:#888;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="light" aria-label="Light" aria-pressed="false"><span class="sw" style="--sbg:#F2F2F4;--sac:#2563EB"></span></button><button type="button" class="swatch" data-skin="graphite" aria-label="Dark" aria-pressed="false"><span class="sw" style="--sbg:#101012;--sac:#5B9DFF"></span></button><button type="button" class="swatch" data-skin="midnight" aria-label="Midnight" aria-pressed="false"><span class="sw" style="--sbg:#000000;--sac:#0A84FF"></span></button><button type="button" class="swatch" data-skin="navy" aria-label="Navy" aria-pressed="false"><span class="sw" style="--sbg:#0B1324;--sac:#5AA9FF"></span></button></div></div></div>
   <div class="setcap">Trip</div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the whole plan, day by day, to save or share</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
+  <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the whole plan</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div><div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
 <div class="setrow"><span class="setl">Force refresh<small>Clear offline cache and reload</small></span><button type="button" class="setbtn devbtn" id="dev-refresh">Refresh</button></div>
@@ -8382,11 +8424,12 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* happy vacation badge: current year split 20 | 26 */
 (function(){ var y=String(new Date().getFullYear()), a=document.getElementById('hv-y1'), b=document.getElementById('hv-y2'); if(a&&b){ a.textContent=y.slice(0,2); b.textContent=y.slice(2); } })();
 
-/* home card illustrations: cross-fade every 2 s */
-(function(){ var s=document.getElementById('hvstage'); if(!s) return; var isl=s.querySelector('.hvone'), mo=s.querySelectorAll('.hvsc'), pl=s.querySelectorAll('.hvpl'), seq=[], i=0;
-  var mix=[['m',0],['p',0],['m',1],['p',3],['m',2],['p',1],['m',3],['p',4],['p',2]]; mix.forEach(function(it){ if((it[0]==='m'?mo:pl)[it[1]]) seq.push(it); }); if(seq.length<2) return;
-  function show(it){ var islOn=it[0]==='m'; if(isl) isl.classList.toggle('off',!islOn); Array.prototype.forEach.call(mo,function(m,n){ m.classList.toggle('on',islOn&&n===it[1]); }); Array.prototype.forEach.call(pl,function(p,n){ p.classList.toggle('on',!islOn&&n===it[1]); }); }
-  setInterval(function(){ if(document.hidden) return; i=(i+1)%seq.length; show(seq[i]); },2000); })();
+/* home card illustrations: each picture is whole (island moments carry their own island) and fades slowly into the next */
+(function(){ var s=document.getElementById('hvstage'); if(!s) return; var isl=s.querySelector('.hvone'), pl=[].slice.call(s.querySelectorAll('.hvpl')), mo=[];
+  if(isl){ var n=isl.querySelectorAll('.hvsc').length; for(var k=0;k<n;k++){ var c=isl.cloneNode(true); c.classList.remove('hvone','off'); c.classList.add('hvpl','hvmo'); [].forEach.call(c.querySelectorAll('.hvsc'),function(g,x){ if(x!==k) g.remove(); else g.classList.add('on'); }); mo.push(c); s.insertBefore(c,isl); } isl.remove(); }
+  var mix=[['m',0],['p',0],['m',1],['p',3],['m',2],['p',1],['m',3],['p',4],['p',2]], seq=[]; mix.forEach(function(it){ var el=(it[0]==='m'?mo:pl)[it[1]]; if(el) seq.push(el); }); if(!seq.length) return;
+  var all=mo.concat(pl), i=0; function show(el){ all.forEach(function(x){ x.classList.toggle('on',x===el); }); } show(seq[0]); if(seq.length<2) return;
+  setInterval(function(){ if(document.hidden) return; i=(i+1)%seq.length; show(seq[i]); },4200); })();
 
 /* bottom nav hides while scrolling and comes back 2 s after scrolling stops */
 (function(){ var r=document.documentElement, t=null, lastY=window.scrollY;
@@ -8499,7 +8542,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     if(reel.__i===n){ setTimeout(function(){ reel.style.transition='none'; reel.style.transform='translateY(0)'; reel.__i=0; },420); } }); },3000); })();
 /* Home layout: trip card and day card as one card */
 (function(){ var r=document.documentElement, k='vizag-homeone', v='sep'; try{ v=localStorage.getItem(k)||'sep'; }catch(e){}
-  function set(x){ v=x; r.classList.toggle('homeone',x==='one'&&!r.classList.contains('ct-on')); if(x==='one'&&set.ready){ var tb=document.querySelector('[data-tview="3"]'), db=document.querySelector('[data-dview="spend"]'); if(tb&&tb.getAttribute('aria-pressed')!=='true') tb.click(); if(db&&db.getAttribute('aria-pressed')!=='true') db.click(); } document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
+  function set(x){ v=x; r.classList.toggle('pref-one',x==='one'); r.classList.toggle('homeone',x==='one'&&!r.classList.contains('ct-on')); if(x==='one'&&set.ready){ var tb=document.querySelector('[data-tview="3"]'), db=document.querySelector('[data-dview="spend"]'); if(tb&&tb.getAttribute('aria-pressed')!=='true') tb.click(); if(db&&db.getAttribute('aria-pressed')!=='true') db.click(); } document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); set.ready=1;
   /* merged applies to the sample trip's card; planner trips keep split cards */
   new MutationObserver(function(){ var want=v==='one'&&!r.classList.contains('ct-on'); if(r.classList.contains('homeone')!==want) r.classList.toggle('homeone',want); }).observe(r,{attributes:true,attributeFilter:['class']}); })();
@@ -8691,9 +8734,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var PV={
   'Split':'<i class="vb s1"><i class="vl w5"></i><i class="vl w3"></i></i><i class="vchips"></i><i class="vb s2"><i class="vl w4"></i><i class="vl w6"></i><i class="vl w5"></i></i>',
   'Merged':'<i class="vb s3"><i class="vl w5"></i><i class="vl w3"></i><i class="vdash"></i><i class="vl w6"></i><i class="vl w4"></i><i class="vl w5"></i></i>',
-  'Classic':'<i class="vb s4"><i class="vl w3 sm"></i><i class="vl w6"></i><i class="vgrid"><i></i><i></i><i></i><i></i></i></i>',
+  'Classic':'<i class="vb s4 cls"><i class="vl w3 sm"></i><i class="vl w6"></i><i class="vgrid"><i></i><i></i><i></i><i></i></i></i>',
   'Banner':'<i class="vb s4 ban"><i class="vimg"><i class="vsun"></i></i><i class="vl w5 c"></i><i class="vpill"></i></i>',
-  'Ticket':'<i class="vb s5"><i class="vdate"><b></b><i></i></i><i class="vtx"><i class="vl w6"></i><i class="vl w4"></i></i></i>',
+  'Ticket':'<i class="vb s5"><i class="vdate"><b></b><i></i></i><i class="vtx"><i class="vl w6"></i><i class="vl w4"></i><i class="vl w5 sm"></i></i><i class="vn t"></i><i class="vn b"></i></i>',
   'Span':'<i class="vb s4"><i class="vrow"><i class="vl w2"></i><i class="vl w2"></i></i><i class="vgrad"></i><i class="vl w5"></i><i class="vl w4"></i></i>',
   'Spend':'<i class="vb s4"><i class="vrow"><i class="vtx"><i class="vl w2 sm"></i><i class="vl w5 big"></i></i><i class="vtile"></i></i><i class="vbar"><i></i></i><i class="vl w4"></i></i>'};
   var DESC={'Split':'Trip and day as two cards, with the date strip between them','Merged':'One card: trip on top, the chosen day below','Classic':'Trip name with its key facts in a grid','Banner':'An illustration on top, name and facts below','Ticket':'Start date on the left, trip name and facts beside it','Span':'The day as a wake-up to sleep bar','Spend':'What the day costs, first'};
@@ -8703,14 +8746,48 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   function close(){ sh.hidden=true; if(sc) sc.hidden=true; cur=null; }
   sh.querySelector('.shclose').onclick=close; sh.addEventListener('click',function(e){ e.stopPropagation(); }); if(sc) sc.addEventListener('click',function(){ if(!sh.hidden) close(); });
   sh.querySelector('#vp-apply').onclick=function(){ if(cur&&pick){ var b=cur.seg.querySelectorAll('button')[pick]; if(b&&b.getAttribute('aria-pressed')!=='true') b.click(); } close(); paintAll(); };
-  function open(o){ cur=o; var bs=[].slice.call(o.seg.querySelectorAll('button')); pick=null; bs.forEach(function(b,i){ if(b.getAttribute('aria-pressed')==='true') pick=i; });
-    sh.querySelector('#vp-title').textContent=o.name; var g=sh.querySelector('.vpgrid'); g.innerHTML=bs.map(function(b,i){ var n=b.textContent.trim(); return '<button type="button" class="vpopt'+(i===pick?' on':'')+'" data-i="'+i+'"><span class="vpv">'+(PV[n]||'')+'</span><span class="vpn"><b>'+n+'</b><small>'+(DESC[n]||'')+'</small></span><span class="vpck" aria-hidden="true"></span></button>'; }).join('');
-    g.querySelectorAll('.vpopt').forEach(function(x){ x.onclick=function(){ pick=+x.dataset.i; g.querySelectorAll('.vpopt').forEach(function(y){ y.classList.toggle('on',y===x); }); }; });
+  var start=null, ap=sh.querySelector('#vp-apply'); function upd(){ ap.disabled=pick===start||pick===null; }
+  function open(o){ cur=o; var bs=[].slice.call(o.seg.querySelectorAll('button')); pick=null; bs.forEach(function(b,i){ if(b.getAttribute('aria-pressed')==='true') pick=i; }); start=pick;
+    sh.querySelector('#vp-title').textContent=o.name; var g=sh.querySelector('.vpgrid'); g.innerHTML=bs.map(function(b,i){ var n=b.textContent.trim(); return '<button type="button" class="vpopt'+(i===pick?' on':'')+'" data-i="'+i+'"><span class="vpv">'+(PV[n]||'')+'</span><span class="vpn"><b>'+n+'</b><small>'+(DESC[n]||'')+'</small></span></button>'; }).join('');
+    g.querySelectorAll('.vpopt').forEach(function(x){ x.onclick=function(){ pick=+x.dataset.i; g.querySelectorAll('.vpopt').forEach(function(y){ y.classList.toggle('on',y===x); }); upd(); }; }); upd();
     sh.hidden=false; if(sc) sc.hidden=false; }
   var rows=[]; ['Home cards','Trip card','Day details'].forEach(function(nm){ var seg=document.querySelector('.seg[aria-label="'+nm+'"]'); if(!seg) return; var row=seg.closest('.setrow');
     var p=document.createElement('button'); p.type='button'; p.className='vpill'; seg.after(p); seg.classList.add('vphide'); var o={name:nm,seg:seg,pill:p}; p.onclick=function(e){ e.stopPropagation(); open(o); }; rows.push(o); });
   function paintAll(){ rows.forEach(function(o){ var on=o.seg.querySelector('[aria-pressed="true"]'); o.pill.innerHTML='<span>'+(on?on.textContent.trim():'Choose')+'</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>'; }); }
   paintAll(); new MutationObserver(paintAll).observe(document.querySelector('.hcgrp')||document.body,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); })();
+
+/* Day tips: say so when a day has none */
+(function(){ function run(){ document.querySelectorAll('#v-home .htips').forEach(function(s){ var ul=s.querySelector('ul.tips'); if(!ul||ul.querySelector('li')||s.querySelector('.tipnone')) return; var p=document.createElement('p'); p.className='tipnone'; p.textContent='No tips for this day yet. When there are any, like timings, what to carry or local advice, they\u2019ll show up here.'; ul.replaceWith(p); }); }
+  run(); var ct=document.getElementById('ct-home'); if(ct) new MutationObserver(function(){ requestAnimationFrame(run); }).observe(ct,{childList:true,subtree:true}); })();
+
+/* Merged view for planner trips: one card per day with the trip on the ticket top, stops ticker, trip facts with a day pill, and the day route above the bar */
+(function(){ var r=document.documentElement, ct=document.getElementById('ct-home'); if(!ct) return; var busy=false;
+  function run(){ if(busy) return; busy=true; var on=r.classList.contains('pref-one')&&r.classList.contains('ct-on'); r.classList.toggle('ctmerge',on);
+    if(on){ var hero=ct.querySelector('.cthero'); if(hero){ var name=((hero.querySelector('.tswitch')||{}).textContent||'').trim(), dates=((hero.querySelector('.shead .label')||{}).textContent||'').trim();
+      var mv=function(k){ var v=''; hero.querySelectorAll('.sgrid .mi').forEach(function(m){ if(((m.querySelector('.mk')||{}).textContent||'').trim().toLowerCase()===k) v=((m.querySelector('.mv')||{}).textContent||'').trim(); }); return v; };
+      var meta=[mv('days')&&mv('days')+' days',mv('places')&&mv('places')+' places',mv('distance')].filter(Boolean).join(' \u00b7 ');
+      var days=[].slice.call(ct.querySelectorAll('.ctday2')), N=days.length, M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      days.forEach(function(sec,i){ var sum=sec.querySelector('.summary'); if(!sum||sum.querySelector('.ctmhead')) return; var sh=sum.querySelector('.shead'), lab=((sh&&sh.querySelector('.label'))||{}).textContent||'', h2=((sh&&sh.querySelector('h2'))||{}).textContent||'';
+        var hs=sum.querySelector('.hspan'), items=hs?[].map.call(hs.querySelectorAll(':scope > span'),function(s){ return '<span>'+s.innerHTML+'</span>'; }).join('<i class="tkdot">\u00b7</i>'):'';
+        var head=document.createElement('div'); head.className='ctmhead tkhead'; head.innerHTML='<div class="tkinfo"><button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button></div><div class="tkperf"></div>'+(items?'<div class="tkticker"><div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div></div>':'');
+        var row=document.createElement('div'); row.className='ctmrow'; row.innerHTML='<span class="ctmeta">'+meta+'</span><div class="ctpick"><button type="button" class="dpa" data-cm="-1" aria-label="Previous day"'+(i?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><b>'+(i+1)+'/'+N+'</b><button type="button" class="dpa" data-cm="1" aria-label="Next day"'+(i<N-1?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
+        sum.insertBefore(row,sum.firstChild); sum.insertBefore(head,row); sum.classList.add('tkcard');
+        head.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=hero.querySelector('.tswitch'); if(s) s.click(); };
+        row.querySelectorAll('[data-cm]').forEach(function(b){ b.onclick=function(e){ e.stopPropagation(); var c=ct.querySelector('[data-chd="'+(i+ +b.dataset.cm)+'"]'); if(c){ c.click(); window.scrollTo(0,0); } }; });
+        var rt=document.createElement('div'); rt.className='dayroute ctroute'; rt.innerHTML=h2.split(/\s*\u2192\s*/).map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
+        var bar=sum.querySelector('.dspend .dpbar'), sb=sum.querySelector('.dspan .dsbar'); if(bar) bar.parentNode.insertBefore(rt.cloneNode(true),bar); if(sb) sb.parentNode.insertBefore(rt,sb);
+        var tot=sum.querySelector('.dspend .dptot'), dm=lab.match(/(\d{1,2})\s+([A-Za-z]{3})/); if(tot&&dm&&!sum.querySelector('.dpdate')){ var mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(dm[2].toLowerCase()); var t2=document.createElement('div'); t2.className='dptop'; t2.innerHTML='<div class="dpdate"><b>'+(+dm[1])+'</b><small>'+(M[mi]||'')+'</small></div>'; tot.parentNode.insertBefore(t2,tot); t2.appendChild(tot); }
+        setTimeout(function(){ if(window.__notch) window.__notch(sum,head.querySelector('.tkperf')); },60); }); } }
+    busy=false; }
+  var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,80); } soon();
+  new MutationObserver(soon).observe(ct,{childList:true,subtree:true}); new MutationObserver(soon).observe(r,{attributes:true,attributeFilter:['class']}); })();
+
+/* Settings: a calm beach at the very end, resting above the bottom bar */
+(function(){ function add(st){ if(!st||st.querySelector('.setbeach')) return; var d=document.createElement('div'); d.className='setbeach'; d.setAttribute('aria-hidden','true');
+  var w=function(y,a,cls){ var p='M0 '+y; for(var x=0;x<780;x+=65){ p+=' q16.25 '+(-a)+' 32.5 0 t32.5 0'; } return '<path class="'+cls+'" d="'+p+' V90 H0z"/>'; };
+  d.innerHTML='<svg viewBox="0 0 390 90" preserveAspectRatio="xMidYMax slice"><circle cx="318" cy="30" r="15" style="fill:#F8D66D;fill-opacity:.85"/><g class="bw1">'+w(44,5,'sw1')+'</g><g class="bw2">'+w(54,4,'sw2')+'</g><g class="bw3">'+w(64,3,'sw3')+'</g><path d="M0 74 Q120 66 230 72 T390 70 V90 H0z" style="fill:color-mix(in srgb,var(--ink) 10%,var(--bg))"/><path d="M0 74 Q120 66 230 72 T390 70 V90 H0z" fill="url(#esdots)"/></svg>';
+  st.appendChild(d); }
+  function all(){ add(document.getElementById('settings-profile')); } all(); setTimeout(all,600); setTimeout(all,2000); })();
 
 </script>
 
