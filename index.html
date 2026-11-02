@@ -4468,6 +4468,37 @@ html:not(.dv-spend) .wxlocrow{margin-top:12px;padding-top:12px;border-top:1px da
 .wxlocrow{margin-top:8px!important}
 html:not(.dv-spend) .wxlocrow{margin-top:12px!important}
 
+/* ===== v143 ===== */
+/* combined card: trip on the ticket top, day route in the row below */
+.tkinfo{display:none}
+html.homeone #v-home .hday .tkhead .tkinfo{display:flex;align-items:center;gap:12px}
+html.homeone #v-home .hday .tkhead > .trow{display:none!important}
+html.homeone #v-home .vzhero .ctedit{display:none!important}
+.tki{appearance:none;border:0;background:none;padding:0;margin:0;text-align:left;flex:1;min-width:0;color:inherit;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.tki b{font-size:1.3rem;font-weight:700;letter-spacing:-.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tki small{font-size:.86rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tki .tkd{font-size:.8rem}
+.tkedit{flex:none;appearance:none;border:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink);cursor:pointer;padding:0}
+.tkedit svg{width:18px;height:18px}
+.vzroute{display:none}
+html.homeone #v-home .vzhero .shead h2 .tswitch{display:none!important}
+html.homeone #v-home .vzhero .shead h2 .vzroute{display:block;appearance:none;border:0;background:none;padding:0;margin:0;font:inherit;color:var(--ink);font-weight:600;font-size:1.02rem;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:pointer}
+.vzroute .tto{margin:0 .3em;font-size:.82em}
+#v-home .hday .summary h2.two .tto{margin:0 .28em 0 0}
+#v-home .hday .summary h2.two span:not(.tto) + .tto:not(:last-of-type){margin-left:.28em}
+/* header: alerts only on Home */
+.hometop .hbell{width:40px;height:40px}
+/* softer toast and back-to-top halo */
+:root:root.ts-pill .oktoast{min-height:44px!important;padding:6px 6px 6px 16px!important;gap:14px!important;font-size:.92rem!important;border:1px solid color-mix(in srgb,var(--ink) 8%,transparent)!important;box-shadow:0 2px 6px rgba(0,0,0,.06),0 10px 32px rgba(0,0,0,.16)!important}
+:root:root .totop:not(.inplan){border:1px solid color-mix(in srgb,var(--ink) 8%,transparent)!important;box-shadow:0 2px 6px rgba(0,0,0,.06),0 10px 28px rgba(0,0,0,.16)!important}
+/* pill reel: no overlap */
+.dpwin{overflow:hidden!important}
+.dpitem{background:transparent}
+/* progress bars breathe */
+.dpbar{margin:18px 0 12px!important}
+.dsbar{margin-top:16px!important;margin-bottom:16px!important}
+:root:root:root body .tkinfo .tki{align-items:flex-start!important;text-align:left!important;justify-content:flex-start!important;display:flex!important;flex-direction:column!important;height:auto!important;min-height:0!important}
+
 </style>
 </head>
 <body>
@@ -7819,7 +7850,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     /* Home: pull down to refresh and open the chat */
     (function(){ var ind=document.createElement('div'); ind.className='ptr'; ind.innerHTML='<svg viewBox="0 0 48 48" aria-hidden="true"><path class="ptrg" pathLength="1" d="M24 5C25.6 17 31 22.4 43 24C31 25.6 25.6 31 24 43C22.4 31 17 25.6 5 24C17 22.4 22.4 17 24 5Z"/><path class="ptrs" pathLength="1" d="M24 5C25.6 17 31 22.4 43 24C31 25.6 25.6 31 24 43C22.4 31 17 25.6 5 24C17 22.4 22.4 17 24 5Z"/><circle class="ptrd" cx="38" cy="10" r="2.6"/></svg>'; ind.setAttribute('aria-hidden','true'); document.body.appendChild(ind);
       var y0=null, dy=0, armed=false, lastSc=0;
-      function home(){ return pl.hidden&&chatEl.hidden&&psh.hidden&&!document.querySelector('.sheet:not([hidden]):not(.inpage),.passsh:not([hidden]),[role=dialog]:not([hidden]):not(.chatsh)')&&!document.documentElement.classList.contains('ps-open'); }
+      function home(){ return pl.hidden&&chatEl.hidden&&psh.hidden&&!document.querySelector('[hidden]#__none,.sheet:not([hidden]):not(.inpage),.passsh:not([hidden])')&&![].some.call(document.querySelectorAll('[role=dialog]'),function(e){ return e.offsetParent&&!e.closest('.chatsh,#chat'); })&&!document.documentElement.classList.contains('ps-open'); }
       window.addEventListener('scroll',function(){ lastSc=Date.now(); },{passive:true});
       window.addEventListener('touchstart',function(e){ if(!home()||window.scrollY>0||Date.now()-lastSc<450||e.touches.length>1||(e.target.closest&&e.target.closest('.chatbub,.dstrip,.tplrow,input,textarea,select'))) return; y0=e.touches[0].clientY; dy=0; armed=false; },{passive:true});
       window.addEventListener('touchmove',function(e){ if(y0===null) return; dy=e.touches[0].clientY-y0; if(dy<=0||window.scrollY>0){ ind.style.transform=''; ind.classList.remove('on','go'); return; } var d=Math.min(110,dy*0.5); ind.classList.add('on'); ind.style.transform='translate(-50%,'+d+'px)'; armed=d>=70; ind.classList.toggle('go',armed); ind.style.setProperty('--p',Math.min(1,d/70).toFixed(3)); },{passive:true});
@@ -8209,7 +8240,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   card.appendChild(dp); var reel=dp.querySelector('.dpreel'), last=-1;
   function cur(){ var c=chips(); for(var i=0;i<c.length;i++) if(c[i].getAttribute('aria-pressed')==='true') return i; return 0; }
   function label(i){ var c=chips()[i]; return c?'<b class="dpd">'+(c.querySelector('span')||c).textContent.trim()+'</b><small>'+(i+1)+'/'+chips().length+'</small>':''; }
-  function paint(){ var i=cur(); if(i===last) return; var dir=last<0?0:(i>last?1:-1); var n=document.createElement('span'); n.className='dpitem'; n.innerHTML=label(i);
+  function paint(){ var i=cur(); if(i===last) return; while(reel.children.length>1) reel.removeChild(reel.firstChild); var dir=last<0?0:(i>last?1:-1); var n=document.createElement('span'); n.className='dpitem'; n.innerHTML=label(i);
     if(dir&&reel.firstChild){ var o=reel.firstChild; n.style.transform='translateY('+(dir*100)+'%)'; n.style.opacity='0'; reel.appendChild(n); requestAnimationFrame(function(){ o.style.transform='translateY('+(-dir*100)+'%)'; o.style.opacity='0'; n.style.transform='translateY(0)'; n.style.opacity='1'; setTimeout(function(){ if(o.parentNode) o.remove(); },320); }); }
     else { reel.innerHTML=''; reel.appendChild(n); } last=i; var L=chips().length; dp.querySelector('[data-dp="-1"]').disabled=i<=0; dp.querySelector('[data-dp="1"]').disabled=i>=L-1; }
   function go(d){ var c=chips(), i=cur()+d; if(i<0||i>=c.length) return; c[i].click(); }
@@ -8281,7 +8312,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* combined card: the edit-trip pencil lives in the Home header, beside alerts */
 (function(){ var card=document.querySelector('#v-home .vzhero'), ed=card&&card.querySelector('.ctedit'), top=document.querySelector('#v-home .hometop'), bell=top&&top.querySelector('.hbell'); if(!ed||!top) return; var home=document.createComment('ctedit'); ed.parentNode.insertBefore(home,ed);
   var wrap=document.createElement('div'); wrap.className='htacts'; top.insertBefore(wrap,bell); wrap.appendChild(bell);
-  function place(){ var on=document.documentElement.classList.contains('homeone'); if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
+  function place(){ var on=false; if(on&&ed.parentNode!==wrap){ wrap.insertBefore(ed,bell); ed.classList.add('hedit'); } else if(!on&&ed.parentNode===wrap){ ed.classList.remove('hedit'); home.parentNode.insertBefore(ed,home); } }
   place(); new MutationObserver(place).observe(document.documentElement,{attributes:true,attributeFilter:['class']}); })();
 
 /* ₹ drawn as an even-stroke mark (the font's glyph has uneven strokes); the character stays in the text for copy and screen readers */
@@ -8303,6 +8334,23 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   wx.parentNode.insertBefore(tk,wx); hs.parentNode.insertBefore(wx,hs); wx.classList.add('wxmoved'); hs.classList.add('hsgone');
   var loc=wx.querySelector('.wxloc'); if(loc){ var d=loc.nextElementSibling; if(d&&d.classList.contains('wxdot')) d.remove(); var lr=document.createElement('div'); lr.className='wxlocrow'; lr.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>'; lr.appendChild(loc); wx.parentNode.insertBefore(lr,wx); }
   var ico=wx.querySelector('.wxinl'); if(ico){ ico.classList.remove('wxinl'); ico.classList.add('wxrowico'); } }); })();
+
+/* Combined card: the ticket top carries the trip (name, days, places, distance, dates) with the edit pencil;
+   the row below shows the day's route; tap it for the trip pass */
+(function(){ var vz=document.querySelector('#v-home .vzhero'); if(!vz) return;
+  function mi(k){ var v=''; vz.querySelectorAll('.sgrid .mi').forEach(function(m){ var mk=m.querySelector('.mk'), mv=m.querySelector('.mv'); if(mk&&mv&&mk.textContent.trim().toLowerCase()===k) v=mv.textContent.trim(); }); return v; }
+  var sw=vz.querySelector('.tswitch'), name=sw?sw.textContent.trim():'', lab=vz.querySelector('.shead .label'), dates=lab?lab.textContent.trim():'';
+  var meta=[mi('days')&&mi('days')+' days',mi('places')&&mi('places')+' places',mi('distance')].filter(Boolean).join(' · ');
+  var ed=document.getElementById('vz-edit'), pen=ed?ed.innerHTML:'';
+  document.querySelectorAll('#v-home .hday .tkhead').forEach(function(h){ if(h.querySelector('.tkinfo')) return; var row=h.querySelector('.trow'); if(!row) return;
+    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small>'+meta+'</small><small class="tkd">'+dates+'</small></button><button type="button" class="tkedit" aria-label="Edit trip">'+pen+'</button>';
+    h.insertBefore(d,row); d.querySelector('.tkedit').onclick=function(e){ e.stopPropagation(); var b=document.getElementById('vz-edit'); if(b) b.click(); };
+    d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
+  var h2=vz.querySelector('.shead h2'); if(!h2) return; var rt=document.createElement('button'); rt.type='button'; rt.className='vzroute'; h2.appendChild(rt);
+  function vis(){ return [].slice.call(document.querySelectorAll('#v-home .hday')).filter(function(s){ return !s.hidden; })[0]; }
+  function upd(){ var s=vis(), t=s&&s.querySelector('.summary h2'); if(!t) return; var ps=(t.dataset.parts||t.textContent).split('|'); rt.innerHTML=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>'); rt.setAttribute('aria-label','Trip pass for '+ps.join(' to ')); }
+  rt.onclick=function(e){ e.stopPropagation(); var s=vis(), q=s&&s.querySelector('.tkqr'); if(q) q.click(); };
+  upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.querySelector('#v-home .hseg')||document.body,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); })();
 
 </script>
 
