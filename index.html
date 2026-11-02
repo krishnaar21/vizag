@@ -5291,6 +5291,22 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
 #v-home .hometop{flex-wrap:wrap}
 #v-home .hometop .offtag{order:3;flex-basis:100%}
 
+/* ===== v182 ===== */
+.qnone{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin:6px 0 10px;padding:24px 18px;border:1px dashed var(--line);border-radius:var(--rc,18px);background:var(--surface)}
+.qnone[hidden]{display:none}
+.qnico{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 5%,transparent);margin-bottom:4px}
+.qnico svg{width:22px;height:22px;fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linecap:round}
+.qnone b{font-size:1rem}.qns{font-size:.86rem;color:var(--muted);line-height:1.45;text-wrap:balance}
+.qnone .btn{margin-top:8px;height:38px;padding:0 16px;font-size:.88rem}
+.pscredit .cr1,.pscredit .cr2{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* offline tag right under the title */
+#v-home .hometop{flex-wrap:nowrap!important;align-items:center!important}
+.htitle{display:flex;flex-direction:column;min-width:0}
+.htitle h1{margin:0!important}
+#v-home .hometop .offtag{order:0;flex-basis:auto;padding:2px 0 0;margin:0;line-height:1.2}
+#v-home .hometop.isoff{align-items:center!important}
+.qnone .btn{border:1px solid var(--line)!important;background:var(--surface)!important}
+
 </style>
 </head>
 <body>
@@ -5716,7 +5732,7 @@ html.fd-c .stop.freeday::before{content:'FREE DAY';display:block;font-size:.68re
         <div class="psumc" id="pl-sum"></div>
         <div class="psrch"><label class="psearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="pl-q" type="search" placeholder="Search places, towns or types" autocomplete="off" enterkeyhint="search"><span class="pqn" id="pl-qn"></span></label></div>
         <div class="pplaces" id="pl-places"></div>
-        <p class="pqempty" id="pl-qempty" hidden>No places match. Try a town name or a type like beach, fort or temple.</p>
+        <div class="qnone" id="pl-qempty" hidden><span class="qnico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4M8.5 11h5"/></svg></span><b id="pl-qnt">No places found</b><span class="qns">Check the spelling, or search a town or a type like beach, fort or temple.</span><button type="button" class="btn ghost sm" id="pl-qclear">Clear search</button></div>
       </div>
      </div>
     </div>
@@ -8199,7 +8215,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       var q=($('pl-q').value||'').trim().toLowerCase(), n=0, all=$$('#pl-places .pcard');
       all.forEach(function(c){ var ok=!q||(c.dataset.q||'').indexOf(q)>=0; c.hidden=!ok; if(ok) n++; });
       $$('#pl-places .pgrp').forEach(function(g){ g.hidden=!g.querySelector('.pcard:not([hidden])'); });
-      $('pl-qn').textContent=q?n+' of '+all.length:''; $('pl-qempty').hidden=!(q&&!n);
+      $('pl-qn').textContent=q?n+' of '+all.length:''; $('pl-qempty').hidden=!(q&&!n); if(q&&!n) $('pl-qnt').textContent='No places match \u201c'+$('pl-q').value.trim()+'\u201d';
     }
     function drawPlaces(sel){
       var st=$('pl-state').value, list=(STATES[st]||[]).concat(extra.filter(function(p){ return p[7]===st; }));
@@ -8211,7 +8227,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function countSel(){ var _bx=$$('#pl-places input'), _all=_bx.length&&_bx.every(function(b){ return b.checked; }); if($('pl-all')) $('pl-all').textContent=_all?'Unselect all':'Select all'; $$('#pl-places .pcard').forEach(function(c){ var cb=c.querySelector('input'); c.classList.toggle('on',cb.checked); }); $$('#pl-side [data-sv]').forEach(function(x){ var c=Array.prototype.filter.call($$('#pl-places input'),function(y){ return y.value===x.dataset.sv; })[0]; x.checked=!!(c&&c.checked); }); var n=$$('#pl-places input:checked').length; $('pl-count').textContent=n+' selected'; $('pl-go').disabled=!n; hints(); }
 
     /* ---------- Place cards (photos from Wikipedia when online) ---------- */
-    try{ if(localStorage.getItem('vizag-wimg-v')!=='2'){ localStorage.removeItem('vizag-wimg'); localStorage.setItem('vizag-wimg-v','2'); } }catch(e){}
+    try{ if(localStorage.getItem('vizag-wimg-v')!=='3'){ localStorage.removeItem('vizag-wimg'); localStorage.setItem('vizag-wimg-v','3'); } }catch(e){}
     var WC={}; try{ WC=JSON.parse(get('vizag-wimg')||'{}')||{}; }catch(e){}
     var CATN={temple:'Temple',hill:'Hills',beach:'Beach',cave:'Caves',fort:'Fort',nature:'Nature',waterfall:'Waterfall',monastery:'Monastery',wildlife:'Wildlife',monument:'Monument',museum:'Museum',lake:'Lake',palace:'Palace',church:'Church',city:'City walk',market:'Market',garden:'Garden',entertainment:'Fun',adventure:'Adventure',village:'Village',desert:'Desert',ceremony:'Ceremony',train:'Heritage train'};
     function placeCard(p,on,i,fromLL){
@@ -8243,7 +8259,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     window.__gphoto=gphoto;
     /* free fallback when Wikipedia has no photo: Openverse (openly licensed images, no key) */
     function ovphoto(q){ if(!window.fetch) return Promise.resolve(null); return fetch('https://api.openverse.org/v1/images/?page_size=1&mature=false&q='+encodeURIComponent(q))
-      .then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ var x=j&&j.results&&j.results[0]; return x?{u:x.thumbnail||x.url||null,c:(x.title||'Photo')+(x.creator?' by '+x.creator:'')+' \u00b7 '+String(x.license||'').toUpperCase()+' '+(x.license_version||'')+' \u00b7 via Openverse',l:x.foreign_landing_url||x.url||''}:null; }).catch(function(){ return null; }); }
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); }).then(function(j){ var x=j&&j.results&&j.results[0]; return x?{u:x.thumbnail||x.url||null,c:'Photo: '+(x.title||'Untitled')+' \u00b7 via Openverse',a:x.creator||'',lic:('CC '+String(x.license||'').toUpperCase()+' '+(x.license_version||'')).trim(),l:x.foreign_landing_url||x.url||''}:null; }).catch(function(){ return null; }); }
     function wimg(el){
       if(el.dataset.done) return; el.dataset.done='1'; var q=el.dataset.wq;
       function apply(v){ if(!v) return; if(v.s){ var im=new Image(), done=false, src=v.s; im.onload=function(){ if(done) return; done=true; if(im.naturalWidth>8){ el.style.backgroundImage='url("'+src.replace(/"/g,'')+'")'; el.classList.add('has'); } }; im.onerror=function(){ done=true; el.classList.remove('has'); el.style.backgroundImage=''; }; setTimeout(function(){ if(!done){ done=true; im.src=''; el.classList.remove('has'); el.style.backgroundImage=''; } },12000); im.src=src; }
@@ -8252,10 +8268,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       wiki(); function wiki(){
       if(q in WC) return apply(WC[q]);
       if(navigator.onLine===false||!window.fetch) return;
-      fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=1&prop=pageimages%7Cdescription&piprop=thumbnail&pithumbsize=800&gsrsearch='+encodeURIComponent(q))
-        .then(function(r){ return r.json(); }).then(function(j){ var pg=j&&j.query&&j.query.pages, v=null; if(pg){ var x=pg[Object.keys(pg)[0]]; v={s:(x.thumbnail&&x.thumbnail.source)||'',d:x.description||'',c:x.title?('Image from the Wikipedia article \u201c'+x.title+'\u201d \u00b7 credit to the original author'):'',l:x.title?'https://en.wikipedia.org/wiki/'+encodeURIComponent(x.title.replace(/ /g,'_')):''}; }
+      fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=1&prop=pageimages%7Cdescription&piprop=thumbnail%7Cname&pithumbsize=800&gsrsearch='+encodeURIComponent(q))
+        .then(function(r){ return r.json(); }).then(function(j){ var pg=j&&j.query&&j.query.pages, v=null; if(pg){ var x=pg[Object.keys(pg)[0]]; v={s:(x.thumbnail&&x.thumbnail.source)||'',d:x.description||'',c:x.title?('Photo: '+x.title+' \u00b7 Wikipedia'):'',f:x.pageimage||'',l:x.title?'https://en.wikipedia.org/wiki/'+encodeURIComponent(x.title.replace(/ /g,'_')):''}; }
           function keep(v){ WC[q]=v; var keys=Object.keys(WC); if(keys.length>400) delete WC[keys[0]]; set('vizag-wimg',JSON.stringify(WC)); apply(v); }
-          if(v&&v.s) keep(v); else ovphoto(q).then(function(o){ keep({s:o&&o.u||'',d:(v&&v.d)||'',c:o&&o.c||'',l:o&&o.l||''}); }); }).catch(function(){ ovphoto(q).then(function(o){ if(o&&o.u) apply({s:o.u,d:'',c:o.c,l:o.l}); }); });
+          if(v&&v.s) keep(v); else ovphoto(q).then(function(o){ keep({s:o&&o.u||'',d:(v&&v.d)||'',c:o&&o.c||'',l:o&&o.l||'',a:o&&o.a||'',lic:o&&o.lic||''}); }); }).catch(function(){ ovphoto(q).then(function(o){ if(o&&o.u) apply({s:o.u,d:'',c:o.c,l:o.l}); }); });
       }
     }
     var wio=window.IntersectionObserver?new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ wio.unobserve(e.target); wimg(e.target); } }); },{rootMargin:'200px'}):null;
@@ -8315,7 +8331,9 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       $('ps-close').onclick=closePlace; $('ps-fav').onclick=function(){ favToggle(name,{n:name,k:'place',s:(CATN[p[4]]||'Place')+' · '+p[1]},this); };
       $('ps-act').onclick=function(){ if(card){ var i=card.querySelector('input'); i.checked=!i.checked; i.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(addp){ addp.checked=true; addp.dispatchEvent(new Event('change',{bubbles:true})); closePlace(); } else if(!inTrip){ window.open(gm(name+' '+p[1]+' '+st),'_blank','noopener'); } };
       var key=name+'|'+p[1], hero=$('ps-hero');
-      (function(){ var wc=WC[p[0]+' '+p[1]]; if(!wc||!wc.c) return; var c=document.createElement('p'); c.className='pscredit'; c.innerHTML=(wc.l?'<a href="'+esc(wc.l)+'" target="_blank" rel="noopener">':'')+esc(wc.c)+(wc.l?'</a>':''); var sp=$('ps-body').querySelectorAll('.pspanel'); (sp[sp.length-1]||$('ps-body')).appendChild(c); })();
+      (function(){ var wk=p[0]+' '+p[1], wc=WC[wk]; if(!wc||!wc.c) return; var c=document.createElement('p'); c.className='pscredit'; var parts=wc.c.split(' \u00b7 '); var l1=parts.shift(), l2=parts.join(' \u00b7 ');
+        function paint(){ c.innerHTML=(wc.l?'<a href="'+esc(wc.l)+'" target="_blank" rel="noopener">':'')+'<span class="cr1">'+esc(l1)+'</span>'+(l2||wc.a?'<span class="cr2">'+esc([wc.a?'by '+wc.a:'',wc.lic||'',l2].filter(Boolean).join(' \u00b7 '))+'</span>':'')+(wc.l?'</a>':''); }
+        paint(); if(wc.f&&!wc.a&&window.fetch) fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=extmetadata&titles=File:'+encodeURIComponent(wc.f)).then(function(r){ return r.json(); }).then(function(j){ var pg=j&&j.query&&j.query.pages, x=pg&&pg[Object.keys(pg)[0]], m=x&&x.imageinfo&&x.imageinfo[0]&&x.imageinfo[0].extmetadata; if(!m) return; var tmp=document.createElement('div'); tmp.innerHTML=(m.Artist&&m.Artist.value)||''; wc.a=(tmp.textContent||'').trim().slice(0,60); wc.lic=(m.LicenseShortName&&m.LicenseShortName.value)||''; WC[wk]=wc; set('vizag-wimg',JSON.stringify(WC)); paint(); }).catch(function(){}); var sp=$('ps-body').querySelectorAll('.pspanel'); (sp[sp.length-1]||$('ps-body')).appendChild(c); })();
       function fill(v){ if(!v||!psh||psh.hidden||!psCtx||psCtx.name!==name) return; if(v.s&&!(gkey()&&hero.classList.contains('has'))){ hero.style.backgroundImage='url("'+v.s.replace(/"/g,'')+'")'; hero.classList.add('has'); } if(v.x){ $('ps-about').textContent=v.x; aboutMore(); }  }
       if(gkey()) gphoto(p[0]+' '+p[1],1200).then(function(u){ if(u&&psCtx&&psCtx.name===name){ hero.style.backgroundImage='url("'+u.replace(/"/g,'')+'")'; hero.classList.add('has'); } });
       if(WD[key]) fill(WD[key]);
@@ -8509,7 +8527,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function setPV(v){ v=v==='card'?'card':'list'; root.classList.toggle('pv-card',v==='card'); set('vizag-pview',v); $$('[data-pv]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.pv===v?'true':'false'); }); }
     document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-pv]'); if(b){ e.preventDefault(); setPV(b.dataset.pv); } });
     setPV(get('vizag-pview')||'list');
-    $('pl-q').addEventListener('input',filterPlaces);
+    $('pl-q').addEventListener('input',filterPlaces); $('pl-qclear').addEventListener('click',function(){ $('pl-q').value=''; filterPlaces(); $('pl-q').focus(); });
     /* search focus: lift the search bar to the top so more results show; put the view back when the keyboard closes */
     (function(){ var qi=$('pl-q'), saved=null, sc=null;
       function scroller(el){ for(var n=el.parentElement;n;n=n.parentElement){ var s=getComputedStyle(n).overflowY; if((s==='auto'||s==='scroll')&&n.scrollHeight>n.clientHeight) return n; } return document.scrollingElement; }
@@ -9584,8 +9602,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.querySelector('main'),{attributes:true,subtree:true,attributeFilter:['aria-pressed','hidden']}); })();
 
 /* Offline mode tag under the Home title */
-(function(){ var top=document.querySelector('#v-home .hometop h1'); if(!top) return; var tag=document.createElement('button'); tag.type='button'; tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=true; top.after(tag);
-  var wrap=top.parentNode; function upd(){ var off=navigator.onLine===false; tag.hidden=!off; wrap.classList.toggle('isoff',off); }
+(function(){ var top=document.querySelector('#v-home .hometop h1'); if(!top) return; var tag=document.createElement('button'); tag.type='button'; tag.className='offtag'; tag.innerHTML='Offline mode<i></i>'; tag.hidden=true; var tw=document.createElement('div'); tw.className='htitle'; top.parentNode.insertBefore(tw,top); tw.appendChild(top); tw.appendChild(tag);
+  var wrap=tw.parentNode; function upd(){ var off=navigator.onLine===false; tag.hidden=!off; wrap.classList.toggle('isoff',off); }
   tag.onclick=function(e){ e.stopPropagation(); var s=document.getElementById('off-sheet'), sc=document.getElementById('scrim'); if(s){ s.hidden=false; if(sc) sc.hidden=false; } };
   window.addEventListener('online',upd); window.addEventListener('offline',upd); upd(); })();
 
