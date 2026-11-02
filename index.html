@@ -5127,6 +5127,51 @@ input.bad{border-color:var(--danger)!important}
 .pastnote b{font-size:.92rem}.pastnote span{font-size:.8rem;color:var(--muted)}
 .pastnote .btn{flex:none;height:36px;padding:0 14px;font-size:.85rem}
 
+/* ===== v175 ===== */
+.mtempty{margin-bottom:6px}
+/* username field: one focus ring */
+.epuser:focus-within{border-color:color-mix(in srgb,var(--ink) 40%,var(--line))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--link) 18%,transparent)}
+.epuser input,.epuser input:focus{outline:0!important;border:0!important;box-shadow:none!important}
+.uavail{display:block;font-size:.8rem;margin-top:6px;color:var(--muted)}
+.uavail:empty{display:none}
+.uavail.ok{color:#2e9d5b}.uavail.no{color:var(--danger)}
+.usug{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;border-radius:999px;padding:2px 9px;margin:4px 4px 0 0;cursor:pointer}
+/* date icons visible */
+input[type=date]::-webkit-calendar-picker-indicator{opacity:.55;filter:none;cursor:pointer}
+html.darkbg input[type=date]::-webkit-calendar-picker-indicator{filter:invert(1)}
+input[type=date]{color-scheme:light}
+html.darkbg input[type=date]{color-scheme:dark}
+input[type=date]:disabled{opacity:.55}
+.pdlock:not([hidden]){display:block;grid-column:1 / -1;font-size:.8rem;color:var(--muted);margin-top:6px}
+/* bold current tick */
+.tkck{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;display:block}
+/* past trip note: card style */
+.pastnote{border:1px solid var(--line)!important;background:var(--surface)!important;border-radius:var(--rc,18px)!important;padding:14px 16px!important;margin:0 0 12px!important}
+.pastnote b::before{content:'\25F7';margin-right:6px;color:var(--muted);font-weight:400}
+/* plans */
+.plantop{margin-bottom:12px}
+.plancard{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:var(--rc,18px);border:1px solid var(--line);background:var(--surface)}
+.plancard > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.plancard b{font-size:1rem}.plancard span{font-size:.82rem;color:var(--muted)}
+.plancard.soon{border-color:color-mix(in srgb,var(--warn) 50%,var(--line));background:color-mix(in srgb,var(--warn) 7%,var(--surface))}
+.plbadge{flex:none;font-size:.68rem!important;font-weight:800;letter-spacing:.08em;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)!important}
+.plancard.pro .plbadge{background:var(--ink);color:var(--surface)!important}
+.plangrp{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.plancol{padding:14px}
+.plancol + .plancol{border-left:1px dashed var(--line)}
+.plh{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}.plh span{font-size:.82rem;color:var(--muted)}
+.plancol ul{margin:0;padding-left:16px;font-size:.84rem;color:var(--muted);line-height:1.45}
+.rnico{font-size:2rem;line-height:1;margin-bottom:6px}
+#renew-sheet{z-index:120}
+/* contact support */
+.csform textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:110px;font:inherit;padding:10px 12px;border-radius:11px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+#cs-send:disabled{opacity:.4}
+.csnote{font-size:.8rem;color:var(--muted);text-align:center;margin:10px 0 4px}
+#renew-sheet .lohead{display:flex!important;flex-direction:column!important;align-items:center!important;text-align:center!important;gap:6px;margin-bottom:16px}
+#renew-sheet .lohead .t{font-size:1.15rem;font-weight:700}
+#renew-sheet .lohead .s{color:var(--muted);text-wrap:balance}
+#renew-sheet #rn-skip{margin-top:10px}
+
 </style>
 </head>
 <body>
@@ -5135,7 +5180,7 @@ input.bad{border-color:var(--danger)!important}
 
 <div class="offline wrap" id="offline" hidden role="status">
   <span class="otile" aria-hidden="true"><span class="ic"><span class="ie" data-e="1f4e1">📡️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="wifioff" href="#i-hugeicons-wifioff"/></svg></span></span></span>
-  <div class="otext"><div class="t">No internet connection</div><div class="s">The plan works offline. Ticks save on this phone and sync when you're back online.</div></div>
+  <div class="otext"><div class="t">You're using the offline version</div><div class="s">Some features may not work as expected until you're back online. For maps, download offline maps in your Maps app for a better experience.</div></div>
   <button type="button" class="obtn" id="offline-ok">Use offline</button>
 </div>
 
@@ -5364,7 +5409,7 @@ input.bad{border-color:var(--danger)!important}
 <div class="setcap shd"><span>My trips</span><button type="button" class="seeall" data-see="mytrips-list" data-ttl="My trips" data-ico="map" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="mytrips-list"></div>
     <div class="mpaddrow"><button type="button" class="setbtn" id="mytrips-new">＋ New trip</button></div></div>
-  <div class="setcap shd"><span>Recent trips</span><button type="button" class="seeall" data-see="recent-list" data-ttl="Recent trips" data-ico="history" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
+  <div class="setcap shd"><span>Past trips</span><button type="button" class="seeall" data-see="recent-list" data-ttl="Past trips" data-ico="history" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="recent-list"></div></div>
   <div class="setcap shd"><span>Travel groups</span><button type="button" class="seeall" data-see="grp-list" data-ttl="Travel groups" data-ico="users" hidden>More<svg class="ph" aria-hidden="true"><use data-p="chev" href="#i-hugeicons-chev"/></svg></button></div>
   <div class="setgrp"><div class="mplist" id="grp-list"></div>
@@ -5380,6 +5425,7 @@ input.bad{border-color:var(--danger)!important}
   <div class="setcap">Trip</div>
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>A printable copy of the current plan</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setgrp devgrp" id="devgrp"><div class="setrow"><span class="setl">Developer mode<small>Testing tools for this build</small></span><div class="seg" role="group" aria-label="Developer mode"><button type="button" data-dev="off">Off</button><button type="button" data-dev="on">On</button></div></div><div class="devopts"><div class="setrow"><span class="setl">Preview empty states<small>Show pages as if there were no trips</small></span><div class="seg" role="group"><button type="button" data-devempty="off">Off</button><button type="button" data-devempty="on">On</button></div></div>
+<div class="setrow"><span class="setl">Simulate Pro renewal<small>Pro plan that renews in 2 days</small></span><div class="seg" role="group" aria-label="Simulate Pro renewal"><button type="button" data-devpro="off">Off</button><button type="button" data-devpro="on">On</button></div></div>
 <div class="setrow"><span class="setl">Any trip dates<small>Allow past dates for testing</small></span><div class="seg" role="group" aria-label="Any trip dates"><button type="button" data-devdates="off">Off</button><button type="button" data-devdates="on">On</button></div></div>
 <div class="setrow"><span class="setl">Pinch to zoom<small>Allow zooming the app in and out</small></span><div class="seg" role="group" aria-label="Pinch to zoom"><button type="button" data-devzoom="off">Off</button><button type="button" data-devzoom="on">On</button></div></div>
 <div class="setrow"><span class="setl">Restore sample trip<small>Bring back Vizag · Araku · Vanjangi</small></span><button type="button" class="setbtn devbtn" id="dev-restore">Restore</button></div>
@@ -5531,7 +5577,7 @@ input.bad{border-color:var(--danger)!important}
           <label class="pf"><span>Trip name</span><input id="pl-name" type="text" minlength="6" maxlength="26" pattern="[A-Za-z0-9 ]+" autocapitalize="words" placeholder="e.g. Kerala with family" aria-describedby="pl-nerr"><small class="perr" id="pl-nerr" hidden>Use letters and numbers only, with at least 6 letters.</small></label><ul class="ghints" data-g="where" hidden></ul></div>
         <div class="pgroup" data-pg="when"><div class="pgl">Dates</div><div class="pgrid">
           <label class="pf"><span>Start date</span><input id="pl-start" type="date"></label>
-          <label class="pf"><span>End date</span><input id="pl-end" type="date"></label><small class="perr pderr" id="pl-derr" hidden></small>
+          <label class="pf"><span>End date</span><input id="pl-end" type="date"></label><small class="perr pderr" id="pl-derr" hidden></small><small class="pdlock" id="pl-dlock" hidden></small>
         </div><ul class="ghints" data-g="when" hidden></ul></div>
         <div class="pgroup" data-pg="who"><button type="button" class="pgsum" data-pgopen="who"><span class="pgsl">Travellers</span><span class="pgsv" id="pgs-who"></span><span class="pgse" aria-label="Edit"><svg class="ph" aria-hidden="true"><use data-p="edit" href="#i-hugeicons-edit"/></svg></span></button><div class="pgl pghd">Travellers<button type="button" class="pgdone" data-pgdone>Done</button></div><div class="gchips" id="pl-groups"></div><div class="pgrid p3">
           <label class="pf"><span>Men</span><input id="pl-men" type="number" min="0" max="30" inputmode="numeric"></label>
@@ -7864,7 +7910,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function openTripSheet(cards,title,ico,mode){
       $('ps-body').innerHTML='<div class="lshead"><span class="lsico">'+icoT(ico||'map')+'</span><div class="lst"><h3>'+(mode==='past'?'Past trips':(title||'My trips'))+'</h3><p>'+(function(){ var td=iso(new Date()), n=cards.filter(function(c){ return mode==='past'?(c.end&&c.end<td):(!c.end||c.end>=td); }).length; return n+' trip'+(n===1?'':'s'); })()+'</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
         (mode==='past'||cards.length>4?'<div class="tpsrch"><label class="psearch">'+icoT('search')+'<input id="ts-q" type="search" placeholder="'+(mode==='past'?'Search past trips':'Search your trips')+'" autocomplete="off"></label></div>':'')+
-        '<div class="pspanel tppanel">'+(function(){ var td=iso(new Date()), up=cards.filter(function(c){ return !c.end||c.end>=td; }), past=cards.filter(function(c){ return c.end&&c.end<td; }); function row(c){ return '<button type="button" class="tplr'+(c.id===active?' cur':'')+'" data-tsi="'+esc(c.id)+'" data-q="'+esc((c.name+' '+c.sub).toLowerCase())+'"><span class="tplci">'+c.emo+'</span><span class="tplt"><b>'+esc(c.name)+'</b><small class="mtsub">'+subH(c)+'</small></span><span class="tplgo">'+icoT(c.id===active?'tick':'chev')+'</span></button>'; }
+        '<div class="pspanel tppanel">'+(function(){ var td=iso(new Date()), up=cards.filter(function(c){ return !c.end||c.end>=td; }), past=cards.filter(function(c){ return c.end&&c.end<td; }); function row(c){ return '<button type="button" class="tplr'+(c.id===active?' cur':'')+'" data-tsi="'+esc(c.id)+'" data-q="'+esc((c.name+' '+c.sub).toLowerCase())+'"><span class="tplci">'+c.emo+'</span><span class="tplt"><b>'+esc(c.name)+'</b><small class="mtsub">'+subH(c)+'</small></span><span class="tplgo">'+(c.id===active?'<svg class="tkck" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':icoT('chev'))+'</span></button>'; }
           var list=mode==='past'?past:up;
           return '<div class="poplist" id="ts-list">'+(list.length?list.map(row).join(''):(mode==='past'?'':'<div class="tsempty"><b>No ongoing or upcoming trips</b><span>Plan your next one and it will show up here.</span><button type="button" class="btn tsemptygo" id="ts-new2">Plan a new trip</button></div>'))+'</div>'+(mode!=='past'&&past.length?'<button type="button" class="tspast" id="ts-past"><span class="tsplab">Past trips</span><span class="tspn">'+past.length+'</span>'+icoT('chev')+'</button>':''); })()+''+'</div><p class="pqempty" id="ts-none" hidden>No trips match.</p>'+
         '<button type="button" class="pcadd tsnew" id="ts-new">'+icoT('plus')+'Plan a new trip</button></div>';
@@ -7894,7 +7940,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function subH(c){ var I=function(d,n,l){ return '<span class="mti" aria-label="'+n+' '+l+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+d+'</svg>'+n+'</span>'; };
       return esc(c.sub)+(c.np!=null?I('<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',c.np,'places')+I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14a6.5 6.5 0 0 1 3 6"/>',c.nq,'people'):''); }
     function drawMyTrips(){ var box=$('mytrips-list'), cards=(window.__tripCards||[]).slice().sort(function(a,b){ return (b.id===active)-(a.id===active); }); if(!box) return;
-      box.innerHTML=cards.map(function(c){ return '<div class="mprow grow" data-mt="'+esc(c.id)+'" role="button" tabindex="0"><span class="gav">'+c.emo+'</span><div class="mpt"><b>'+esc(c.name)+'</b><small class="mtsub">'+subH(c)+'</small></div>'+(c.id===active?'<span class="mtcur">Current</span>':'<span class="achev">'+icoT('chev')+'</span>')+'</div>'; }).join('');
+      var td=iso(new Date()), upn=cards.filter(function(c){ return !c.end||c.end>=td; }).length;
+      box.innerHTML=(upn?'':'<div class="tsempty mtempty"><b>No ongoing or upcoming trips</b><span>Plan your next one and it will show up here.</span></div>')+cards.map(function(c){ return '<div class="mprow grow" data-mt="'+esc(c.id)+'" role="button" tabindex="0"><span class="gav">'+c.emo+'</span><div class="mpt"><b>'+esc(c.name)+'</b><small class="mtsub">'+subH(c)+'</small></div>'+(c.id===active?'<span class="mtcur">Current</span>':'<span class="achev">'+icoT('chev')+'</span>')+'</div>'; }).join('');
       box.querySelectorAll('[data-mt]').forEach(function(r){ r.onclick=function(){ try{ sessionStorage.removeItem('vizag-dev-empty'); localStorage.removeItem('vizag-dev-empty'); }catch(e){} active=r.dataset.mt; set('vizag-active-trip',active); if(window.__skel) window.__skel(650); show('home'); setTimeout(render,60); }; });
       if(window.__paintUses) window.__paintUses(box); }
     window.__drawMyTrips=drawMyTrips;
@@ -7929,6 +7976,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       drawGroupChips(); $('pl-name').value=t?cleanName(t.name||'').trim():''; $('pl-name').dataset.touched=t?'1':''; $('pl-nerr').hidden=true; $('pl-name').classList.remove('bad'); if(!t) autoName();
       vzEditing=false; $('pl-del').hidden=!editing;
       drawPlaces(t?t.places.map(function(p){ return p[0]; }):null);
+      (function(){ var s=$('pl-start'), e=$('pl-end'), nt=$('pl-dlock'); s.disabled=false; e.disabled=false; if(nt) nt.hidden=true; if(!t||asNew) return; var now=Date.now(), st=new Date(t.start+'T00:00:00').getTime(), en=new Date(($('pl-end').value||t.start)+'T23:59:59').getTime()+864e5;
+        if(now>en){ s.disabled=true; e.disabled=true; if(nt){ nt.textContent='This trip has ended, so its dates can\u2019t be changed.'; nt.hidden=false; } } else if(now>=st){ s.disabled=true; if(nt){ nt.textContent='This trip has started. You can still change the end date.'; nt.hidden=false; } } })();
       if(!t) drawStart(); drawSide('own'); goStep(t?1:0); setTimeout(dateErr,0); pl.hidden=false; root.classList.add('login-open'); topReset(); setTimeout(function(){ pl.__snap=plSnap(); },120);
     }
     function plSnap(){ return [].map.call(pl.querySelectorAll('input,select,textarea'),function(e){ return e.type==='checkbox'||e.type==='radio'?(e.checked?1:0):e.value; }).join('|')+'#'+[].map.call(pl.querySelectorAll('[aria-pressed="true"]'),function(b){ return b.textContent.trim(); }).join(','); }
@@ -8342,7 +8391,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       qi.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement===qi) return; document.getElementById('planner').classList.remove('qlift'); if(sc&&saved!==null) sc.scrollTo({top:saved,behavior:'smooth'}); saved=null; },150); }); })(); $('pl-q').addEventListener('keydown',function(e){ if(e.key==='Enter') e.preventDefault(); });
     $('pl-close').addEventListener('click',function(){ if(pl.__snap&&plSnap()!==pl.__snap){ var go=function(){ pl.__snap=null; closePlanner(); }; if(window.__confirm) setTimeout(function(){ var tn=($('pl-name').value||'').trim(); if(editing||($('pl-title').textContent||'').indexOf('Edit')===0) window.__confirm('Discard trip changes?','New dates, travellers and place picks for '+(tn||'this trip')+' won\u2019t be saved. The trip stays as it was.','Discard changes',go,'trip'); else window.__confirm('Discard this new trip?',(tn?'\u201c'+tn+'\u201d':'This trip')+' and the places you picked won\u2019t be created.','Discard trip',go,'trip'); },0); else go(); return; } closePlanner(); });
     $('pl-next').addEventListener('click',function(){ if(!dateErr()){ $('pl-end').focus(); return; } if(nDays(formTrip())<=0){ $('pl-end').focus(); hints(); return; } if(!nameOK()) return; goStep(2); });
-    $('pl-name').addEventListener('input',function(){ var c=cleanName(this.value), er=$('pl-nerr'); if(c.length>25){ c=c.slice(0,25); this.value=c; er.textContent='Trip names can be up to 25 characters.'; er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; },2800); } if(c!==this.value){ var pos=this.selectionStart-(this.value.length-c.length); this.value=c; try{ this.setSelectionRange(pos,pos); }catch(e){} er.textContent='Only letters (a\u2013z) and numbers are allowed.'; er.hidden=false; this.classList.add('bad'); clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; $('pl-name').classList.remove('bad'); },2800); return; } this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
+    $('pl-name').addEventListener('input',function(){ var c=cleanName(this.value), er=$('pl-nerr'); if(c.length>25){ c=c.slice(0,25); this.value=c; er.textContent='Trip names can be up to 25 characters.'; er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; },2800); this.dataset.touched='1'; return; } if(c!==this.value){ var pos=this.selectionStart-(this.value.length-c.length); this.value=c; try{ this.setSelectionRange(pos,pos); }catch(e){} er.textContent='Only letters (a\u2013z) and numbers are allowed.'; er.hidden=false; this.classList.add('bad'); clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; er.textContent='Use letters and numbers only, with at least 6 letters.'; $('pl-name').classList.remove('bad'); },2800); return; } this.dataset.touched='1'; if(!$('pl-nerr').hidden){ var ok=(this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; this.classList.toggle('bad',!ok); } });
     $('pl-hback').addEventListener('click',function(){ if(step===2) goStep(1); else if(step===1&&!editing){ drawStart(); goStep(0); } else closePlanner(); });
     $$('.pdot').forEach(function(d){ d.addEventListener('click',function(){ var s=+d.dataset.step; if(s===step) return; if(s===1) goStep(1); else if(nDays(formTrip())>0&&nameOK()) goStep(2); }); });
     ['pl-start','pl-end'].forEach(function(id){ var el=$(id); el.addEventListener('click',function(){ try{ if(el.showPicker) el.showPicker(); }catch(e){} }); });
@@ -8668,11 +8717,18 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function openSoc(){ eG=prof.gender||''; fromProf=!ps.hidden;
       var eAv=prof.avatar||'', ePh=prof.photo||'';
       $('soc-body').innerHTML='<div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" maxlength="26" value="'+esc(prof.name||'')+'" placeholder="Your name"><small class="perr" id="ep-nerr" hidden>Names can be up to 25 characters.</small></label>'+
-        '<label class="pf"><span>Username</span><div class="epuser"><span>@</span><input id="ep-user" value="'+esc(prof.user||'')+'" placeholder="username" maxlength="11" autocomplete="off" autocapitalize="none" spellcheck="false"></div><small class="perr" id="ep-uerr" hidden>Usernames can be up to 10 characters.</small></label>'+
+        '<label class="pf"><span>Username</span><div class="epuser"><span>@</span><input id="ep-user" value="'+esc(prof.user||'')+'" placeholder="username" maxlength="11" autocomplete="off" autocapitalize="none" spellcheck="false"></div><small class="perr" id="ep-uerr" hidden>Usernames can be up to 10 characters.</small><small class="uavail" id="ep-uav"></small></label>'+
         '<div class="pf"><span>Gender</span><div class="pills" id="ep-gender">'+[['woman','Woman'],['man','Man'],['nb','Non-binary']].map(function(g){ return '<button type="button" data-val="'+g[0]+'" aria-pressed="'+(eG===g[0]?'true':'false')+'">'+g[1]+'</button>'; }).join('')+'</div></div>'+
         '<label class="pf"><span>Age range</span><select id="ep-age">'+['','18–24','25–34','35–44','45–54','55–64','65+'].map(function(x){ return '<option value="'+x+'"'+(prof.age===x?' selected':'')+'>'+(x||'Prefer not to say')+'</option>'; }).join('')+'</select></label></div>'+
         '<div class="pgl ptitle">Social &amp; email</div><div class="pfgrp">'+CF.map(function(f){ return '<label class="pf"><span>'+f[1]+(f[0]==='email'?emBadge():'')+'</span><input data-pfk="'+f[0]+'" type="'+f[2]+'"'+(f[0]==='email'?' inputmode="email" autocomplete="email"':' autocomplete="off"')+' placeholder="'+f[3]+'" value="'+esc(f[0]==='email'?(prof.emailPending&&prof.emailPending.e)||cval('email'):cval(f[0]))+'">'+(f[0]==='email'?'<small class="emnote" id="em-note">'+emNote()+'</small>':'')+'</label>'; }).join('')+'</div>';
       $('ep-user').addEventListener('input',function(){ var raw=this.value.toLowerCase().replace(/[^a-z0-9._]/g,''), v=raw.slice(0,10), er=$('ep-uerr'); if(v!==this.value) this.value=v; if(raw.length>10&&er){ er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; },2800); } });
+      var TAKEN=['krishna','travel','admin','vizag','india','trip','trips','support','ravi','priya','rahul','anil','kiran','arjun','sai','test','user','hello'];
+      function avail(u){ return u.length>=3&&TAKEN.indexOf(u)<0&&!/^(admin|support)/.test(u); }
+      function uCheck(){ var u=$('ep-user').value.trim(), el=$('ep-uav'); if(!el) return; if(!u||u===(prof.user||'')){ el.innerHTML=''; el.className='uavail'; return; } if(u.length<3){ el.className='uavail'; el.textContent='Use at least 3 characters.'; return; }
+        if(avail(u)){ el.className='uavail ok'; el.textContent='@'+u+' is available'; return; } var base=u.slice(0,7), out=[]; [base+(new Date().getFullYear()%100), base+'_'+(u.length%9+1), base+'.go', base+'7', base+'_in', base+'x'].forEach(function(c){ c=c.slice(0,10); if(out.length<3&&avail(c)&&out.indexOf(c)<0) out.push(c); });
+        el.className='uavail no'; el.innerHTML='@'+u+' is taken. Try '+out.map(function(c){ return '<button type="button" class="usug" data-us="'+c+'">@'+c+'</button>'; }).join(' '); }
+      $('ep-user').addEventListener('input',function(){ clearTimeout(uCheck.t); uCheck.t=setTimeout(uCheck,250); });
+      $('soc-body').addEventListener('click',function(e){ var b=e.target.closest('[data-us]'); if(!b) return; e.preventDefault(); $('ep-user').value=b.dataset.us; uCheck(); });
       $('ep-name').addEventListener('input',function(){ var er=$('ep-nerr'); if(this.value.length>25){ this.value=this.value.slice(0,25); er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; },2800); } });
       $('ep-gender').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; eG=eG===b.dataset.val?'':b.dataset.val; this.querySelectorAll('button').forEach(function(y){ y.setAttribute('aria-pressed',y.dataset.val===eG?'true':'false'); }); });
       $('soc-body').addEventListener('click',function(e){ if(!e.target.closest('[data-emrs]')) return; e.preventDefault(); var p=prof.emailPending; if(p){ p.t=Date.now(); saveF(); var n=$('em-note'); if(n) n.innerHTML=emNote(); if(window.__toast) window.__toast('New link sent'); } });
@@ -9248,6 +9304,53 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     if(!allPast){ if(note) note.remove(); return; } if(note) return; note=document.createElement('div'); note.id='pastnote'; note.className='pastnote'; note.innerHTML='<div><b>You\u2019re viewing a past trip</b><span>No trips coming up yet.</span></div><button type="button" class="btn sm">Plan a new trip</button>';
     note.querySelector('button').onclick=function(e){ e.stopPropagation(); if(window.__newTrip) window.__newTrip(); }; var top=v.querySelector('.hometop'); if(top) top.after(note); else v.prepend(note); }
   var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,120); } soon(); new MutationObserver(soon).observe(r,{attributes:true,attributeFilter:['class']}); document.addEventListener('click',function(){ setTimeout(soon,400); },true); setInterval(run,60000); })();
+
+/* Plans & renewal: plan card always at the top of Settings; a skippable reminder sheet when Pro renews within 2 days */
+(function(){ function G(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } } function S(k,v){ try{ v==null?localStorage.removeItem(k):localStorage.setItem(k,v); }catch(e){} }
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function plan(){ var p=null; try{ p=JSON.parse(G('vizag-plan')||'null'); }catch(e){} return p||{plan:'free'}; }
+  function daysTo(d){ return Math.round((new Date(d+'T00:00:00')-new Date(iso(new Date())+'T00:00:00'))/864e5); }
+  function nice(d){ return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
+  var sp=document.getElementById('settings-profile'); if(!sp) return;
+  var top=document.createElement('div'); top.className='plantop'; sp.insertBefore(top,sp.firstChild);
+  var plans=document.createElement('div'); plans.innerHTML='<div class="setcap">Plans</div><div class="setgrp plangrp"><div class="plancol"><div class="plh"><b>Free</b><span>₹0</span></div><ul><li>Plan up to 3 trips</li><li>Day-by-day plan and trip pass</li><li>Works offline</li></ul></div><div class="plancol pro"><div class="plh"><b>Pro</b><span>₹99 / month</span></div><ul><li>Unlimited trips and travel groups</li><li>AI trip suggestions and chat</li><li>Live weather and alerts on trip days</li><li>Priority support</li></ul></div></div>';
+  var tripCap=[].find.call(sp.querySelectorAll('.setcap'),function(c){ return /^Trip$/.test(c.textContent.trim()); }); if(tripCap) sp.insertBefore(plans,tripCap); else sp.appendChild(plans);
+  function paint(){ var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
+    top.innerHTML=p.plan==='pro'?'<div class="plancard pro'+(d!==null&&d<=2?' soon':'')+'"><div><b>Pro plan</b><span>'+(d!==null?(d<=0?'Renews today':d===1?'Renews tomorrow, '+nice(p.renew):'Renews on '+nice(p.renew)):'Active')+'</span></div><span class="plbadge">PRO</span></div>':'<div class="plancard"><div><b>Free plan</b><span>Upgrade to Pro for unlimited trips and AI help</span></div><span class="plbadge">FREE</span></div>'; }
+  paint(); window.__paintPlan=paint;
+  /* reminder sheet once a day */
+  var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
+  if(d!==null&&d>=0&&d<=2&&G('vizag-renew-skip')!==iso(new Date())){ setTimeout(function(){ var sh=document.createElement('div'); sh.className='sheet lsheet'; sh.id='renew-sheet'; sh.setAttribute('role','dialog');
+      sh.innerHTML='<div class="lohead locent"><span class="rnico" aria-hidden="true">✨</span><div class="t">Your Pro plan renews '+(d===0?'today':d===1?'tomorrow':'in 2 days')+'</div><div class="s">It renews on '+nice(p.renew)+'. You can review your plan in Settings.</div></div><button type="button" class="btn full" id="rn-go">View plan</button><button type="button" class="btn ghost full" id="rn-skip">Skip for now</button>';
+      document.body.appendChild(sh); var sc=document.getElementById('scrim'); if(sc) sc.hidden=false;
+      function close(){ sh.remove(); if(sc) sc.hidden=true; S('vizag-renew-skip',iso(new Date())); }
+      sh.querySelector('#rn-skip').onclick=close; sh.querySelector('#rn-go').onclick=function(){ close(); var b=document.querySelector('nav [data-v=profile]'); if(b) b.click(); setTimeout(function(){ top.scrollIntoView({block:'center'}); },300); };
+      if(sc) sc.addEventListener('click',function h(){ if(document.getElementById('renew-sheet')){ close(); } sc.removeEventListener('click',h); }); },1200); }
+  /* dev: simulate a Pro renewal in 2 days */
+  document.querySelectorAll('[data-devpro]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); if(b.dataset.devpro==='on'){ var r=new Date(); r.setDate(r.getDate()+2); S('vizag-plan',JSON.stringify({plan:'pro',renew:iso(r)})); S('vizag-renew-skip',null); } else S('vizag-plan',null); paintDev(); paint(); }); });
+  function paintDev(){ var on=plan().plan==='pro'; document.querySelectorAll('[data-devpro]').forEach(function(b){ b.setAttribute('aria-pressed',(b.dataset.devpro==='on')===on?'true':'false'); }); } paintDev(); })();
+
+/* Contact support: a short form with a quick human check before Send turns on */
+(function(){ var sp=document.getElementById('settings-profile'); if(!sp) return; var ai=document.getElementById('ai-open'), ag=ai&&ai.closest('.setgrp'); var dev=sp.querySelector('.devcap');
+  var cap=document.createElement('div'); cap.className='setcap'; cap.textContent='Help'; var g=document.createElement('div'); g.className='setgrp'; g.innerHTML='<div class="setrow"><span class="setl">Contact support<small>Report an issue or ask for a feature</small></span><button type="button" class="setbtn" id="cs-open">Write</button></div>';
+  if(dev){ sp.insertBefore(cap,dev); sp.insertBefore(g,dev); } else { sp.appendChild(cap); sp.appendChild(g); }
+  var sh=document.createElement('div'); sh.className='sheet lsheet psheet'; sh.id='cs-sheet'; sh.hidden=true; sh.setAttribute('role','dialog'); sh.setAttribute('aria-label','Contact support');
+  var a=2+Math.floor(Math.random()*7), b=3+Math.floor(Math.random()*6);
+  sh.innerHTML='<div class="shtitle"><span>Contact support</span><button type="button" class="shclose" id="cs-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
+    '<div class="pfgrp csform"><label class="pf"><span>Name</span><input id="cs-name" maxlength="25" autocomplete="name"></label><label class="pf"><span>Email</span><input id="cs-email" type="email" inputmode="email" autocomplete="email"></label>'+
+    '<label class="pf"><span>Category</span><select id="cs-cat"><option value="">Choose one</option><option>Issue</option><option>Feature request</option><option>Billing</option><option>Account</option><option>Technical</option><option>Other</option></select></label>'+
+    '<label class="pf"><span>Subject</span><input id="cs-subj" maxlength="80"></label><label class="pf"><span>Message</span><textarea id="cs-msg" rows="5" maxlength="2000"></textarea></label>'+
+    '<label class="pf cscap"><span>Quick check: what is '+a+' + '+b+'?</span><input id="cs-cap" inputmode="numeric" maxlength="2" autocomplete="off"></label></div>'+
+    '<button type="button" class="btn full" id="cs-send" disabled>Send message</button><p class="csnote">We reply by email, usually within 2 working days.</p>';
+  document.body.appendChild(sh); var sc=document.getElementById('scrim');
+  function $(i){ return document.getElementById(i); }
+  function ok(){ var em=$('cs-email').value.trim(); return $('cs-name').value.trim().length>1&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)&&$('cs-cat').value&&$('cs-subj').value.trim().length>2&&$('cs-msg').value.trim().length>9&&+$('cs-cap').value===a+b; }
+  sh.addEventListener('input',function(){ $('cs-send').disabled=!ok(); }); sh.addEventListener('change',function(){ $('cs-send').disabled=!ok(); });
+  function close(){ sh.hidden=true; if(sc) sc.hidden=true; }
+  $('cs-open').onclick=function(e){ e.stopPropagation(); try{ var pr=JSON.parse(localStorage.getItem('vizag-profile')||'{}'); if(pr.name&&!$('cs-name').value) $('cs-name').value=pr.name; if(pr.email&&!$('cs-email').value) $('cs-email').value=pr.email; }catch(x){} sh.hidden=false; if(sc) sc.hidden=false; };
+  $('cs-close').onclick=close; sh.addEventListener('click',function(e){ e.stopPropagation(); });
+  $('cs-send').onclick=function(){ if(!ok()) return; var body='Name: '+$('cs-name').value.trim()+'\nEmail: '+$('cs-email').value.trim()+'\nCategory: '+$('cs-cat').value+'\n\n'+$('cs-msg').value.trim();
+    location.href='mailto:'+(window.SUPPORT_EMAIL||'')+'?subject='+encodeURIComponent('['+$('cs-cat').value+'] '+$('cs-subj').value.trim())+'&body='+encodeURIComponent(body); close(); if(window.__toast) window.__toast('Opening your email app'); }; })();
 
 </script>
 
