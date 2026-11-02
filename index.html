@@ -4520,6 +4520,26 @@ html.homeone #v-home .hday .dayroute + .dsbar{margin-top:10px!important}
 html.homeone #v-home .vzhero .shead h2 .vzmeta{font-size:.86rem}
 html.dv-spend:root:root:root:root:root.homeone body #v-home .vzhero.inday > .shead{padding-right:112px!important}
 
+/* ===== v145 ===== */
+/* profile square in the date-tile style */
+:root:root:root:root body #acct-av{background:color-mix(in srgb,var(--ink) 5%,var(--surface))!important;border:1px solid var(--line)!important;color:var(--ink)!important;box-shadow:none!important}
+:root:root:root:root body #acct-av > *{background:transparent!important;color:var(--ink)!important}
+:root:root:root:root body #acct-av svg{color:var(--ink)!important}
+/* spend on the left, big date on the right */
+.dptop{justify-content:space-between!important}
+.dptop .dptot{order:1;text-align:left}
+.dptop .dpdate{order:2;margin-left:auto;border-right:0!important;border-left:2px dashed var(--line)!important;padding:2px 0 2px 18px!important;align-items:flex-end!important;text-align:right}
+/* a little more room after the bar */
+.dpbar{margin-bottom:15px!important}
+/* toast 20% larger */
+:root:root.ts-pill .oktoast{min-height:53px!important;padding:8px 8px 8px 20px!important;gap:17px!important;font-size:1.1rem!important}
+:root:root.ts-pill .oktoast button{padding:7px 17px!important;font-size:.98rem!important}
+/* bell a touch bigger */
+:root:root body #v-home > .hometop .hbell{width:42px!important;height:42px!important}
+:root:root body #v-home > .hometop .hbell svg{width:23px!important;height:23px!important}
+:root:root:root:root body .pav:not(.pic){background:color-mix(in srgb,var(--ink) 5%,var(--surface))!important;border:1px solid var(--line)!important;color:var(--ink)!important;box-shadow:none!important}
+:root:root:root:root body .pav:not(.pic) svg{color:var(--ink)!important}
+
 </style>
 </head>
 <body>
