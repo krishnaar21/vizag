@@ -5084,6 +5084,25 @@ html.tv-1 #v-home :is(.cthero,.vzhero) .tswitch .ph,html.tv-1 #v-home :is(.cther
 #ts-new[hidden]{display:none!important}
 .tsnew{padding-left:18px!important}
 
+/* ===== v173 ===== */
+/* long trip names stop with an ellipsis, with room before the QR or icons */
+.tki{min-width:0!important;padding-right:4px}
+.tki b{display:block!important;max-width:100%;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.tkinfo{gap:14px!important}
+.tplt{min-width:0!important;flex:1}
+.tplt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tplr{gap:12px}
+.tplgo{flex:none;margin-left:6px}
+/* Plan a new trip: a clear full-width button */
+.tsnew{display:flex!important;align-items:center;justify-content:center;gap:8px;width:100%;margin:14px 0 4px!important;padding:14px 16px!important;border-radius:16px!important;border:1px dashed var(--line)!important;background:var(--surface)!important;color:var(--ink)!important;font-weight:600}
+/* rate sheet: average sits above the cards */
+.rateavg{margin:2px 4px 12px!important;color:var(--muted);font-size:.88rem;text-align:left}
+/* blur the page behind any open sheet */
+main,nav.nav{transition:filter .25s ease}
+body:has(> .sheet:not(.inpage):not([hidden])) main,body:has(> .sheet:not(.inpage):not([hidden])) nav.nav,body:has(> .placesh:not([hidden])) main,body:has(> .passsh:not([hidden])) main,body:has(> .vpsheet:not([hidden])) main{filter:blur(6px)}
+.tsnew{width:auto!important;margin:14px 16px calc(env(safe-area-inset-bottom,0px) + 8px)!important}
+.pspanel.tppanel .tsnew{margin-left:0!important;margin-right:0!important}
+
 </style>
 </head>
 <body>
@@ -5484,7 +5503,7 @@ html.tv-1 #v-home :is(.cthero,.vzhero) .tswitch .ph,html.tv-1 #v-home :is(.cther
           <label class="pf"><span>Starting from</span><select id="pl-from"></select></label>
           <label class="pf"><span>Going to</span><select id="pl-state"></select></label>
         </div>
-          <label class="pf"><span>Trip name</span><input id="pl-name" type="text" minlength="6" maxlength="40" pattern="[A-Za-z0-9 ]+" autocapitalize="words" placeholder="e.g. Kerala with family" aria-describedby="pl-nerr"><small class="perr" id="pl-nerr" hidden>Use letters and numbers only, with at least 6 letters.</small></label><ul class="ghints" data-g="where" hidden></ul></div>
+          <label class="pf"><span>Trip name</span><input id="pl-name" type="text" minlength="6" maxlength="25" pattern="[A-Za-z0-9 ]+" autocapitalize="words" placeholder="e.g. Kerala with family" aria-describedby="pl-nerr"><small class="perr" id="pl-nerr" hidden>Use letters and numbers only, with at least 6 letters.</small></label><ul class="ghints" data-g="where" hidden></ul></div>
         <div class="pgroup" data-pg="when"><div class="pgl">Dates</div><div class="pgrid">
           <label class="pf"><span>Start date</span><input id="pl-start" type="date"></label>
           <label class="pf"><span>End date</span><input id="pl-end" type="date"></label>
@@ -7690,7 +7709,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       if(!t) return;
       var P=build(t), B=budget(t,P);
       var dl=function(i){ return dlabel(t.start,i); };
-      var name=esc(cleanName(t.name||'').trim()||(t.from[0]+' to '+t.state));
+      var name=esc(shortName(cleanName(t.name||'').trim()||(t.from[0]+' to '+t.state)));
       /* Home */
       var nd=nDays(t), warn=(nd && P.days.length>nd)?'<p class="ctwarn">These places need about '+P.days.length+' days, more than the '+nd+' you picked. Remove a few places or add days.</p>':'';
       var bd=BUD[t.budget]||BUD.mid;
@@ -7819,7 +7838,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       if(window.__paintUses) window.__paintUses($('ps-body'));
       psCtx={name:'trips'}; psh.classList.remove('full','tpsheet'); psh.classList.add('lsheet'); psh.classList.toggle('full',mode==='past'); psh.hidden=false; root.classList.add('ps-open'); requestAnimationFrame(function(){ psh.classList.add('in'); });
       $('ps-close').onclick=closePlace;
-      var tp=$('ts-past'); if(tp) tp.onclick=function(){ openTripSheet(cards,title,ico,'past'); };
+      var tp=$('ts-past'); if(tp) tp.onclick=function(){ closePlace(); setTimeout(function(){ openTripSheet(cards,title,ico,'past'); },300); };
       if(mode==='past'||$('ts-new2')){ var tnn=$('ts-new'); if(tnn) tnn.hidden=true; }
       var tn2=$('ts-new2'); if(tn2) tn2.onclick=function(){ closePlace(); openPlanner(null); };
       var tq=$('ts-q'); if(tq) tq.addEventListener('input',function(){ var q=this.value.trim().toLowerCase(), n=0; $$('#ts-list .tplr').forEach(function(b){ var ok=!q||b.dataset.q.indexOf(q)>=0; b.hidden=!ok; if(ok) n++; }); $$('#ts-list .tpgrp').forEach(function(g){ var s=g.nextElementSibling, any=false; while(s&&!s.classList.contains('tpgrp')){ if(!s.hidden) any=true; s=s.nextElementSibling; } g.hidden=!any; }); $('ts-none').hidden=!!n; });
@@ -7850,7 +7869,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     var mtn=$('mytrips-new'); if(mtn) mtn.addEventListener('click',function(e){ e.stopPropagation(); openPlanner(null); });
     function renderTrips(){
       var box=$('trips'); if(!box) return;
-      fixActive(); var cards=(vzGone?[]:[{id:'vizag',emo:'🏞️',name:'Vizag · Araku · Vanjangi',sub:'Sat 5 Dec',np:23,nq:3,end:'2026-12-08'}]).concat(trips.map(function(t){ return {id:t.id,emo:(t.places[0]&&EMO[t.places[0][4]])||'🧭',name:cleanName(t.name||'').trim()||(t.from[0]+' to '+t.state),sub:dlabel(t.start,0).long,np:t.places.length,nq:ppl(t).total,end:t.end||(t.start?iso(new Date(new Date(t.start).getTime()+864e5*Math.max(0,(t.days||1)-1))):'')}; }));
+      fixActive(); var cards=(vzGone?[]:[{id:'vizag',emo:'🏞️',name:'Vizag · Araku · Vanjangi',sub:'Sat 5 Dec',np:23,nq:3,end:'2026-12-08'}]).concat(trips.map(function(t){ return {id:t.id,emo:(t.places[0]&&EMO[t.places[0][4]])||'🧭',name:shortName(cleanName(t.name||'').trim()||(t.from[0]+' to '+t.state)),sub:dlabel(t.start,0).long,np:t.places.length,nq:ppl(t).total,end:t.end||(t.start?iso(new Date(new Date(t.start).getTime()+864e5*Math.max(0,(t.days||1)-1))):'')}; }));
       window.__tripCards=cards; root.classList.toggle('notrips',!cards.length||/[?&]empty=1/.test(location.search)); root.classList.toggle('vzgone',vzGone); box.innerHTML='<button type="button" id="trip-new" hidden></button>'; drawMyTrips();
       $('trip-new').onclick=function(){ openPlanner(null); }; window.__newTrip=function(){ openPlanner(null); };
     }
@@ -7884,6 +7903,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     window.addEventListener('resize',headFit);
     function topReset(){ headFit(); [pl,plForm,$('pl-main'),$('pl-side')].forEach(function(el){ if(el) el.scrollTop=0; }); requestAnimationFrame(function(){ [pl,plForm,$('pl-main')].forEach(function(el){ if(el) el.scrollTop=0; }); }); }
     function autoName(){ var n=$('pl-name'); if(n.dataset.touched) return; n.value=$('pl-state').value+' trip'; }
+    function shortName(s){ s=String(s||''); return s.length>23?s.slice(0,23).replace(/\s+$/,'')+'\u2026':s; }
+    window.__shortName=shortName;
     function cleanName(s){ return String(s||'').replace(/[^A-Za-z0-9\u00C0-\u024F\u0900-\u0DFF ]+/g,' ').replace(/\s{2,}/g,' ').replace(/^\s+/,''); }
     window.__cleanName=cleanName;
     function nameOK(){ var n=$('pl-name'); n.value=cleanName(n.value).trim(); $('pl-nerr').textContent='Use letters and numbers only, with at least 6 letters.'; var v=n.value, ok=(v.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g)||[]).length>=6; $('pl-nerr').hidden=ok; n.classList.toggle('bad',!ok); if(!ok){ if(step!==1) goStep(1); setTimeout(function(){ n.scrollIntoView({block:'center'}); n.focus({preventScroll:true}); },60); } return ok; }
@@ -8632,8 +8653,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     window.__acctGrid=function(){ var S=stats(); return [['Level',LEVELS[S.lvl-1]],['Points',String(S.pts)],['Trips',String(S.tot.trips)],['States',String(S.tot.states)]].map(function(x){ return '<div><b>'+esc(x[1])+'</b><small>'+x[0]+'</small></div>'; }).join(''); };
     var rs=$('rate-sheet');
     function rateRows(focus){ var all=tripList(), S=stats();
-      $('rate-body').innerHTML='<div class="prates">'+all.map(function(t){ return '<div class="prate rvcard"><div class="rvtop"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days · '+t.places+' places</small></div>'+starBtns(t.id,prof.rating[t.id]||0)+'</div><textarea class="rvta" data-rvt="'+esc(t.id)+'" rows="2" maxlength="400" placeholder="How was it? Highlights, tips for next time…">'+esc(prof.review[t.id]||'')+'</textarea></div>'; }).join('')+'</div>'+
-        '<p class="mcpnote" id="rate-avg">'+(S.avg?'Average '+S.avg.toFixed(1)+' ★ across rated trips':'No ratings yet')+'</p>';
+      $('rate-body').innerHTML='<p class="mcpnote rateavg" id="rate-avg">'+(S.avg?'Average '+S.avg.toFixed(1)+' ★ across rated trips':'No ratings yet')+'</p><div class="prates">'+all.map(function(t){ return '<div class="prate rvcard"><div class="rvtop"><div class="mpt"><b>'+esc(t.name)+'</b><small>'+(t.d?t.d+' · ':'')+t.days+' days · '+t.places+' places</small></div>'+starBtns(t.id,prof.rating[t.id]||0)+'</div><textarea class="rvta" data-rvt="'+esc(t.id)+'" rows="2" maxlength="400" placeholder="How was it? Highlights, tips for next time…">'+esc(prof.review[t.id]||'')+'</textarea></div>'; }).join('')+'</div>'+
+        '';
       wireStars($('rate-body'),function(){ var S2=stats(); $('rate-avg').textContent=S2.avg?'Average '+S2.avg.toFixed(1)+' ★ across rated trips':'No ratings yet'; });
       $$('#rate-body [data-rvt]').forEach(function(ta){ ta.addEventListener('focus',function(){ $('rate-close').classList.add('save'); $('rate-close').setAttribute('aria-label','Save'); }); ta.addEventListener('input',function(){ var v=ta.value.trim(); if(v) prof.review[ta.dataset.rvt]=v; else delete prof.review[ta.dataset.rvt]; saveF(); }); });
       if(focus){ var f=document.querySelector('#rate-body [data-rvt="'+focus.replace(/"/g,'')+'"]'); if(f) setTimeout(function(){ f.scrollIntoView({block:'center'}); f.focus(); },120); } }
