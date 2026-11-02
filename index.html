@@ -5172,6 +5172,25 @@ input[type=date]:disabled{opacity:.55}
 #renew-sheet .lohead .s{color:var(--muted);text-wrap:balance}
 #renew-sheet #rn-skip{margin-top:10px}
 
+/* ===== v176 ===== */
+.pastnote b::before{content:none!important}
+.pastnote{margin:0 0 12px!important}
+.usugs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:6px;padding-bottom:2px}
+.usugs::-webkit-scrollbar{display:none}
+.uavail.no > span:first-child{display:block}
+.usug{flex:none;margin:0!important}
+.plup{flex:none;height:36px;padding:0 16px!important;font-size:.86rem}
+.plansheet .plcard{border:1px solid var(--line);border-radius:var(--rc,18px);background:var(--surface);padding:16px;margin-bottom:12px}
+.plansheet .plcard.pro{border-color:var(--ink)}
+.plansheet .plcard ul{margin:8px 0 0;padding-left:18px;color:var(--muted);line-height:1.6;font-size:.9rem}
+.plansheet .plh{display:flex;justify-content:space-between;align-items:baseline}
+.plansheet .plh b{font-size:1.1rem}
+#pl-go:disabled{opacity:.4;pointer-events:none}
+#plans-sheet:not([hidden]){top:0!important;bottom:0!important;max-height:none!important;height:100dvh!important;border-radius:0!important;overflow:auto;padding-top:calc(env(safe-area-inset-top,0px) + 12px)!important}
+.pastnote.card{display:flex!important}
+:root:root #v-home #pastnote{margin:0 14px 12px!important;width:auto!important;box-sizing:border-box}
+@media (min-width:700px){ :root:root #v-home #pastnote{margin-left:0!important;margin-right:0!important} }
+
 </style>
 </head>
 <body>
@@ -7077,6 +7096,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     $$('[data-tf]').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.tf===mode?'true':'false'); });
     set('vizag-tf',mode);
     if(typeof renderLast==='function') renderLast();
+    if(window.__retime) window.__retime(mode);
   }
   $$('[data-tf]').forEach(function(b){ b.addEventListener('click',function(){ setTF(b.dataset.tf); }); });
   setTF(get('vizag-tf')==='24'?'24':'12');
@@ -7976,8 +7996,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       drawGroupChips(); $('pl-name').value=t?cleanName(t.name||'').trim():''; $('pl-name').dataset.touched=t?'1':''; $('pl-nerr').hidden=true; $('pl-name').classList.remove('bad'); if(!t) autoName();
       vzEditing=false; $('pl-del').hidden=!editing;
       drawPlaces(t?t.places.map(function(p){ return p[0]; }):null);
-      (function(){ var s=$('pl-start'), e=$('pl-end'), nt=$('pl-dlock'); s.disabled=false; e.disabled=false; if(nt) nt.hidden=true; if(!t||asNew) return; var now=Date.now(), st=new Date(t.start+'T00:00:00').getTime(), en=new Date(($('pl-end').value||t.start)+'T23:59:59').getTime()+864e5;
-        if(now>en){ s.disabled=true; e.disabled=true; if(nt){ nt.textContent='This trip has ended, so its dates can\u2019t be changed.'; nt.hidden=false; } } else if(now>=st){ s.disabled=true; if(nt){ nt.textContent='This trip has started. You can still change the end date.'; nt.hidden=false; } } })();
+      (function(){ var s=$('pl-start'), e=$('pl-end'), nt=$('pl-dlock'); s.disabled=false; e.disabled=false; $('pl-go').disabled=false; $('pl-next').disabled=false; if(nt) nt.hidden=true; if(!t||asNew) return; var now=Date.now(), st=new Date(t.start+'T00:00:00').getTime(), en=new Date(($('pl-end').value||t.start)+'T23:59:59').getTime()+864e5;
+        if(now>en){ s.disabled=true; e.disabled=true; $('pl-go').disabled=true; if(nt){ nt.textContent='This trip has ended, so it can\u2019t be changed.'; nt.hidden=false; } } else if(now>=st){ s.disabled=true; if(nt){ nt.textContent='This trip has started. You can still change the end date.'; nt.hidden=false; } } })();
       if(!t) drawStart(); drawSide('own'); goStep(t?1:0); setTimeout(dateErr,0); pl.hidden=false; root.classList.add('login-open'); topReset(); setTimeout(function(){ pl.__snap=plSnap(); },120);
     }
     function plSnap(){ return [].map.call(pl.querySelectorAll('input,select,textarea'),function(e){ return e.type==='checkbox'||e.type==='radio'?(e.checked?1:0):e.value; }).join('|')+'#'+[].map.call(pl.querySelectorAll('[aria-pressed="true"]'),function(b){ return b.textContent.trim(); }).join(','); }
@@ -8721,12 +8741,13 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
         '<div class="pf"><span>Gender</span><div class="pills" id="ep-gender">'+[['woman','Woman'],['man','Man'],['nb','Non-binary']].map(function(g){ return '<button type="button" data-val="'+g[0]+'" aria-pressed="'+(eG===g[0]?'true':'false')+'">'+g[1]+'</button>'; }).join('')+'</div></div>'+
         '<label class="pf"><span>Age range</span><select id="ep-age">'+['','18–24','25–34','35–44','45–54','55–64','65+'].map(function(x){ return '<option value="'+x+'"'+(prof.age===x?' selected':'')+'>'+(x||'Prefer not to say')+'</option>'; }).join('')+'</select></label></div>'+
         '<div class="pgl ptitle">Social &amp; email</div><div class="pfgrp">'+CF.map(function(f){ return '<label class="pf"><span>'+f[1]+(f[0]==='email'?emBadge():'')+'</span><input data-pfk="'+f[0]+'" type="'+f[2]+'"'+(f[0]==='email'?' inputmode="email" autocomplete="email"':' autocomplete="off"')+' placeholder="'+f[3]+'" value="'+esc(f[0]==='email'?(prof.emailPending&&prof.emailPending.e)||cval('email'):cval(f[0]))+'">'+(f[0]==='email'?'<small class="emnote" id="em-note">'+emNote()+'</small>':'')+'</label>'; }).join('')+'</div>';
-      $('ep-user').addEventListener('input',function(){ var raw=this.value.toLowerCase().replace(/[^a-z0-9._]/g,''), v=raw.slice(0,10), er=$('ep-uerr'); if(v!==this.value) this.value=v; if(raw.length>10&&er){ er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; },2800); } });
-      var TAKEN=['krishna','travel','admin','vizag','india','trip','trips','support','ravi','priya','rahul','anil','kiran','arjun','sai','test','user','hello'];
-      function avail(u){ return u.length>=3&&TAKEN.indexOf(u)<0&&!/^(admin|support)/.test(u); }
-      function uCheck(){ var u=$('ep-user').value.trim(), el=$('ep-uav'); if(!el) return; if(!u||u===(prof.user||'')){ el.innerHTML=''; el.className='uavail'; return; } if(u.length<3){ el.className='uavail'; el.textContent='Use at least 3 characters.'; return; }
-        if(avail(u)){ el.className='uavail ok'; el.textContent='@'+u+' is available'; return; } var base=u.slice(0,7), out=[]; [base+(new Date().getFullYear()%100), base+'_'+(u.length%9+1), base+'.go', base+'7', base+'_in', base+'x'].forEach(function(c){ c=c.slice(0,10); if(out.length<3&&avail(c)&&out.indexOf(c)<0) out.push(c); });
-        el.className='uavail no'; el.innerHTML='@'+u+' is taken. Try '+out.map(function(c){ return '<button type="button" class="usug" data-us="'+c+'">@'+c+'</button>'; }).join(' '); }
+      $('ep-user').addEventListener('input',function(){ var raw=this.value.toLowerCase().replace(/[^a-z0-9_]/g,''), v=raw.slice(0,10), er=$('ep-uerr'); if(v!==this.value) this.value=v; if(raw.length>10&&er){ er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; },2800); } });
+      var TAKEN=['krishna','travel','admin','vizag','india','trip','trips','support','ravi','priya','rahul','anil','kiran','arjun','test','user','hello','official','help'];
+      function rule(u){ if(u.length<4) return 'Use at least 4 characters.'; if(!/^[a-z0-9_]+$/.test(u)) return 'Use only letters, numbers and underscores.'; if(/^\d+$/.test(u)) return 'Add at least one letter.'; if(/admin|support|official|vizag/.test(u)&&TAKEN.indexOf(u)<0) return 'That name is reserved.'; return ''; }
+      function avail(u){ return !rule(u)&&TAKEN.indexOf(u)<0; }
+      function uCheck(){ var u=$('ep-user').value.trim(), el=$('ep-uav'); if(!el) return; if(!u||u===(prof.user||'')){ el.innerHTML=''; el.className='uavail'; return; } var r=rule(u); if(r){ el.className='uavail no'; el.textContent=r; return; }
+        if(avail(u)){ el.className='uavail ok'; el.textContent='@'+u+' is available'; return; } var base=u.slice(0,7), out=[], yr=new Date().getFullYear()%100; [base+yr, base+'_'+(u.length%9+1), base+'_in', base+'7', base+'_go', base+'x'].forEach(function(c){ c=c.slice(0,10); if(out.length<3&&avail(c)&&out.indexOf(c)<0) out.push(c); });
+        el.className='uavail no'; el.innerHTML='<span>@'+u+' is taken. Try one of these:</span><span class="usugs">'+out.map(function(c){ return '<button type="button" class="usug" data-us="'+c+'">@'+c+'</button>'; }).join('')+'</span>'; }
       $('ep-user').addEventListener('input',function(){ clearTimeout(uCheck.t); uCheck.t=setTimeout(uCheck,250); });
       $('soc-body').addEventListener('click',function(e){ var b=e.target.closest('[data-us]'); if(!b) return; e.preventDefault(); $('ep-user').value=b.dataset.us; uCheck(); });
       $('ep-name').addEventListener('input',function(){ var er=$('ep-nerr'); if(this.value.length>25){ this.value=this.value.slice(0,25); er.hidden=false; clearTimeout(er.__t); er.__t=setTimeout(function(){ er.hidden=true; },2800); } });
@@ -9301,8 +9322,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 (function(){ var r=document.documentElement; function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
   function run(){ var cards=window.__tripCards||[], td=iso(new Date()), v=document.getElementById('v-home'); if(!v) return; var note=document.getElementById('pastnote');
     var allPast=cards.length&&cards.every(function(c){ return c.end&&c.end<td; }) && !r.classList.contains('notrips');
-    if(!allPast){ if(note) note.remove(); return; } if(note) return; note=document.createElement('div'); note.id='pastnote'; note.className='pastnote'; note.innerHTML='<div><b>You\u2019re viewing a past trip</b><span>No trips coming up yet.</span></div><button type="button" class="btn sm">Plan a new trip</button>';
-    note.querySelector('button').onclick=function(e){ e.stopPropagation(); if(window.__newTrip) window.__newTrip(); }; var top=v.querySelector('.hometop'); if(top) top.after(note); else v.prepend(note); }
+    if(!allPast){ if(note) note.remove(); return; } if(note) return; note=document.createElement('div'); note.id='pastnote'; note.className='card pastnote'; note.innerHTML='<div><b>You\u2019re viewing a past trip</b><span>No trips coming up yet.</span></div><button type="button" class="btn sm">New trip</button>';
+    note.querySelector('button').onclick=function(e){ e.stopPropagation(); if(window.__newTrip) window.__newTrip(); }; var host=v.querySelector(document.documentElement.classList.contains('ct-on')?'.ctv':'.vz'); if(host) host.insertBefore(note,host.firstChild); else { var top=v.querySelector('.hometop'); if(top) top.after(note); else v.prepend(note); } }
   var q=0; function soon(){ clearTimeout(q); q=setTimeout(run,120); } soon(); new MutationObserver(soon).observe(r,{attributes:true,attributeFilter:['class']}); document.addEventListener('click',function(){ setTimeout(soon,400); },true); setInterval(run,60000); })();
 
 /* Plans & renewal: plan card always at the top of Settings; a skippable reminder sheet when Pro renews within 2 days */
@@ -9313,10 +9334,17 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   function nice(d){ return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
   var sp=document.getElementById('settings-profile'); if(!sp) return;
   var top=document.createElement('div'); top.className='plantop'; sp.insertBefore(top,sp.firstChild);
-  var plans=document.createElement('div'); plans.innerHTML='<div class="setcap">Plans</div><div class="setgrp plangrp"><div class="plancol"><div class="plh"><b>Free</b><span>₹0</span></div><ul><li>Plan up to 3 trips</li><li>Day-by-day plan and trip pass</li><li>Works offline</li></ul></div><div class="plancol pro"><div class="plh"><b>Pro</b><span>₹99 / month</span></div><ul><li>Unlimited trips and travel groups</li><li>AI trip suggestions and chat</li><li>Live weather and alerts on trip days</li><li>Priority support</li></ul></div></div>';
-  var tripCap=[].find.call(sp.querySelectorAll('.setcap'),function(c){ return /^Trip$/.test(c.textContent.trim()); }); if(tripCap) sp.insertBefore(plans,tripCap); else sp.appendChild(plans);
+  var pg=document.createElement('div'); pg.className='sheet lsheet psheet full plansheet'; pg.id='plans-sheet'; pg.hidden=true; pg.setAttribute('role','dialog'); pg.setAttribute('aria-label','Plans');
+  pg.innerHTML='<div class="shtitle"><span>Plans</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
+    '<div class="plcard"><div class="plh"><b>Free</b><span>\u20b90 \u00b7 your current plan</span></div><ul><li>Plan up to 3 trips</li><li>Day-by-day plan and trip pass</li><li>Works offline</li></ul></div>'+
+    '<div class="plcard pro"><div class="plh"><b>Pro</b><span>\u20b999 / month</span></div><ul><li>Unlimited trips and travel groups</li><li>AI trip suggestions and chat</li><li>Live weather and alerts on trip days</li><li>Priority support</li></ul></div>'+
+    '<button type="button" class="btn full" id="pl-upgrade">Upgrade to Pro</button><p class="csnote">Payments aren\u2019t set up yet.</p>';
+  document.body.appendChild(pg); var scr=document.getElementById('scrim');
+  function pgClose(){ pg.hidden=true; if(scr) scr.hidden=true; } pg.querySelector('.shclose').onclick=pgClose; pg.addEventListener('click',function(e){ e.stopPropagation(); });
+  pg.querySelector('#pl-upgrade').onclick=function(){ if(window.__toast) window.__toast('Payments are coming soon'); };
+  window.__openPlans=function(){ pg.hidden=false; if(scr) scr.hidden=false; };
   function paint(){ var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
-    top.innerHTML=p.plan==='pro'?'<div class="plancard pro'+(d!==null&&d<=2?' soon':'')+'"><div><b>Pro plan</b><span>'+(d!==null?(d<=0?'Renews today':d===1?'Renews tomorrow, '+nice(p.renew):'Renews on '+nice(p.renew)):'Active')+'</span></div><span class="plbadge">PRO</span></div>':'<div class="plancard"><div><b>Free plan</b><span>Upgrade to Pro for unlimited trips and AI help</span></div><span class="plbadge">FREE</span></div>'; }
+    top.innerHTML=p.plan==='pro'?'<div class="plancard pro'+(d!==null&&d<=2?' soon':'')+'"><div><b>Pro plan</b><span>'+(d!==null?(d<=0?'Renews today':d===1?'Renews tomorrow, '+nice(p.renew):'Renews on '+nice(p.renew)):'Active')+'</span></div><span class="plbadge">PRO</span></div>':'<div class="plancard"><div><b>Free plan</b><span>Unlimited trips and AI help with Pro</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Upgrade</button></div>'; }
   paint(); window.__paintPlan=paint;
   /* reminder sheet once a day */
   var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
@@ -9350,7 +9378,14 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   $('cs-open').onclick=function(e){ e.stopPropagation(); try{ var pr=JSON.parse(localStorage.getItem('vizag-profile')||'{}'); if(pr.name&&!$('cs-name').value) $('cs-name').value=pr.name; if(pr.email&&!$('cs-email').value) $('cs-email').value=pr.email; }catch(x){} sh.hidden=false; if(sc) sc.hidden=false; };
   $('cs-close').onclick=close; sh.addEventListener('click',function(e){ e.stopPropagation(); });
   $('cs-send').onclick=function(){ if(!ok()) return; var body='Name: '+$('cs-name').value.trim()+'\nEmail: '+$('cs-email').value.trim()+'\nCategory: '+$('cs-cat').value+'\n\n'+$('cs-msg').value.trim();
-    location.href='mailto:'+(window.SUPPORT_EMAIL||'')+'?subject='+encodeURIComponent('['+$('cs-cat').value+'] '+$('cs-subj').value.trim())+'&body='+encodeURIComponent(body); close(); if(window.__toast) window.__toast('Opening your email app'); }; })();
+    location.href='mailto:'+(window.SUPPORT_EMAIL||'')+'?subject='+encodeURIComponent('['+$('cs-cat').value+'] '+$('cs-subj').value.trim())+'&body='+encodeURIComponent(body); close(); if(window.__toast) window.__toast('Message sent'); }; })();
+
+/* time format: also rewrite times inside built summaries (wake/sleep roll, ticker, span, pass) */
+(function(){ var RE=/\b(\d{1,2}):(\d{2})(?:\s?([AP]M))?(?![\d:])/g, SK={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1,OPTION:1};
+  function conv(h,m,ap,mode){ h=+h; if(ap){ if(ap==='PM'&&h<12) h+=12; if(ap==='AM'&&h===12) h=0; } if(h>23) return null; if(mode==='24') return String(h).padStart(2,'0')+':'+m; var a=h<12?'AM':'PM'; return (h%12||12)+':'+m+' '+a; }
+  window.__retime=function(mode){ var tw=document.createTreeWalker(document.querySelector('main')||document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){ var p=n.parentNode; if(!p||SK[p.nodeName]||(p.closest&&p.closest('.hm,input,textarea'))) return 3; return /\d:\d\d/.test(n.nodeValue)?1:3; }}), list=[]; while(tw.nextNode()) list.push(tw.currentNode);
+    list.forEach(function(n){ var v=n.nodeValue.replace(RE,function(all,h,m,ap){ var r=conv(h,m,ap,mode); return r||all; }); if(v!==n.nodeValue) n.nodeValue=v; }); };
+  setTimeout(function(){ try{ var m=localStorage.getItem('vizag-tf')==='24'?'24':'12'; window.__retime(m); }catch(e){} },900); })();
 
 </script>
 
