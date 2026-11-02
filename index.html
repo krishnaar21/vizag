@@ -5191,6 +5191,13 @@ input[type=date]:disabled{opacity:.55}
 :root:root #v-home #pastnote{margin:0 14px 12px!important;width:auto!important;box-sizing:border-box}
 @media (min-width:700px){ :root:root #v-home #pastnote{margin-left:0!important;margin-right:0!important} }
 
+/* ===== v177 ===== */
+.mtempty{border:1px dashed var(--line);border-radius:14px;margin:12px 12px 6px!important;padding:16px!important;gap:3px!important}
+#mytrips-list .mtempty{border-bottom:1px dashed var(--line)!important}
+:root:root.ts-pill .oktoast{box-shadow:0 1px 3px rgba(0,0,0,.05),0 6px 16px rgba(0,0,0,.08)!important}
+html.navwave .nav{box-shadow:0 -8px 10px -8px color-mix(in srgb,var(--bg) 70%,transparent)!important}
+.plcur{font-style:normal;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);margin-left:6px;vertical-align:middle}
+
 </style>
 </head>
 <body>
@@ -9336,7 +9343,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var top=document.createElement('div'); top.className='plantop'; sp.insertBefore(top,sp.firstChild);
   var pg=document.createElement('div'); pg.className='sheet lsheet psheet full plansheet'; pg.id='plans-sheet'; pg.hidden=true; pg.setAttribute('role','dialog'); pg.setAttribute('aria-label','Plans');
   pg.innerHTML='<div class="shtitle"><span>Plans</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
-    '<div class="plcard"><div class="plh"><b>Free</b><span>\u20b90 \u00b7 your current plan</span></div><ul><li>Plan up to 3 trips</li><li>Day-by-day plan and trip pass</li><li>Works offline</li></ul></div>'+
+    '<div class="plcard"><div class="plh"><b>Free <i class="plcur">Current</i></b><span>\u20b90</span></div><ul><li>Plan up to 3 trips</li><li>Day-by-day plan and trip pass</li><li>Works offline</li></ul></div>'+
     '<div class="plcard pro"><div class="plh"><b>Pro</b><span>\u20b999 / month</span></div><ul><li>Unlimited trips and travel groups</li><li>AI trip suggestions and chat</li><li>Live weather and alerts on trip days</li><li>Priority support</li></ul></div>'+
     '<button type="button" class="btn full" id="pl-upgrade">Upgrade to Pro</button><p class="csnote">Payments aren\u2019t set up yet.</p>';
   document.body.appendChild(pg); var scr=document.getElementById('scrim');
@@ -9344,7 +9351,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   pg.querySelector('#pl-upgrade').onclick=function(){ if(window.__toast) window.__toast('Payments are coming soon'); };
   window.__openPlans=function(){ pg.hidden=false; if(scr) scr.hidden=false; };
   function paint(){ var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
-    top.innerHTML=p.plan==='pro'?'<div class="plancard pro'+(d!==null&&d<=2?' soon':'')+'"><div><b>Pro plan</b><span>'+(d!==null?(d<=0?'Renews today':d===1?'Renews tomorrow, '+nice(p.renew):'Renews on '+nice(p.renew)):'Active')+'</span></div><span class="plbadge">PRO</span></div>':'<div class="plancard"><div><b>Free plan</b><span>Unlimited trips and AI help with Pro</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Upgrade</button></div>'; }
+    top.innerHTML=p.plan==='pro'?'<div class="plancard pro'+(d!==null&&d<=2?' soon':'')+'"><div><b>Pro plan <i class="plcur">Current</i></b><span>'+(d!==null?(d<=0?'Renews today':d===1?'Renews tomorrow, '+nice(p.renew):'Renews on '+nice(p.renew)):'Active')+'</span></div><span class="plbadge">PRO</span></div>':'<div class="plancard"><div><b>Free plan <i class="plcur">Current</i></b><span>Unlimited trips and AI help with Pro</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Upgrade</button></div>'; }
   paint(); window.__paintPlan=paint;
   /* reminder sheet once a day */
   var p=plan(), d=p.plan==='pro'&&p.renew?daysTo(p.renew):null;
