@@ -4221,6 +4221,26 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
 .psday .psqr{align-self:center;order:2;margin-top:16px}
 .psday .psqr .qrsvg{width:120px;height:120px}
 
+/* ===== v136 ===== */
+/* no notches: straight dashed tear line only */
+.tkcard{-webkit-mask:none!important;mask:none!important}
+.tkperf{margin:12px 0 10px!important}
+/* day pass */
+.psdate{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.pstop .psroute{margin:0 0 18px!important;align-items:flex-start}
+.pstop .psroute b{font-size:1.5rem!important;line-height:1.1}
+.pstop .psroute small{margin-top:4px}
+.pstop .psarr{padding-top:6px}
+.pstimes{display:flex;align-items:center;gap:12px}
+.pstimes > div{flex:none}
+.pstimes .r{text-align:right}
+.pstimes b{font-size:1.15rem!important}
+.pstimes i{flex:1;height:0;border-top:2px dotted var(--line);margin-top:14px}
+.psday{display:flex!important;flex-direction:column;gap:16px}
+.psday .psgrid{grid-template-columns:1fr 1fr!important;gap:12px 16px!important}
+.psday .psqr{align-self:center;margin:0!important}
+.pstop .psarr{flex:none;margin:0 10px}.pstop .psroute > div{min-width:0}.pstop .psroute b{overflow-wrap:anywhere}
+
 </style>
 </head>
 <body>
@@ -6731,13 +6751,15 @@ html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0
     var ps=document.getElementById('pass-sheet'); if(!ps){ ps=document.createElement('div'); ps.id='pass-sheet'; ps.className='passsh'; ps.innerHTML='<div class="psbg2"></div><div class="passbox" role="dialog" aria-modal="true" aria-label="Trip pass"></div>'; document.body.appendChild(ps); ps.querySelector('.psbg2').onclick=close; }
     function close(){ ps.classList.remove('in'); document.documentElement.classList.remove('ps-open'); setTimeout(function(){ ps.hidden=true; },220); }
     var box=ps.querySelector('.passbox');
-    var nd=document.querySelectorAll('#v-home .hseg .hchip').length||'';
-    box.innerHTML='<div class="pshd"><span>Trip pass</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
-      '<div class="pstk"><div class="pstop"><small>Trip</small><b class="pstrip">'+trip+'</b><div class="psgrid g3"><div><small>Travellers</small><b>'+(who||'—')+'</b></div><div><small>Day</small><b>'+(sec.dataset.day||'')+(nd?' of '+nd:'')+'</b></div><div><small>Budget today</small><b>'+[F['stay cost'],F['food']].filter(Boolean).map(function(x){ return x.replace(/,000/g,'k').replace(/(\d),(\d)00/g,'$1.$2k'); }).join(' + ')+'</b></div></div></div>'+
-      '<div class="psperf"></div><div class="psday"><div class="psroute"><div><small>From</small><b>'+parts[0]+'</b></div><span class="psarr"><svg viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg></span><div class="r"><small>To</small><b>'+parts[parts.length-1]+'</b></div></div>'+
-      '<div class="psbot"><div class="psqr">'+qr(sec.dataset.day+h2.textContent,150)+'</div><div class="psgrid"><div><small>Date</small><b>'+date+'</b></div><div><small>First stop</small><b>'+(t1||'—')+'</b></div><div><small>Last stop</small><b>'+(t2||'—')+'</b></div><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div></div></div></div>'+
-      '<p class="psnote">Show this to your group to keep everyone on the same plan. The code is a trip reference, not a ticket.</p>';
-    box.querySelector('.shclose').onclick=close; var stk=box.querySelector('.pstk'), pf=box.querySelector('.psperf'); setTimeout(function(){ stk.style.setProperty('--py',(pf.getBoundingClientRect().top-stk.getBoundingClientRect().top)+'px'); stk.classList.add('tkcard'); },30); ps.hidden=false; document.documentElement.classList.add('ps-open'); requestAnimationFrame(function(){ ps.classList.add('in'); }); }
+    var nd=document.querySelectorAll('#v-home .hseg .hchip').length||'', dl=date.replace(/\s*·.*$/,'');
+    box.innerHTML='<div class="pshd"><span>Day '+(sec.dataset.day||'')+(nd?' of '+nd:'')+' pass</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>'+
+      '<div class="pstk"><div class="pstop"><div class="psdate">'+dl+'</div>'+
+      '<div class="psroute"><div><b>'+parts[0]+'</b><small>From</small></div><span class="psarr"><svg viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg></span><div class="r"><b>'+parts[parts.length-1]+'</b><small>To</small></div></div>'+
+      '<div class="pstimes"><div><small>First stop</small><b>'+(t1||'—')+'</b></div><i></i><div class="r"><small>Last stop</small><b>'+(t2||'—')+'</b></div></div></div>'+
+      '<div class="psperf"></div><div class="psday"><div class="psgrid"><div><small>Wake up</small><b>'+(F['wake up']||'—')+'</b></div><div><small>Sleep</small><b>'+(F['sleep']||'—')+'</b></div><div><small>Stay</small><b>'+(F['stay']||'—')+'</b></div><div><small>Getting around</small><b>'+(F['transport']||'—')+'</b></div></div>'+
+      '<div class="psqr">'+qr(sec.dataset.day+h2.textContent,150)+'</div></div></div>'+
+      '<p class="psnote">The code is a reference for this day of the plan, not a ticket.</p>';
+    box.querySelector('.shclose').onclick=close; var stk=box.querySelector('.pstk'), pf=box.querySelector('.psperf'); setTimeout(function(){ stk.style.setProperty('--py',(pf.getBoundingClientRect().top-stk.getBoundingClientRect().top)+'px'); },30); ps.hidden=false; document.documentElement.classList.add('ps-open'); requestAnimationFrame(function(){ ps.classList.add('in'); }); }
   document.querySelectorAll('.hday, #v-days .day').forEach(decorate); })();
 
 </script>
