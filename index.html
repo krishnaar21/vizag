@@ -4090,6 +4090,20 @@ html.homeone #v-home .vz > .chips .seg-days.hseg{border-radius:0!important;borde
 html.homeone #v-home .vz > .vzhero + .tvdots + .chips,html.homeone #v-home .vz > .vzhero + .chips{margin-top:0!important}
 html.homeone #v-home .vz > .chips .seg-days.hseg{border-left:1px solid var(--line)!important;border-right:1px solid var(--line)!important}
 
+/* ===== v132 ===== */
+.nav{box-shadow:0 -12px 16px -10px color-mix(in srgb,var(--bg) 85%,transparent)!important}
+.dpmeta .dproll .wxreel > span{display:flex!important;align-items:center;gap:8px}
+.dpmeta .dproll .ph{width:16px;height:16px;color:var(--muted)}
+/* Combined Home card: one compact card — trip name, days, then the day */
+html.homeone :root, html.homeone #v-home .vz > .vzhero{display:block!important;padding:0!important}
+html.homeone #v-home .vz > .vzhero > :is(.tdate,.ctcover,.sgrid),html.homeone #v-home .vz > .vzhero .tmeta,html.homeone #v-home .vz > .vzhero .hdesc,html.homeone #v-home .vz > .vzhero .shead .label{display:none!important}
+html.homeone body #v-home .vz > .vzhero > .shead{margin:0!important;padding:14px 56px 4px 16px!important;background:none!important}
+html.homeone body #v-home .vz > .vzhero .shead h2{font-size:.95rem!important;color:var(--muted)!important;font-weight:600!important}
+html.homeone body #v-home .vz > .vzhero .ctedit{top:8px!important;transform:none!important;width:32px!important;height:32px!important;border:0!important;background:none!important}
+html.homeone #v-home .vz > .chips .seg-days.hseg{border-top:0!important;background:var(--surface)!important;height:52px!important}
+html.homeone #v-home .hday .summary .shead .label,html.homeone #v-home .hday .hspan{display:none!important}
+html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
+
 </style>
 </head>
 <body>
@@ -6543,7 +6557,7 @@ html.homeone #v-home .vz > .chips .seg-days.hseg{border-left:1px solid var(--lin
     var a1=rng(sc), a2=rng(food), tot=(a1||a2)?[(a1?a1[0]:0)+(a2?a2[0]:0),(a1?a1[1]:0)+(a2?a2[1]:0)]:null, share=(a1&&a2)?Math.round(100*(a1[0]+a1[1])/(a1[0]+a1[1]+a2[0]+a2[1])):60;
     var pe=document.createElement('div'); pe.className='dalt dspend';
     pe.innerHTML=(tot?'<div class="dptot"><small>Spend today</small><b>₹'+k(tot[0])+'–'+k(tot[1])+'</b></div><div class="dpbar"><i style="width:'+share+'%"></i></div><div class="dpleg"><span><i class="a"></i>Stay '+sc+'</span><span><i class="b"></i>Food '+food+'</span></div>':'')+
-      (function(){ var it=[wake?'<b>Wake up</b> '+wake:'',sleep?'<b>Sleep</b> '+sleep:'',tr?'<b>Getting around</b> '+tr:''].filter(Boolean); if(!it.length) return ''; return '<div class="dpmeta"><span class="wxwin dproll"><span class="wxreel">'+it.concat([it[0]]).map(function(x){ return '<span>'+x+'</span>'; }).join('')+'</span></span></div>'; })()+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
+      (function(){ var it=[wake?ic('sunrise')+'<b>Wake up</b> '+wake:'',sleep?ic('moon')+'<b>Sleep</b> '+sleep:'',tr?ic('car')+tr:''].filter(Boolean); if(!it.length) return ''; return '<div class="dpmeta"><span class="wxwin dproll"><span class="wxreel">'+it.concat([it[0]]).map(function(x){ return '<span>'+x+'</span>'; }).join('')+'</span></span></div>'; })()+(stay?'<div class="dpstay">'+ic('bed')+stay+'</div>':'');
     g.after(sp); sp.after(pe); }
   function all(){ document.querySelectorAll('.hday .summary > .sgrid,.ctday2 .summary > .sgrid').forEach(build); }
   function set(x){ v=x; L.forEach(function(n){ r.classList.toggle('dv-'+n,n===x); }); ['list','chips'].forEach(function(n){ r.classList.remove('dv-'+n); }); document.querySelectorAll('[data-dview]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.dview===x?'true':'false'); }); try{ localStorage.setItem(K,x); }catch(e){} all(); }
