@@ -4850,6 +4850,16 @@ html.homeone #v-home .vzhero .shead h2 .vzmeta{margin:0!important;padding:0!impo
 :root:root:root body #v-home .wx.wxmoved .wxrr > span{display:block!important;height:22px!important;line-height:22px!important}
 html.homeone #v-home .vzhero .shead,html.homeone #v-home .vzhero .shead h2,html.homeone #v-home .vzhero .shead h2 .vzmeta{text-align:left!important}
 
+/* ===== v158 ===== */
+#confirm .cfart .cfbase rect{fill:url(#cfdots)}
+#confirm .cfart .cfx{display:none!important}
+/* split view for planner trips: merged extras stay out */
+html:not(.ctmerge) #v-home .ctmhead,html:not(.ctmerge) #v-home .ctmrow,html:not(.ctmerge) #v-home .ctroute,html:not(.ctmerge) #v-home .ctrows > .wxlocrow{display:none!important}
+html:not(.ctmerge) #v-home .ctrows{margin:0!important}
+:root:root html:not(.homeone) #v-home .vz > .hday > .summary:first-child,:root html:not(.homeone) #v-home .vz > .hday{margin-top:12px!important}
+html:not(.homeone) #v-home .vz > .hday > .summary:first-child{border-top-left-radius:var(--rc,18px)!important;border-top-right-radius:var(--rc,18px)!important;border-top:1px solid var(--line)!important}
+html:not(.homeone) #v-home .vz > .chips,html:not(.homeone) #v-home .vz > .chips .wrap,html:not(.homeone) #v-home .vz > .chips .seg-days{border-bottom-left-radius:16px!important;border-bottom-right-radius:16px!important}
+
 </style>
 </head>
 <body>
@@ -6691,7 +6701,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       trip:fill('M60 14c-13 0-23 10-23 23c0 17 23 41 23 41s23-24 23-41c0-13-10-23-23-23z')+'<circle cx="60" cy="37" r="8" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2.4"/><path d="M28 86c14-6 26 2 38-2s20-6 28-2" style="'+L+';stroke-dasharray:4 5;stroke-width:2.4"/>',
       stop:fill('M42 22h36a6 6 0 0 1 6 6v44a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V28a6 6 0 0 1 6-6z')+'<circle cx="60" cy="48" r="15" style="fill:var(--surface);stroke:var(--ink);stroke-opacity:.5;stroke-width:2.6"/><path d="M60 40v9l6 4" style="'+L+';stroke-width:2.6"/>',
       page:fill('M42 16h28l13 13v50a6 6 0 0 1-6 6H42a6 6 0 0 1-6-6V22a6 6 0 0 1 6-6z')+'<path d="M45 42h22M45 52h28M45 62h16" style="'+L+'"/>'};
-    return '<svg class="cfart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="cfdots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="88" cy="26" r="15" style="fill:#F8D66D;fill-opacity:.85"/><ellipse cx="60" cy="89" rx="40" ry="5" style="fill:color-mix(in srgb,var(--ink) 8%,var(--bg))"/>'+(S[k]||S.page)+'<g class="cfx"><circle cx="86" cy="76" r="10" style="fill:var(--surface);stroke-width:2"/><path d="M82.5 72.5l7 7M89.5 72.5l-7 7" style="fill:none;stroke-width:2.2;stroke-linecap:round"/></g></svg>'; }
+    return '<svg class="cfart" viewBox="0 0 120 100" aria-hidden="true"><defs><pattern id="cfdots" width="2.2" height="2.2" patternUnits="userSpaceOnUse"><circle cx="1.1" cy="1.1" r=".5" style="fill:var(--ink);fill-opacity:.6"/></pattern></defs><path style="fill:var(--muted);fill-opacity:.22" d="M14 40a8 8 0 0 1 8-8a10 10 0 0 1 19-2a7 7 0 0 1 6 10z"/><circle cx="88" cy="26" r="15" style="fill:#F8D66D;fill-opacity:.85"/>'+(S[k]||S.page)+'<g class="cfbase"><rect x="16" y="86" width="88" height="3.2" rx="1.6"/><rect x="28" y="91.5" width="64" height="2.8" rx="1.4"/><rect x="42" y="96.5" width="36" height="2.4" rx="1.2"/></g></svg>'; }
   function openConfirm(title,text,btn,fn,art){ var oa=cf.querySelector('.cfart'); if(oa) oa.outerHTML=cfArt(art||'page'); openSheet(false); closeLogout(); $('cf-title').textContent=title; $('cf-text').textContent=text; $('cf-go').textContent=btn; cf.classList.toggle('isdiscard',/^discard/i.test(btn||'')); cfGo=fn; cf.hidden=false; $('scrim').hidden=false; }
   window.__confirm=function(t,x,b,fn,art){ openConfirm(t,x,b,fn,art); };
   function closeConfirm(){ if(cf.hidden) return; cf.hidden=true; if(lo.hidden) $('scrim').hidden=true; }
@@ -8484,8 +8494,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   if(isl){ var n=isl.querySelectorAll('.hvsc').length; for(var k=0;k<n;k++){ var c=isl.cloneNode(true); c.classList.remove('hvone','off'); c.classList.add('hvpl','hvmo'); [].forEach.call(c.querySelectorAll('.hvsc'),function(g,x){ if(x!==k) g.remove(); else g.classList.add('on'); }); mo.push(c); s.insertBefore(c,isl); } isl.remove(); }
   var mix=[['m',0],['p',0],['m',1],['p',3],['m',2],['p',1],['m',3],['p',4],['p',2]], seq=[]; mix.forEach(function(it){ var el=(it[0]==='m'?mo:pl)[it[1]]; if(el) seq.push(el); }); if(!seq.length) return;
   var all=mo.concat(pl), i=0;
-  function fit(){ var bbs=all.map(function(sv){ try{ var g=sv.getBBox(); return g.width?g:null; }catch(e){ return null; } }); var S=0; bbs.forEach(function(b){ if(b) S=Math.max(S,b.width,b.height); }); if(!S) return; S*=1.04;
-    all.forEach(function(sv,k){ var b=bbs[k]; if(!b) return; sv.setAttribute('viewBox',(b.x+b.width/2-S/2).toFixed(1)+' '+(b.y+b.height-S).toFixed(1)+' '+S.toFixed(1)+' '+S.toFixed(1)); sv.setAttribute('preserveAspectRatio','xMidYMax meet'); }); }
+  function fit(){ if(fit.done) return; var ref=null, bs=all.map(function(sv){ try{ var g=sv.getBBox(); return g.height?g:null; }catch(e){ return null; } }); mo.forEach(function(sv,k){ if(!ref&&bs[k]) ref=bs[k]; }); if(!ref) return; fit.done=1; var bot=ref.y+ref.height;
+    all.forEach(function(sv,k){ var b=bs[k], vb=(sv.getAttribute('viewBox')||'0 0 337 346').split(/\s+/).map(Number); var dy=b&&k>=mo.length?(b.y+b.height)-bot:0; sv.setAttribute('viewBox',vb[0]+' '+(vb[1]+dy).toFixed(1)+' '+vb[2]+' '+vb[3]); }); }
   requestAnimationFrame(fit); setTimeout(fit,400);
   function show(el){ all.forEach(function(x){ x.classList.toggle('on',x===el); }); } show(seq[0]); if(seq.length<2) return;
   setInterval(function(){ if(document.hidden) return; i=(i+1)%seq.length; show(seq[i]); },4200); })();
@@ -8729,10 +8739,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   var meta=[mi('days')&&mi('days')+' days',mi('places')&&mi('places')+' places',mi('distance')].filter(Boolean).join(' · ');
   var ed=document.getElementById('vz-edit'), pen=ed?ed.innerHTML:'';
   document.querySelectorAll('#v-home .hday .tkhead').forEach(function(h){ if(h.querySelector('.tkinfo')) return; var row=h.querySelector('.trow'); if(!row) return;
-    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small><small class="tkm">'+meta+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+((h.querySelector('.tkqr')||{}).innerHTML||'')+'</button>';
+    var d=document.createElement('div'); d.className='tkinfo'; d.innerHTML='<button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+((h.querySelector('.tkqr')||{}).innerHTML||'')+'</button>';
     h.insertBefore(d,row); d.querySelector('.tkqr2').onclick=function(e){ e.stopPropagation(); var q=h.querySelector('.tkqr'); if(q) q.click(); };
     d.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=vz.querySelector('.tswitch'); if(s) s.click(); }; if(window.__paintUses) window.__paintUses(d); });
-  var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; var seen=[]; document.querySelectorAll('#v-home .vz .hday .summary h2').forEach(function(t){ (t.dataset.parts||t.textContent).split('|').forEach(function(p){ p=p.trim().replace(/\s+(sights|home)$/i,''); if(p&&!/^home$/i.test(p)&&seen.indexOf(p)<0) seen.push(p); }); }); mt.textContent=seen.join(' \u00b7 ')||meta; h2.appendChild(mt); }
+  var h2=vz.querySelector('.shead h2'); if(h2&&!h2.querySelector('.vzmeta')){ var mt=document.createElement('span'); mt.className='vzmeta'; var seen=[]; document.querySelectorAll('#v-home .vz .hday .summary h2').forEach(function(t){ (t.dataset.parts||t.textContent).split('|').forEach(function(p){ p=p.trim().replace(/\s+(sights|home)$/i,''); if(p&&!/^home$/i.test(p)&&seen.indexOf(p)<0) seen.push(p); }); }); mt.textContent=meta; h2.appendChild(mt); }
   /* the day's route heads the day details, just above the bar */
   document.querySelectorAll('#v-home .vz .hday').forEach(function(sec){ var t=sec.querySelector('.summary h2'); if(!t||sec.querySelector('.dayroute')) return; var ps=(t.dataset.parts||t.textContent).split('|');
     var html=ps.map(function(p){ return '<span>'+p+'</span>'; }).join('<span class="tto">to</span>');
@@ -8830,8 +8840,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       days.forEach(function(sec,i){ var sum=sec.querySelector('.summary'); if(!sum||sum.querySelector('.ctmhead')) return; var sh=sum.querySelector('.shead'), lab=((sh&&sh.querySelector('.label'))||{}).textContent||'', h2=((sh&&sh.querySelector('h2'))||{}).textContent||'';
         var hs=sum.querySelector('.hspan'), items=hs?[].map.call(hs.querySelectorAll(':scope > span'),function(s){ return '<span>'+s.innerHTML+'</span>'; }).join('<i class="tkdot">\u00b7</i>'):'';
         var h2el=sh&&sh.querySelector('h2'); if(h2el&&!h2el.dataset.parts) h2el.dataset.parts=h2.split(/\s*\u2192\s*/).join('|');
-        var head=document.createElement('div'); head.className='ctmhead tkhead'; head.innerHTML='<div class="tkinfo"><button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small><small class="tkm">'+meta+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+(window.__qr?window.__qr(location.href.split('#')[0],84):'')+'</button></div><div class="tkperf"></div>'+(items?'<div class="tkticker"><div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div></div>':'');
-        var row=document.createElement('div'); row.className='ctmrow'; row.innerHTML='<span class="ctmeta">'+towns+'</span><div class="ctpick"><button type="button" class="dpa" data-cm="-1" aria-label="Previous day"'+(i?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><b>'+(i+1)+'/'+N+'</b><button type="button" class="dpa" data-cm="1" aria-label="Next day"'+(i<N-1?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
+        var head=document.createElement('div'); head.className='ctmhead tkhead'; head.innerHTML='<div class="tkinfo"><button type="button" class="tki"><b>'+name+'</b><small class="tkd">'+dates+'</small></button><button type="button" class="tkqr2" aria-label="Open trip pass">'+(window.__qr?window.__qr(location.href.split('#')[0],84):'')+'</button></div><div class="tkperf"></div>'+(items?'<div class="tkticker"><div class="tktrack" aria-hidden="true"><span class="tkrun">'+items+'</span><span class="tkrun">'+items+'</span></div></div>':'');
+        var row=document.createElement('div'); row.className='ctmrow'; row.innerHTML='<span class="ctmeta">'+meta+'</span><div class="ctpick"><button type="button" class="dpa" data-cm="-1" aria-label="Previous day"'+(i?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><b>'+(i+1)+'/'+N+'</b><button type="button" class="dpa" data-cm="1" aria-label="Next day"'+(i<N-1?'':' disabled')+'><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
         sum.insertBefore(row,sum.firstChild); sum.insertBefore(head,row); sum.classList.add('tkcard');
         head.querySelector('.tki').onclick=function(e){ e.stopPropagation(); var s=hero.querySelector('.tswitch'); if(s) s.click(); };
         head.querySelector('.tkqr2').onclick=function(e){ e.stopPropagation(); if(window.__openPass) window.__openPass(sec); };
@@ -8861,7 +8871,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
 /* While a sheet is open: no back-to-top or chat bubble over it; the settings beach steps away while you scroll */
 (function(){ var r=document.documentElement; function upd(){ var open=!!document.querySelector('.sheet:not(.inpage):not([hidden]),.passsh:not([hidden]),#planner:not([hidden])')||r.classList.contains('ps-open'); r.classList.toggle('sheet-open',open); }
   upd(); new MutationObserver(function(){ requestAnimationFrame(upd); }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['hidden','class']});
-  var t=0; window.addEventListener('scroll',function(){ r.classList.add('scrolling'); clearTimeout(t); t=setTimeout(function(){ r.classList.remove('scrolling'); },500); },{passive:true}); })();
+  var t=0; window.addEventListener('scroll',function(){ var end=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-160; r.classList.toggle('scrolling',!end); clearTimeout(t); if(!end) t=setTimeout(function(){ r.classList.remove('scrolling'); },300); },{passive:true}); })();
 
 </script>
 
