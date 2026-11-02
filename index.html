@@ -5199,6 +5199,7 @@ html.navwave .nav{box-shadow:0 -8px 10px -8px color-mix(in srgb,var(--bg) 70%,tr
 .plcur{font-style:normal;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);margin-left:6px;vertical-align:middle}
 #mytrips-list .mtempty{margin:12px 0 6px!important}
 :root:root .gav{border-radius:12px!important;corner-shape:superellipse(1.6)}
+#q-werr:not([hidden]){display:block;color:var(--danger);font-size:.8rem;margin-top:6px}
 
 </style>
 </head>
@@ -5590,7 +5591,7 @@ html.navwave .nav{box-shadow:0 -8px 10px -8px color-mix(in srgb,var(--bg) 70%,tr
         <div class="poplist" id="pl-tpls" hidden></div>
         <div class="ordiv"><span>OR</span></div>
         <div class="pgroup"><div class="pgl">Plan your own</div>
-          <div class="pf qwhere"><span>Where to?</span><input id="q-where" type="text" autocomplete="off" placeholder="Type a state or place, e.g. Munnar" role="combobox" aria-expanded="false" aria-controls="q-sug"><input type="hidden" id="q-state" value="Kerala"><ul class="qsug" id="q-sug" role="listbox" hidden></ul></div>
+          <div class="pf qwhere"><span>Where to?</span><input id="q-where" type="text" autocomplete="off" placeholder="Start typing a place name" role="combobox" aria-expanded="false" aria-controls="q-sug"><small class="perr" id="q-werr" hidden>Pick a place from the list to continue.</small><input type="hidden" id="q-state" value="Kerala"><ul class="qsug" id="q-sug" role="listbox" hidden></ul></div>
           <div class="pf"><span>Budget <b class="qbv" id="q-bv">Mid-range</b></span><div class="qslider"><div class="qtrack"><span class="qfill" id="q-fill"></span><i></i><i></i><i></i></div><input type="range" id="q-budget" class="qrange" min="0" max="2" step="1" value="1" aria-label="Budget"></div><div class="qrl"><span data-qb="0">Budget</span><span data-qb="1">Mid-range</span><span data-qb="2">Premium</span></div><p class="pfhint" id="q-bhint"></p></div>
           <div class="pf"><span>Travellers</span><div class="gchips" id="q-groups"></div><div class="qguests"><div class="qg"><span class="qgl"><b>Women</b><small>13 and above</small></span><div class="qgs"><button type="button" data-qk="women" data-qs="-1" aria-label="Fewer women">−</button><output id="q-women">1</output><button type="button" data-qk="women" data-qs="1" aria-label="More women">+</button></div></div><div class="qg"><span class="qgl"><b>Men</b><small>13 and above</small></span><div class="qgs"><button type="button" data-qk="men" data-qs="-1" aria-label="Fewer men">−</button><output id="q-men">1</output><button type="button" data-qk="men" data-qs="1" aria-label="More men">+</button></div></div><div class="qg"><span class="qgl"><b>Kids</b><small>Under 13</small></span><div class="qgs"><button type="button" data-qk="kids" data-qs="-1" aria-label="Fewer kids">−</button><output id="q-kids">0</output><button type="button" data-qk="kids" data-qs="1" aria-label="More kids">+</button></div></div></div></div>
           <div class="pf"><span>Getting there</span><div class="seg pseg pico" id="q-mode" role="group"><button type="button" data-val="any" aria-pressed="true"><i><span class="ic"><span class="ie" data-e="1f9ed">🧭️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="compass" href="#i-hugeicons-compass"/></svg></span></span></i>Any</button><button type="button" data-val="train" aria-pressed="false"><i><span class="ic"><span class="ie" data-e="1f686">🚆️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="train" href="#i-hugeicons-train"/></svg></span></span></i>Train</button><button type="button" data-val="flight" aria-pressed="false"><i><span class="ic"><span class="ie" data-e="2708">✈️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="plane" href="#i-hugeicons-plane"/></svg></span></span></i>Flight</button><button type="button" data-val="road" aria-pressed="false"><i><span class="ic"><span class="ie" data-e="1f697">🚗️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="car" href="#i-hugeicons-car"/></svg></span></span></i>Car</button><button type="button" data-val="bus" aria-pressed="false"><i><span class="ic"><span class="ie" data-e="1f68c">🚌️</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="bus" href="#i-hugeicons-bus"/></svg></span></span></i>Bus</button></div></div>
@@ -8038,7 +8039,7 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
     function drawStart(){ drawGroupChips();
       $('pl-tpls').innerHTML=TPL.map(function(t,i){ return '<button type="button" class="tplr" data-q0tpl="'+i+'"><span class="tplci">'+t.e+'</span><span class="tplt"><b>'+esc(t.n)+'</b><small>'+esc(t.s)+' · '+t.d+' days · '+t.p.length+' places</small></span><span class="tplgo">'+icoT('chev')+'</span></button>'; }).join('');
       $('pl-tpls').hidden=true; $('q-browse').setAttribute('aria-expanded','false');
-      $('q-state').value='Kerala'; $('q-where').value='Kerala'; $('q-sug').hidden=true;
+      $('q-state').value=''; $('q-where').value=''; $('q-sug').hidden=true; var qe=$('q-werr'); if(qe) qe.hidden=true;
       QP={women:1,men:1,kids:0}; ['women','men','kids'].forEach(function(k){ $('q-'+k).textContent=QP[k]; }); $('q-budget').value=1; segSet('q-mode','any'); qHint();
     }
     function qHint(){ var k=QB[+$('q-budget').value], r=QBI[k]; $('q-bv').textContent=BLAB[k]; $$('[data-qb]').forEach(function(s){ s.classList.toggle('on',s.dataset.qb===String($('q-budget').value)); }); $('q-fill').style.width=(+$('q-budget').value*50)+'%'; $$('.qtrack i').forEach(function(d,i){ d.classList.toggle('on',i<=+$('q-budget').value); }); $('q-bhint').textContent='About ₹'+(r[0]).toLocaleString('en-IN')+'–'+(Math.round(r[1]/100)*100).toLocaleString('en-IN')+' a day per person'; }
@@ -8061,8 +8062,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       ul.innerHTML=hits.length?hits.map(function(w){ return '<li role="option" data-st="'+esc(w.s)+'" data-tx="'+esc(w.k==='state'?w.s:w.t)+'"><b>'+esc(w.t)+'</b><small>'+(w.k==='state'?'State':esc(w.sub)+' · '+esc(w.s))+'</small></li>'; }).join(''):'<li class="none">No matches. Try a state name.</li>';
       ul.hidden=false; $('q-where').setAttribute('aria-expanded','true'); }
     $('q-where').addEventListener('input',sugDraw); $('q-where').addEventListener('focus',function(){ this.select(); sugDraw(); });
-    $('q-where').addEventListener('blur',function(){ setTimeout(function(){ $('q-sug').hidden=true; $('q-where').setAttribute('aria-expanded','false'); if(!$('q-where').value.trim()) $('q-where').value=$('q-state').value; },150); });
-    $('q-sug').addEventListener('mousedown',function(e){ var li=e.target.closest('li[data-st]'); if(!li) return; e.preventDefault(); $('q-state').value=li.dataset.st; $('q-where').value=li.dataset.tx===li.dataset.st?li.dataset.st:li.dataset.tx+', '+li.dataset.st; $('q-sug').hidden=true; $('q-where').blur(); });
+    $('q-where').addEventListener('blur',function(){ setTimeout(function(){ $('q-sug').hidden=true; $('q-where').setAttribute('aria-expanded','false'); if(!$('q-where').value.trim()) $('q-state').value=''; },250); });
+    function pickSug(e){ var li=e.target.closest('li[data-st]'); if(!li) return; e.preventDefault(); var qe=$('q-werr'); if(qe) qe.hidden=true; $('q-state').value=li.dataset.st; $('q-where').value=li.dataset.tx===li.dataset.st?li.dataset.st:li.dataset.tx+', '+li.dataset.st; $('q-sug').hidden=true; $('q-where').blur(); }
+    $('q-sug').addEventListener('pointerdown',pickSug); $('q-sug').addEventListener('mousedown',function(e){ e.preventDefault(); });
+    $('q-where').addEventListener('input',function(){ $('q-state').value=''; });
     var QP={women:1,men:1,kids:0};
     $$('[data-qs]').forEach(function(b){ b.addEventListener('click',function(){ var k=b.dataset.qk; QP[k]=Math.max(0,Math.min(30,QP[k]+(+b.dataset.qs))); if(QP.women+QP.men<1) QP[k]=1; $('q-'+k).textContent=QP[k]; }); });
     $('q-budget').addEventListener('change',qHint);
@@ -8072,6 +8075,8 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
       $('pgs-how').textContent=[BLAB[f.budget],MLAB[f.mode],PLAB[f.pace]].filter(Boolean).join(' · '); }
     $('pl-start-go').addEventListener('click',function(){ $('q-go').click(); });
     $('q-go').addEventListener('click',function(){
+      if(!$('q-state').value){ var w=$('q-where').value.trim().toLowerCase(), m=WHERE.filter(function(x){ return x.t.toLowerCase()===w; })[0]; if(m) $('q-state').value=m.s; }
+      if(!$('q-state').value){ var qe=$('q-werr'); if(qe){ qe.hidden=false; } $('q-where').focus(); return; }
       var st=$('q-state').value; $('pl-state').value=st; drawPlaces(null);
       $('pl-men').value=QP.men; $('pl-women').value=QP.women; $('pl-kids').value=QP.kids;
       segSet('pl-budget',QB[+$('q-budget').value]); segSet('pl-mode',segGet('q-mode')||'any');
@@ -9396,6 +9401,10 @@ M["QRCode"]=M["index"]; return {QRCode:M["index"],L:M["QRErrorCorrectLevel"]}; }
   window.__retime=function(mode){ var tw=document.createTreeWalker(document.querySelector('main')||document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){ var p=n.parentNode; if(!p||SK[p.nodeName]||(p.closest&&p.closest('.hm,input,textarea'))) return 3; return /\d:\d\d/.test(n.nodeValue)?1:3; }}), list=[]; while(tw.nextNode()) list.push(tw.currentNode);
     list.forEach(function(n){ var v=n.nodeValue.replace(RE,function(all,h,m,ap){ var r=conv(h,m,ap,mode); return r||all; }); if(v!==n.nodeValue) n.nodeValue=v; }); };
   setTimeout(function(){ try{ var m=localStorage.getItem('vizag-tf')==='24'?'24':'12'; window.__retime(m); }catch(e){} },900); })();
+
+/* first paint: skeleton until the page has settled */
+(function(){ var r=document.documentElement; r.classList.add('skel','skel-boot'); function done(){ setTimeout(function(){ r.classList.add('skel-out'); r.classList.remove('skel','skel-boot'); setTimeout(function(){ r.classList.remove('skel-out'); },450); },350); }
+  if(document.readyState==='complete') done(); else window.addEventListener('load',done); setTimeout(done,2500); })();
 
 </script>
 
