@@ -4104,6 +4104,53 @@ html.homeone #v-home .vz > .chips .seg-days.hseg{border-top:0!important;backgrou
 html.homeone #v-home .hday .summary .shead .label,html.homeone #v-home .hday .hspan{display:none!important}
 html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
 
+/* ===== v133 ===== */
+/* illustrations: each new scene is drawn in from the bottom, the old one fades away */
+:root:root .hvsc,:root:root .hvpl,:root:root .hvone{filter:none!important;transform:none!important}
+:root:root .hvsc,:root:root .hvpl{clip-path:inset(100% 0 0 0);opacity:0;transition:opacity .7s ease,clip-path 0s linear .7s!important}
+:root:root .hvsc.on,:root:root .hvpl.on{clip-path:inset(0 0 0 0);opacity:1;transition:clip-path 1.3s cubic-bezier(.45,0,.2,1),opacity .35s ease!important}
+:root:root .hvone{clip-path:inset(0 0 0 0);transition:opacity .7s ease,clip-path 1.3s cubic-bezier(.45,0,.2,1)!important}
+:root:root .hvone.off{opacity:0;clip-path:inset(0 0 0 0)}
+@media (prefers-reduced-motion:reduce){ :root:root .hvsc,:root:root .hvpl{clip-path:none;transition:opacity .3s!important} }
+/* weather line: every item on one centre line */
+.wx{display:flex!important;flex-wrap:wrap;align-items:center;column-gap:6px}
+.wx > *{display:inline-flex!important;align-items:center}
+.wxrot .wxwin{top:0!important;vertical-align:middle!important}
+.wxrot{height:auto!important;vertical-align:middle!important}
+.wxn{gap:6px}
+/* combined card: stops summary back; date roller replaces the strip */
+html.homeone #v-home .hday .hspan{display:flex!important}
+.dpick{display:none}
+html.homeone #v-home .vz > .chips{display:none!important}
+html.homeone #v-home .vzhero .dpick{display:flex;align-items:center;gap:2px;position:absolute;right:44px;top:8px}
+.dpa{appearance:none;border:0;background:none;width:26px;height:30px;display:grid;place-items:center;color:var(--muted);cursor:pointer;padding:0}
+.dpa svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dpwin{position:relative;overflow:hidden;height:34px;min-width:58px}
+.dpreel{display:block;position:relative;height:100%}
+.dpitem{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;transition:transform .3s cubic-bezier(.3,.7,.2,1),opacity .3s}
+.dpitem b{font-size:.9rem;font-weight:700}
+.dpitem small{font-size:.66rem;color:var(--muted)}
+html.homeone body #v-home .vz > .vzhero > .shead{padding:14px 150px 10px 16px!important}
+html.homeone body #v-home .vz > .vzhero .shead h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.homeone #v-home .vz > .vzhero{border-bottom:1px solid var(--line)!important}
+html.homeone #v-home .vz > .hday{margin-top:0!important}
+html.homeone #v-home .vz > .hday > .summary:first-child{border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:0!important}
+:root:root:root.homeone body #v-home .vz > .vzhero > .shead{padding:14px 150px 10px 16px!important}
+.wx{column-gap:0!important;flex-wrap:nowrap!important;white-space:nowrap}
+.wxn{gap:0!important;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.wx > .wxdot{padding:0 6px}
+.wx{display:block!important;white-space:normal!important}
+.wx > *{display:revert!important}
+.wx > .wxdot{padding:0!important}
+.wxn{overflow:visible!important}
+.wxrot{display:inline-block!important;height:1.35em!important;vertical-align:-.36em!important}
+.wxrot .wxwin{top:0!important;vertical-align:top!important}
+:root:root:root.homeone body #v-home .vz > .vzhero .shead h2{max-width:calc(100% - 4px)}
+:root:root:root.homeone body #v-home .vz > .vzhero .tswitch{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:block}
+.wx > .wxn{display:inline!important}
+.wx > .wxtext:not(.wxrot),.wx > .wxhl,.wx > .wxdot{vertical-align:baseline!important;position:static!important;top:auto!important;line-height:inherit!important}
+.wxrot{vertical-align:-.12em!important}
+
 </style>
 </head>
 <body>
@@ -4364,7 +4411,7 @@ html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
   <div class="setgrp"><div class="setrow"><span class="setl">Home cards<small>Trip and day as one card</small></span><div class="seg" role="group" aria-label="Home cards"><button type="button" data-homeone="sep">Separate</button><button type="button" data-homeone="one">Combined</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Trip card<small>Layout of the Home trip card</small></span><div class="seg" role="group" aria-label="Trip card"><button type="button" data-tview="1">Classic</button><button type="button" data-tview="2">Banner</button><button type="button" data-tview="3">Ticket</button></div></div><div class="setrow"><span class="setl">Day details<small>Layout of each day&#39;s facts</small></span><div class="seg" role="group" aria-label="Day details"><button type="button" data-dview="grid">Grid</button><button type="button" data-dview="span">Span</button><button type="button" data-dview="spend">Spend</button></div></div></div>
   <div class="setgrp"><div class="setrow"><span class="setl">Nav bar edge<small>Top edge of the bottom bar</small></span><div class="seg" role="group" aria-label="Nav bar edge"><button type="button" data-navedge="line">Line</button><button type="button" data-navedge="wave">Wave</button></div></div></div>
-  <div class="setgrp"><div class="setrow"><span class="setl">Selected tab<small>How the chosen tab or day is marked</small></span><div class="seg" role="group" aria-label="Selected tab"><button type="button" data-tabsel="dot">Dot</button><button type="button" data-tabsel="fill">Plain</button></div></div></div>
+  
   <div class="setgrp"><div class="setrow"><span class="setl">Time format<small>12 or 24 hour</small></span><div class="seg" role="group" aria-label="Time format"><button type="button" data-tf="12">12h</button><button type="button" data-tf="24">24h</button></div></div><div class="setrow"><span class="setl">Jump to now<small>Open at the current stop</small></span><div class="seg" role="group" aria-label="Jump to now"><button type="button" data-now="off">Off</button><button type="button" data-now="on">On</button></div></div><div class="setrow" id="secmode-row"><span class="setl">Sections<small>On wide screens</small></span><div class="seg" role="group" aria-label="Section layout"><button type="button" data-sm="tabs">Tabs</button><button type="button" data-sm="stack">List</button></div></div><div class="setrow" id="pdf-row"><span class="setl">Trip PDF<small>Opens in a new tab</small></span><a class="setbtn" id="pdf-link" href="vizag-trip-planner.pdf" target="_blank" rel="noopener">Open</a></div></div>
   <div class="setcap">AI suggestions</div>
   <div class="setgrp"><div class="setrow"><span class="setl">AI assistant<small id="ai-name">Off</small></span><button type="button" class="setbtn" id="ai-open">Choose</button></div></div>
@@ -6516,7 +6563,7 @@ html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
     if(r.i===r.n){ setTimeout(function(){ r.reel.style.transition='none'; r.reel.style.transform='translateY(0)'; r.i=0; },420); } }); },5000); })();
 
 /* tab selection style: dot (default) or filled */
-(function(){ var r=document.documentElement, k='vizag-tabsel', v='dot'; try{ v=localStorage.getItem(k)||'dot'; }catch(e){}
+(function(){ var r=document.documentElement, k='vizag-tabsel', v='fill';
   function set(x){ v=x; r.classList.toggle('seldot',x==='dot'); document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.tabsel===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-tabsel]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.tabsel); }); }); set(v); })();
 
@@ -6580,6 +6627,22 @@ html.homeone #v-home .hday .summary .shead{padding-top:12px!important}
 (function(){ var r=document.documentElement, k='vizag-homeone', v='sep'; try{ v=localStorage.getItem(k)||'sep'; }catch(e){}
   function set(x){ r.classList.toggle('homeone',x==='one'); document.querySelectorAll('[data-homeone]').forEach(function(b){ b.setAttribute('aria-pressed',b.dataset.homeone===x?'true':'false'); }); try{ localStorage.setItem(k,x); }catch(e){} }
   document.querySelectorAll('[data-homeone]').forEach(function(b){ b.addEventListener('click',function(e){ e.stopPropagation(); set(b.dataset.homeone); }); }); set(v); })();
+
+/* Combined card: date roller on the right of the trip row, swipe the card for next / previous day */
+(function(){ var r=document.documentElement, card=document.querySelector('#v-home .vzhero'); if(!card) return;
+  var chips=function(){ return [].slice.call(document.querySelectorAll('#v-home .hseg .hchip')); };
+  var dp=document.createElement('div'); dp.className='dpick'; dp.innerHTML='<button type="button" class="dpa" data-dp="-1" aria-label="Previous day"><svg viewBox="0 0 24 24"><path d="M14.5 6 8.5 12l6 6"/></svg></button><span class="dpwin"><span class="dpreel"></span></span><button type="button" class="dpa" data-dp="1" aria-label="Next day"><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></button>';
+  card.appendChild(dp); var reel=dp.querySelector('.dpreel'), last=-1;
+  function cur(){ var c=chips(); for(var i=0;i<c.length;i++) if(c[i].getAttribute('aria-pressed')==='true') return i; return 0; }
+  function label(i){ var c=chips()[i]; return c?'<b>'+(c.querySelector('span')||c).textContent.trim()+'</b><small>'+(i+1)+' of '+chips().length+'</small>':''; }
+  function paint(){ var i=cur(); if(i===last) return; var dir=last<0?0:(i>last?1:-1); var n=document.createElement('span'); n.className='dpitem'; n.innerHTML=label(i);
+    if(dir&&reel.firstChild){ var o=reel.firstChild; n.style.transform='translateY('+(dir*100)+'%)'; n.style.opacity='0'; reel.appendChild(n); requestAnimationFrame(function(){ o.style.transform='translateY('+(-dir*100)+'%)'; o.style.opacity='0'; n.style.transform='translateY(0)'; n.style.opacity='1'; setTimeout(function(){ if(o.parentNode) o.remove(); },320); }); }
+    else { reel.innerHTML=''; reel.appendChild(n); } last=i; }
+  function go(d){ var c=chips(), i=cur()+d; if(i<0||i>=c.length) return; c[i].click(); }
+  dp.addEventListener('click',function(e){ e.stopPropagation(); var b=e.target.closest('[data-dp]'); if(b) go(+b.dataset.dp); });
+  new MutationObserver(paint).observe(document.querySelector('#v-home .hseg')||document.body,{attributes:true,subtree:true,attributeFilter:['aria-pressed']}); paint();
+  var x0=null,y0=0; document.addEventListener('touchstart',function(e){ if(!r.classList.contains('homeone')){ x0=null; return; } var t=e.target.closest&&e.target.closest('#v-home .hday .summary'); if(!t){ x0=null; return; } x0=e.touches[0].clientX; y0=e.touches[0].clientY; },{passive:true});
+  document.addEventListener('touchend',function(e){ if(x0===null) return; var t=e.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5) go(dx<0?1:-1); },{passive:true}); })();
 
 </script>
 
