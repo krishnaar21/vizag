@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="417">
+<meta name="build" content="418">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -45,7 +45,7 @@
 .kz-sw{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;justify-items:center;padding:3px 0}
 .kz-s{width:min(26px,100%);aspect-ratio:1;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);outline:2px solid transparent;outline-offset:2px}
 .kz-s[aria-pressed=true]{outline-color:var(--ink)}
-#theme-sheet .thsec:last-child{margin-bottom:0}.kz-bgw{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:4px!important}.kz-bgs{box-shadow:none!important;overflow:hidden}.kz-bgs svg{display:block;width:100%;height:100%}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
+#theme-sheet .thsec:last-child{margin-bottom:0}.kz-bgw{grid-template-columns:repeat(10,minmax(0,1fr))!important}.kz-bgs{box-shadow:none!important;overflow:hidden}.kz-bgs svg{display:block;width:100%;height:100%}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
 </style>
 </head>
 <body>
@@ -968,31 +968,33 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 <script id="kz-icon">
 (function () {
   var P = '#FBF9F5', K = '#121212';
-  /* icon backgrounds: [id, name, light tile, dark tile]; 'match' is tinted from the chosen colour */
-  var BGS = [['paper', 'Paper', '#FBF9F5', '#121212'], ['white', 'White', '#FFFFFF', '#000000'], ['stone', 'Stone', '#ECECEF', '#1A1A1D'], ['peach', 'Peach', '#FBE4D5', '#23170F'], ['lilac', 'Lilac', '#ECE7F8', '#17131F'], ['sage', 'Sage', '#E3EADD', '#121711'], ['butter', 'Butter', '#FAF2D0', '#1C1A0D'], ['match', 'Match colour', '', ''], ['grain', 'Grain', '#F6F2EA', '#141311'], ['grad', 'Gradient', '', ''], ['dots', 'Dot grid', '#FBF9F5', '#121212'], ['lines', 'Fine lines', '#FBF9F5', '#121212']];
+  /* backgrounds: [id, name, light top, light bottom, dark top, dark bottom]; every tile is a soft vertical gradient */
+  var BGS = [['paper', 'Paper', '#FFFEFB', '#F0EBE1', '#1F1E1C', '#0E0E0E'], ['white', 'White', '#FFFFFF', '#ECEEF1', '#1C1C1C', '#000000'], ['stone', 'Stone', '#F7F7F9', '#DEDEE4', '#28282C', '#111113'], ['peach', 'Peach', '#FEF2EA', '#F7D2BB', '#36241B', '#160E0A'], ['lilac', 'Lilac', '#F7F4FD', '#DDD3F3', '#261E34', '#0F0C16'], ['sage', 'Sage', '#F1F5ED', '#D2DDC8', '#1F2919', '#0B0F0A'], ['butter', 'Butter', '#FEFAE8', '#F3E3AA', '#2D2A15', '#121108'], ['match', 'Match colour', '', '', '', ''], ['grain', 'Grain', '#FFFDF8', '#EEE8DC', '#21201D', '#0E0E0D'], ['grad', 'Sunrise', '', '', '', '']];
   function mixHex(a, b, t) { var p = function (h) { h = h.replace('#', ''); return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }; var x = p(a), y = p(b); return '#' + x.map(function (v, i) { var r = Math.round(v + (y[i] - v) * t).toString(16); return r.length < 2 ? '0' + r : r; }).join(''); }
-  /* textured backgrounds: a solid base from bgFor plus an overlay drawn over the tile */
   var bgN = 0;
+  function bgStops(id, c, dark) {
+    var t = c.accent || c.mid;
+    if (id === 'match') return dark ? [mixHex('#0E0E0E', c.deep, 0.42), mixHex('#0E0E0E', c.deep, 0.16)] : [mixHex('#FFFFFF', t, 0.07), mixHex('#FFFFFF', t, 0.22)];
+    if (id === 'grad') return dark ? [mixHex('#0E0E0E', c.deep, 0.5), '#0A0A0A'] : [mixHex('#FFFFFF', t, 0.05), mixHex('#FFFFFF', t, 0.36)];
+    var b = BGS.filter(function (x) { return x[0] === id; })[0] || BGS[0]; return dark ? [b[4], b[5]] : [b[2], b[3]];
+  }
+  /* overlay layers drawn over the tile: the gradient, plus noise for Grain */
   function bgOver(id, c, dark) {
-    var u = 'bo' + (++bgN), ink = dark ? '#FFFFFF' : c.deep;
-    if (id === 'grain') return { defs: '<filter id="' + u + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  ' + (dark ? '0.2 0 0 0 -0.07' : '0.2 0 0 0 -0.075') + '" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in"/></filter>', attrs: 'fill="#000" filter="url(#' + u + ')"' };
-    if (id === 'grad') { var t = c.accent || c.mid; return { defs: '<linearGradient id="' + u + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + (dark ? mixHex('#0E0E0E', c.deep, 0.5) : mixHex('#FFFFFF', t, 0.05)) + '"/><stop offset="1" stop-color="' + (dark ? '#0A0A0A' : mixHex('#FFFFFF', t, 0.36)) + '"/></linearGradient>', attrs: 'fill="url(#' + u + ')"' }; }
-    if (id === 'dots') return { defs: '<pattern id="' + u + '" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="0.75" fill="' + ink + '" fill-opacity="' + (dark ? 0.16 : 0.18) + '"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
-    if (id === 'lines') return { defs: '<pattern id="' + u + '" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M1.7 0V3.4" stroke="' + ink + '" stroke-opacity="' + (dark ? 0.14 : 0.15) + '" stroke-width="0.6"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
-    return null;
+    var u = 'bo' + (++bgN), st = bgStops(id, c, dark);
+    var defs = '<linearGradient id="' + u + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + st[0] + '"/><stop offset="1" stop-color="' + st[1] + '"/></linearGradient>', layers = ['fill="url(#' + u + ')"'];
+    if (id === 'grain') { defs += '<filter id="' + u + 'n" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  ' + (dark ? '0.2 0 0 0 -0.07' : '0.2 0 0 0 -0.075') + '" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in"/></filter>'; layers.push('fill="#000" filter="url(#' + u + 'n)"'); }
+    return { defs: defs, layers: layers };
   }
   /* round swatch: light half top-left, dark half bottom-right */
   function bgSwatch(id, c) {
     var h = '', d = '';
     [false, true].forEach(function (dk) { var o = bgOver(id, c, dk), cp = 'bs' + (++bgN); var pts = dk ? '40,0 40,40 0,40' : '0,0 40,0 0,40';
-      d += '<clipPath id="' + cp + '"><polygon points="' + pts + '"/></clipPath>' + (o ? o.defs : '');
-      h += '<g clip-path="url(#' + cp + ')"><rect width="40" height="40" fill="' + bgFor(id, c, dk) + '"/>' + (o ? '<rect width="40" height="40" ' + o.attrs + '/>' : '') + '</g>'; });
+      d += '<clipPath id="' + cp + '"><polygon points="' + pts + '"/></clipPath>' + o.defs;
+      h += '<g clip-path="url(#' + cp + ')">' + o.layers.map(function (a) { return '<rect width="40" height="40" ' + a + '/>'; }).join('') + '</g>'; });
     return '<svg viewBox="0 0 40 40" aria-hidden="true"><defs>' + d + '</defs>' + h + '<circle cx="20" cy="20" r="19.5" fill="none" stroke="rgba(127,127,127,.4)"/></svg>';
   }
-  function bgFor(id, c, dark) {
-    if (id === 'match' || id === 'grad') return dark ? mixHex('#0E0E0E', c.deep, 0.32) : mixHex('#FFFFFF', c.accent || c.mid, 0.16);
-    var b = BGS.filter(function (x) { return x[0] === id; })[0] || BGS[0]; return dark ? b[3] : b[2];
-  }
+  /* solid stand-in (used for knock-out strokes): middle of the gradient */
+  function bgFor(id, c, dark) { var st = bgStops(id, c, dark); return mixHex(st[0], st[1], 0.5); }
   var COLORS = [
     { id: 'ink', name: 'Ink', deep: '#111111', mid: '#6B665E', light: '#EDEAE4' },
     { id: 'blue', name: 'Blue', deep: '#1D5FD1', mid: '#4F8BFF', light: '#BFE0FF' },
@@ -1063,7 +1065,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     var uid = 'kz' + (++uidN);
     var c = COLORS.filter(function (x) { return x.id === s.color; })[0] || COLORS[0];
     var dark = s.theme === 'dark';
-    var bg = bgFor(s.bg || 'paper', c, dark), bgOv = bgOver(s.bg, c, dark), bgO = bgOv ? '<rect width="100" height="100" rx="22.4" ' + bgOv.attrs + '/>' : '';
+    var bg = bgFor(s.bg || 'paper', c, dark), bgOv = bgOver(s.bg, c, dark), bgO = bgOv.layers.map(function (a) { return '<rect width="100" height="100" rx="22.4" ' + a + '/>'; }).join('');
     var main = dark ? c.light : c.deep;
     var acc = dark ? c.light : (c.accent || main);
     if (s.tint !== 'on') { c = COLORS[0]; main = dark ? c.light : c.deep; } else if (c.accent) { c = { id: c.id, deep: c.accent, mid: c.accent, light: c.light }; main = c.deep; } /* whole icon uses one hue: the swatch colour */  /* fill stays ink and only the orbit takes the colour; with no orbit ('Colour fill') the shape itself takes it */
@@ -1194,7 +1196,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     if (holeD && s.mk === 'fill') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + f(dr * 1.42) + '" fill="' + acc + '"/>'; /* filled marker: solid dot inside the cut-out */
     if (holeD && s.pin !== 'hole') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + dr + '" fill="' + (s.pin === 'filled' ? bg : dot) + '"/>';
     if (s.ring === 'on' && s.pin !== 'filled') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + ringR + '" fill="none" stroke="' + dot + '" stroke-width="0.9"/>';
-    if (bgOv) defs += bgOv.defs;
+    defs += bgOv.defs;
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Kosway ' + shape + ' icon"><defs>' + defs + '</defs><rect width="100" height="100" rx="22.4" fill="' + bg + '"/>' + bgO + body + '</svg>';
   }
 
