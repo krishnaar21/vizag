@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="455">
+<meta name="build" content="456">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -971,14 +971,17 @@ const dsCane=onSand(-19,-18,el('g',{transform:'rotate(5)'},dsG));
 {el('path',{fill:'url(#ht)',d:'M-52 -4L46 -7Q49 -3 46 0L-52 2Z'},dsCane);el('path',{fill:'none',stroke:'url(#ht)','stroke-width':6,'stroke-linecap':'round',d:'M46 -4C55 -4 60 -12 57 -19C54 -25 46 -24 45 -18'},dsCane);}
 // at night: the lantern instead, smashed, flame out, glass on the sand
 const dsLan=onSand(19,0,el('g',{},dsG));
-{const lb=el('g',{transform:'translate(2 -16) rotate(96) scale(1.9)'},dsLan);
- el('path',{fill:'url(#ht)',d:'M-1.6 9.5A1.8 1.8 0 1 1 1.6 9.5L1.2 13L-1.2 13ZM-4 13L4 13L9 20L-9 20ZM-10 20L10 20L10 23L-10 23ZM-10 45L10 45L11 50L-11 50Z',transform:'translate(0 -30)'},lb);
- el('path',{fill:'var(--glass)','fill-opacity':.35,stroke:'var(--fig)','stroke-width':1.6,d:'M-8.5 -7L8.5 -7L8.5 3L4 0L1 6L-2 1L-5 5L-8.5 2Z'},lb);
- el('path',{fill:'none',stroke:'var(--fig)','stroke-width':1.1,d:'M-3 -7L-3 -1M3 -7L3 -2'},lb);
- el('path',{fill:'none',stroke:'var(--fig)','stroke-width':1.6,d:'M-7 -8C-7 -20 7 -20 7 -8',transform:'translate(0 -30) rotate(70 0 -14)'},lb);
+{// the online sheet's lantern, knocked over on its side: glass broken open, flame out, handle come loose
+ const lb=el('g',{transform:'translate(-2 -21) scale(1.9) rotate(-90) translate(0 -30)'},dsLan);
+ el('path',{fill:'url(#ht)',d:'M-1.6 9.5A1.8 1.8 0 1 1 1.6 9.5L1.2 13L-1.2 13ZM-4 13L4 13L9 20L-9 20ZM-10 20L10 20L10 23L-10 23ZM-10 45L10 45L11 50L-11 50Z'},lb);
+ el('path',{fill:'var(--glass)','fill-opacity':.4,stroke:'var(--fig)','stroke-width':1.6,'stroke-linejoin':'round',d:'M-8.5 23L1.5 23L-1 27.5L3.5 30.5L0.5 34.5L5 37.5L8.5 36L8.5 45L-8.5 45Z'},lb);
+ el('path',{fill:'none',stroke:'var(--fig)','stroke-width':1.1,d:'M-3 23L-3 45M3 39L3 45'},lb);
+ el('path',{fill:'none',stroke:'var(--fig)','stroke-width':.8,'stroke-linecap':'round',d:'M-8.5 31L-5.5 32.5L-6.5 36.5M-3 38L-0.5 40.5'},lb);
+ el('rect',{x:-2.4,y:40,width:4.8,height:2.4,fill:'url(#ht)'},lb);
+ el('path',{fill:'none',stroke:'var(--fig)','stroke-width':3,'stroke-linecap':'round',d:'M-46 -2C-50 -18 -30 -24 -26 -6'},dsLan);
  const gl=el('g',{fill:'var(--glass)','fill-opacity':.55,stroke:'var(--fig)','stroke-width':1},dsLan);
- [[44,-4,'0,0 10,-6 8,3'],[60,-3,'0,0 7,-9 12,0'],[74,-2,'0,0 6,-5 9,1'],[34,-3,'0,0 6,-7 9,0']].forEach(([x,y,pt])=>el('polygon',{points:pt,transform:`translate(${x} ${y})`},gl));
- el('path',{class:'dssmoke',fill:'none',stroke:'var(--fig)','stroke-width':1.6,'stroke-linecap':'round',d:'M-8 -26C-14 -34 -2 -40 -8 -50C-12 -56 -6 -62 -8 -68'},dsLan);}
+ [[30,-3,'0,0 7,-8 10,0'],[44,-2,'0,0 6,-6 9,1'],[56,-2,'0,0 5,-5 8,0'],[22,-2,'0,0 4,-5 7,0']].forEach(([x,y,pt])=>el('polygon',{points:pt,transform:`translate(${x} ${y})`},gl));
+ el('path',{class:'dssmoke',fill:'none',stroke:'var(--fig)','stroke-width':1.6,'stroke-linecap':'round',d:'M20 -24C14 -32 26 -38 20 -48C16 -54 22 -60 20 -66'},dsLan);}
 const dsTower=onSand(-31,2,el('g',{class:'dstw',style:'display:none'},W));W.insertBefore(dsTower,W.firstChild);window.__dsTower=dsTower;
 {const T=el('g',{transform:'scale(.74)'},dsTower),L=(x0,y0,x1,y1,y)=>x0+(x1-x0)*(y-y0)/(y1-y0),lv=[0,-34,-66,-95,-120,-138];
  el('path',{class:'dstp',d:'M-44 -2L-2 -17L44 -3L2 12Z'},T);el('path',{class:'dsts',d:'M-44 -2L-44 4L2 18L44 3L44 -3L2 12Z'},T);
@@ -1658,6 +1661,9 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   window.__dsScene = { build: build, post: post };
 })();
 </script>
+
+
+
 
 
 
