@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="408">
+<meta name="build" content="409">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -26,13 +26,19 @@
 .kz-t svg{width:100%;height:100%;display:block}.kz-t.grey svg{filter:grayscale(1);opacity:.7}
 .kz-t[aria-pressed=true]{outline-color:var(--accent);box-shadow:none}.kz-t[aria-pressed=true] svg{opacity:1}
 #kz-sheet{max-height:calc(100dvh - 24px);overflow-y:auto}
-.kz-stage{background:color-mix(in srgb,var(--ink) 5%,var(--surface));border-radius:20px;padding:12px;display:flex;gap:12px;justify-content:center;margin-bottom:12px}
-.kz-stage svg{width:min(104px,28vw);height:auto;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,.12))}
-.kz-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:16px;padding:2px;margin-bottom:4px}
-.kz-qb{font:inherit;background:none;border:0;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 2px;border-radius:14px;min-width:0;position:relative}
-.kz-qb+.kz-qb:before{content:"";position:absolute;left:0;top:10px;bottom:10px;border-left:1px dashed var(--line)}
-.kz-qb svg{width:18px;height:18px;flex:none;color:var(--muted)}.kz-qb .qt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;min-width:0}
-.kz-qb .qc{font-size:9px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.kz-qb .qv{font-size:12px;font-weight:500;white-space:nowrap}
+.kz-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:stretch}
+.kz-stage{background:color-mix(in srgb,var(--ink) 5%,var(--surface));border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.kz-stage svg{width:min(90px,24vw);height:auto;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,.12))}
+.kz-bar{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:20px;padding:4px}
+.kz-qb{flex:1;font:inherit;background:none;border:0;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:14px;min-width:0;position:relative;text-align:left}
+.kz-qb+.kz-qb:before{content:"";position:absolute;left:10px;right:10px;top:0;border-top:1px dashed var(--line)}
+.kz-qb svg{width:26px;height:26px;flex:none;color:var(--muted)}.kz-qb .qt{flex:1;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;min-width:0}
+.kz-qb .qc{font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.kz-qb .qv{font-size:13px;font-weight:600;white-space:nowrap}
+.kz-qb .qd{display:flex;gap:4px;flex:none}.kz-qb .qd i{width:6px;height:6px;border-radius:50%;background:var(--line)}.kz-qb .qd i.on{background:var(--ink)}
+.kz-head{display:flex;align-items:center;gap:10px}.kz-head .kz-ttl{flex:1;font-weight:700;font-size:1.05rem}
+.kz-apply{font:inherit;font-size:.85rem;font-weight:600;border:0;border-radius:999px;padding:8px 16px;background:var(--ctl);color:var(--on-ctl);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.kz-apply.done{background:none;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line);cursor:default}.kz-apply svg{width:15px;height:15px}
+.kz-x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}.kz-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .kz-qb:disabled{opacity:.35;cursor:not-allowed}
 .kz-g{border-top:1px dashed var(--line);padding:12px 4px 0;margin-top:12px;display:flex;flex-direction:column;gap:9px}
 .kz-gh{display:flex;justify-content:space-between;align-items:baseline;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.kz-gh b{font-size:.8rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
@@ -1208,14 +1214,18 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 
   /* custom sheet */
   var ks = document.createElement('div'); ks.className = 'sheet lsheet psheet'; ks.id = 'kz-sheet'; ks.hidden = true; ks.setAttribute('role', 'dialog'); ks.setAttribute('aria-label', 'Custom app icon');
-  ks.innerHTML = '<div class="shtitle"><span>Custom icon</span><button type="button" class="shclose" aria-label="Done"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="kz-stage" id="kz-stage"></div><div class="kz-bar" id="kz-bar"></div><div id="kz-ctl"></div>';
+  ks.innerHTML = '<div class="kz-head"><span class="kz-ttl">Custom icon</span><button type="button" class="kz-apply" id="kz-apply">Apply</button><button type="button" class="kz-x" id="kz-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="kz-hero" style="margin-top:14px"><div class="kz-stage" id="kz-stage"></div><div class="kz-bar" id="kz-bar"></div></div><div id="kz-ctl"></div>';
   document.body.appendChild(ks); ks.addEventListener('click', function (e) { e.stopPropagation(); });
   var scrim = document.getElementById('scrim');
-  function openKs() { sheet.hidden = true; ks.hidden = false; if (scrim) scrim.hidden = false; paintAll(); }
-  function closeKs() { ks.hidden = true; sheet.hidden = false; }
+  var draft = null;
+  function openKs() { draft = {}; KEYS.forEach(function (k) { draft[k] = cur[k]; }); sheet.hidden = true; ks.hidden = false; if (scrim) scrim.hidden = false; paintAll(); }
+  function closeKs() { ks.hidden = true; sheet.hidden = false; draft = null; paintAll(); }
   document.getElementById('kz-open').onclick = function (e) { e.stopPropagation(); openKs(); };
-  ks.querySelector('.shclose').onclick = closeKs;
-  if (scrim) scrim.addEventListener('click', function () { if (!ks.hidden) { ks.hidden = true; scrim.hidden = true; } });
+  document.getElementById('kz-close').onclick = closeKs;
+  function sameAsCur() { return !!draft && KEYS.every(function (k) { return draft[k] === cur[k]; }); }
+  document.getElementById('kz-apply').onclick = function () { if (!draft || sameAsCur()) return; KEYS.forEach(function (k) { cur[k] = draft[k]; }); save(); };
+  function edit(k, v) { draft[k] = v; paintAll(); }
+  if (scrim) scrim.addEventListener('click', function () { if (!ks.hidden) { ks.hidden = true; scrim.hidden = true; draft = null; } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ks.hidden) closeKs(); });
 
   var RF = 'M1.8 11.7A10.2 3.1 0 0 0 22.2 11.7', RB = 'M22.2 11.7A10.2 3.1 0 0 0 1.8 11.7', RT = ' transform="rotate(-16 12 11.7)"';
@@ -1238,13 +1248,13 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     { key: 'tint', label: 'Colour', opts: [['off', 'Orbit', 'orbit'], ['on', 'Whole', 'whole']] }
   ];
   var bar = document.getElementById('kz-bar');
-  QG.forEach(function (g) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-qb'; b.id = 'kz-q-' + g.key; b.onclick = function () { cur[g.key] = cur[g.key] === g.opts[0][0] ? g.opts[1][0] : g.opts[0][0]; save(); }; bar.appendChild(b); });
+  QG.forEach(function (g) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-qb'; b.id = 'kz-q-' + g.key; b.onclick = function () { if (!b.disabled) edit(g.key, draft[g.key] === g.opts[0][0] ? g.opts[1][0] : g.opts[0][0]); }; bar.appendChild(b); });
   var ctl = document.getElementById('kz-ctl');
   function grp(key, label) { var d = document.createElement('section'); d.className = 'kz-g'; d.innerHTML = '<div class="kz-gh"><span>' + label + '</span><b data-kz="' + key + '"></b></div>'; ctl.appendChild(d); return d; }
   var cw = document.createElement('div'); cw.className = 'kz-sw'; grp('color', 'Colour').appendChild(cw);
-  COLORS.forEach(function (c) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-s'; b.dataset.v = c.id; b.setAttribute('aria-label', c.name); b.title = c.name; b.onclick = function () { cur.color = c.id; save(); }; cw.appendChild(b); });
+  COLORS.forEach(function (c) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-s'; b.dataset.v = c.id; b.setAttribute('aria-label', c.name); b.title = c.name; b.onclick = function () { edit('color', c.id); }; cw.appendChild(b); });
   function tiles(key, label) { var r = document.createElement('div'); r.className = 'kz-row'; grp(key, label).appendChild(r);
-    OPTS[key].forEach(function (o) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-t grey'; b.dataset.k = key; b.dataset.v = o[0]; b.setAttribute('aria-label', o[1]); b.title = o[1]; b.onclick = function () { cur[key] = o[0]; save(); }; r.appendChild(b); }); }
+    OPTS[key].forEach(function (o) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-t grey'; b.dataset.k = key; b.dataset.v = o[0]; b.setAttribute('aria-label', o[1]); b.title = o[1]; b.onclick = function () { edit(key, o[0]); }; r.appendChild(b); }); }
   tiles('pattern', 'Fill pattern'); tiles('road', 'Route');
 
   function paintAll() {
@@ -1253,18 +1263,20 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     document.getElementById('kz-name').textContent = nm; document.getElementById('kz-sum').textContent = summary();
     if (selEl) selEl.textContent = nm;
     pr.querySelectorAll('.kz-t').forEach(function (b) { b.setAttribute('aria-pressed', String(!!m && m.id === b.dataset.p)); });
-    if (ks.hidden) return;
-    document.getElementById('kz-stage').innerHTML = svgFor(cur, 'light') + svgFor(cur, 'dark');
-    var glb = cur.map === 'on';
+    if (ks.hidden || !draft) return;
+    var D = draft, ap = document.getElementById('kz-apply'), same = sameAsCur();
+    ap.classList.toggle('done', same); ap.setAttribute('aria-disabled', String(same)); ap.innerHTML = same ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Applied' : 'Apply';
+    document.getElementById('kz-stage').innerHTML = svgFor(D, 'light') + svgFor(D, 'dark');
+    var glb = D.map === 'on';
     QG.forEach(function (g) {
       var b = document.getElementById('kz-q-' + g.key), off = g.key === 'mk' && glb;
-      var o = off ? g.opts[1] : (g.opts.filter(function (x) { return x[0] === cur[g.key]; })[0] || g.opts[0]), nx = g.opts.filter(function (x) { return x !== o; })[0];
+      var o = off ? g.opts[1] : (g.opts.filter(function (x) { return x[0] === D[g.key]; })[0] || g.opts[0]), nx = g.opts.filter(function (x) { return x !== o; })[0];
       b.disabled = off; b.setAttribute('aria-label', g.label + ': ' + o[1] + (off ? ' (globe has no marker)' : '. Tap for ' + nx[1]));
-      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[o[2]] + '</svg><span class="qt"><span class="qc">' + g.label + '</span><span class="qv">' + o[1] + '</span></span>';
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[o[2]] + '</svg><span class="qt"><span class="qc">' + g.label + '</span><span class="qv">' + o[1] + '</span></span><span class="qd" aria-hidden="true">' + g.opts.map(function (x) { return '<i' + (x === o ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
     });
-    cw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === b.dataset.v; })[0]; b.style.background = th === 'dark' ? c.light : (c.accent || c.deep); b.setAttribute('aria-pressed', String(cur.color === c.id)); });
-    ctl.querySelectorAll('.kz-t').forEach(function (b) { var k = b.dataset.k, v = b.dataset.v, p = {}; KEYS.forEach(function (x) { p[x] = cur[x]; }); p[k] = v; if (k === 'pattern') { p.road = 'none'; p.mk = 'none'; } b.innerHTML = svgFor(p, th); b.setAttribute('aria-pressed', String(cur[k] === v)); });
-    ctl.querySelectorAll('[data-kz]').forEach(function (el) { var k = el.dataset.kz; el.textContent = k === 'color' ? colName(cur.color) : optName(k, cur[k]); });
+    cw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === b.dataset.v; })[0]; b.style.background = th === 'dark' ? c.light : (c.accent || c.deep); b.setAttribute('aria-pressed', String(D.color === c.id)); });
+    ctl.querySelectorAll('.kz-t').forEach(function (b) { var k = b.dataset.k, v = b.dataset.v, p = {}; KEYS.forEach(function (x) { p[x] = D[x]; }); p[k] = v; if (k === 'pattern') { p.road = 'none'; p.mk = 'none'; } b.innerHTML = svgFor(p, th); b.setAttribute('aria-pressed', String(D[k] === v)); });
+    ctl.querySelectorAll('[data-kz]').forEach(function (el) { var k = el.dataset.kz; el.textContent = k === 'color' ? colName(D.color) : optName(k, D[k]); });
   }
   new MutationObserver(function () { applyIcon(); paintAll(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-skin', 'class', 'style'] });
   applyIcon(); paintAll();
