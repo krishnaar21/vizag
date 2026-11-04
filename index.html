@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="444">
+<meta name="build" content="445">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -815,7 +815,7 @@ function poseHuman(h,t){
       const ux=(w[0]-e[0])/A.L2,uy=(w[1]-e[1])/A.L2,hw=A.w[3]/2+1.5,B=k=>{const cx=w[0]-ux*k,cy=w[1]-uy*k;return `M${f(cx-uy*hw)} ${f(cy+ux*hw)}L${f(cx+uy*hw)} ${f(cy-ux*hw)}`};
       return {d:capsule(sh,A.w[0],e,A.w[1])+capsule(e,A.w[2],w,A.w[3])+hand,hand:hd,band:B(2)+B(7)}}; // a wristband: two thin cuts across the wrist
     const lead=h.lead,DS=window.__desert&&lead;
-    const na=DS?(()=>{const r=binoArm(c,{E:[149,33],sh:A.sh,L1:A.L1,L2:A.L2,w:A.w},bob,lean+sway*.4);return {d:r.arm+r.front,hand:r.hand,band:r.band}})():arm(p+.5,lead?A.amp*.35:A.amp,lead?18:0),fa=lead&&dark?arm(p,A.amp*.4,16):arm(p,A.amp,0);
+    const na=DS?(()=>{const r=binoArm(c,window.__dsM||{E:[150,33],sh:A.sh,L1:43,L2:58,w:[24,19,18,15],len:30,h:17},bob,lean+sway*.4);return {d:r.arm+r.front,hand:r.hand,band:r.band}})():arm(p+.5,lead?A.amp*.35:A.amp,lead?18:0),fa=lead&&dark?arm(p,A.amp*.4,16):arm(p,A.amp,0);
     h.na.setAttribute('d',na.d);h.fa.setAttribute('d',fa.d);h.nab.setAttribute('d',na.band);h.fab.setAttribute('d',fa.band);h.hand=DS?fa.hand:na.hand;h.hand2=fa.hand;}
   if(c.bottle){const wr=rotAbout([c.bottle.wrist[0],c.bottle.wrist[1]+bob],[c.hip[0],c.hip[1]+bob],lean+sway*.4);
     const hr=14+5*Math.sin(2*Math.PI*(p-.1));
@@ -828,15 +828,20 @@ function poseHuman(h,t){
     if(q<c.ST)th=th0-2*th0*(q/c.ST);else{const u=(q-c.ST)/(1-c.ST);th=-th0+2*th0*ease(u);lift=7*Math.sin(Math.PI*u)}
     const tip=[gp[0]+Math.sin(th)*C.L,gp[1]+Math.cos(th)*C.L-lift],top=[gp[0]-Math.sin(th)*6,gp[1]-Math.cos(th)*6-lift];
     h.cane.setAttribute('d',capsule(top,C.w,tip,C.w*.85));}
-  if(h.dsArm&&window.__desert){const D={woman:{E:[146,84],sh:[118,131],L1:46,L2:40,w:[17,14,13,11]},nb:{E:[151,52],sh:[114,92],L1:50,L2:44,w:[22,18,17,14]}}[h.name],r=binoArm(c,D,bob,lean+sway*.4);
+  if(h.dsArm&&window.__desert){const D=(window.__dsD||{})[h.name]||{woman:{E:[146,84],sh:[121,132],L1:38,L2:50,w:[18,15,14,12],len:28,h:16,fw:13,fh:16},nb:{E:[152,52],sh:[118,96],L1:46,L2:54,w:[22,18,17,14],len:30,h:17}}[h.name],r=binoArm(c,D,bob,lean+sway*.4);
     h.dsArm.setAttribute('d',r.arm);h.dsFront.setAttribute('d',r.front);h.dsBand.setAttribute('d',r.band)}
 }
 /* binoculars held up to the eyes: arm from the shoulder, a fist under the barrels, barrels in profile; all in figure space, turned with the body */
-function binoArm(c,D,bob,an){const piv=[c.hip[0],c.hip[1]+bob],Rr=q=>rotAbout([q[0],q[1]+bob],piv,an),poly=pts=>'M'+pts.map(q=>{const r=Rr(q);return f(r[0])+' '+f(r[1])}).join('L')+'Z';
-  const E=D.E,sh=Rr(D.sh),w=Rr([E[0]+12,E[1]+13]);let e=knee(sh,w,D.L1,D.L2);const dx=w[0]-sh[0],dy=w[1]-sh[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,px=e[0]-sh[0],py=e[1]-sh[1],pr=px*ux+py*uy,m=[sh[0]+2*pr*ux-px,sh[1]+2*pr*uy-py];if(m[1]>e[1])e=m;
-  const bx=E[0],by=E[1],body=poly([[bx,by-5],[bx+4,by-6],[bx+4,by-8],[bx+23,by-8],[bx+27,by-10],[bx+29,by-10],[bx+29,by+10],[bx+27,by+10],[bx+23,by+8],[bx+4,by+8],[bx+4,by+6],[bx,by+5]]);
-  const fist=capsule(Rr([E[0]+8,E[1]+11]),15,Rr([E[0]+17,E[1]+11]),14),ln=x=>{const a=Rr([bx+x,by-8]),b2=Rr([bx+x,by+8]);return `M${f(a[0])} ${f(a[1])}L${f(b2[0])} ${f(b2[1])}`};
-  return {arm:capsule(sh,D.w[0],e,D.w[1])+capsule(e,D.w[2],w,D.w[3]),front:fist+body,hand:w,band:ln(4)+ln(23)}}
+function binoArm(c,D,bob,an){const piv=[c.hip[0],c.hip[1]+bob],Rr=q=>rotAbout([q[0],q[1]+bob],piv,an),poly=pts=>'M'+pts.map(q=>{const r=Rr(q);return f(r[0])+' '+f(r[1])}).join('L')+'Z',seg=pts=>'M'+pts.map(q=>{const r=Rr(q);return f(r[0])+' '+f(r[1])}).join('L');
+  const E=D.E,len=D.len||30,h=D.h||17,ex=E[0]-3,ey=E[1],j1=ex+7,j2=ex+len*.62,j3=ex+len;
+  // binoculars in profile: eyepiece against the eye, prism body, wider objective barrel
+  const bino=poly([[ex,ey-h*.3],[j1,ey-h*.3],[j1,ey-h*.5],[j2,ey-h*.5],[j2+2,ey-h*.6],[j3,ey-h*.6],[j3,ey+h*.6],[j2+2,ey+h*.6],[j2,ey+h*.5],[j1,ey+h*.5],[j1,ey+h*.3],[ex,ey+h*.3]]);
+  // fist wrapped round the middle of the barrel, wrist just below it
+  const gx=ex+len*.42,gy=ey+h*.08,fw=D.fw||14,fh=D.fh||17,fx0=gx-fw/2,fx1=gx+fw/2,fy0=gy-fh*.42,fy1=gy+fh*.58,rr=4.5;
+  const fist=poly([[fx0+rr,fy0],[fx1-rr,fy0],[fx1,fy0+rr],[fx1,fy1-rr],[fx1-rr,fy1],[fx0+rr,fy1],[fx0,fy1-rr],[fx0,fy0+rr]]);
+  const w=Rr([gx-1,fy1-3]),sh=Rr(D.sh);let e=knee(sh,w,D.L1,D.L2);const dx=w[0]-sh[0],dy=w[1]-sh[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,px=e[0]-sh[0],py=e[1]-sh[1],pr=px*ux+py*uy,m=[sh[0]+2*pr*ux-px,sh[1]+2*pr*uy-py];if(m[1]>e[1])e=m;
+  const band=seg([[fx0,fy1-2],[fx0,fy0+rr],[fx0+rr,fy0],[fx1-rr,fy0],[fx1,fy0+rr],[fx1,fy1-4]])+seg([[fx1-5,fy0+fh*.32],[fx1,fy0+fh*.32]])+seg([[fx1-5,fy0+fh*.58],[fx1,fy0+fh*.58]])+seg([[j1,ey-h*.5],[j1,ey+h*.5]])+seg([[j2,ey-h*.5],[j2,ey+h*.5]]);
+  return {arm:capsule(sh,D.w[0],e,D.w[1])+capsule(e,D.w[2],w,D.w[3]),front:bino+fist,hand:w,band}}
 
 /* dog: 8-frame sprite, stepped */
 function buildDog(){
@@ -1572,6 +1577,9 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   window.__dsScene = { build: build, post: post };
 })();
 </script>
+
+
+
 
 
 
