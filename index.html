@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="416">
+<meta name="build" content="417">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -975,7 +975,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   var bgN = 0;
   function bgOver(id, c, dark) {
     var u = 'bo' + (++bgN), ink = dark ? '#FFFFFF' : c.deep;
-    if (id === 'grain') return { defs: '<filter id="' + u + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  ' + (dark ? '0.34 0 0 0 -0.12' : '0.36 0 0 0 -0.13') + '" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in"/></filter>', attrs: 'fill="#000" filter="url(#' + u + ')"' };
+    if (id === 'grain') return { defs: '<filter id="' + u + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  ' + (dark ? '0.2 0 0 0 -0.07' : '0.2 0 0 0 -0.075') + '" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in"/></filter>', attrs: 'fill="#000" filter="url(#' + u + ')"' };
     if (id === 'grad') { var t = c.accent || c.mid; return { defs: '<linearGradient id="' + u + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + (dark ? mixHex('#0E0E0E', c.deep, 0.5) : mixHex('#FFFFFF', t, 0.05)) + '"/><stop offset="1" stop-color="' + (dark ? '#0A0A0A' : mixHex('#FFFFFF', t, 0.36)) + '"/></linearGradient>', attrs: 'fill="url(#' + u + ')"' }; }
     if (id === 'dots') return { defs: '<pattern id="' + u + '" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="0.75" fill="' + ink + '" fill-opacity="' + (dark ? 0.16 : 0.18) + '"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
     if (id === 'lines') return { defs: '<pattern id="' + u + '" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M1.7 0V3.4" stroke="' + ink + '" stroke-opacity="' + (dark ? 0.14 : 0.15) + '" stroke-width="0.6"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
