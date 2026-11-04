@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="415">
+<meta name="build" content="416">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -45,7 +45,7 @@
 .kz-sw{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;justify-items:center;padding:3px 0}
 .kz-s{width:min(26px,100%);aspect-ratio:1;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);outline:2px solid transparent;outline-offset:2px}
 .kz-s[aria-pressed=true]{outline-color:var(--ink)}
-#theme-sheet .thsec:last-child{margin-bottom:0}.kz-bgw{grid-template-columns:repeat(8,minmax(0,1fr))!important}.kz-bgs{box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)!important}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
+#theme-sheet .thsec:last-child{margin-bottom:0}.kz-bgw{grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:4px!important}.kz-bgs{box-shadow:none!important;overflow:hidden}.kz-bgs svg{display:block;width:100%;height:100%}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
 </style>
 </head>
 <body>
@@ -969,10 +969,28 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 (function () {
   var P = '#FBF9F5', K = '#121212';
   /* icon backgrounds: [id, name, light tile, dark tile]; 'match' is tinted from the chosen colour */
-  var BGS = [['paper', 'Paper', '#FBF9F5', '#121212'], ['white', 'White', '#FFFFFF', '#000000'], ['sand', 'Sand', '#F3EADB', '#1A1712'], ['sky', 'Sky', '#E8F0FA', '#0D1522'], ['mint', 'Mint', '#E6F3EC', '#0C1914'], ['blush', 'Blush', '#F8E9EC', '#1C1215'], ['stone', 'Stone', '#ECECEF', '#1A1A1D'], ['match', 'Match colour', '', '']];
+  var BGS = [['paper', 'Paper', '#FBF9F5', '#121212'], ['white', 'White', '#FFFFFF', '#000000'], ['stone', 'Stone', '#ECECEF', '#1A1A1D'], ['peach', 'Peach', '#FBE4D5', '#23170F'], ['lilac', 'Lilac', '#ECE7F8', '#17131F'], ['sage', 'Sage', '#E3EADD', '#121711'], ['butter', 'Butter', '#FAF2D0', '#1C1A0D'], ['match', 'Match colour', '', ''], ['grain', 'Grain', '#F6F2EA', '#141311'], ['grad', 'Gradient', '', ''], ['dots', 'Dot grid', '#FBF9F5', '#121212'], ['lines', 'Fine lines', '#FBF9F5', '#121212']];
   function mixHex(a, b, t) { var p = function (h) { h = h.replace('#', ''); return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }; var x = p(a), y = p(b); return '#' + x.map(function (v, i) { var r = Math.round(v + (y[i] - v) * t).toString(16); return r.length < 2 ? '0' + r : r; }).join(''); }
+  /* textured backgrounds: a solid base from bgFor plus an overlay drawn over the tile */
+  var bgN = 0;
+  function bgOver(id, c, dark) {
+    var u = 'bo' + (++bgN), ink = dark ? '#FFFFFF' : c.deep;
+    if (id === 'grain') return { defs: '<filter id="' + u + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  0 0 0 0 ' + (dark ? 1 : 0) + '  ' + (dark ? '0.34 0 0 0 -0.12' : '0.36 0 0 0 -0.13') + '" result="g"/><feComposite in="g" in2="SourceGraphic" operator="in"/></filter>', attrs: 'fill="#000" filter="url(#' + u + ')"' };
+    if (id === 'grad') { var t = c.accent || c.mid; return { defs: '<linearGradient id="' + u + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + (dark ? mixHex('#0E0E0E', c.deep, 0.5) : mixHex('#FFFFFF', t, 0.05)) + '"/><stop offset="1" stop-color="' + (dark ? '#0A0A0A' : mixHex('#FFFFFF', t, 0.36)) + '"/></linearGradient>', attrs: 'fill="url(#' + u + ')"' }; }
+    if (id === 'dots') return { defs: '<pattern id="' + u + '" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="0.75" fill="' + ink + '" fill-opacity="' + (dark ? 0.16 : 0.18) + '"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
+    if (id === 'lines') return { defs: '<pattern id="' + u + '" width="3.4" height="3.4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M1.7 0V3.4" stroke="' + ink + '" stroke-opacity="' + (dark ? 0.14 : 0.15) + '" stroke-width="0.6"/></pattern>', attrs: 'fill="url(#' + u + ')"' };
+    return null;
+  }
+  /* round swatch: light half top-left, dark half bottom-right */
+  function bgSwatch(id, c) {
+    var h = '', d = '';
+    [false, true].forEach(function (dk) { var o = bgOver(id, c, dk), cp = 'bs' + (++bgN); var pts = dk ? '40,0 40,40 0,40' : '0,0 40,0 0,40';
+      d += '<clipPath id="' + cp + '"><polygon points="' + pts + '"/></clipPath>' + (o ? o.defs : '');
+      h += '<g clip-path="url(#' + cp + ')"><rect width="40" height="40" fill="' + bgFor(id, c, dk) + '"/>' + (o ? '<rect width="40" height="40" ' + o.attrs + '/>' : '') + '</g>'; });
+    return '<svg viewBox="0 0 40 40" aria-hidden="true"><defs>' + d + '</defs>' + h + '<circle cx="20" cy="20" r="19.5" fill="none" stroke="rgba(127,127,127,.4)"/></svg>';
+  }
   function bgFor(id, c, dark) {
-    if (id === 'match') return dark ? mixHex('#0E0E0E', c.deep, 0.32) : mixHex('#FFFFFF', c.accent || c.mid, 0.16);
+    if (id === 'match' || id === 'grad') return dark ? mixHex('#0E0E0E', c.deep, 0.32) : mixHex('#FFFFFF', c.accent || c.mid, 0.16);
     var b = BGS.filter(function (x) { return x[0] === id; })[0] || BGS[0]; return dark ? b[3] : b[2];
   }
   var COLORS = [
@@ -997,7 +1015,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     ring: [['on', 'Ring on'], ['off', 'Ring off']],
     icon: [['globe', 'Globe'], ['pin', 'Pin'], ['squircle', 'Squircle'], ['rsquare', 'Rounded square'], ['hexagon', 'Hexagon'], ['octagon', 'Octagon'], ['diamond', 'Diamond'], ['triangle', 'Triangle'], ['shield', 'Shield'], ['arch', 'Arch'], ['pill', 'Pill'], ['drop', 'Drop'], ['leaf', 'Leaf'], ['semicircle', 'Semicircle'], ['heart', 'Heart'], ['star', 'Star']],
     map: [['off', 'Pattern only'], ['on', 'Globe map']],
-    mk: [['circle', 'Circle'], ['none', 'No marker']],
+    mk: [['circle', 'Cutout'], ['fill', 'Filled'], ['none', 'No marker']],
     tilt: [['left', 'Rising'], ['right', 'Falling']],
     road: [['orbit', 'Orbit ring'], ['dashed', 'Dashed orbit'], ['double', 'Double orbit'], ['sat', 'Orbit + traveller'], ['band', 'Orbit band'], ['none', 'No route']]
   };
@@ -1045,7 +1063,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     var uid = 'kz' + (++uidN);
     var c = COLORS.filter(function (x) { return x.id === s.color; })[0] || COLORS[0];
     var dark = s.theme === 'dark';
-    var bg = bgFor(s.bg || 'paper', c, dark);
+    var bg = bgFor(s.bg || 'paper', c, dark), bgOv = bgOver(s.bg, c, dark), bgO = bgOv ? '<rect width="100" height="100" rx="22.4" ' + bgOv.attrs + '/>' : '';
     var main = dark ? c.light : c.deep;
     var acc = dark ? c.light : (c.accent || main);
     if (s.tint !== 'on') { c = COLORS[0]; main = dark ? c.light : c.deep; } else if (c.accent) { c = { id: c.id, deep: c.accent, mid: c.accent, light: c.light }; main = c.deep; } /* whole icon uses one hue: the swatch colour */  /* fill stays ink and only the orbit takes the colour; with no orbit ('Colour fill') the shape itself takes it */
@@ -1075,7 +1093,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
         t = 40 - Math.sqrt(900 - dd * dd); bt = Math.abs(dd) <= 24 ? 90 - 32 * Math.abs(dd) / 24 : 40 + Math.sqrt(900 - dd * dd);
         w = 0.5 + (wmax - 0.5) * Math.sqrt(1 - (dd / 30) * (dd / 30)); if (s.road === 'spot') w *= 0.4 + 2.1 * Math.exp(-Math.pow((x - 50) / 9, 2)); d += lens(x, t, bt, w); }
     }
-    var mk = isGlobe && !IC ? 'none' : s.mk === 'circle' || s.mk === 'none' ? s.mk : 'pin'; /* globe never carries a marker */
+    var mk = isGlobe && !IC ? 'none' : s.mk === 'fill' ? 'circle' : s.mk === 'circle' || s.mk === 'none' ? s.mk : 'pin'; /* globe never carries a marker */
     var M = {
       globe: {
         pin: { hole: 'M64 17a12 12 0 0 1 12 12C76 39 64 53 64 53S52 39 52 29a12 12 0 0 1 12-12z', dx: 64, dy: 29, dr: 4, road: 'M6 68C24 46 42 74 64 53' },
@@ -1173,9 +1191,11 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     [line, line2].forEach(function (line) {
     if (line) body += (line.clip ? '<g clip-path="url(#s' + uid + ')">' : '<g>') + '<g mask="url(#h' + uid + ')"><path d="' + line.d + '" fill="none" stroke="' + (line.col || lineCol) + '" stroke-width="' + line.w + '"' + (line.dash ? ' stroke-dasharray="' + line.dash + '"' : '') + (line.cap ? ' stroke-linecap="' + line.cap + '"' : '') + '/></g></g>';
     });
+    if (holeD && s.mk === 'fill') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + f(dr * 1.42) + '" fill="' + acc + '"/>'; /* filled marker: solid dot inside the cut-out */
     if (holeD && s.pin !== 'hole') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + dr + '" fill="' + (s.pin === 'filled' ? bg : dot) + '"/>';
     if (s.ring === 'on' && s.pin !== 'filled') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + ringR + '" fill="none" stroke="' + dot + '" stroke-width="0.9"/>';
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Kosway ' + shape + ' icon"><defs>' + defs + '</defs><rect width="100" height="100" rx="22.4" fill="' + bg + '"/>' + body + '</svg>';
+    if (bgOv) defs += bgOv.defs;
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Kosway ' + shape + ' icon"><defs>' + defs + '</defs><rect width="100" height="100" rx="22.4" fill="' + bg + '"/>' + bgO + body + '</svg>';
   }
 
 
@@ -1183,10 +1203,10 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   var PRESETS = [
     { id: 'kosway', name: 'Kosway', th: 'light', color: 'glint', pattern: 'grain', mk: 'none', tint: 'off', map: 'off', road: 'dashed', bg: 'paper' },
     { id: 'classic', name: 'Classic', th: 'dark', color: 'ink', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit' },
-    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'indigo', pattern: 'topo', mk: 'circle', tint: 'off', map: 'off', road: 'sat', tilt: 'right', bg: 'sky' },
+    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'indigo', pattern: 'topo', mk: 'circle', tint: 'off', map: 'off', road: 'sat', tilt: 'right', bg: 'grad' },
     { id: 'lagoon', name: 'Lagoon', th: 'light', color: 'lagoon', pattern: 'rings', mk: 'circle', tint: 'on', map: 'off', road: 'none', bg: 'match' },
-    { id: 'turmeric', name: 'Turmeric', th: 'dark', color: 'turmeric', pattern: 'grad', mk: 'circle', tint: 'on', map: 'off', road: 'band', bg: 'sand' },
-    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'stipple', mk: 'none', tint: 'on', map: 'off', road: 'double', tilt: 'right', bg: 'blush' }
+    { id: 'turmeric', name: 'Turmeric', th: 'dark', color: 'turmeric', pattern: 'grad', mk: 'circle', tint: 'on', map: 'off', road: 'band', bg: 'peach' },
+    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'stipple', mk: 'none', tint: 'on', map: 'off', road: 'double', tilt: 'right', bg: 'lilac' }
   ];
   var KEYS = ['color', 'bg', 'pattern', 'mk', 'tint', 'map', 'road', 'tilt'];
   var DEF = { color: 'ink', bg: 'paper', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit', tilt: 'left' };
@@ -1238,26 +1258,27 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   if (scrim) scrim.addEventListener('click', function () { if (!ks.hidden) { ks.hidden = true; scrim.hidden = true; draft = null; } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ks.hidden) closeKs(); });
 
-  var RF = 'M1.8 11.7A10.2 3.1 0 0 0 22.2 11.7', RB = 'M22.2 11.7A10.2 3.1 0 0 0 1.8 11.7', RT = ' transform="rotate(-16 12 11.7)"';
-  function gapM(id) { return '<mask id="' + id + '"><rect x="-2" y="-2" width="28" height="28" fill="#fff"/><path d="' + RF + '" fill="none" stroke="#000" stroke-width="3.8"' + RT + '/></mask>'; }
-  function backM(id) { return '<mask id="' + id + '"><rect x="-2" y="-2" width="28" height="28" fill="#fff"/><circle cx="12" cy="12.3" r="6.6" fill="#000"/></mask>'; }
+  var PN = 'M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z';
+  function hole(r) { return 'M' + (12 - r) + ' 10a' + r + ' ' + r + ' 0 1 0 ' + 2 * r + ' 0a' + r + ' ' + r + ' 0 1 0 ' + (-2 * r) + ' 0z'; }
+  function ringG(rot, pin) { var T = ' transform="rotate(' + rot + ' 12 10.4)"', F = 'M1.5 10.4A10.5 3.2 0 0 0 22.5 10.4', B = 'M22.5 10.4A10.5 3.2 0 0 0 1.5 10.4';
+    var pe = pin === 'outline' ? '<path d="' + PN + '" stroke-width="1.4" stroke-opacity=".45" mask="url(#gA)"/>' : '<path d="' + PN + '" fill="currentColor" stroke="none"' + (pin === 'faint' ? ' fill-opacity=".3"' : '') + ' mask="url(#gA)"/>';
+    return '<defs><mask id="gA"><rect x="-2" y="-2" width="28" height="28" fill="#fff"/><path d="' + F + '" fill="none" stroke="#000" stroke-width="3.6"' + T + '/></mask><mask id="gB"><rect x="-2" y="-2" width="28" height="28" fill="#fff"/><path d="' + PN + '" fill="#000"/></mask></defs>' + pe + '<path d="' + F + '"' + T + ' stroke-width="1.9"/><path d="' + B + '"' + T + ' stroke-width="1.9" mask="url(#gB)"/>'; }
   var I = {
-    pin: '<path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/>',
-    globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.6 5.3 3.6 8.5s-1 6.1-3.6 8.5c-2.6-2.4-3.6-5.3-3.6-8.5s1-6.1 3.6-8.5z"/>',
-    circle: '<path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.4"/>',
-    none: '<circle cx="12" cy="12" r="8.5" stroke-dasharray="2.5 2.6"/>',
-    up: '<ellipse cx="12" cy="12" rx="9.5" ry="3.4" transform="rotate(-22 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/>',
-    down: '<ellipse cx="12" cy="12" rx="9.5" ry="3.4" transform="rotate(22 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/>',
-    orbit: '<defs>' + gapM('kzqo') + backM('kzqob') + '</defs><circle cx="12" cy="12.3" r="6.6" mask="url(#kzqo)" stroke-width="1.4" stroke-opacity=".38"/><path d="' + RF + '"' + RT + ' stroke-width="2"/><path d="' + RB + '"' + RT + ' stroke-width="2" mask="url(#kzqob)"/>',
-    whole: '<defs>' + gapM('kzqw') + backM('kzqwb') + '</defs><circle cx="12" cy="12.3" r="6.6" fill="currentColor" stroke="none" mask="url(#kzqw)"/><path d="' + RF + '"' + RT + ' stroke-width="2"/><path d="' + RB + '"' + RT + ' stroke-width="2" mask="url(#kzqwb)"/>'
+    cut: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="' + PN + hole(2.7) + '"/>',
+    fdot: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="' + PN + hole(3.4) + '"/><circle cx="12" cy="10" r="1.9" fill="currentColor" stroke="none"/>',
+    plain: '<path fill="currentColor" stroke="none" d="' + PN + '"/>',
+    up: ringG(-18, 'faint'), down: ringG(18, 'faint'),
+    orbit: ringG(-16, 'outline'), whole: ringG(-16, 'solid')
   };
   var QG = [
-    { key: 'mk', label: 'Marker', opts: [['circle', 'Circle', 'circle'], ['none', 'None', 'none']] },
+    { key: 'mk', label: 'Marker', opts: [['circle', 'Cutout', 'cut'], ['fill', 'Filled', 'fdot'], ['none', 'None', 'plain']] },
     { key: 'tilt', label: 'Tilt', opts: [['left', 'Rising', 'up'], ['right', 'Falling', 'down']] },
     { key: 'tint', label: 'Colour', opts: [['off', 'Orbit', 'orbit'], ['on', 'Whole', 'whole']] }
   ];
   var bar = document.getElementById('kz-bar');
-  QG.forEach(function (g) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-qb'; b.id = 'kz-q-' + g.key; b.onclick = function () { if (!b.disabled) edit(g.key, draft[g.key] === g.opts[0][0] ? g.opts[1][0] : g.opts[0][0]); }; bar.appendChild(b); });
+  function nextOpt(g, v) { var i = g.opts.map(function (x) { return x[0]; }).indexOf(v); return g.opts[(i + 1) % g.opts.length]; }
+
+  QG.forEach(function (g) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-qb'; b.id = 'kz-q-' + g.key; b.onclick = function () { if (!b.disabled) edit(g.key, nextOpt(g, draft[g.key])[0]); }; bar.appendChild(b); });
   var ctl = document.getElementById('kz-ctl');
   function grp(key, label) { var d = document.createElement('section'); d.className = 'kz-g'; d.innerHTML = '<div class="kz-gh"><span>' + label + '</span><b data-kz="' + key + '"></b></div>'; ctl.appendChild(d); return d; }
   var cw = document.createElement('div'); cw.className = 'kz-sw'; grp('color', 'Colour').appendChild(cw);
@@ -1280,11 +1301,11 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     var glb = D.map === 'on';
     QG.forEach(function (g) {
       var b = document.getElementById('kz-q-' + g.key), off = g.key === 'mk' && glb;
-      var o = off ? g.opts[1] : (g.opts.filter(function (x) { return x[0] === D[g.key]; })[0] || g.opts[0]), nx = g.opts.filter(function (x) { return x !== o; })[0];
+      var o = off ? g.opts[1] : (g.opts.filter(function (x) { return x[0] === D[g.key]; })[0] || g.opts[0]), nx = nextOpt(g, o[0]);
       b.disabled = off; b.setAttribute('aria-label', g.label + ': ' + o[1] + (off ? ' (globe has no marker)' : '. Tap for ' + nx[1]));
-      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[o[2]] + '</svg><span class="qt"><span class="qc">' + g.label + '</span><span class="qv">' + o[1] + '</span></span><span class="qd" aria-hidden="true">' + g.opts.map(function (x) { return '<i' + (x === o ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
+      b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[o[2]].replace(/id="(\w+)"/g, 'id="$1' + g.key + '"').replace(/url\(#(\w+)\)/g, 'url(#$1' + g.key + ')') + '</svg><span class="qt"><span class="qc">' + g.label + '</span><span class="qv">' + o[1] + '</span></span><span class="qd" aria-hidden="true">' + g.opts.map(function (x) { return '<i' + (x === o ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
     });
-    bw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === D.color; })[0] || COLORS[0]; b.style.background = 'linear-gradient(135deg,' + bgFor(b.dataset.v, c, false) + ' 50%,' + bgFor(b.dataset.v, c, true) + ' 50%)'; b.setAttribute('aria-pressed', String(D.bg === b.dataset.v)); });
+    bw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === D.color; })[0] || COLORS[0]; b.style.background = 'none'; b.innerHTML = bgSwatch(b.dataset.v, c); b.setAttribute('aria-pressed', String(D.bg === b.dataset.v)); });
     cw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === b.dataset.v; })[0]; b.style.background = th === 'dark' ? c.light : (c.accent || c.deep); b.setAttribute('aria-pressed', String(D.color === c.id)); });
     ctl.querySelectorAll('.kz-t').forEach(function (b) { var k = b.dataset.k, v = b.dataset.v, p = {}; KEYS.forEach(function (x) { p[x] = D[x]; }); p[k] = v; if (k === 'pattern') { p.road = 'none'; p.mk = 'none'; } b.innerHTML = svgFor(p, th); b.setAttribute('aria-pressed', String(D[k] === v)); });
     ctl.querySelectorAll('[data-kz]').forEach(function (el) { var k = el.dataset.kz; el.textContent = k === 'color' ? colName(D.color) : optName(k, D[k]); });
