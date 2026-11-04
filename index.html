@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="454">
+<meta name="build" content="455">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -770,7 +770,7 @@ function buildHuman(name){
     el('rect',{x:-2.4,y:40,width:4.8,height:2.4,fill},lan);
     bodyG.setAttribute('mask',cut(id('mbt'),[id('bh')]));
   }
-  let armG=null,nab=null;if(c.arm){armG=el('g',{fill},g);el('use',{href:'#'+id('na'),class:'dsgapu',fill:'var(--bg)',stroke:'var(--bg)','stroke-width':3.4,'stroke-linejoin':'round'},armG);el('use',{href:'#'+id('na')},armG);nab=el('path',{fill:'none',stroke:'var(--bg)','stroke-width':1.7,'stroke-linecap':'round'},armG)}
+  let armG=null,nab=null;if(c.arm){armG=el('g',{fill},g);el('use',{href:'#'+id('na'),class:'dsgapu',mask:`url(#img-${c.img})`,fill:'var(--bg)',stroke:'var(--bg)','stroke-width':3.4,'stroke-linejoin':'round'},armG);el('use',{href:'#'+id('na')},armG);nab=el('path',{fill:'none',stroke:'var(--bg)','stroke-width':1.7,'stroke-linecap':'round'},armG)}
   const cane=c.cane?el('path',{fill},g):null;
   const phone=el('g',{style:'display:none'},g);{
     {const gd=el('defs',{},phone),lg=el('linearGradient',{id:id('sg'),gradientUnits:'userSpaceOnUse',x1:-7,y1:0,x2:-58,y2:0},gd);
@@ -785,9 +785,9 @@ function buildHuman(name){
     el('rect',{x:-6.6,y:-14.6,width:9.6,height:9.6,rx:2.6,class:'dscam'},cg);
     [[-4.2,-12.2],[-0.6,-12.2],[-4.2,-8.6]].forEach(([x,y])=>el('circle',{cx:x+1.8,cy:y+1.8,r:1.35,class:'dslens'},cg));
     el('circle',{cx:1.6,cy:-7,r:.7,class:'dslens'},cg);}
-    const hg=el('g',{transform:'scale(.86 1)'},phone);
+    const hg=el('g',{transform:'scale(.8 .96)'},phone);
     el('path',{fill,stroke:'var(--bg)','stroke-width':1.2,'stroke-linejoin':'round',d:'M-10.5 7C-10.5 4.5 -8 3.5 -5.5 4L5 5C8.5 5.5 10.5 7.5 10 11L9.5 14.5C9 17.5 7 19.5 4.5 21L4 30L-6 30L-6.5 21C-9.5 18 -10.8 13 -10.5 7Z'},hg);
-    el('path',{fill:'none',stroke:'var(--bg)','stroke-width':.8,'stroke-linecap':'round','stroke-opacity':.8,d:'M2 6.2L2.6 9.6M-3 5.6L-2.6 9.2'},hg);}
+    el('path',{fill:'none',stroke:'var(--bg)','stroke-width':.8,'stroke-linecap':'round','stroke-opacity':.8,d:'M-9.5 9.5Q-1 8 8.8 10.5M-9.8 13.6Q-1 12.2 8.6 14.6M-9.3 17.4Q-1.5 16.4 6.8 18.2'},hg);}
   if(armG)g.insertBefore(phone,armG);
   let dsArm=null,dsFront=null,dsBand=null;if(name!=='man'){dsArm=el('path',{fill,style:'display:none'},back);back.insertBefore(dsArm,back.firstChild);dsFront=el('path',{fill,style:'display:none'},g);g.insertBefore(phone,dsFront);dsFront.__gap=el('path',{fill:'var(--bg)',stroke:'var(--bg)','stroke-width':3.4,'stroke-linejoin':'round',style:'display:none'},g);g.insertBefore(dsFront.__gap,dsFront);dsBand=el('path',{fill:'none',stroke:'var(--bg)','stroke-width':1.6,style:'display:none'},g)}
   return {name,c,g,body,bodyG,img,headG,det,phone,nl,nf,nfoot,ffoot,na,fa,nab,fab,cane,bottle,neck,dsArm,dsFront,dsBand,hand:[0,0]};
@@ -855,19 +855,19 @@ function poseHuman(h,t){
     const tip=[gp[0]+Math.sin(th)*C.L,gp[1]+Math.cos(th)*C.L-lift],top=[gp[0]-Math.sin(th)*6,gp[1]-Math.cos(th)*6-lift];
     h.cane.setAttribute('d',capsule(top,C.w,tip,C.w*.85));}
   if(h.dsArm&&window.__desert){const D=(window.__dsD||{})[h.name]||{woman:{P:[178,66],sh:[146,136],L1:46,L2:44,w:[20,16,14,12]},nb:{P:[188,36],sh:[144,102],L1:50,L2:46,w:[24,19,17,14]}}[h.name],r=phonePose(c,D,bob,lean+sway*.4);
-    h.dsArm.setAttribute('d',r.far);h.dsFront.setAttribute('d',r.near);if(h.dsFront.__gap)h.dsFront.__gap.setAttribute('d',r.near);h.dsBand.setAttribute('d',r.band);h.phone.setAttribute('transform',r.phone);if(h.phone.__bm)h.phone.__bm.setAttribute('transform',`rotate(${f(r.beam)})`);h.headG.setAttribute('transform',`rotate(${f(r.head)} ${h.headG.__o[0]} ${h.headG.__o[1]})`)}
+    h.dsArm.setAttribute('d',r.far);h.dsFront.setAttribute('d',r.near);if(h.dsFront.__gap){h.dsFront.__gap.setAttribute('d',r.near);h.dsFront.__gap.setAttribute('mask',h.img.getAttribute('mask'))}h.dsBand.setAttribute('d',r.band);h.phone.setAttribute('transform',r.phone);if(h.phone.__bm)h.phone.__bm.setAttribute('transform',`rotate(${f(r.beam)})`);h.headG.setAttribute('transform',`rotate(${f(r.head)} ${h.headG.__o[0]} ${h.headG.__o[1]})`)}
 }
 /* binoculars held up to the eyes: arm from the shoulder, a fist under the barrels, barrels in profile; all in figure space, turned with the body */
 /* phone held up in both hands, hunting for signal: far arm behind the body, near arm in front; the phone tilts back toward the face */
 function phonePose(c,D,bob,an){const piv=[c.hip[0],c.hip[1]+bob],Rr=q=>rotAbout([q[0],q[1]+bob],piv,an);
   const ik=(sh,w,L1,L2)=>{let e=knee(sh,w,L1,L2);const dx=w[0]-sh[0],dy=w[1]-sh[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,px=e[0]-sh[0],py=e[1]-sh[1],pr=px*ux+py*uy,m=[sh[0]+2*pr*ux-px,sh[1]+2*pr*uy-py];return m[1]>e[1]?m:e},ikF=(sh,w,L1,L2)=>{let e=knee(sh,w,L1,L2);const dx=w[0]-sh[0],dy=w[1]-sh[1],L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L,px=e[0]-sh[0],py=e[1]-sh[1],pr=px*ux+py*uy,m=[sh[0]+2*pr*ux-px,sh[1]+2*pr*uy-py];return m[0]>e[0]?m:e};
-  const T=t,TK=window.__desert?Math.sin(Math.PI*dsTurnK(t)):0,P=[D.P[0]+13*Math.sin(T*.7)+4*Math.sin(T*1.9)-12*TK,D.P[1]+12*Math.sin(T*1.05+1)-4+30*TK],tilt=(D.tilt||-12)+13*Math.sin(T*.55+.4)+10*TK,S=1.3;
+  const T=t,TK=window.__desert?Math.sin(Math.PI*dsTurnK(t)):0,P=[D.P[0]+13*Math.sin(T*.7)+4*Math.sin(T*1.9)-6*TK,D.P[1]+12*Math.sin(T*1.05+1)-4+14*TK],tilt=(D.tilt||-12)+13*Math.sin(T*.55+.4)+10*TK,S=1.3;
   let pc=Rr(P),ang=(an+tilt)*DEG;const loc=(x,y)=>[pc[0]+S*(x*Math.cos(ang)-y*Math.sin(ang)),pc[1]+S*(x*Math.sin(ang)+y*Math.cos(ang))];
-  const gn=loc(-1,29),sn=Rr(D.sh),sf=Rr([D.sh[0]-4,D.sh[1]-2]),dd0=Math.hypot(D.P[0]-D.sh[0],D.P[1]+34-D.sh[1]),NL1=dd0*.5,NL2=dd0*.48,en=ikF(sn,gn,NL1,NL2),W=D.w;
+  const gn=loc(-1,29),sn=Rr(D.sh),sf=Rr([D.sh[0]-4,D.sh[1]-2]),dd0=Math.hypot(D.P[0]-D.sh[0],D.P[1]+34-D.sh[1]),NL1=dd0*.55,NL2=dd0*.52,en=ik(sn,gn,NL1,NL2),W=D.w;
   {const af=Math.atan2(gn[1]-en[1],gn[0]-en[0]),au=Math.atan2(-Math.cos(ang),Math.sin(ang));let d=af-au;d=Math.atan2(Math.sin(d),Math.cos(d));d=Math.max(-.9,Math.min(.9,d));
    ang+=.6*d;const q=[-1*S,29*S];pc=[gn[0]-(q[0]*Math.cos(ang)-q[1]*Math.sin(ang)),gn[1]-(q[0]*Math.sin(ang)+q[1]*Math.cos(ang))]}
   const gf=loc(-6,17),ef=ik(sf,gf,D.L1,D.L2);
-  const head=-10+7*Math.sin(T*.7-.6)+3*Math.sin(T*1.6)+9*TK;
+  const head=-10+7*Math.sin(T*.7-.6)+3*Math.sin(T*1.6)+5*TK;
   const bl=Math.hypot(en[0]-gn[0],en[1]-gn[1])||1,bx=(en[0]-gn[0])/bl,by=(en[1]-gn[1])/bl,hw=W[3]/2+1.5,BB=k=>{const cx=gn[0]+bx*k,cy=gn[1]+by*k;return `M${f(cx-by*hw)} ${f(cy+bx*hw)}L${f(cx+by*hw)} ${f(cy-bx*hw)}`};
   const fc=Rr([D.sh[0]+10,D.sh[1]-46]),aw=Math.atan2(fc[1]-pc[1],fc[0]-pc[0]);let br=aw-ang-Math.PI;br=Math.atan2(Math.sin(br),Math.cos(br));
   return {beam:br/DEG,band:BB(5)+BB(10),near:capsule(sn,W[0],en,W[1])+capsule(en,W[2],gn,W[3]*.95),far:capsule(sf,W[0]*.92,ef,W[1]*.9)+capsule(ef,W[2]*.9,gf,W[3]*.9)+capsule(gf,11,loc(-7.5,5),9),hand:gn,head,phone:`translate(${f(pc[0])} ${f(pc[1])}) rotate(${f(ang/DEG)}) scale(${S})`}}
@@ -944,12 +944,12 @@ const dsDog=onSand(23,1,el('g',{},dsG));
  [[70,-46,7],[84,-66,9],[100,-90,11]].forEach(([x,y,s],i)=>el('path',{class:'z'+i,d:`M${x} ${y}h${s}l${-s} ${s}h${s}`},zz));}
 // Poppy's umbrella, blown over: canopy upside down in the sand, the shaft pointing up at an angle
 const dsUmb=onSand(24,3,el('g',{},dsG));
-{const u=el('g',{transform:'rotate(-6)'},dsUmb);
- el('path',{fill:'url(#ht)',d:'M-58 -48C-52 -6 52 -6 58 -48Q50 -40 40 -44Q30 -35 20 -42Q10 -34 0 -41Q-10 -34 -20 -42Q-30 -35 -40 -44Q-50 -40 -58 -48Z'},u);
- el('path',{fill:'none',stroke:'var(--bg)','stroke-width':1.5,'stroke-linecap':'round',d:'M0 -9L-40 -43M0 -9L-20 -41M0 -9L0 -40M0 -9L20 -41M0 -9L40 -43'},u);
- el('path',{fill:'none',stroke:'url(#ht)','stroke-width':4.5,'stroke-linecap':'round',d:'M0 -10L-14 -106'},u);
- el('path',{fill:'none',stroke:'url(#ht)','stroke-width':5,'stroke-linecap':'round',d:'M-14 -106C-16 -120 -1 -124 2 -113C4 -106 -1 -103 -5 -105'},u);
- el('path',{fill:'none',stroke:'url(#ht)','stroke-width':4,'stroke-linecap':'round',d:'M0 -8L0 3'},u);}
+{const u=el('g',{transform:'rotate(-10)'},dsUmb);
+ el('path',{fill:'url(#ht)',d:'M-54 -42C-50 -12 -26 -4 0 -4C26 -4 50 -12 54 -42C48 -38.5 43 -38.5 36 -41C29 -37.5 24 -37.5 18 -40C12 -36.5 6 -36.5 0 -39.5C-6 -36.5 -12 -36.5 -18 -40C-24 -37.5 -29 -37.5 -36 -41C-43 -38.5 -48 -38.5 -54 -42Z'},u);
+ el('path',{fill:'none',stroke:'var(--bg)','stroke-width':1.4,'stroke-linecap':'round',d:'M0 -7C-14 -14 -28 -26 -36 -40M0 -7C-6 -16 -12 -28 -18 -39M0 -7C6 -16 12 -28 18 -39M0 -7C14 -14 28 -26 36 -40'},u);
+ el('path',{fill:'none',stroke:'url(#ht)','stroke-width':4.5,'stroke-linecap':'round',d:'M0 -8C-4 -40 -8 -72 -12 -104'},u);
+ el('path',{fill:'none',stroke:'url(#ht)','stroke-width':5,'stroke-linecap':'round',d:'M-12 -104C-14 -118 1 -122 4 -111C6 -104 1 -101 -3 -103'},u);
+ el('path',{fill:'none',stroke:'url(#ht)','stroke-width':4,'stroke-linecap':'round',d:'M0 -6L0 3'},u);}
 // Sage's canteen, dropped: on its side with the cap off and water running out into a puddle
 const dsCan=onSand(19,1,el('g',{},dsG));
 {const pour=el('g',{class:'dspour'},dsCan);window.__dsPour=pour;
@@ -1658,6 +1658,9 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   window.__dsScene = { build: build, post: post };
 })();
 </script>
+
+
+
 
 
 
