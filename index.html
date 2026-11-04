@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="511">
+<meta name="build" content="512">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -2145,7 +2145,7 @@ setTimeout(dev,900);setInterval(dev,3000);
 function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
 /* 1. hairline + soft blur under whichever top bar is stuck */
 var tb=D.createElement("div");tb.className="tblur";tb.setAttribute("aria-hidden","true");D.body.appendChild(tb);var tq=0,ty=-1,tv="";
-function tpos(full){tq=0;var y=-1;var vk=(D.querySelector(".view.on,.view:not([hidden])")||{}).id||"";if(full!==!0&&window.scrollY>4&&ty>=0&&vk===tv){tb.classList.contains("on")||tb.classList.add("on");return}tv=vk;if(window.scrollY>4){D.querySelectorAll(".hometop,.pghead,.chips").forEach(function(e){var r=e.getBoundingClientRect();if(r.width<200||!r.height||r.bottom<=0||r.top>40)return;if(e.closest("[hidden],.sheet"))return;var p=getComputedStyle(e).position;if(p!=="sticky"&&p!=="fixed")return;y=Math.max(y,r.bottom)})}
+function tpos(full){tq=0;var y=-1;if(window.scrollY>4){D.querySelectorAll(".hometop,.pghead,.chips").forEach(function(e){var r=e.getBoundingClientRect();if(r.width<200||!r.height||r.bottom<=0||r.top>40)return;if(e.closest("[hidden],.sheet"))return;var cs=getComputedStyle(e),p=cs.position;if(p!=="sticky"&&p!=="fixed")return;var st=parseFloat(cs.top);if(p==="sticky"&&!isNaN(st)&&Math.abs(r.top-st)>1.5)return;y=Math.max(y,r.bottom)})}
 if(y<0){ty=-1;tb.classList.remove("on");return}y=Math.round(y);if(y!==ty){ty=y;R.style.setProperty("--tbot",y+"px")}tb.classList.contains("on")||tb.classList.add("on")}
 function tk(){tq||(tq=requestAnimationFrame(tpos))}addEventListener("scroll",tk,{passive:!0});addEventListener("resize",function(){tpos(!0)});D.addEventListener("click",function(){setTimeout(function(){tpos(!0)},350)},!0);setInterval(function(){window.scrollY>4||tpos(!0)},1500);
 /* 9. icon customiser right in the App icon section */
