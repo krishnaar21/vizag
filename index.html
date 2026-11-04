@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="413">
+<meta name="build" content="415">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -45,7 +45,7 @@
 .kz-sw{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;justify-items:center;padding:3px 0}
 .kz-s{width:min(26px,100%);aspect-ratio:1;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);outline:2px solid transparent;outline-offset:2px}
 .kz-s[aria-pressed=true]{outline-color:var(--ink)}
-#theme-sheet .thsec:last-child{margin-bottom:0}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
+#theme-sheet .thsec:last-child{margin-bottom:0}.kz-bgw{grid-template-columns:repeat(8,minmax(0,1fr))!important}.kz-bgs{box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)!important}.kz-gh b,#theme-sheet .thsel{font-size:.74rem!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important}.kz-gh{font-size:.68rem!important}.kz-pcap{margin-top:16px!important}#theme-sheet .thnote2{margin:16px -18px -20px!important;border-radius:0 0 43px 43px;padding:14px 26px 22px}
 </style>
 </head>
 <body>
@@ -968,6 +968,13 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 <script id="kz-icon">
 (function () {
   var P = '#FBF9F5', K = '#121212';
+  /* icon backgrounds: [id, name, light tile, dark tile]; 'match' is tinted from the chosen colour */
+  var BGS = [['paper', 'Paper', '#FBF9F5', '#121212'], ['white', 'White', '#FFFFFF', '#000000'], ['sand', 'Sand', '#F3EADB', '#1A1712'], ['sky', 'Sky', '#E8F0FA', '#0D1522'], ['mint', 'Mint', '#E6F3EC', '#0C1914'], ['blush', 'Blush', '#F8E9EC', '#1C1215'], ['stone', 'Stone', '#ECECEF', '#1A1A1D'], ['match', 'Match colour', '', '']];
+  function mixHex(a, b, t) { var p = function (h) { h = h.replace('#', ''); return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }; var x = p(a), y = p(b); return '#' + x.map(function (v, i) { var r = Math.round(v + (y[i] - v) * t).toString(16); return r.length < 2 ? '0' + r : r; }).join(''); }
+  function bgFor(id, c, dark) {
+    if (id === 'match') return dark ? mixHex('#0E0E0E', c.deep, 0.32) : mixHex('#FFFFFF', c.accent || c.mid, 0.16);
+    var b = BGS.filter(function (x) { return x[0] === id; })[0] || BGS[0]; return dark ? b[3] : b[2];
+  }
   var COLORS = [
     { id: 'ink', name: 'Ink', deep: '#111111', mid: '#6B665E', light: '#EDEAE4' },
     { id: 'blue', name: 'Blue', deep: '#1D5FD1', mid: '#4F8BFF', light: '#BFE0FF' },
@@ -981,6 +988,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     { id: 'clay', name: 'Clay', deep: '#8A5A3C', mid: '#B07B57', light: '#E8C9A6' }
   ];
   var OPTS = {
+    bg: BGS.map(function (b) { return [b[0], b[1]]; }),
     shape: [['both', 'Both'], ['globe', 'Globe'], ['pin', 'Pin']],
     theme: [['light', 'Light'], ['dark', 'Dark']],
     pattern: [['half', 'Halftone'], ['rings', 'Ripples'], ['grain', 'Grain'], ['stipple', 'Stipple'], ['topo', 'Contour'], ['grad', 'Fade']],
@@ -1037,7 +1045,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     var uid = 'kz' + (++uidN);
     var c = COLORS.filter(function (x) { return x.id === s.color; })[0] || COLORS[0];
     var dark = s.theme === 'dark';
-    var bg = dark ? K : P;
+    var bg = bgFor(s.bg || 'paper', c, dark);
     var main = dark ? c.light : c.deep;
     var acc = dark ? c.light : (c.accent || main);
     if (s.tint !== 'on') { c = COLORS[0]; main = dark ? c.light : c.deep; } else if (c.accent) { c = { id: c.id, deep: c.accent, mid: c.accent, light: c.light }; main = c.deep; } /* whole icon uses one hue: the swatch colour */  /* fill stays ink and only the orbit takes the colour; with no orbit ('Colour fill') the shape itself takes it */
@@ -1165,7 +1173,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     [line, line2].forEach(function (line) {
     if (line) body += (line.clip ? '<g clip-path="url(#s' + uid + ')">' : '<g>') + '<g mask="url(#h' + uid + ')"><path d="' + line.d + '" fill="none" stroke="' + (line.col || lineCol) + '" stroke-width="' + line.w + '"' + (line.dash ? ' stroke-dasharray="' + line.dash + '"' : '') + (line.cap ? ' stroke-linecap="' + line.cap + '"' : '') + '/></g></g>';
     });
-    if (holeD) body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + dr + '" fill="' + (s.pin === 'filled' ? bg : dot) + '"/>';
+    if (holeD && s.pin !== 'hole') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + dr + '" fill="' + (s.pin === 'filled' ? bg : dot) + '"/>';
     if (s.ring === 'on' && s.pin !== 'filled') body += '<circle cx="' + dx + '" cy="' + dy + '" r="' + ringR + '" fill="none" stroke="' + dot + '" stroke-width="0.9"/>';
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Kosway ' + shape + ' icon"><defs>' + defs + '</defs><rect width="100" height="100" rx="22.4" fill="' + bg + '"/>' + body + '</svg>';
   }
@@ -1173,21 +1181,22 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 
   /* ---- app integration ---- */
   var PRESETS = [
-    { id: 'classic', name: 'Classic', th: 'light', color: 'ink', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit' },
-    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'blue', pattern: 'grain', mk: 'none', tint: 'off', map: 'on', road: 'sat', tilt: 'right' },
-    { id: 'lagoon', name: 'Lagoon', th: 'light', color: 'lagoon', pattern: 'rings', mk: 'circle', tint: 'on', map: 'off', road: 'none' },
-    { id: 'glint', name: 'Sun glint', th: 'dark', color: 'glint', pattern: 'stipple', mk: 'none', tint: 'off', map: 'off', road: 'dashed', tilt: 'right' },
-    { id: 'turmeric', name: 'Turmeric', th: 'light', color: 'turmeric', pattern: 'grain', mk: 'circle', tint: 'on', map: 'on', road: 'band' },
-    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'half', mk: 'none', tint: 'on', map: 'off', road: 'double', tilt: 'right' }
+    { id: 'kosway', name: 'Kosway', th: 'light', color: 'glint', pattern: 'grain', mk: 'none', tint: 'off', map: 'off', road: 'dashed', bg: 'paper' },
+    { id: 'classic', name: 'Classic', th: 'dark', color: 'ink', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit' },
+    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'indigo', pattern: 'topo', mk: 'circle', tint: 'off', map: 'off', road: 'sat', tilt: 'right', bg: 'sky' },
+    { id: 'lagoon', name: 'Lagoon', th: 'light', color: 'lagoon', pattern: 'rings', mk: 'circle', tint: 'on', map: 'off', road: 'none', bg: 'match' },
+    { id: 'turmeric', name: 'Turmeric', th: 'dark', color: 'turmeric', pattern: 'grad', mk: 'circle', tint: 'on', map: 'off', road: 'band', bg: 'sand' },
+    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'stipple', mk: 'none', tint: 'on', map: 'off', road: 'double', tilt: 'right', bg: 'blush' }
   ];
-  var KEYS = ['color', 'pattern', 'mk', 'tint', 'map', 'road', 'tilt'];
-  var DEF = { color: 'ink', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit', tilt: 'left' };
-  var FIXED = { fill: 'blades', pin: 'filled', ring: 'off' };
+  var KEYS = ['color', 'bg', 'pattern', 'mk', 'tint', 'map', 'road', 'tilt'];
+  var DEF = { color: 'ink', bg: 'paper', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit', tilt: 'left' };
+  var FIXED = { fill: 'blades', pin: 'hole', ring: 'off' }; /* marker = clean circular cut-out */
   var STORE = 'vizag-kosway-icon';
-  function norm(p) { var o = {}; KEYS.forEach(function (k) { o[k] = p[k] || DEF[k]; }); return o; }
+  function norm(p) { var o = {}; KEYS.forEach(function (k) { o[k] = p[k] || DEF[k]; }); o.map = 'off'; /* globe removed: pin only */ return o; }
   function valid(k, v) { return k === 'color' ? COLORS.some(function (c) { return c.id === v; }) : (k === 'map' || k === 'tint') ? (v === 'on' || v === 'off') : (OPTS[k] || []).some(function (o) { return o[0] === v; }); }
   var cur = norm(PRESETS[0]);
   try { var sv = JSON.parse(localStorage.getItem(STORE) || 'null'); if (sv && typeof sv === 'object') KEYS.forEach(function (k) { if (valid(k, sv[k])) cur[k] = sv[k]; }); } catch (e) {}
+  cur.map = 'off';
   function cfg(p, theme) { var o = Object.assign({}, FIXED, { theme: theme }); KEYS.forEach(function (k) { o[k] = p[k]; }); return o; }
   function svgFor(p, theme) { p = norm(p); return mark(cfg(p, theme), p.map === 'on' ? 'globe' : 'pin'); }
   function matchPreset() { return PRESETS.filter(function (p) { var n = norm(p); return KEYS.every(function (k) { return n[k] === cur[k]; }); })[0]; }
@@ -1235,7 +1244,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   var I = {
     pin: '<path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/>',
     globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.6 5.3 3.6 8.5s-1 6.1-3.6 8.5c-2.6-2.4-3.6-5.3-3.6-8.5s1-6.1 3.6-8.5z"/>',
-    circle: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3" fill="currentColor"/>',
+    circle: '<path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.4"/>',
     none: '<circle cx="12" cy="12" r="8.5" stroke-dasharray="2.5 2.6"/>',
     up: '<ellipse cx="12" cy="12" rx="9.5" ry="3.4" transform="rotate(-22 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/>',
     down: '<ellipse cx="12" cy="12" rx="9.5" ry="3.4" transform="rotate(22 12 12)"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/>',
@@ -1243,7 +1252,6 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     whole: '<defs>' + gapM('kzqw') + backM('kzqwb') + '</defs><circle cx="12" cy="12.3" r="6.6" fill="currentColor" stroke="none" mask="url(#kzqw)"/><path d="' + RF + '"' + RT + ' stroke-width="2"/><path d="' + RB + '"' + RT + ' stroke-width="2" mask="url(#kzqwb)"/>'
   };
   var QG = [
-    { key: 'map', label: 'Shape', opts: [['off', 'Pin', 'pin'], ['on', 'Globe', 'globe']] },
     { key: 'mk', label: 'Marker', opts: [['circle', 'Circle', 'circle'], ['none', 'None', 'none']] },
     { key: 'tilt', label: 'Tilt', opts: [['left', 'Rising', 'up'], ['right', 'Falling', 'down']] },
     { key: 'tint', label: 'Colour', opts: [['off', 'Orbit', 'orbit'], ['on', 'Whole', 'whole']] }
@@ -1254,6 +1262,8 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   function grp(key, label) { var d = document.createElement('section'); d.className = 'kz-g'; d.innerHTML = '<div class="kz-gh"><span>' + label + '</span><b data-kz="' + key + '"></b></div>'; ctl.appendChild(d); return d; }
   var cw = document.createElement('div'); cw.className = 'kz-sw'; grp('color', 'Colour').appendChild(cw);
   COLORS.forEach(function (c) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-s'; b.dataset.v = c.id; b.setAttribute('aria-label', c.name); b.title = c.name; b.onclick = function () { edit('color', c.id); }; cw.appendChild(b); });
+  var bw = document.createElement('div'); bw.className = 'kz-sw kz-bgw'; grp('bg', 'Background').appendChild(bw);
+  BGS.forEach(function (x) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-s kz-bgs'; b.dataset.v = x[0]; b.setAttribute('aria-label', x[1]); b.title = x[1]; b.onclick = function () { edit('bg', x[0]); }; bw.appendChild(b); });
   function tiles(key, label) { var r = document.createElement('div'); r.className = 'kz-row'; grp(key, label).appendChild(r);
     OPTS[key].forEach(function (o) { var b = document.createElement('button'); b.type = 'button'; b.className = 'kz-t grey'; b.dataset.k = key; b.dataset.v = o[0]; b.setAttribute('aria-label', o[1]); b.title = o[1]; b.onclick = function () { edit(key, o[0]); }; r.appendChild(b); }); }
   tiles('pattern', 'Fill pattern'); tiles('road', 'Route');
@@ -1274,6 +1284,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
       b.disabled = off; b.setAttribute('aria-label', g.label + ': ' + o[1] + (off ? ' (globe has no marker)' : '. Tap for ' + nx[1]));
       b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[o[2]] + '</svg><span class="qt"><span class="qc">' + g.label + '</span><span class="qv">' + o[1] + '</span></span><span class="qd" aria-hidden="true">' + g.opts.map(function (x) { return '<i' + (x === o ? ' class="on"' : '') + '></i>'; }).join('') + '</span>';
     });
+    bw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === D.color; })[0] || COLORS[0]; b.style.background = 'linear-gradient(135deg,' + bgFor(b.dataset.v, c, false) + ' 50%,' + bgFor(b.dataset.v, c, true) + ' 50%)'; b.setAttribute('aria-pressed', String(D.bg === b.dataset.v)); });
     cw.querySelectorAll('.kz-s').forEach(function (b) { var c = COLORS.filter(function (x) { return x.id === b.dataset.v; })[0]; b.style.background = th === 'dark' ? c.light : (c.accent || c.deep); b.setAttribute('aria-pressed', String(D.color === c.id)); });
     ctl.querySelectorAll('.kz-t').forEach(function (b) { var k = b.dataset.k, v = b.dataset.v, p = {}; KEYS.forEach(function (x) { p[x] = D[x]; }); p[k] = v; if (k === 'pattern') { p.road = 'none'; p.mk = 'none'; } b.innerHTML = svgFor(p, th); b.setAttribute('aria-pressed', String(D[k] === v)); });
     ctl.querySelectorAll('[data-kz]').forEach(function (el) { var k = el.dataset.kz; el.textContent = k === 'color' ? colName(D.color) : optName(k, D[k]); });
