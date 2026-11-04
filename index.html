@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="505">
+<meta name="build" content="506">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -2284,5 +2284,5 @@ var groups=[],map={};cards.forEach(function(c){var k=lab(c);map[k]||(map[k]=[],g
 if(groups.length){var h=D.createElement("div");h.className="ngrp";h.textContent=groups[0];main.before(h);var prev=main;groups.slice(1).forEach(function(k){var hh=D.createElement("div");hh.className="ngrp";hh.textContent=k;var box=D.createElement("div");box.className="ncards ngx";map[k].forEach(function(c){box.appendChild(c)});prev.after(hh);hh.after(box);prev=box})}
 setTimeout(function(){busy=0},0)}
 new MutationObserver(function(){busy||run()}).observe(l,{childList:!0,subtree:!0});run()}grp();
-})();</script></body>
+})();</script><style id="s506">#plans-sheet .p2offx{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px;padding:10px 16px;border-radius:14px;background:color-mix(in srgb,var(--link) 12%,var(--surface));border:1px dashed color-mix(in srgb,var(--link) 40%,transparent);color:var(--link);font-size:13px;font-weight:600;line-height:16px}#plans-sheet .p2offx *{font-size:13px!important}#plans-sheet .p2offx time{font-variant-numeric:tabular-nums}#plans-sheet .p2card>.p2off{display:none!important}</style><script>(function(){var D=document;function mv(){var sh=D.getElementById("plans-sheet");if(!sh||sh.hidden)return;var c=sh.querySelector(".p2card"),o=c&&c.querySelector(":scope>.p2off"),ex=sh.querySelector(".p2offx");if(!o){ex&&ex.remove();return}if(!ex){ex=D.createElement("div");ex.className="p2offx"}if(ex.nextElementSibling!==c)c.before(ex);if(ex.innerHTML!==o.innerHTML)ex.innerHTML=o.innerHTML}setInterval(mv,250)})();</script></body>
 </html>
