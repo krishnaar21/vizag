@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="431">
+<meta name="build" content="432">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -959,7 +959,7 @@ addEventListener('message',function(e){var m=e.data||{};if(m.wg!==1)return;var r
  if('pal' in m){ PV.forEach(function(k){r.style.removeProperty(k)}); var P=m.pal; if(P){ var mx=function(p){return 'color-mix(in srgb,'+P.ink+' '+p+'%,'+P.bg+')'};
    var V={'--ink':P.ink,'--title':P.ink,'--muted':P.muted,'--fig':mx(62),'--fig2':mx(84),'--land':mx(8),'--coast':mx(40),'--seadot':mx(38),'--sea0':mx(3),'--sea1':mx(9),'--sea2':mx(16),'--g1':mx(70),'--g2':mx(50),'--g3':mx(25),'--g4':mx(10),'--grat':P.bg,'--pill':P.line,'--soon':mx(8),'--dot':P.line,'--ui':P.muted};
    for(var k in V)r.style.setProperty(k,V[k]); } }
- if('glow' in m){var G=m.glow,O=window.__gO||(window.__gO=new Map()),L=[['#sunF stop:first-child','stop-color','sun0'],['#sunF stop:last-child','stop-color','sun1'],['#sunG>circle','stroke','edge'],['#rays','stroke','ray'],['#nightSky>path','fill','moon'],['#nightSky>path','stroke','moon'],['#moonG stop,#glowG stop,#beamG stop,#poolG stop','stop-color','beam'],['#rays line','stroke','ray'],['#flyG stop','stop-color','fly'],['circle[r="1.9"]','fill','dot']];L.forEach(function(x){document.querySelectorAll(x[0]).forEach(function(el){var mm=O.get(el)||{};if(!(x[1] in mm))mm[x[1]]=el.getAttribute(x[1]);O.set(el,mm);el.setAttribute(x[1],G&&G[x[2]]?G[x[2]]:mm[x[1]])})});(window.__gV||[]).forEach(function(q){if(q==='--cl1'||q==='--cl2'||!(m.pal))r.style.removeProperty(q)});window.__gV=[];if(G&&G.vars){for(var q in G.vars){r.style.setProperty(q,G.vars[q]);window.__gV.push(q)}}}
+ if('glow' in m){var G=m.glow,O=window.__gO||(window.__gO=new Map()),L=[['#sunF stop:first-child','stop-color','sun0'],['#sunF stop:last-child','stop-color','sun1'],['#sunG>circle','stroke','edge'],['#rays','stroke','ray'],['#nightSky>path','fill','moon'],['#nightSky>path','stroke','moon'],['#moonG stop,#glowG stop,#beamG stop,#poolG stop','stop-color','beam'],['#rays line','stroke','ray'],['#flyG stop','stop-color','fly'],['circle[r="1.9"]','fill','dot']];L.forEach(function(x){document.querySelectorAll(x[0]).forEach(function(el){var mm=O.get(el)||{};if(!(x[1] in mm))mm[x[1]]=el.getAttribute(x[1]);O.set(el,mm);el.setAttribute(x[1],G&&G[x[2]]?G[x[2]]:mm[x[1]])})});(window.__gV||[]).forEach(function(q){if(PV.indexOf(q)<0||!(m.pal))r.style.removeProperty(q)});window.__gV=[];if(G&&G.vars){for(var q in G.vars){r.style.setProperty(q,G.vars[q]);window.__gV.push(q)}}}
  if(m.who)cw=m.who; r.dataset.wgwho=cw; if(window.__walk){window.__walk.setWho(cw);window.__walk.draw()}});
 var x0=null,y0=0;addEventListener('touchstart',function(e){var t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});
 addEventListener('touchend',function(e){if(x0==null)return;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>36&&Math.abs(dx)>Math.abs(dy)*1.3)parent.postMessage({wgswipe:dx<0?1:-1},'*')});
