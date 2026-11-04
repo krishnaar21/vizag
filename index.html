@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="build" content="418">
+<meta name="build" content="419">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -35,7 +35,7 @@
 .kz-qb svg{width:26px;height:26px;flex:none;color:var(--muted)}.kz-qb .qt{flex:1;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;min-width:0}
 .kz-qb .qc{font-size:9.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.kz-qb .qv{font-size:13px;font-weight:600;white-space:nowrap}
 .kz-qb .qd{display:flex;gap:4px;flex:none}.kz-qb .qd i{width:6px;height:6px;border-radius:50%;background:var(--line)}.kz-qb .qd i.on{background:var(--ink)}
-.kz-head{display:flex;align-items:center;gap:10px}.kz-head .kz-ttl{flex:1;font-weight:700;font-size:1.05rem}
+.kz-head{display:flex;align-items:center;gap:10px}.kz-reset{font:inherit;font-size:.85rem;font-weight:500;border:0;background:none;color:var(--muted);padding:8px 4px;cursor:pointer;display:inline-flex;align-items:center;gap:5px}.kz-reset svg{width:15px;height:15px}.kz-head .kz-ttl{flex:1;font-weight:700;font-size:1.05rem}
 .kz-apply{font:inherit;font-size:.85rem;font-weight:600;border:0;border-radius:999px;padding:8px 16px;background:var(--ctl);color:var(--on-ctl);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
 .kz-apply.done{background:none;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line);cursor:default}.kz-apply svg{width:15px;height:15px}
 .kz-x{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}.kz-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
@@ -969,7 +969,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 (function () {
   var P = '#FBF9F5', K = '#121212';
   /* backgrounds: [id, name, light top, light bottom, dark top, dark bottom]; every tile is a soft vertical gradient */
-  var BGS = [['paper', 'Paper', '#FFFEFB', '#F0EBE1', '#1F1E1C', '#0E0E0E'], ['white', 'White', '#FFFFFF', '#ECEEF1', '#1C1C1C', '#000000'], ['stone', 'Stone', '#F7F7F9', '#DEDEE4', '#28282C', '#111113'], ['peach', 'Peach', '#FEF2EA', '#F7D2BB', '#36241B', '#160E0A'], ['lilac', 'Lilac', '#F7F4FD', '#DDD3F3', '#261E34', '#0F0C16'], ['sage', 'Sage', '#F1F5ED', '#D2DDC8', '#1F2919', '#0B0F0A'], ['butter', 'Butter', '#FEFAE8', '#F3E3AA', '#2D2A15', '#121108'], ['match', 'Match colour', '', '', '', ''], ['grain', 'Grain', '#FFFDF8', '#EEE8DC', '#21201D', '#0E0E0D'], ['grad', 'Sunrise', '', '', '', '']];
+  var BGS = [['paper', 'Paper', '#FFFEFB', '#F0EBE1', '#2B2723', '#12100E'], ['white', 'White', '#FFFFFF', '#ECEEF1', '#1E1E20', '#000000'], ['stone', 'Stone', '#F7F7F9', '#DEDEE4', '#373A42', '#15161A'], ['peach', 'Peach', '#FEF2EA', '#F7D2BB', '#4D2E20', '#1A0F0A'], ['lilac', 'Lilac', '#F7F4FD', '#DDD3F3', '#36284E', '#120D1B'], ['sage', 'Sage', '#F1F5ED', '#D2DDC8', '#2A3B21', '#0C130A'], ['butter', 'Butter', '#FEFAE8', '#F3E3AA', '#433C17', '#161407'], ['match', 'Match colour', '', '', '', ''], ['grain', 'Grain', '#FFFDF8', '#EEE8DC', '#2B2723', '#12100E'], ['grad', 'Sunrise', '', '', '', '']];
   function mixHex(a, b, t) { var p = function (h) { h = h.replace('#', ''); return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }); }; var x = p(a), y = p(b); return '#' + x.map(function (v, i) { var r = Math.round(v + (y[i] - v) * t).toString(16); return r.length < 2 ? '0' + r : r; }).join(''); }
   var bgN = 0;
   function bgStops(id, c, dark) {
@@ -1011,7 +1011,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     bg: BGS.map(function (b) { return [b[0], b[1]]; }),
     shape: [['both', 'Both'], ['globe', 'Globe'], ['pin', 'Pin']],
     theme: [['light', 'Light'], ['dark', 'Dark']],
-    pattern: [['half', 'Halftone'], ['rings', 'Ripples'], ['grain', 'Grain'], ['stipple', 'Stipple'], ['topo', 'Contour'], ['grad', 'Fade']],
+    pattern: [['grad', 'Fade'], ['grain', 'Grain'], ['half', 'Halftone'], ['stipple', 'Stipple'], ['rings', 'Ripples'], ['strata', 'Strata']],
     fill: [['blades', 'Blades'], ['shape', 'Full shape'], ['outline', 'Outline']],
     pin: [['cut', 'Negative space'], ['filled', 'Filled pin']],
     ring: [['on', 'Ring on'], ['off', 'Ring off']],
@@ -1019,7 +1019,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     map: [['off', 'Pattern only'], ['on', 'Globe map']],
     mk: [['circle', 'Cutout'], ['fill', 'Filled'], ['none', 'No marker']],
     tilt: [['left', 'Rising'], ['right', 'Falling']],
-    road: [['orbit', 'Orbit ring'], ['dashed', 'Dashed orbit'], ['double', 'Double orbit'], ['sat', 'Orbit + traveller'], ['band', 'Orbit band'], ['none', 'No route']]
+    road: [['none', 'No route'], ['orbit', 'Orbit ring'], ['band', 'Orbit band'], ['dashed', 'Dashed orbit'], ['sat', 'Orbit + traveller'], ['taper', 'Tapered orbit']]
   };
   var LAND = [[[-168,66],[-156,71],[-130,70],[-110,72],[-95,72],[-82,68],[-78,62],[-64,60],[-56,52],[-66,45],[-70,42],[-76,38],[-81,31],[-80,25],[-84,30],[-90,29],[-97,26],[-97,22],[-92,18],[-87,21],[-84,15],[-79,9],[-82,8],[-86,12],[-92,15],[-105,20],[-110,24],[-112,31],[-117,32],[-121,35],[-124,40],[-124,48],[-130,54],[-140,60],[-152,58],[-160,58],[-165,62]],[[-78,9],[-72,12],[-63,10],[-52,5],[-50,0],[-44,-2],[-35,-6],[-38,-13],[-40,-21],[-48,-26],[-53,-34],[-58,-38],[-65,-41],[-67,-47],[-70,-53],[-74,-50],[-73,-42],[-72,-30],[-71,-18],[-76,-14],[-81,-6],[-80,-1],[-77,4]],[[-17,21],[-16,12],[-12,7],[-6,5],[2,6],[9,4],[10,-2],[12,-6],[13,-12],[12,-18],[15,-27],[18,-34],[22,-34],[27,-33],[32,-28],[35,-22],[40,-15],[41,-10],[39,-5],[42,2],[47,6],[51,11],[44,11],[43,13],[38,18],[35,25],[32,31],[25,32],[20,31],[11,33],[10,37],[3,37],[-6,36],[-10,30],[-13,27]],[[-10,36],[-9,43],[-2,44],[-4,48],[2,51],[5,53],[8,55],[10,58],[5,62],[11,64],[17,69],[25,71],[31,70],[40,68],[44,66],[55,68],[60,70],[70,73],[80,73],[100,76],[115,74],[130,71],[142,72],[160,70],[175,66],[180,64],[170,60],[162,58],[156,51],[142,47],[140,40],[130,34],[127,38],[121,40],[122,31],[119,25],[110,21],[107,17],[109,12],[104,9],[103,2],[98,8],[98,16],[93,19],[90,22],[86,20],[80,15],[77,8],[73,16],[72,21],[67,24],[62,25],[57,26],[56,22],[59,22],[52,17],[45,13],[43,17],[39,22],[35,28],[34,32],[36,36],[30,36],[26,38],[28,41],[22,40],[24,37],[20,40],[16,38],[15,41],[12,44],[13,45],[9,44],[3,43]],[[114,-22],[114,-26],[115,-34],[118,-35],[124,-34],[130,-32],[135,-35],[138,-35],[141,-38],[147,-39],[150,-37],[153,-31],[153,-25],[150,-22],[146,-19],[145,-15],[142,-11],[141,-17],[136,-12],[132,-11],[129,-15],[124,-17],[121,-19]],[[-52,60],[-44,60],[-38,66],[-22,70],[-18,77],[-20,82],[-35,83],[-60,82],[-70,78],[-60,75],[-55,70]],[[-6,50],[-3,51],[1,52],[0,54],[-2,57],[-5,59],[-6,56],[-5,54]],[[130,31],[133,34],[136,35],[140,36],[141,40],[140,42],[137,38],[133,36]],[[44,-25],[47,-25],[50,-16],[49,-12],[45,-16],[43,-22]]];
   var RAD = Math.PI / 180;
@@ -1079,7 +1079,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     var isGlobe = shape === 'globe';
     var textured = s.pattern !== 'solid';
     var step = textured ? 7 : 5, wmax = textured ? 3.1 : 2.4;
-    if (s.pattern === 'rings' || s.pattern === 'stipple' || s.pattern === 'topo') { step = 8; wmax = 3.6; }
+    if (s.pattern === 'rings' || s.pattern === 'stipple' || s.pattern === 'topo' || s.pattern === 'strata') { step = 8; wmax = 3.6; }
     var IC = ICONS[shape];
     var silhouette = IC ? IC.sil : isGlobe ? 'M14 50a36 36 0 1 0 72 0a36 36 0 1 0 -72 0z' : 'M50 90L26 58A30 30 0 1 1 74 58Z';
     var d = '', k, x, dd, t, bt, w;
@@ -1127,6 +1127,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     if (rt === 'orbit') rings.push({ a: arcs(E, -18 * tr), w: 1.3, cut: 6.4 });
     else if (rt === 'dashed') rings.push({ a: arcs(E, -18 * tr), w: 2.1, cut: 7.2, dash: '7 4.5' });
     else if (rt === 'double') { rings.push({ a: arcs(E, -18 * tr), w: 1.1, cut: 5.6 }); rings.push({ a: arcs({ x: E.x, y: E.y - 2, rx: E.rx - 3, ry: E.ry - 2 }, 22 * tr), w: 1.1, cut: 5.6 }); }
+    else if (rt === 'taper') rings.push({ a: arcs(E, -18 * tr), w: 0.6, cut: 7.6, taper: 3.4 });
     else if (rt === 'sat') rings.push({ a: arcs(E, -18 * tr), w: 1.1, cut: 6, sat: true });
     else if (rt === 'band') rings.push({ a: arcs(E, -18 * tr), w: 2.7, cut: 7.8 });
     else if (rt === 'halo') rings.push({ a: arcs({ x: 50, y: IC ? 26 : isGlobe ? 26 : 22, rx: IC ? 32 : isGlobe ? 30 : 26, ry: 7 }, -8), w: 1.2, cut: 4 });
@@ -1161,6 +1162,9 @@ parent.postMessage({wgready:1},'*');})();<\/script>
       var tbl = []; for (var j = 0; j < 10; j++) tbl.push(j / 10 >= 0.38 ? 1 : 0);
       defs += '<filter id="n' + uid + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="1" seed="4" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" result="al"/><feComponentTransfer in="al" result="th"><feFuncA type="discrete" tableValues="' + tbl.join(' ') + '"/></feComponentTransfer><feFlood flood-color="' + a + '" result="fl"/><feComposite in="fl" in2="th" operator="in"/></filter>';
       fillInner = '<rect width="100" height="100" fill="' + bg + '" filter="url(#n' + uid + ')"/>';
+    } else if (s.pattern === 'strata') {
+      fillInner = '';
+      for (var sy = 3; sy < 100; sy += 3.6) fillInner += '<rect x="0" y="' + f(sy) + '" width="100" height="' + f(0.45 + 2.3 * sy / 100) + '" fill="' + a + '"/>';
     } else if (s.pattern === 'topo') {
       var tt = []; for (var q2 = 0; q2 < 18; q2++) tt.push(q2 % 2);
       defs += '<filter id="n' + uid + '" x="0" y="0" width="1" height="1"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  2.2 0 0 0 -0.6" result="al"/><feComponentTransfer in="al" result="th"><feFuncA type="discrete" tableValues="' + tt.join(' ') + '"/></feComponentTransfer><feFlood flood-color="' + a + '" result="fl"/><feComposite in="fl" in2="th" operator="in"/></filter>';
@@ -1187,7 +1191,9 @@ parent.postMessage({wgready:1},'*');})();<\/script>
     if (s.pin === 'filled' && holeD) body += '<path d="' + holeD + '" fill="' + dot + '"/>';
     defs += '<clipPath id="s' + uid + '"><path d="' + silhouette + '"/></clipPath><mask id="h' + uid + '"><rect width="100" height="100" fill="#fff"/><path d="' + holeD + '" fill="#000" stroke="#000" stroke-width="4"/></mask>';
     if (rings.length) body += '<g mask="url(#h' + uid + ')">' + rings.map(function (g) {
-      var o = '<path d="' + g.a.front + '" fill="none" stroke="' + acc + '" stroke-width="' + g.w + '"' + (g.dash ? ' stroke-dasharray="' + g.dash + '"' : '') + '/>';
+      var o = '';
+      if (g.taper) { for (var ti = 0; ti < 48; ti++) { var t0 = ti / 48 * Math.PI, t1 = (ti + 1) / 48 * Math.PI, p0 = g.a.at(t0), p1 = g.a.at(t1); o += '<path d="M' + p0[0] + ' ' + p0[1] + 'L' + p1[0] + ' ' + p1[1] + '" stroke="' + acc + '" stroke-linecap="round" stroke-width="' + f(g.w + (g.taper - g.w) * Math.pow(Math.sin((t0 + t1) / 2), 1.6)) + '"/>'; } }
+      else o = '<path d="' + g.a.front + '" fill="none" stroke="' + acc + '" stroke-width="' + g.w + '"' + (g.dash ? ' stroke-dasharray="' + g.dash + '"' : '') + '/>';
       if (g.sat) { var q = g.a.at(Math.PI * 0.3); o += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="3.4" fill="' + acc + '" stroke="' + bg + '" stroke-width="1.6"/>'; }
       return o; }).join('') + '</g>';
     [line, line2].forEach(function (line) {
@@ -1205,10 +1211,10 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   var PRESETS = [
     { id: 'kosway', name: 'Kosway', th: 'light', color: 'glint', pattern: 'grain', mk: 'none', tint: 'off', map: 'off', road: 'dashed', bg: 'paper' },
     { id: 'classic', name: 'Classic', th: 'dark', color: 'ink', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit' },
-    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'indigo', pattern: 'topo', mk: 'circle', tint: 'off', map: 'off', road: 'sat', tilt: 'right', bg: 'grad' },
+    { id: 'atlas', name: 'Atlas', th: 'dark', color: 'indigo', pattern: 'strata', mk: 'circle', tint: 'off', map: 'off', road: 'sat', tilt: 'right', bg: 'grad' },
     { id: 'lagoon', name: 'Lagoon', th: 'light', color: 'lagoon', pattern: 'rings', mk: 'circle', tint: 'on', map: 'off', road: 'none', bg: 'match' },
     { id: 'turmeric', name: 'Turmeric', th: 'dark', color: 'turmeric', pattern: 'grad', mk: 'circle', tint: 'on', map: 'off', road: 'band', bg: 'peach' },
-    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'stipple', mk: 'none', tint: 'on', map: 'off', road: 'double', tilt: 'right', bg: 'lilac' }
+    { id: 'plum', name: 'Plum', th: 'light', color: 'plum', pattern: 'stipple', mk: 'none', tint: 'on', map: 'off', road: 'taper', tilt: 'right', bg: 'lilac' }
   ];
   var KEYS = ['color', 'bg', 'pattern', 'mk', 'tint', 'map', 'road', 'tilt'];
   var DEF = { color: 'ink', bg: 'paper', pattern: 'half', mk: 'circle', tint: 'off', map: 'off', road: 'orbit', tilt: 'left' };
@@ -1246,7 +1252,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
 
   /* custom sheet */
   var ks = document.createElement('div'); ks.className = 'sheet lsheet psheet'; ks.id = 'kz-sheet'; ks.hidden = true; ks.setAttribute('role', 'dialog'); ks.setAttribute('aria-label', 'Custom app icon');
-  ks.innerHTML = '<div class="kz-head"><span class="kz-ttl">Custom icon</span><button type="button" class="kz-apply" id="kz-apply">Apply</button><button type="button" class="kz-x" id="kz-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="kz-hero" style="margin-top:14px"><div class="kz-stage" id="kz-stage"></div><div class="kz-bar" id="kz-bar"></div></div><div id="kz-ctl"></div>';
+  ks.innerHTML = '<div class="kz-head"><span class="kz-ttl">Custom icon</span><button type="button" class="kz-reset" id="kz-reset" aria-label="Reset to the default icon" title="Reset to default"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg>Reset</button><button type="button" class="kz-apply" id="kz-apply">Apply</button><button type="button" class="kz-x" id="kz-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="kz-hero" style="margin-top:14px"><div class="kz-stage" id="kz-stage"></div><div class="kz-bar" id="kz-bar"></div></div><div id="kz-ctl"></div>';
   document.body.appendChild(ks); ks.addEventListener('click', function (e) { e.stopPropagation(); });
   var scrim = document.getElementById('scrim');
   var draft = null;
@@ -1257,6 +1263,7 @@ parent.postMessage({wgready:1},'*');})();<\/script>
   function sameAsCur() { return !!draft && KEYS.every(function (k) { return draft[k] === cur[k]; }); }
   document.getElementById('kz-apply').onclick = function () { if (!draft || sameAsCur()) return; KEYS.forEach(function (k) { cur[k] = draft[k]; }); save(); closeKs(); };
   function edit(k, v) { draft[k] = v; paintAll(); }
+  document.getElementById('kz-reset').onclick = function () { if (!draft) return; var d = norm(PRESETS[0]); KEYS.forEach(function (k) { draft[k] = d[k]; }); paintAll(); };
   if (scrim) scrim.addEventListener('click', function () { if (!ks.hidden) { ks.hidden = true; scrim.hidden = true; draft = null; } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !ks.hidden) closeKs(); });
 
