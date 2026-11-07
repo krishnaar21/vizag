@@ -4604,8 +4604,7 @@ try {
             return t.toISOString().slice(0, 10);
           }
           function openPlanner(t, a) {
-            if ((!t || a) && window.__isDemo && window.__isDemo() && window.__demoBlock)
-              return window.__demoBlock();
+            if (window.__isDemo && window.__isDemo() && window.__demoBlock) return window.__demoBlock();
             (editingTrip = a ? null : t),
               (customPlaces = t
                 ? t.places.filter(function (E) {
@@ -13164,6 +13163,22 @@ try {
         q.stopPropagation(), Q(m);
       };
       var k = (window.__CHANGES = [
+          {
+            b: "548",
+            d: "7 Nov 2026",
+            s: "AI that just works, and sheets that fit your screen.",
+            n: ["Kosway now picks and runs the AI models for you, with nothing to set up"],
+            f: [
+              "Demo mode explains itself when you try to plan or edit a trip",
+              "Refreshing on Home no longer covers its text",
+              "Less empty space in Contact support",
+            ],
+            u: [
+              "Sheet corners follow your phone's rounded screen",
+              "Pass & Atlas lists what each plan adds",
+              "Beach scene redrawn: hammock posts, one-piece palm and a smaller sun",
+            ],
+          },
           {
             b: "547",
             d: "7 Nov 2026",

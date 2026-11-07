@@ -5099,3 +5099,86 @@ body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
     transparent
   ) !important;
 }
+
+/* ==========================================================================
+   Build 548.
+   ========================================================================== */
+/* AI Assistant sheet: room between the title and the first option */
+#ai-sheet .ailist {
+  margin-top: 10px;
+}
+
+/* Pass & Atlas: settings rows you don't own yet are hidden (demo is the
+   preview); the sheet lists what each plan adds, read-only */
+:root:root #settings-profile .setrow.pfhide {
+  display: none !important;
+}
+#pf-sheet .pflist .setrow {
+  cursor: default;
+}
+#pf-sheet .pftag {
+  flex: none;
+  margin-left: auto;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#pf-sheet .pftag.own {
+  border-color: transparent;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Contact support: no extra space under the note */
+:root:root:root:root:root #cs-sheet.psheet {
+  padding-bottom: 14px !important;
+}
+#cs-sheet .csnote {
+  margin-bottom: 0;
+}
+
+/* Sheets follow the phone's rounded screen corners: on phones with a home
+   indicator (rounded screens) the bottom corners are concentric with the
+   screen, i.e. screen radius minus the 8px gap. */
+:root {
+  --scr-r: max(38px, calc(env(safe-area-inset-bottom, 0px) * 1.6));
+  --sheet-br: calc(var(--scr-r) - 8px);
+}
+html.sheet-bottom:root:root:root .sheet.lsheet:not(.inpage) {
+  border-bottom-left-radius: var(--sheet-br) !important;
+  border-bottom-right-radius: var(--sheet-br) !important;
+}
+:root:root .sheet.lsheet > .btn,
+:root:root .sheet.psheet > .btn.full {
+  border-radius: max(12px, calc(var(--sheet-br) - 19px));
+}
+
+/* Refreshing: the globe spins after the text instead of rolling over it */
+.offtag.rfx .netroll.rfroll {
+  position: static;
+  flex: none;
+  margin: 0;
+  order: 2;
+  animation: rfspin 0.95s var(--ease-out) forwards;
+}
+@keyframes rfspin {
+  0% {
+    transform: rotate(-90deg) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: rotate(270deg);
+    opacity: 0;
+  }
+}
