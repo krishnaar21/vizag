@@ -12776,7 +12776,7 @@ try {
           m.plan === "pro"
             ? '<div class="plancard pro' +
               (k !== null && k <= 2 ? " soon" : "") +
-              '"><div><b>Pro plan <i class="plcur">Current</i></b><span>' +
+              '"><div><b>Atlas <i class="plcur">Current</i></b><span>' +
               (k !== null
                 ? k <= 0
                   ? "Renews today"
@@ -12784,8 +12784,8 @@ try {
                     ? "Renews tomorrow, " + r(m.renew)
                     : "Renews on " + r(m.renew)
                 : "Active") +
-              '</span></div><span class="plbadge">PRO</span></div>'
-            : '<div class="plancard"><div><b>Free plan <i class="plcur">Current</i></b><span>Unlimited trips and AI help with Pro</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Upgrade</button></div>';
+              '</span></div><span class="plbadge">ATLAS</span></div>'
+            : '<div class="plancard"><div><b>Free plan <i class="plcur">Current</i></b><span>More trips with a Trip pass, AI help with Atlas</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Upgrade</button></div>';
       }
       var v = w;
       (w = function () {
@@ -12811,7 +12811,7 @@ try {
             (m.id = "renew-sheet"),
             m.setAttribute("role", "dialog"),
             (m.innerHTML =
-              '<div class="lohead locent"><span class="rnico" aria-hidden="true">\u2728</span><div class="t">Your Pro plan renews ' +
+              '<div class="lohead locent"><span class="rnico" aria-hidden="true">\u2728</span><div class="t">Your Atlas plan renews ' +
               (f === 0 ? "today" : f === 1 ? "tomorrow" : "in 2 days") +
               '</div><div class="s">It renews on ' +
               r(u.renew) +
@@ -13161,6 +13161,117 @@ try {
       };
       var k = (window.__CHANGES = [
           {
+            b: "545",
+            d: "7 Nov 2026",
+            s: "Plan names are now the same everywhere, and the app is lighter and tidier inside.",
+            n: ["What’s new now covers every update since early November"],
+            f: ["Checkout, plan settings and alerts say Atlas and Trip pass instead of Pro"],
+            u: ["Smaller, faster-loading styles", "UI/UX improvements"],
+          },
+          {
+            b: "541",
+            d: "7 Nov 2026",
+            s: "Demo mode, a new Top travellers board and calmer sheets.",
+            n: [
+              "Try demo mode from the sign-in page; your own trips are kept safely aside",
+              "Top travellers board with an animated top-3 podium and a tips timeline",
+              "Plan icons in a halftone style",
+            ],
+            f: [
+              "Plans and Top travellers sheets close without a glitch",
+              "Podium stands show in every theme",
+              "Past trips only lists finished trips",
+            ],
+            u: ["Long press pauses the sign-in carousel", "Help answers updated for the current plans"],
+          },
+          {
+            b: "535",
+            d: "7 Nov 2026",
+            s: "Steadier headers, face avatars and easier trip editing.",
+            n: [
+              "Original face avatars in your theme colours",
+              "Swipe between tabs on Days, Plan and Explore",
+              "Group cards show member initials",
+            ],
+            f: [
+              "Headers no longer jitter or jump while scrolling",
+              "No forced reload when you come back to the app; a toast offers the update instead",
+              "Editing the built-in Vizag trip saves a normal, fully editable copy",
+            ],
+            u: ["Lighter placeholder text", "A warning before an edit rebuilds a trip’s details"],
+          },
+          {
+            b: "523",
+            d: "5 Nov 2026",
+            s: "New plans and pricing, and the AI chat is now called Atlas.",
+            n: [
+              "Plans: Free (2 trips), Trip pass, Atlas monthly, Yearly and a Customisation add-on",
+              "Five notification styles to choose from",
+              "AI chat is now Atlas",
+            ],
+            f: ["More page no longer shakes while settings are open"],
+            u: ["One header style on every main page", "Swipe between plan tabs"],
+          },
+          {
+            b: "513",
+            d: "4 Nov 2026",
+            s: "Halftone onboarding, globe pull-to-refresh and a new More tab.",
+            n: [
+              "Five-screen onboarding with halftone art",
+              "Pull down to refresh with a spinning Kosway globe",
+              "More tab with your profile, plan and settings",
+              "Alerts now live on the Plan page",
+            ],
+            u: [
+              "Sheets and pages slide like iOS",
+              "Light palettes get their own tinted backgrounds",
+              "Notifications in one grouped list",
+            ],
+          },
+          {
+            b: "489",
+            d: "4 Nov 2026",
+            s: "Plans, travel groups with avatars, sounds and real home-screen icons.",
+            n: [
+              "Plans sheet with selectable plan cards",
+              "Group cards with stacked avatars",
+              "Sounds for taps and switches",
+              "Long-press the Home tab to open the AI chat",
+            ],
+            f: ["Time format follows your phone until you change it"],
+            u: ["Settings with switches and icon tiles", "Home-screen icon matches your custom app icon"],
+          },
+          {
+            b: "475",
+            d: "4 Nov 2026",
+            s: "AI chat as a full page, nav bar styles and smoother sheets.",
+            n: ["Nav bar styles: Dot, 3D and Shadow", "Swipe down to close any sheet"],
+            f: ["Chat stays above the keyboard"],
+            u: ["Every sheet opens and closes with the same motion", "All toasts use one card design"],
+          },
+          {
+            b: "454",
+            d: "4 Nov 2026",
+            s: "Colour palettes, a weather-aware scene and an offline scene.",
+            n: [
+              "Colour palettes: Classic, Mono, Paper, Ocean, Sage and Lilac, each in light and dark",
+              "The walking-globe scene follows live weather and your local time",
+              "A new scene for when you’re offline",
+            ],
+            f: ["Sun, moon and fire keep their natural colours in every theme"],
+            u: ["Illustrations take on your palette’s colours"],
+          },
+          {
+            b: "419",
+            d: "4 Nov 2026",
+            s: "Make your own Kosway app icon.",
+            n: [
+              "App icon maker with colours, backgrounds, fills and routes",
+              "Six new rotating quotes on the online sheet",
+            ],
+            u: ["UI/UX improvements"],
+          },
+          {
             b: "317",
             d: "3 Nov 2026",
             s: "New Updates page for alerts and notifications, plus a history of app updates.",
@@ -13324,7 +13435,7 @@ try {
       var at = [
           ["trip", "Trip-day reminders", "A morning note with the day\u2019s first stop"],
           ["weather", "Weather alerts", "Rain or heat warnings on trip days"],
-          ["renew", "Plan renewals", "Two days before Pro renews"],
+          ["renew", "Plan renewals", "Two days before Atlas renews"],
           ["tips", "Tips and ideas", "Occasional trip ideas for places you like"],
         ],
         yt = r(
@@ -13401,8 +13512,8 @@ try {
         });
       var ut = r(
         "checkout-sheet",
-        "Upgrade to Pro",
-        '<div class="plcard pro"><div class="plh"><b>Pro \xB7 monthly</b><span>\u20B999 / month</span></div><ul><li>Cancel any time in Settings</li><li>Renews every month on the same date</li></ul></div><button type="button" class="btn full" id="co-pay">Pay \u20B999</button><p class="csnote">Test checkout. No money is taken.</p>',
+        "Get Atlas",
+        '<div class="plcard pro"><div class="plh"><b>Atlas \xB7 monthly</b><span>\u20B999 / month</span></div><ul><li>Cancel any time in Settings</li><li>Renews every month on the same date</li></ul></div><button type="button" class="btn full" id="co-pay">Pay \u20B999</button><p class="csnote">Test checkout. No money is taken.</p>',
       );
       ut.querySelector("#co-pay").onclick = function () {
         var q = this;
@@ -13415,7 +13526,7 @@ try {
               l("vizag-plan", JSON.stringify({ plan: "pro", renew: G.toISOString().slice(0, 10) })),
               b(ut),
               window.__paintPlan && window.__paintPlan(),
-              window.__toast && window.__toast("You\u2019re on Pro now");
+              window.__toast && window.__toast("You\u2019re on Atlas now");
           }, 1200);
       };
       var V = document.getElementById("pl-upgrade");
@@ -13427,19 +13538,19 @@ try {
       var K = r(
         "manage-sheet",
         "Your plan",
-        '<div class="plcard pro"><div class="plh"><b>Pro</b><span id="mg-renew"></span></div><ul><li>Unlimited trips and groups</li><li>AI suggestions and chat</li></ul></div><button type="button" class="btn ghost full" id="mg-cancel">Cancel Pro</button>',
+        '<div class="plcard pro"><div class="plh"><b>Atlas</b><span id="mg-renew"></span></div><ul><li>Atlas AI chat, about 300 replies a month</li><li>AI trip suggestions</li></ul></div><button type="button" class="btn ghost full" id="mg-cancel">Cancel Atlas</button>',
       );
       (K.querySelector("#mg-cancel").onclick = function () {
         b(K),
           window.__confirm &&
             window.__confirm(
-              "Cancel Pro?",
-              "You\u2019ll keep Pro until the renewal date, then move to Free. Your trips stay.",
-              "Cancel Pro",
+              "Cancel Atlas?",
+              "You\u2019ll keep Atlas until the renewal date, then move to Free. Your trips stay.",
+              "Cancel Atlas",
               function () {
                 l("vizag-plan", null),
                   window.__paintPlan && window.__paintPlan(),
-                  window.__toast && window.__toast("Pro cancelled");
+                  window.__toast && window.__toast("Atlas cancelled");
               },
               "page",
             );
@@ -13474,7 +13585,7 @@ try {
             var G = document.querySelector(".plantop");
             G &&
               (G.innerHTML =
-                '<div class="plancard soon"><div><b>Pro has ended</b><span>You\u2019re back on Free. Renew to get Pro features back.</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Renew</button></div>');
+                '<div class="plancard soon"><div><b>Atlas has ended</b><span>You\u2019re back on Free. Renew to get Atlas back.</span></div><button type="button" class="btn sm plup" onclick="window.__openPlans&&window.__openPlans()">Renew</button></div>');
           }
         }),
         window.__paintPlan());
@@ -13483,7 +13594,7 @@ try {
         wt &&
           wt.insertAdjacentHTML(
             "afterend",
-            '<div class="setrow"><span class="setl">Simulate expired Pro<small>Pro that ended yesterday</small></span><button type="button" class="setbtn devbtn" id="dev-exp">Set</button></div>',
+            '<div class="setrow"><span class="setl">Simulate expired Atlas<small>Atlas that ended yesterday</small></span><button type="button" class="setbtn devbtn" id="dev-exp">Set</button></div>',
           );
       var W = document.getElementById("dev-exp");
       W &&
@@ -13493,7 +13604,7 @@ try {
           G.setDate(G.getDate() - 1),
             l("vizag-plan", JSON.stringify({ plan: "pro", renew: G.toISOString().slice(0, 10) })),
             window.__paintPlan && window.__paintPlan(),
-            window.__toast && window.__toast("Pro set to expired");
+            window.__toast && window.__toast("Atlas set to expired");
         });
     })(),
     (function () {
@@ -15445,7 +15556,7 @@ try {
           [4 * 864e5, "Trip updated", "Kerala backwaters now has 6 days.", "trip", "days"],
           [9 * 864e5, "Welcome", "Plan your first trip.", "app", "plan"],
           [21 * 864e5, "Message sent", "We will reply within a day.", "app", ""],
-          [45 * 864e5, "Pro trial ended", "Free plan features stay on.", "app", ""],
+          [45 * 864e5, "Atlas trial ended", "Free plan features stay on.", "app", ""],
         ];
       function v() {
         var W = Q(s, []);
@@ -15590,7 +15701,7 @@ try {
       $ &&
         (window.__toast = function (W, q) {
           return (
-            /^(Saved|Review saved|Message sent|Pro |Showing weather|Location is off|Developer options)/.test(
+            /^(Saved|Review saved|Message sent|Pro |Atlas |Showing weather|Location is off|Developer options)/.test(
               W || "",
             ) &&
               A(

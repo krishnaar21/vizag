@@ -842,10 +842,10 @@ try {
       try {
         pl = JSON.parse(ls("vizag-plan") || "{}") || {};
       } catch (e) {}
-      var t = pl.plan === "pro" ? "Pro" : pl.plan === "plus" ? "Plus" : "Free",
+      var t = pl.plan === "pro" ? "Atlas" : pl.plan === "plus" ? "Pass" : "Free",
         b2 = q("#plan-tag");
       b2.textContent !== t && (b2.textContent = t);
-      b2.classList.toggle("pro", t === "Pro");
+      b2.classList.toggle("pro", t === "Atlas");
       var bd = q("#acct .acplan");
       bd && bd.remove();
       var pt = q(".plantop");
@@ -874,8 +874,8 @@ try {
           ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.5l4.6 3.6L12 5.5l3.9 6.6 4.6-3.6-1.8 9.7H5.3z"/></svg>'
           : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c.9 4.6 3.4 7.1 8 8-4.6.9-7.1 3.4-8 8-.9-4.6-3.4-7.1-8-8 4.6-.9 7.1-3.4 8-8z"/></svg>'),
         i.setAttribute("role", "img"),
-        i.setAttribute("aria-label", k === "pro" ? "Pro" : "Plus"),
-        (i.title = k === "pro" ? "Pro" : "Plus");
+        i.setAttribute("aria-label", k === "pro" ? "Atlas" : "Pass"),
+        (i.title = k === "pro" ? "Atlas" : "Pass");
       el.appendChild(i);
     }
     function tags() {
@@ -890,8 +890,8 @@ try {
               ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.5l4.6 3.6L12 5.5l3.9 6.6 4.6-3.6-1.8 9.7H5.3z"/></svg>'
               : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c.9 4.6 3.4 7.1 8 8-4.6.9-7.1 3.4-8 8-.9-4.6-3.4-7.1-8-8 4.6-.9 7.1-3.4 8-8z"/></svg>'),
             i.setAttribute("role", "img"),
-            i.setAttribute("aria-label", x[1] === "pro" ? "Pro" : "Plus"),
-            (i.title = x[1] === "pro" ? "Pro" : "Plus");
+            i.setAttribute("aria-label", x[1] === "pro" ? "Atlas" : "Pass"),
+            (i.title = x[1] === "pro" ? "Atlas" : "Pass");
           var st = r.querySelector(":scope>.seti");
           st && !q(".ptag", st) && st.appendChild(i);
         }
@@ -962,7 +962,7 @@ try {
       ["Themes v2", "shapes"],
       ["Merge trip", "home"],
       ["Wave edge", "waves"],
-      ["Plus & Pro", "crown"],
+      ["Pass & Atlas", "crown"],
       ["Sounds", "volume"],
     ];
     function ico(t) {
@@ -1418,7 +1418,7 @@ try {
         setTimeout(openAI, 250);
       }, 260);
     });
-    /* ---------- Plus & Pro features sheet ---------- */
+    /* ---------- Pass & Atlas features sheet ---------- */
     var PF = [
       {
         k: "pass",
@@ -2326,7 +2326,7 @@ try {
     };
     function tier(u) {
       var t = TIER[u];
-      return t ? ' <i class="lbtier ' + t + '">' + (t === "pro" ? "Pro" : "Plus") + "</i>" : "";
+      return t ? ' <i class="lbtier ' + t + '">' + (t === "pro" ? "Atlas" : "Pass") + "</i>" : "";
     }
     function av(n, sz, pent) {
       return (
@@ -2788,7 +2788,7 @@ try {
       tc.after(tg);
       sp.__tm = 1;
     }
-    /* combined profile card: Top travellers + Plus & Pro */
+    /* combined profile card: Top travellers + Pass & Atlas */
     var COL = ["#ffd6a5", "#caffbf", "#bdb2ff", "#ffc6ff", "#9bf6ff", "#fdffb6", "#ffadad", "#a0e7e5"];
     function hc(t) {
       var h = 0;
@@ -2901,7 +2901,7 @@ try {
       r.className = "setrow";
       r.id = "dev-plan";
       r.innerHTML =
-        '<span class="setl">Test plan<small>Switch to see Free, Plus or Pro</small></span><div class="seg" role="group" aria-label="Test plan"><button type="button" data-tp="free">Free</button><button type="button" data-tp="plus">Plus</button><button type="button" data-tp="pro">Pro</button></div>';
+        '<span class="setl">Test plan<small>Switch to see Free, Trip pass or Atlas</small></span><div class="seg" role="group" aria-label="Test plan"><button type="button" data-tp="free">Free</button><button type="button" data-tp="plus">Pass</button><button type="button" data-tp="pro">Atlas</button></div>';
       function cur() {
         var p = {};
         try {
@@ -2931,9 +2931,7 @@ try {
           window.__paintPlan && window.__paintPlan();
           window.__pfsync && window.__pfsync();
           window.__toast &&
-            window.__toast(
-              "Testing as " + (k === "free" ? "Free" : k === "plus" ? "Route · Plus" : "Atlas · Pro"),
-            );
+            window.__toast("Testing as " + (k === "free" ? "Free" : k === "plus" ? "Trip pass" : "Atlas"));
         });
       });
       paint();
