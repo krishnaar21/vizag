@@ -134,95 +134,14 @@
   width: 20px !important;
   height: 20px !important;
 }
-:root:root:root #plans-sheet.shghost {
-  animation: ppout 0.26s cubic-bezier(0.4, 0, 1, 1) forwards !important;
-}
 @keyframes ppout {
   to {
     translate: 0 48px;
     opacity: 0;
   }
 }
-.pp-price {
-  text-align: left !important;
-  padding: 14px !important;
-  border-radius: 26px !important;
-  border: 1px solid color-mix(in srgb, var(--link) 22%, var(--line)) !important;
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--link) 16%, var(--surface)),
-    var(--surface) 72%
-  ) !important;
-}
-.pp-price:before {
-  display: none !important;
-}
-.pp-off {
-  display: flex !important;
-  justify-content: space-between;
-  width: 100%;
-  box-sizing: border-box;
-  height: 36px !important;
-  margin: 0 0 14px !important;
-  padding: 0 12px !important;
-  border-radius: 14px !important;
-  background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
-  color: var(--link) !important;
-  font-size: 0.8rem !important;
-}
-.pp-off time {
-  font-variant-numeric: tabular-nums;
-}
-.pp-bill {
-  max-width: none !important;
-  margin: 0 0 14px !important;
-  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
-}
-.pp-bill button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.pp-bill button i {
-  font-style: normal;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--link) 16%, var(--surface));
-  color: var(--link);
-}
-.pp-amt {
-  justify-content: flex-start !important;
-  align-items: baseline;
-  gap: 6px !important;
-  flex-wrap: wrap;
-}
-.pp-amt b {
-  font-size: 2.6rem !important;
-  line-height: 1;
-  letter-spacing: -0.03em !important;
-}
-.pp-amt .pp-unit {
-  color: var(--muted);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-.pp-amt .pp-was {
-  margin-left: auto;
-  font-size: 1.05rem !important;
-}
 .pp-was:after {
   background: var(--strike) center/100% 100% no-repeat !important;
-}
-.pp-per {
-  margin-top: 8px !important;
-  font-size: 0.84rem !important;
-}
-.pp-save {
-  font-weight: 700;
-  color: var(--link);
 }
 .checks input:checked + .ct .t {
   background-image: var(--strike) !important;
@@ -305,13 +224,8 @@
 }
 .acx .xc {
   flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
   display: grid;
   place-items: center;
-  background: linear-gradient(150deg, color-mix(in srgb, var(--link) 60%, #fff), var(--accent));
-  color: var(--on-accent);
 }
 .acx .xc svg {
   width: 17px;
@@ -327,16 +241,6 @@
 }
 #acct > .acx {
   margin: 0 14px 14px;
-}
-:root:root .lbhero {
-  background: radial-gradient(
-    130% 90% at 50% 0%,
-    color-mix(in srgb, var(--link) 24%, transparent),
-    transparent 72%
-  ) !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-  border-radius: 0 0 28px 28px;
 }
 .pod .blk {
   background: linear-gradient(
@@ -388,9 +292,6 @@
   height: 22px;
   min-width: 22px;
   font-size: 0.74rem;
-}
-.lbrow .lavw {
-  margin-right: 2px;
 }
 .lbtier {
   display: inline-flex;
@@ -726,8 +627,6 @@ html:has(.chatsh:not([hidden])) .bblur {
   content: "" !important;
   position: absolute !important;
   z-index: -1 !important;
-  left: 0 !important;
-  right: 0 !important;
   top: auto !important;
   bottom: 100% !important;
   height: 26px !important;
@@ -746,8 +645,6 @@ html:has(.chatsh:not([hidden])) .bblur {
   content: "";
   position: absolute;
   z-index: -1;
-  left: 0;
-  right: 0;
   top: 0;
   bottom: 0;
   background: var(--fb);
@@ -832,52 +729,18 @@ html:has(.chatsh:not([hidden])) .bblur {
 /* ==========================================================================
    Top blur bar, Profile/More account card actions.
    ========================================================================== */
-.tblur {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: var(--tbot, 0px);
-  height: 26px;
-  z-index: 19;
-  pointer-events: none;
-  border-top: 1px solid var(--line);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 70%, transparent), transparent);
-  -webkit-mask: linear-gradient(to bottom, #000 15%, transparent);
-  mask: linear-gradient(to bottom, #000 15%, transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-.tblur.on {
-  opacity: 1;
-}
-html.kbd .tblur,
-html.login-open .tblur {
-  display: none;
-}
 :root:root:root .acx {
   gap: 0 !important;
   grid-template-columns: 1fr 1fr;
   padding-top: 0 !important;
-  border-top: 1px solid var(--line) !important;
   margin: 4px 0 0 !important;
 }
 :root:root:root #acct > .acx {
   margin: 0 !important;
 }
 :root:root:root .acx button {
-  border: 0 !important;
   border-radius: 0 !important;
   background: none !important;
-  padding: 14px 16px !important;
-  gap: 10px !important;
-}
-:root:root:root .acx button + button {
-  border-left: 1px solid var(--line) !important;
-}
-:root:root:root #acct-empty .acx {
-  margin: 14px -16px -16px !important;
 }
 :root:root:root #acct-empty .acx button {
   padding: 14px 16px !important;
@@ -888,83 +751,6 @@ html.login-open .tblur {
   color: var(--muted) !important;
   width: 34px !important;
   height: 34px !important;
-}
-.ppcap {
-  margin: 18px 4px 8px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-:root:root:root .pp-hero {
-  display: grid !important;
-  grid-template-columns: auto 1fr;
-  grid-template-areas: "ic h" "ic p" "b b";
-  column-gap: 14px;
-  align-items: center;
-  text-align: left !important;
-  padding: 8px 4px 0 !important;
-}
-:root:root:root .pp-hero .ptile {
-  grid-area: ic;
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: 18px !important;
-}
-:root:root:root .pp-hero .ptile svg {
-  width: 36px !important;
-  height: 36px !important;
-}
-:root:root:root .pp-hero h2 {
-  grid-area: h;
-  margin: 0 !important;
-  align-self: end;
-  font-size: 1.45rem !important;
-}
-:root:root:root .pp-hero p {
-  grid-area: p;
-  margin: 2px 0 0 !important;
-  align-self: start;
-  text-wrap: pretty;
-}
-:root:root:root .pp-hero .pp-badge {
-  grid-area: b;
-  justify-self: start;
-  margin-top: 14px !important;
-}
-:root:root:root .pp-rows {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 0 16px !important;
-  margin: 0 !important;
-}
-:root:root:root .pp-row {
-  min-height: 60px;
-  padding: 10px 0 !important;
-  border-top: 1px solid var(--line) !important;
-}
-:root:root:root .pp-row:first-child {
-  border-top: 0 !important;
-}
-:root:root:root .pp-row .pi {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 13px !important;
-}
-:root:root:root .pp-row .pi svg {
-  width: 20px !important;
-  height: 20px !important;
-}
-:root:root:root .pp-price {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 16px !important;
-}
-:root:root:root .pp-off {
-  border-radius: 12px !important;
 }
 .lbsub2 {
   margin: 2px 4px 14px;
@@ -978,76 +764,6 @@ html.login-open .tblur {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-}
-.lbtop {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 6px 0;
-}
-.lbtop button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 16px 6px 14px;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: var(--ink);
-  cursor: pointer;
-  min-width: 0;
-}
-.lbtop button + button {
-  border-left: 1px solid var(--line);
-}
-.lbtop .lavw {
-  margin-bottom: 8px;
-}
-.lbtop .pn {
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-top: 2px;
-}
-.lbtop .pp {
-  color: var(--muted);
-  font-size: 0.8rem;
-  font-family: inherit !important;
-  font-variant-numeric: tabular-nums;
-}
-.pp-save {
-  white-space: nowrap;
-}
-.lbtop .lbtier {
-  margin: 0;
-}
-:root:root:root .lblist {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 0 16px !important;
-  margin: 0 !important;
-}
-:root:root:root .lbrow {
-  border-top: 1px solid var(--line) !important;
-  padding: 12px 0 !important;
-}
-:root:root:root .lblist .lbrow:first-child,
-:root:root:root .lbyou .lbrow {
-  border-top: 0 !important;
-}
-:root:root:root .lbyou {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 0 16px !important;
-  margin: 0 !important;
-}
-:root:root:root .lbrow .pt {
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
 }
 :root:root:root #grp-list .mpempty,
 :root:root:root .setgrp:has(> #grp-list) .sethint {
@@ -1277,7 +993,6 @@ html.kzmatch .kzi {
 :root:root:root .acx {
   display: block !important;
   border-top: 1px solid var(--line) !important;
-  padding: 0 16px !important;
 }
 :root:root:root #acct-empty .acx {
   margin: 16px -16px -16px !important;
@@ -1303,11 +1018,6 @@ html.kzmatch .kzi {
 }
 :root:root:root .acx small {
   font-size: 0.8rem !important;
-}
-:root:root:root .acx .xc {
-  width: 38px !important;
-  height: 38px !important;
-  border-radius: 12px !important;
 }
 .acx .xr {
   display: flex;
@@ -1445,12 +1155,6 @@ html.kzmatch .kzi {
   background: color-mix(in srgb, var(--rc) 22%, var(--surface));
   height: 34px;
 }
-.lpd.p1 .lst {
-  height: 58px;
-}
-.lpd.p2 .lst {
-  height: 44px;
-}
 .lbl2 {
   background: var(--surface) !important;
   border: 1px solid var(--line) !important;
@@ -1459,7 +1163,6 @@ html.kzmatch .kzi {
 }
 .lrow {
   display: grid;
-  grid-template-columns: 22px 44px minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
   padding: 12px 0;
@@ -1495,7 +1198,6 @@ html.kzmatch .kzi {
   text-overflow: ellipsis;
 }
 .lbar {
-  display: block;
   height: 4px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
@@ -1516,55 +1218,6 @@ html.kzmatch .kzi {
 .lrow.you .lra {
   background: color-mix(in srgb, var(--link) 18%, var(--surface)) !important;
   color: var(--link);
-}
-:root:root:root .pp-rows {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 8px !important;
-  background: none !important;
-  border: 0 !important;
-  padding: 0 !important;
-}
-:root:root:root .pp-row {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  gap: 1px !important;
-  min-height: 0 !important;
-  padding: 14px !important;
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 20px !important;
-  text-align: left !important;
-}
-:root:root:root .pp-row:first-child {
-  border-top: 1px solid var(--line) !important;
-}
-:root:root:root .pp-row .pi {
-  order: 0;
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 12px !important;
-  margin-bottom: 10px !important;
-}
-:root:root:root .pp-row .pi svg {
-  width: 19px !important;
-  height: 19px !important;
-}
-:root:root:root .pp-row > span:last-child {
-  order: 1;
-  font-weight: 600 !important;
-  font-size: 1rem !important;
-  color: var(--ink) !important;
-  margin: 0 !important;
-  text-align: left !important;
-}
-:root:root:root .pp-row > b {
-  order: 2;
-  font-weight: 400 !important;
-  font-size: 0.8rem !important;
-  color: var(--muted) !important;
-  margin: 0 !important;
 }
 :root:root:root #theme-sheet .thcap,
 :root:root:root #theme-sheet .pl-sub,
@@ -1644,7 +1297,6 @@ html.kzmatch .kzi {
   margin: 0 !important;
 }
 :root:root:root .kz-now .kzr button {
-  aspect-ratio: 1;
   border-radius: 50% !important;
   overflow: hidden;
   padding: 0 !important;
@@ -1716,9 +1368,7 @@ html.kzmatch .kzi {
   mask-composite: intersect;
 }
 .onbart {
-  width: min(84vw, 360px) !important;
   aspect-ratio: 4/3 !important;
-  margin-bottom: 26px !important;
 }
 :root:root .onbtrack {
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) !important;
@@ -2142,37 +1792,6 @@ html.dv-both .dspend {
   color: var(--muted);
   font-size: 0.84rem;
 }
-.p2bill {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
-  margin-top: 14px;
-}
-.p2bill button {
-  border: 0;
-  background: none;
-  font: inherit;
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--muted);
-  padding: 8px 0;
-  border-radius: 10px;
-  cursor: pointer;
-}
-.p2bill button[aria-pressed="true"] {
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-.p2bill i {
-  font-style: normal;
-  color: var(--link);
-  font-size: 0.76rem;
-  margin-left: 3px;
-}
 .p2inc {
   list-style: none;
   margin: 16px 0 0;
@@ -2312,9 +1931,6 @@ html.dv-both .dspend {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 64px;
-  height: 64px;
-  margin: -32px 0 0 -32px;
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--link) 45%, transparent), transparent 68%);
   filter: blur(6px);
@@ -2469,8 +2085,6 @@ html.dv-both .dspend {
 }
 :root:root .ptr svg.kgl {
   display: block !important;
-  width: 44px;
-  height: 44px;
   transform: scale(calc(0.55 + var(--p) * 0.45)) !important;
   animation: none !important;
   transition: transform 0.12s linear;
@@ -2680,10 +2294,7 @@ html.dv-both .dspend {
   display: none !important;
 }
 .sigpick {
-  margin: 28px 0 calc(env(safe-area-inset-bottom, 0px) + 110px);
-  display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
 }
 .sigpick .sgc {
   grid-column: 1/-1;
@@ -2816,52 +2427,24 @@ html.dv-both .dspend {
    Light palettes: account card and Profile body.
    ========================================================================== */
 :root:root:root[data-pal="paper"][data-skin="light"] {
-  --bg: #f0e5d2 !important;
-  --surface: #fcf7ee !important;
-  --soft: #f6eee1 !important;
-  --line: #e4d5be !important;
-  --tile: #f4e8d6 !important;
-  --brand-soft: #f2e1c9 !important;
-  --band: #f8f0e3 !important;
   --brand: #996b29 !important;
   --link: #996b29 !important;
   --accent: #996b29 !important;
   --ctl: #996b29 !important;
 }
 :root:root:root[data-pal="ocean"][data-skin="light"] {
-  --bg: #dee6fb !important;
-  --surface: #f7f9ff !important;
-  --soft: #ecf1fe !important;
-  --line: #ced8f5 !important;
-  --tile: #e7ecfd !important;
-  --brand-soft: #d7e0fd !important;
-  --band: #f0f4ff !important;
   --brand: #235fb8 !important;
   --link: #235fb8 !important;
   --accent: #235fb8 !important;
   --ctl: #235fb8 !important;
 }
 :root:root:root[data-pal="sage"][data-skin="light"] {
-  --bg: #dde9d9 !important;
-  --surface: #f7fbf6 !important;
-  --soft: #ecf4e9 !important;
-  --line: #cfdeca !important;
-  --tile: #e6f1e2 !important;
-  --brand-soft: #ddead9 !important;
-  --band: #f2f7f0 !important;
   --brand: #508c5c !important;
   --link: #508c5c !important;
   --accent: #508c5c !important;
   --ctl: #508c5c !important;
 }
 :root:root:root[data-pal="lilac"][data-skin="light"] {
-  --bg: #e6def7 !important;
-  --surface: #faf8ff !important;
-  --soft: #f1ebfd !important;
-  --line: #d9ccf2 !important;
-  --tile: #ede6fc !important;
-  --brand-soft: #e3d8fa !important;
-  --band: #f5f1fe !important;
   --brand: #5931d8 !important;
   --link: #5931d8 !important;
   --accent: #5931d8 !important;
@@ -3040,12 +2623,6 @@ html.dv-both .dspend {
 }
 :root:root:root .p2card .p2per {
   margin: 8px 0 0 !important;
-}
-:root:root:root .p2card.p2-trail .p2per {
-  display: none !important;
-}
-:root:root:root .p2card .p2bill {
-  margin: 18px 0 0 !important;
 }
 :root:root:root .p2card .p2inc {
   margin: 20px 0 0 !important;
@@ -3323,26 +2900,6 @@ html.dv-both .dspend {
 :root:root:root #plans-sheet .p2per .inr i {
   font-size: 13px !important;
 }
-:root:root:root #plans-sheet .p2bill {
-  height: 44px;
-  padding: 4px !important;
-  margin: 16px 0 0 !important;
-  border-radius: 14px !important;
-}
-:root:root:root #plans-sheet .p2bill button {
-  height: 36px !important;
-  padding: 0 !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  border-radius: 10px !important;
-}
-:root:root:root #plans-sheet .p2bill button i {
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  font-style: normal;
-  margin-left: 4px;
-}
 :root:root:root #plans-sheet .p2inc {
   margin: var(--p2r) 0 0 !important;
   padding: 4px 0 0 !important;
@@ -3483,9 +3040,6 @@ html.dv-both .dspend {
   color: var(--ink);
   filter: drop-shadow(0 0 3px color-mix(in srgb, var(--kg2) 55%, transparent));
 }
-.gpick {
-  margin: 28px 0 0;
-}
 .gpick .sgc {
   margin: 0 4px 10px;
   font-size: 0.74rem;
@@ -3497,17 +3051,14 @@ html.dv-both .dspend {
 .gpick .gpr {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
 }
 .gpick button {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 12px 4px 10px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: var(--surface);
   color: var(--ink);
   font: inherit;
   font-size: 0.74rem;
@@ -3743,7 +3294,6 @@ html.dv-both .dspend {
   gap: 8px;
   width: 100%;
   margin: 0 0 10px !important;
-  padding: 0 6px !important;
   background: none !important;
   border: 0 !important;
   font-size: 11.5px !important;
@@ -3917,9 +3467,6 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
 }
 :root[data-skin="graphite"] .sigpick .sgo {
   background-color: #ece6d8 !important;
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.3),
-    0 12px 26px rgba(0, 0, 0, 0.45) !important;
 }
 .gpick {
   margin: 0 !important;
@@ -4001,7 +3548,6 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
    ========================================================================== */
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan {
   display: block !important;
-  margin-top: 14px !important;
   padding-top: 0 !important;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend {
@@ -4049,9 +3595,6 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
 /* ==========================================================================
    Top blur bar.
    ========================================================================== */
-:root:root:root .tblur {
-  border-top: 1px solid color-mix(in srgb, var(--ink) 7%, transparent) !important;
-}
 
 /* ==========================================================================
    Signature writing animation.
@@ -4446,9 +3989,6 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 /* ==========================================================================
    Header hairline animation.
    ========================================================================== */
-:root:root:root .tblur {
-  display: none !important;
-}
 :root:root:root:root :is(.hometop, .pghead, .chips).tstk::after {
   content: "" !important;
   display: block !important;
@@ -4512,24 +4052,18 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 /* ==========================================================================
    Page headers: sizes and positions.
    ========================================================================== */
-:root {
-  --hdrh: 82px;
-}
 :root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead,
 :root:root:root:root:root #v-home > .hometop {
-  position: -webkit-sticky !important;
   position: sticky !important;
   top: env(safe-area-inset-top, 0px) !important;
   z-index: 20 !important;
   display: flex !important;
-  align-items: center !important;
   justify-content: space-between !important;
   flex-wrap: nowrap !important;
   gap: 12px !important;
   box-sizing: border-box !important;
   min-height: var(--hdrh) !important;
   padding: 16.5px 24px 16.5px 30px !important;
-  margin: 0 0 4px !important;
   background: var(--bg) !important;
   box-shadow: 0 -80px 0 var(--bg) !important;
   -webkit-backdrop-filter: none !important;
@@ -4553,40 +4087,10 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   line-height: 30px !important;
   letter-spacing: normal !important;
 }
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead .hsub {
-  display: block;
-  -webkit-appearance: none;
-  appearance: none;
-  border: 0;
-  background: none;
-  margin: 0;
-  padding: 2px 0 0;
-  font: inherit;
-  font-size: 0.78rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--muted);
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead button.hsub {
-  cursor: pointer;
-}
-:root:root:root:root #v-profile > .pghead button.hsub:after {
-  content: " \203A";
-  font-weight: 700;
-}
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
-  display: none !important;
-}
 :root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
   padding-top: 14px !important;
 }
 :root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
-  top: calc(env(safe-area-inset-top, 0px) + var(--hdrh) - 4px) !important;
   padding-top: 4px !important;
   margin-top: 0 !important;
   z-index: 19 !important;
@@ -4596,9 +4100,6 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 /* ==========================================================================
    Page headers: fixed position and spacing.
    ========================================================================== */
-:root {
-  --hdr2: 64px;
-}
 :root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead {
   min-height: var(--hdr2) !important;
   height: var(--hdr2) !important;
@@ -4611,9 +4112,6 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 }
 :root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
   display: block !important;
-}
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead .hsub {
-  display: none !important;
 }
 :root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
   top: calc(env(safe-area-inset-top, 0px) + var(--hdr2) - 2px) !important;
@@ -4848,9 +4346,6 @@ html:has(.chatsh:not([hidden])) #kssb {
 /* ==========================================================================
    Theme sheet bottom spacing.
    ========================================================================== */
-:root:root:root:root:root #theme-sheet {
-  padding-bottom: 16px !important;
-}
 :root:root:root:root:root #theme-sheet .thsec:last-child {
   margin-bottom: 0 !important;
 }
@@ -4912,7 +4407,6 @@ html:is(.dv-both, .dv-span)
    ========================================================================== */
 :root:root:root:root:root .sheet.psheet > .btn.full:not([hidden]) {
   position: sticky !important;
-  bottom: 12px !important;
   z-index: 6 !important;
   box-shadow:
     0 0 0 14px var(--shbg, var(--bg)),
@@ -5128,9 +4622,7 @@ html:is(.dv-both, .dv-span)
 }
 :root:root:root:root:root #v-profile .sigpick {
   margin-top: 56px !important;
-  transform: scale(0.7);
   transform-origin: 50% 0;
-  margin-bottom: -24px !important;
 }
 :root:root:root:root:root #grp-sheet #grp-addm {
   display: none !important;
@@ -5169,24 +4661,6 @@ html:is(.dv-both, .dv-span)
   text-align: center;
   gap: 8px;
   padding: 8px 8px 16px;
-}
-.lbsico {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
-  margin-bottom: 6px;
-}
-.lbsico svg {
-  width: 30px;
-  height: 30px;
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 .lbsoon b {
   font-size: 1.25rem;
@@ -5263,8 +4737,6 @@ html:is(.dv-both, .dv-span)
 }
 :root:root:root:root #login-fine {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 0.8rem !important;
 }
 :root:root:root:root:root #v-profile .sigpick {

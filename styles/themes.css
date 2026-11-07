@@ -362,13 +362,6 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur b :not(svg):not(svg *) {
   color: inherit !important;
 }
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcard.on .ptog {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcard.on .ptog :not(svg):not(svg *) {
-  color: inherit !important;
-}
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pspin {
   background: var(--accent) !important;
   color: var(--on-accent) !important;
@@ -417,13 +410,6 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: var(--on-accent) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatav :not(svg):not(svg *) {
-  color: inherit !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .cmsg.cm-me {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .cmsg.cm-me :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatsend {
@@ -514,25 +500,11 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span :not(svg):not(svg *) {
   color: inherit !important;
 }
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span :not(svg):not(svg *) {
-  color: inherit !important;
-}
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-close.save {
   background: var(--accent) !important;
   color: var(--on-accent) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-close.save :not(svg):not(svg *) {
-  color: inherit !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .ptr.go .ptrc {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .ptr.go .ptrc :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .avlet {
@@ -561,13 +533,6 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: var(--on-accent) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatbub.dk.drag :not(svg):not(svg *) {
-  color: inherit !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvdots i.on {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvdots i.on :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pbadge2,
@@ -678,16 +643,6 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   :not(svg):not(svg *) {
   color: inherit !important;
 }
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .tqd button[aria-current="true"] {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
-  .tqd
-  button[aria-current="true"]
-  :not(svg):not(svg *) {
-  color: inherit !important;
-}
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .shtitle .shsave {
   background: var(--accent) !important;
   color: var(--on-accent) !important;
@@ -700,16 +655,6 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: var(--on-accent) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dksw .knob :not(svg):not(svg *) {
-  color: inherit !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .onbdots button[aria-current="true"] {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
-}
-:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
-  .onbdots
-  button[aria-current="true"]
-  :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .onbdots button[aria-current="true"] {
