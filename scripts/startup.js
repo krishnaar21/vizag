@@ -12,6 +12,7 @@
     7. One-time cache refresh for phones that were stuck on a very old build.
     8. Avatar faces. The eight original face avatars (kav1 to kav8) as small drawings, plus a helper that says whether demo mode is on.
     9. Splash screen. Fades the Kosway splash out as soon as the page is ready (or after 4 seconds at most).
+   10. Screen corner radius. Sets --scr-r from the phone model so sheet corners match the screen's curve.
 */
 
 /* ==========================================================================
@@ -309,4 +310,38 @@ try {
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Splash screen. Fades the Kosway splash out as soon as the pa", err);
+}
+
+/* ==========================================================================
+   Screen corner radius. Sets --scr-r from the phone model so sheet corners match the screen's curve.
+   iPhone values are Apple's display corner radii (points), matched by screen size.
+   Android has no way to read the radius, so common gesture-nav phones get 28px.
+   Unknown or square screens keep the CSS default.
+   ========================================================================== */
+try {
+  (function () {
+    var ua = navigator.userAgent || "",
+      w = Math.min(screen.width, screen.height),
+      h = Math.max(screen.width, screen.height),
+      r = 0;
+    if (/iPhone/.test(ua)) {
+      r =
+        {
+          "375x812": 41,
+          "414x896": 41,
+          "390x844": 47,
+          "428x926": 53,
+          "393x852": 55,
+          "430x932": 55,
+          "402x874": 62,
+          "440x956": 62,
+          "420x912": 62,
+        }[w + "x" + h] || 0;
+    } else if (/Android/.test(ua) && h / w > 1.9) {
+      r = 28;
+    }
+    r && document.documentElement.style.setProperty("--scr-r", r + "px");
+  })();
+} catch (err) {
+  console.error("[Kosway] part failed:", "Screen corner radius.", err);
 }

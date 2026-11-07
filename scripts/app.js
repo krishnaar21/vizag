@@ -13164,6 +13164,26 @@ try {
       };
       var k = (window.__CHANGES = [
           {
+            b: "549",
+            d: "7 Nov 2026",
+            s: "Opens on today, one switch for Atlas AI, and a new first look.",
+            n: [
+              "Home and Days open on today's day while your trip is on",
+              "A new first onboarding picture: mountains, a temple town and the coast on one route",
+              "One Atlas AI switch; Kosway picks the AI for you",
+            ],
+            f: [
+              "The update banner now shows when a new version is out",
+              "Sheet corners match your phone's screen corners",
+            ],
+            u: [
+              "Plans tabs look like the Plan page tabs",
+              "Pass & Atlas lists features by plan",
+              "Bigger hammock in the beach scene",
+              "Lighter blur under headers and above the nav, the same top and bottom",
+            ],
+          },
+          {
             b: "548",
             d: "7 Nov 2026",
             s: "AI that just works, and sheets that fit your screen.",
@@ -17558,7 +17578,7 @@ try {
         );
       }
       var VB = [
-        "-15 9.8 330 247.5",
+        "0 12 300 225",
         "5.9 15.9 288.2 216.2",
         "-4 -3.5 308 231",
         "0.5 10.1 297 222.8",
@@ -17568,30 +17588,50 @@ try {
         return '<svg viewBox="' + (VB[k] || "0 0 300 225") + '" aria-hidden="true">' + D(k) + b + "</svg>";
       }
       var A = [];
-      /* 0 · the trip: hills, a road and a pin at the end of it */
+      /* 0 · trips across India: mountains, a temple town and the coast, joined by one route */
       A.push(
         svg(
           0,
-          '<circle cx="222" cy="66" r="70" fill="url(#o0g)"/><circle cx="222" cy="66" r="24" style="' +
-            F(0, "l") +
+          '<circle cx="206" cy="58" r="46" fill="url(#o0g)"/><circle cx="206" cy="58" r="15" style="' +
+            F(0, "a") +
             '"/>' +
-            '<path d="M6 224C20 170 64 114 156 132S268 102 294 224Q150 240 6 224Z" style="' +
-            F(0, "l") +
-            '"/>' +
-            '<path d="M22 224C58 178 132 162 186 178S274 166 280 224Q150 238 22 224Z" style="' +
+            /* mountains */
+            '<path d="M8 198L52 124L70 148L98 104L142 198Z" style="' +
             F(0, "m") +
+            '"/><path d="M98 104L88 121L95 118L100 124L106 116L111 121Z M52 124L45 136L51 133L56 138L60 131Z" style="' +
+            BG +
             '"/>' +
-            '<path d="M152 225C152 198 92 192 108 166S134 140 120 126" style="fill:none;stroke:var(--bg);stroke-width:9;stroke-linecap:round"/>' +
-            '<path d="M152 225C152 198 92 192 108 166S134 140 120 126" style="fill:none;stroke:var(--ink);stroke-width:1.6;stroke-dasharray:5 6;stroke-linecap:round;opacity:.7"/>' +
-            pin(120, 122, 1.25, INK) +
-            '<path d="M58 188C56 166 60 146 70 126" style="fill:none;stroke:url(#o0d);stroke-width:6;stroke-linecap:round"/>' +
-            '<path d="M70 126C58 116 44 116 34 124C46 122 58 124 70 126ZM70 126C66 112 70 100 80 94C78 106 74 116 70 126ZM70 126C82 116 96 116 104 124C92 122 80 124 70 126ZM70 126C60 106 46 102 38 104C50 110 62 116 70 126Z" style="' +
+            /* temple tower */
+            '<path d="M128 198V176H186V198ZM134 176V158H180V176ZM139 158V142H175V158ZM144 142V128H170V142ZM149 128V116H165V128Z" style="' +
             F(0, "d") +
-            '"/>' +
-            '<path d="M196 104l6 4 6-4M214 94l5 3.4 5-3.4" style="' +
+            '"/><path d="M151 116Q157 104 163 116Z" style="' +
+            INK +
+            '"/><path d="M157 105V98" style="' +
             LN +
-            ';stroke-width:1.6;opacity:.6"/>' +
-            '<path d="M232 182c4-10 12-10 16 0" style="fill:none;stroke:var(--ink);stroke-width:1.5;opacity:.35"/>',
+            ';stroke-width:1.6"/><path d="M151 198V186a6 6 0 0 1 12 0V198Z" style="' +
+            BG +
+            '"/>' +
+            /* lighthouse and sea */
+            '<path d="M232 198L237 128H253L258 198Z" style="' +
+            F(0, "m") +
+            '"/><path d="M234.6 170H255.4L256.2 182H233.8ZM236.3 146H253.7L254.3 156H235.7Z" style="' +
+            F(0, "d") +
+            '"/><rect x="235" y="116" width="20" height="12" rx="3" style="' +
+            INK +
+            '"/><path d="M233 116H257L245 106Z" style="' +
+            INK +
+            '"/><path d="M256 120L292 110V130Z" style="' +
+            F(0, "a") +
+            ';opacity:.7"/>' +
+            '<path d="M262 190q6-4 12 0t12 0M268 182q5-3 10 0t10 0" style="fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;opacity:.45"/>' +
+            /* ground */
+            '<path d="M4 198H296" style="fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round"/>' +
+            /* the route */
+            '<path d="M84 80C104 48 136 40 157 58S216 92 245 66" style="fill:none;stroke:var(--bg);stroke-width:7;stroke-linecap:round"/>' +
+            '<path d="M84 80C104 48 136 40 157 58S216 92 245 66" style="fill:none;stroke:var(--ink);stroke-width:1.8;stroke-dasharray:4 5;stroke-linecap:round"/>' +
+            pin(84, 86, 0.72, INK) +
+            pin(157, 64, 0.72, INK) +
+            pin(245, 72, 0.9, "fill:var(--link)"),
         ),
       );
       /* 1 · how it works: pick, plan, go */

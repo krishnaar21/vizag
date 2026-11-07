@@ -479,14 +479,15 @@
   left: 0;
   right: 0;
   bottom: var(--bbot, 64px);
-  height: 44px;
+  /* Same band as the top headers' .tstk::after, mirrored */
+  height: 24px;
   z-index: 19;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  background: linear-gradient(to top, color-mix(in srgb, var(--bg) 55%, transparent), transparent);
-  -webkit-mask: linear-gradient(to top, #000 20%, transparent);
-  mask: linear-gradient(to top, #000 20%, transparent);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: linear-gradient(to top, color-mix(in srgb, var(--bg) 50%, transparent), transparent);
+  -webkit-mask: linear-gradient(to top, #000 15%, transparent);
+  mask: linear-gradient(to top, #000 15%, transparent);
 }
 html.kbd .bblur,
 html.navhide .bblur,
@@ -3936,9 +3937,9 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   height: 24px;
   pointer-events: none;
   border-top: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 70%, transparent), transparent);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 50%, transparent), transparent);
   -webkit-mask: linear-gradient(to bottom, #000 15%, transparent);
   mask: linear-gradient(to bottom, #000 15%, transparent);
   opacity: 1;
@@ -5095,7 +5096,7 @@ body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
   top: 100% !important;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--bg) 70%, transparent),
+    color-mix(in srgb, var(--bg) 50%, transparent),
     transparent
   ) !important;
 }
@@ -5116,21 +5117,16 @@ body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
 #pf-sheet .pflist .setrow {
   cursor: default;
 }
-#pf-sheet .pftag {
-  flex: none;
-  margin-left: auto;
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.72rem;
+#pf-sheet .pfcap {
+  margin: 14px 4px 8px;
+  font-size: 0.74rem;
   font-weight: 700;
-  white-space: nowrap;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-#pf-sheet .pftag.own {
-  border-color: transparent;
-  background: var(--accent);
-  color: var(--on-accent);
+#pf-sheet .pflist > .pfcap:first-child {
+  margin-top: 4px;
 }
 
 /* Contact support: no extra space under the note */
@@ -5141,14 +5137,17 @@ body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
   margin-bottom: 0;
 }
 
-/* Sheets follow the phone's rounded screen corners: on phones with a home
-   indicator (rounded screens) the bottom corners are concentric with the
-   screen, i.e. screen radius minus the 8px gap. */
+/* Sheets follow the phone's rounded screen corners: the bottom corners are
+   concentric with the screen (screen radius minus the 8px gap). --scr-r is
+   set per phone model in startup.js; unknown screens keep 30px corners. */
 :root {
-  --scr-r: max(38px, calc(env(safe-area-inset-bottom, 0px) * 1.6));
-  --sheet-br: calc(var(--scr-r) - 8px);
+  --sheet-br: max(16px, calc(var(--scr-r, 38px) - 8px));
 }
 html.sheet-bottom:root:root:root .sheet.lsheet:not(.inpage) {
+  border-bottom-left-radius: var(--sheet-br) !important;
+  border-bottom-right-radius: var(--sheet-br) !important;
+}
+html.sheet-bottom:root:root:root:root:root :is(#lb-sheet, #plans-sheet):not([hidden]):not(.shghost) {
   border-bottom-left-radius: var(--sheet-br) !important;
   border-bottom-right-radius: var(--sheet-br) !important;
 }
@@ -5181,4 +5180,29 @@ html.sheet-bottom:root:root:root .sheet.lsheet:not(.inpage) {
     transform: rotate(270deg);
     opacity: 0;
   }
+}
+
+/* Plans sheet tabs look like the Plan page tabs (549): white bar with a
+   hairline border, soft filled pill for the chosen plan */
+:root:root:root #plans-sheet .p2seg {
+  height: auto;
+  padding: 5px;
+  gap: 4px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+:root:root:root #plans-sheet .p2seg button {
+  height: 38px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  box-shadow: none;
+}
+:root:root:root #plans-sheet .p2seg button[aria-selected="true"] {
+  background: color-mix(in srgb, var(--ink) 7%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
 }

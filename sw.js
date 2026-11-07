@@ -1,7 +1,7 @@
 /* Offline + low-network support for the Vizag trip planner (GitHub Pages).
    Page files open instantly from the phone's cache and refresh in the background;
    fonts and login scripts are cached after first use. */
-const CACHE = 'vizag-trip-v548';
+const CACHE = 'vizag-trip-v549';
 const CORE = ['./', './index.html', './sync-config.js', './manifest.webmanifest', './vizag-trip-planner.pdf',
   './styles/base.css', './styles/themes.css', './styles/refinements.css',
   './scripts/startup.js', './scripts/qr-code.js', './scripts/app.js', './scripts/app-icon.js',
@@ -41,6 +41,8 @@ self.addEventListener('fetch', e => {
   if (/googleapis\.com$/.test(url.hostname) && !/fonts\.googleapis\.com$/.test(url.hostname)) return;
   if (url.hostname.endsWith('firebaseio.com')) return;
 
+  /* The page's own build check always goes to the network */
+  if (url.origin === self.location.origin && url.searchParams.has('fresh')) return;
   if (url.origin === self.location.origin) {
     /* Stale-while-revalidate: answer from cache at once, update quietly */
     e.respondWith((async () => {
