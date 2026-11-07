@@ -822,30 +822,6 @@ try {
         a.classList.add("accol");
       }
     }
-    function club() {
-      var a = q("#acct"),
-        pt = q(".plantop"),
-        st = a && q(".acstats", a),
-        ft = st && q(".acfoot", st);
-      if (!a || !pt || !st) return;
-      pt.parentNode !== st && st.insertBefore(pt, ft || null);
-      var ai = q(".ai .an", a),
-        bd = q(".acplan", a),
-        on = !pt.hidden && !!pt.firstChild,
-        pro = !!q(".plancard.pro", pt),
-        tx = pro ? "Pro" : "Free";
-      if (!on) {
-        bd && bd.remove();
-        return;
-      }
-      if (!bd) {
-        bd = D.createElement("span");
-        bd.className = "acplan";
-        ai && ai.after(bd);
-      }
-      bd.classList.toggle("pro", pro);
-      bd.textContent !== tx && (bd.textContent = tx);
-    }
     function planTag() {
       var h = q("#v-profile .pghead");
       if (!h) return;
@@ -2352,9 +2328,6 @@ try {
       var t = TIER[u];
       return t ? ' <i class="lbtier ' + t + '">' + (t === "pro" ? "Pro" : "Plus") + "</i>" : "";
     }
-    function rav(n, sz, r) {
-      return '<span class="lavw">' + av(n, sz, !0) + '<b class="rtag r' + r + '">' + r + "</b></span>";
-    }
     function av(n, sz, pent) {
       return (
         '<i class="lav ' + sz + '" style="background:' + hc(n) + ';border-radius:50%">' + esc(ini(n)) + "</i>"
@@ -3152,11 +3125,6 @@ try {
     var D = document;
     var CH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
       COL = ["#ffd6a5", "#caffbf", "#bdb2ff", "#ffc6ff", "#9bf6ff", "#fdffb6", "#ffadad", "#a0e7e5"];
-    function hc(t) {
-      var h = 0;
-      for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
-      return COL[h % COL.length];
-    }
     function fix() {
       /* sound: wood only */
       try {
@@ -3507,28 +3475,6 @@ try {
         { threshold: 0.6 },
       );
       ob.observe(g);
-    }
-    function fit() {
-      D.querySelectorAll(".acx").forEach(function (ax) {
-        var h = ax.parentElement;
-        if (!h || !ax.offsetParent) return;
-        var hr = h.getBoundingClientRect(),
-          hc = getComputedStyle(h),
-          ar = ax.getBoundingClientRect(),
-          cs = getComputedStyle(ax),
-          bl = parseFloat(hc.borderLeftWidth) || 0,
-          br = parseFloat(hc.borderRightWidth) || 0,
-          bb = parseFloat(hc.borderBottomWidth) || 0;
-        var dl = ar.left - (hr.left + bl),
-          dr = hr.right - br - ar.right,
-          db = hr.bottom - bb - ar.bottom;
-        Math.abs(dl) > 0.5 &&
-          ax.style.setProperty("margin-left", parseFloat(cs.marginLeft) - dl + "px", "important");
-        Math.abs(dr) > 0.5 &&
-          ax.style.setProperty("margin-right", parseFloat(cs.marginRight) - dr + "px", "important");
-        Math.abs(db) > 0.5 &&
-          ax.style.setProperty("margin-bottom", parseFloat(cs.marginBottom) - db + "px", "important");
-      });
     }
     function lab() {
       D.querySelectorAll("#theme-sheet .pl-s, #theme-sheet .kzr button").forEach(function (b) {

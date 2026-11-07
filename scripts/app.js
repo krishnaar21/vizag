@@ -1,6 +1,10 @@
 /* app.js
 
-   The main app: trips, days, plan, explore, saved places, sync, sign-in, sheets and settings. This part is still compressed code; step 2 of the cleanup will split it into named sections.
+   The main app: trips, days, plan, explore, saved places, sync, sign-in, sheets and settings.
+
+   The main functions and shared values have plain-English names (showTab, openLogin,
+   renderTrip, activeTrip, saveProfile...). Short one-letter names that remain are
+   temporary values inside small functions.
 
    Parts, in the order they run:
     1. Sets the More tab's nav icon.
@@ -50,8 +54,8 @@ try {
     } catch (r) {}
   })(),
     (function () {
-      var d = ["home", "days", "route", "plan", "alerts", "more", "profile"],
-        s = {
+      var TAB_NAMES = ["home", "days", "route", "plan", "alerts", "more", "profile"],
+        SUBPAGE_TAB = {
           book: "plan",
           pack: "plan",
           budget: "plan",
@@ -60,38 +64,38 @@ try {
           food: "route",
           shopping: "route",
         };
-      function o(n) {
+      function readStore(n) {
         try {
           return localStorage.getItem(n);
         } catch (L) {
           return null;
         }
       }
-      function l(n, L) {
+      function writeStore(n, L) {
         try {
           localStorage.setItem(n, L);
         } catch (S) {}
       }
-      var e = function (n) {
+      var byId = function (n) {
           return document.getElementById(n);
         },
-        r = function (n) {
+        findAll = function (n) {
           return Array.prototype.slice.call(document.querySelectorAll(n));
         };
-      function Q(n) {
+      function showTab(n) {
         (n === "near" || n === "discover") && (n = "places"),
-          s[n] && (b(s[n], n), (n = s[n])),
-          d.indexOf(n) < 0 && (n = "home"),
-          d.forEach(function (C) {
-            var N = e("v-" + C);
+          SUBPAGE_TAB[n] && (showSubpage(SUBPAGE_TAB[n], n), (n = SUBPAGE_TAB[n])),
+          TAB_NAMES.indexOf(n) < 0 && (n = "home"),
+          TAB_NAMES.forEach(function (C) {
+            var N = byId("v-" + C);
             N && (N.hidden = C !== n);
           }),
-          r(".nav button[data-v]").forEach(function (C) {
+          findAll(".nav button[data-v]").forEach(function (C) {
             C.dataset.v === n ? C.setAttribute("aria-current", "page") : C.removeAttribute("aria-current");
           });
-        var L = e("top-head");
+        var L = byId("top-head");
         L && (L.hidden = n !== "days"),
-          l("vizag-view2", n),
+          writeStore("vizag-view2", n),
           window.scrollTo(0, 0),
           (document.documentElement.dataset.view = n),
           (n === "more" || n === "profile") && window.__renderAcct && window.__renderAcct(),
@@ -99,21 +103,21 @@ try {
             (window.__drawMyTrips && window.__drawMyTrips(),
             window.__drawRecent && window.__drawRecent(),
             window.__drawFavs && window.__drawFavs()),
-          setTimeout(be, 60);
-        var S = e("fab");
+          setTimeout(setupScrollStrips, 60);
+        var S = byId("fab");
         S && S.setAttribute("aria-label", "Ask Atlas about this page");
       }
-      r(".nav button[data-v]").forEach(function (n) {
+      findAll(".nav button[data-v]").forEach(function (n) {
         n.addEventListener("click", function (L) {
-          L.stopPropagation(), Q(n.dataset.v);
+          L.stopPropagation(), showTab(n.dataset.v);
         });
       }),
         document.addEventListener("click", function (n) {
           var L = n.target.closest && n.target.closest("[data-goto]");
-          L && (n.preventDefault(), Q(L.dataset.goto));
+          L && (n.preventDefault(), showTab(L.dataset.goto));
         });
-      function b(n, L) {
-        var S = e("v-" + n);
+      function showSubpage(n, L) {
+        var S = byId("v-" + n);
         if (S) {
           var C = Array.prototype.slice.call(S.querySelectorAll(".subp"));
           C.some(function (N) {
@@ -125,89 +129,89 @@ try {
             S.querySelectorAll(".schip").forEach(function (N) {
               N.setAttribute("aria-pressed", N.dataset.sub === L ? "true" : "false");
             }),
-            l("vizag-sub-" + n, L);
+            writeStore("vizag-sub-" + n, L);
         }
       }
-      r(".schip").forEach(function (n) {
+      findAll(".schip").forEach(function (n) {
         n.addEventListener("click", function () {
-          b(n.closest(".view").id.slice(2), n.dataset.sub), window.scrollTo(0, 0);
+          showSubpage(n.closest(".view").id.slice(2), n.dataset.sub), window.scrollTo(0, 0);
         });
       }),
-        b("plan", o("vizag-sub-plan")),
-        b("route", o("vizag-sub-route")),
-        b("alerts", o("vizag-sub-alerts"));
-      var A = r(".day, .hday"),
-        x = r("#v-days .chip, .hchip");
-      function p(n) {
+        showSubpage("plan", readStore("vizag-sub-plan")),
+        showSubpage("route", readStore("vizag-sub-route")),
+        showSubpage("alerts", readStore("vizag-sub-alerts"));
+      var dayPanels = findAll(".day, .hday"),
+        dayChips = findAll("#v-days .chip, .hchip");
+      function showDay(n) {
         (n = String(n)),
-          A.forEach(function (L) {
+          dayPanels.forEach(function (L) {
             L.hidden = L.dataset.day !== n;
           }),
-          x.forEach(function (L) {
+          dayChips.forEach(function (L) {
             L.setAttribute("aria-pressed", L.dataset.d === n ? "true" : "false");
           }),
-          l("vizag-day", n);
+          writeStore("vizag-day", n);
       }
-      x.forEach(function (n) {
+      dayChips.forEach(function (n) {
         n.addEventListener("click", function () {
-          p(n.dataset.d), window.scrollTo(0, 0);
+          showDay(n.dataset.d), window.scrollTo(0, 0);
         });
       });
-      var w = new Date(),
-        v = { "2026-12-05": 1, "2026-12-06": 2, "2026-12-07": 3, "2026-12-08": 4 },
-        u =
-          w.getFullYear() +
+      var today = new Date(),
+        TRIP_DATE_TO_DAY = { "2026-12-05": 1, "2026-12-06": 2, "2026-12-07": 3, "2026-12-08": 4 },
+        todayKey =
+          today.getFullYear() +
           "-" +
-          String(w.getMonth() + 1).padStart(2, "0") +
+          String(today.getMonth() + 1).padStart(2, "0") +
           "-" +
-          String(w.getDate()).padStart(2, "0"),
-        f = o("vizag-day");
-      p(v[u] || (/^[1-4]$/.test(f || "") ? f : 1));
-      var y = location.hash.slice(1),
-        m = y.match(/^day-([1-4])$/);
-      m && (p(m[1]), (y = "days")),
-        Q(d.indexOf(y) >= 0 ? y : o("vizag-view2") || "home"),
-        r("[data-goday]").forEach(function (n) {
+          String(today.getDate()).padStart(2, "0"),
+        savedDay = readStore("vizag-day");
+      showDay(TRIP_DATE_TO_DAY[todayKey] || (/^[1-4]$/.test(savedDay || "") ? savedDay : 1));
+      var urlHash = location.hash.slice(1),
+        hashDayMatch = urlHash.match(/^day-([1-4])$/);
+      hashDayMatch && (showDay(hashDayMatch[1]), (urlHash = "days")),
+        showTab(TAB_NAMES.indexOf(urlHash) >= 0 ? urlHash : readStore("vizag-view2") || "home"),
+        findAll("[data-goday]").forEach(function (n) {
           n.addEventListener("click", function () {
-            p(n.dataset.goday), Q("days");
+            showDay(n.dataset.goday), showTab("days");
           });
         });
-      var k = r(".ptab"),
-        M = r(".pgroup");
-      function T(n) {
-        k.forEach(function (L) {
+      var planTabs = findAll(".ptab"),
+        planGroups = findAll(".pgroup");
+      function showPlanGroup(n) {
+        planTabs.forEach(function (L) {
           L.setAttribute("aria-selected", L.dataset.g === n ? "true" : "false");
         }),
-          M.forEach(function (L) {
+          planGroups.forEach(function (L) {
             L.hidden = L.dataset.g !== n;
           });
       }
-      k.forEach(function (n) {
+      planTabs.forEach(function (n) {
         n.addEventListener("click", function () {
-          T(n.dataset.g);
+          showPlanGroup(n.dataset.g);
         });
       });
-      var F = r(".stab"),
-        R = r(".sgroup");
-      F.forEach(function (n) {
+      var settingsTabs = findAll(".stab"),
+        settingsGroups = findAll(".sgroup");
+      settingsTabs.forEach(function (n) {
         n.addEventListener("click", function () {
-          F.forEach(function (L) {
+          settingsTabs.forEach(function (L) {
             L.setAttribute("aria-selected", L === n ? "true" : "false");
           }),
-            R.forEach(function (L) {
+            settingsGroups.forEach(function (L) {
               L.hidden = L.dataset.s !== n.dataset.s;
             });
         });
       });
-      function $() {
-        M.forEach(function (n) {
+      function updatePackCounts() {
+        planGroups.forEach(function (n) {
           var L = n.querySelectorAll("input"),
             S = n.querySelectorAll("input:checked"),
             C = document.querySelector('.cnt[data-g="' + n.dataset.g + '"]');
           C && (C.textContent = S.length + "/" + L.length);
         });
       }
-      r(".sec").forEach(function (n) {
+      findAll(".sec").forEach(function (n) {
         var L = n.querySelector(".sech"),
           S = n.querySelector(".secb"),
           C = n.dataset.sec;
@@ -228,7 +232,7 @@ try {
               "https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"),
             document.head.appendChild(n);
         })(),
-        r(".sumtog").forEach(function (n) {
+        findAll(".sumtog").forEach(function (n) {
           var L = n.closest(".summary").querySelector(".sgrid");
           n.addEventListener("click", function () {
             var S = n.getAttribute("aria-expanded") !== "true";
@@ -237,111 +241,116 @@ try {
               (n.firstChild.nodeValue = S ? "Hide summary" : "View summary");
           });
         });
-      var it = e("fab"),
-        at = e("settings"),
-        yt = null;
-      function gt() {
-        clearTimeout(yt),
-          (yt = setTimeout(function () {
-            ut(!1);
+      var fabButton = byId("fab"),
+        settingsPanel = byId("settings"),
+        settingsAutoCloseTimer = null;
+      function restartSettingsAutoClose() {
+        clearTimeout(settingsAutoCloseTimer),
+          (settingsAutoCloseTimer = setTimeout(function () {
+            closeSettings(!1);
           }, 25e3));
       }
       (function () {
-        var n = e("more-slot"),
-          L = e("prof-slot");
-        if (n && at) {
-          n.appendChild(at), (at.hidden = !1), at.classList.add("inpage"), at.removeAttribute("role");
-          var S = at.querySelector(".shtitle");
+        var n = byId("more-slot"),
+          L = byId("prof-slot");
+        if (n && settingsPanel) {
+          n.appendChild(settingsPanel),
+            (settingsPanel.hidden = !1),
+            settingsPanel.classList.add("inpage"),
+            settingsPanel.removeAttribute("role");
+          var S = settingsPanel.querySelector(".shtitle");
           if ((S && S.remove(), L)) {
             var C = document.createElement("div");
             (C.className = "sheet inpage"),
               (C.id = "settings-profile"),
-              Array.prototype.slice.call(at.children).forEach(function (N) {
+              Array.prototype.slice.call(settingsPanel.children).forEach(function (N) {
                 N.id !== "more-lists" && C.appendChild(N);
               }),
               L.appendChild(C);
           }
         }
       })();
-      function ut(n) {
-        n && (G(), Q("profile")), (e("scrim").hidden = e("logout").hidden), clearTimeout(yt);
+      function closeSettings(n) {
+        n && (closeLogoutSheet(), showTab("profile")),
+          (byId("scrim").hidden = byId("logout").hidden),
+          clearTimeout(settingsAutoCloseTimer);
       }
-      var V = null,
-        K = !1;
-      function Y(n) {
-        K !== n &&
-          ((K = n),
-          it.classList.toggle("up", n),
-          it.setAttribute("aria-label", n ? "Back to top" : "New trip"));
+      var fabScrollTimer = null,
+        fabIsBackToTop = !1;
+      function setFabBackToTop(n) {
+        fabIsBackToTop !== n &&
+          ((fabIsBackToTop = n),
+          fabButton.classList.toggle("up", n),
+          fabButton.setAttribute("aria-label", n ? "Back to top" : "New trip"));
       }
       window.addEventListener(
         "scroll",
         function () {
-          clearTimeout(V),
-            (V = setTimeout(
+          clearTimeout(fabScrollTimer),
+            (fabScrollTimer = setTimeout(
               function () {
-                Y(!1);
+                setFabBackToTop(!1);
               },
               window.scrollY > 500 ? 1600 : 200,
             ));
         },
         { passive: !0 },
       ),
-        it.addEventListener("click", function (n) {
-          if ((n.stopPropagation(), K)) {
+        fabButton.addEventListener("click", function (n) {
+          if ((n.stopPropagation(), fabIsBackToTop)) {
             var L = !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
             try {
               window.scrollTo({ top: 0, behavior: L ? "smooth" : "auto" });
             } catch (C) {
               window.scrollTo(0, 0);
             }
-            clearTimeout(V),
-              (V = setTimeout(function () {
-                Y(!1);
+            clearTimeout(fabScrollTimer),
+              (fabScrollTimer = setTimeout(function () {
+                setFabBackToTop(!1);
               }, 700));
             return;
           }
           var S = document.documentElement.dataset.view || "home";
           window.__chat && window.__chat(S);
         });
-      function wt(n) {
-        U.classList.toggle("sheet-bottom", n === "bottom");
+      function setSheetPosition(n) {
+        rootEl.classList.toggle("sheet-bottom", n === "bottom");
       }
-      at.addEventListener("click", function (n) {
-        n.stopPropagation(), gt();
+      settingsPanel.addEventListener("click", function (n) {
+        n.stopPropagation(), restartSettingsAutoClose();
       });
-      var W = e("logout");
-      function q() {
-        ut(!1);
-        var n = e("lo-av");
+      var logoutSheet = byId("logout");
+      function openLogoutSheet() {
+        closeSettings(!1);
+        var n = byId("lo-av");
         if (n) {
           var L = window.__avatarHTML ? window.__avatarHTML() : "";
           if (!L) {
             var S = {};
             try {
-              S = JSON.parse(o("vizag-profile") || "{}") || {};
+              S = JSON.parse(readStore("vizag-profile") || "{}") || {};
             } catch (C) {}
             L = ((S.user || S.name || "A").replace(/^@/, "").trim().charAt(0) || "A").toUpperCase();
           }
           n.innerHTML = L;
         }
-        (W.hidden = !1), (e("scrim").hidden = !1);
+        (logoutSheet.hidden = !1), (byId("scrim").hidden = !1);
       }
-      function G() {
-        W.hidden || ((W.hidden = !0), (e("scrim").hidden = !0));
+      function closeLogoutSheet() {
+        logoutSheet.hidden || ((logoutSheet.hidden = !0), (byId("scrim").hidden = !0));
       }
-      W.addEventListener("click", function (n) {
+      logoutSheet.addEventListener("click", function (n) {
         n.stopPropagation();
       }),
-        e("lo-cancel").addEventListener("click", function () {
-          G(), ut(!0);
+        byId("lo-cancel").addEventListener("click", function () {
+          closeLogoutSheet(), closeSettings(!0);
         }),
-        e("scrim").addEventListener("click", function (n) {
-          n.stopPropagation(), G(), ut(!1);
+        byId("scrim").addEventListener("click", function (n) {
+          n.stopPropagation(), closeLogoutSheet(), closeSettings(!1);
         });
-      var Qt = e("confirm"),
-        St = null;
-      function vt(n, L) {
+      var confirmSheet = byId("confirm"),
+        confirmAction = null;
+      function confirmArt(n, L) {
         var S = "fill:color-mix(in srgb,var(--ink) 10%,var(--bg))",
           C = "url(#cfdots)",
           N =
@@ -422,82 +431,88 @@ try {
           '<g class="cfbase"><rect x="16" y="86" width="88" height="3.2" rx="1.6"/><rect x="28" y="91.5" width="64" height="2.8" rx="1.4"/><rect x="42" y="96.5" width="36" height="2.4" rx="1.2"/></g></svg>'
         );
       }
-      function Rt(n, L, S, C, N) {
+      function openConfirm(n, L, S, C, N) {
         var h = /^(delete|remove|reset|hold for)/i.test(S || ""),
           J = /^discard/i.test(S || ""),
-          ot = Qt.querySelector(".cfart");
-        ot && (ot.outerHTML = vt(h ? (/reset/i.test(S || "") ? "reset" : "trash") : N || "page", h || J)),
-          ut(!1),
-          G(),
-          (e("cf-title").textContent = n),
-          (e("cf-text").textContent = L),
-          (e("cf-go").textContent = S),
-          Qt.classList.toggle("isdiscard", /^discard/i.test(S || "")),
-          (St = C),
-          (Jt = window.__cfHold || 0),
+          ot = confirmSheet.querySelector(".cfart");
+        ot &&
+          (ot.outerHTML = confirmArt(h ? (/reset/i.test(S || "") ? "reset" : "trash") : N || "page", h || J)),
+          closeSettings(!1),
+          closeLogoutSheet(),
+          (byId("cf-title").textContent = n),
+          (byId("cf-text").textContent = L),
+          (byId("cf-go").textContent = S),
+          confirmSheet.classList.toggle("isdiscard", /^discard/i.test(S || "")),
+          (confirmAction = C),
+          (confirmHoldSeconds = window.__cfHold || 0),
           (window.__cfHold = 0),
-          Qt.classList.toggle("ishold", !!Jt),
-          e("cf-go").style.setProperty("--hp", "0"),
-          (e("cf-go").__lbl = S),
-          (Qt.hidden = !1),
-          (e("scrim").hidden = !1);
+          confirmSheet.classList.toggle("ishold", !!confirmHoldSeconds),
+          byId("cf-go").style.setProperty("--hp", "0"),
+          (byId("cf-go").__lbl = S),
+          (confirmSheet.hidden = !1),
+          (byId("scrim").hidden = !1);
       }
       window.__confirm = function (n, L, S, C, N) {
-        Rt(n, L, S, C, N);
+        openConfirm(n, L, S, C, N);
       };
-      function Ut() {
-        Qt.hidden || (Qt.classList.remove("ishold"), (Qt.hidden = !0), W.hidden && (e("scrim").hidden = !0));
+      function closeConfirm() {
+        confirmSheet.hidden ||
+          (confirmSheet.classList.remove("ishold"),
+          (confirmSheet.hidden = !0),
+          logoutSheet.hidden && (byId("scrim").hidden = !0));
       }
-      Qt.addEventListener("click", function (n) {
+      confirmSheet.addEventListener("click", function (n) {
         n.stopPropagation();
       }),
-        e("cf-cancel").addEventListener("click", Ut);
-      var Jt = 0,
-        Bt = 0,
-        qt = 0,
-        Xt = 0;
-      e("cf-go").addEventListener("click", function () {
-        if (!Jt) {
-          var n = St;
-          Ut(), n && n();
+        byId("cf-cancel").addEventListener("click", closeConfirm);
+      var confirmHoldSeconds = 0,
+        confirmHoldTicker = 0,
+        confirmHoldStart = 0,
+        confirmHoldFrame = 0;
+      byId("cf-go").addEventListener("click", function () {
+        if (!confirmHoldSeconds) {
+          var n = confirmAction;
+          closeConfirm(), n && n();
         }
       }),
         (function () {
-          var n = e("cf-go");
+          var n = byId("cf-go");
           function L() {
-            qt &&
-              ((qt = 0),
-              clearInterval(Bt),
-              cancelAnimationFrame(Xt),
+            confirmHoldStart &&
+              ((confirmHoldStart = 0),
+              clearInterval(confirmHoldTicker),
+              cancelAnimationFrame(confirmHoldFrame),
               n.style.setProperty("--hp", "0"),
               (n.textContent = n.__lbl),
               n.classList.remove("holding"));
           }
           function S() {
-            if (qt) {
-              var N = Math.min(1, (Date.now() - qt) / (Jt * 1e3));
+            if (confirmHoldStart) {
+              var N = Math.min(1, (Date.now() - confirmHoldStart) / (confirmHoldSeconds * 1e3));
               if ((n.style.setProperty("--hp", N.toFixed(3)), N >= 1)) {
-                (qt = 0), clearInterval(Bt), navigator.vibrate && navigator.vibrate(30);
-                var h = St;
-                Ut(), h && h();
+                (confirmHoldStart = 0),
+                  clearInterval(confirmHoldTicker),
+                  navigator.vibrate && navigator.vibrate(30);
+                var h = confirmAction;
+                closeConfirm(), h && h();
                 return;
               }
-              Xt = requestAnimationFrame(S);
+              confirmHoldFrame = requestAnimationFrame(S);
             }
           }
           function C(N) {
-            if (Jt) {
+            if (confirmHoldSeconds) {
               N.preventDefault(),
-                (qt = Date.now()),
+                (confirmHoldStart = Date.now()),
                 n.classList.add("holding"),
                 navigator.vibrate && navigator.vibrate(10);
               var h = function () {
-                if (qt) {
-                  var J = Math.ceil(Jt - (Date.now() - qt) / 1e3);
+                if (confirmHoldStart) {
+                  var J = Math.ceil(confirmHoldSeconds - (Date.now() - confirmHoldStart) / 1e3);
                   n.textContent = "Keep holding\u2026 " + Math.max(J, 0);
                 }
               };
-              h(), (Bt = setInterval(h, 200)), S();
+              h(), (confirmHoldTicker = setInterval(h, 200)), S();
             }
           }
           n.addEventListener("pointerdown", C),
@@ -505,17 +520,17 @@ try {
               n.addEventListener(N, L);
             }),
             n.addEventListener("contextmenu", function (N) {
-              Jt && N.preventDefault();
+              confirmHoldSeconds && N.preventDefault();
             }),
             n.addEventListener("keydown", function (N) {
-              Jt && (N.key === " " || N.key === "Enter") && !qt && C(N);
+              confirmHoldSeconds && (N.key === " " || N.key === "Enter") && !confirmHoldStart && C(N);
             }),
             n.addEventListener("keyup", function (N) {
               (N.key === " " || N.key === "Enter") && L();
             });
         })(),
-        e("scrim").addEventListener("click", Ut);
-      function ue() {
+        byId("scrim").addEventListener("click", closeConfirm);
+      function collectDiagnostics() {
         var n = !!(window.claude && typeof window.claude.use == "function"),
           L = [];
         "serviceWorker" in navigator &&
@@ -544,85 +559,92 @@ try {
               n ? location.reload() : location.replace(location.pathname + "?r=" + Date.now());
             });
       }
-      function Ce() {
+      function clearAppStorage() {
         try {
           Object.keys(localStorage).forEach(function (n) {
             n.indexOf("vizag-") === 0 && localStorage.removeItem(n);
           });
         } catch (n) {}
-        ue();
+        collectDiagnostics();
       }
-      var $e = e("hard-refresh"),
-        H = e("reset-data");
-      $e &&
-        $e.addEventListener("click", function (n) {
+      var hardRefreshButton = byId("hard-refresh"),
+        resetDataButton = byId("reset-data");
+      hardRefreshButton &&
+        hardRefreshButton.addEventListener("click", function (n) {
           n.stopPropagation(),
-            Rt(
+            openConfirm(
               "Hard refresh?",
               "The page reloads and downloads the latest version. Your ticks and settings stay.",
               "Refresh now",
-              ue,
+              collectDiagnostics,
             );
         }),
-        H &&
-          H.addEventListener("click", function (n) {
+        resetDataButton &&
+          resetDataButton.addEventListener("click", function (n) {
             n.stopPropagation(),
-              Rt(
+              openConfirm(
                 "Reset data on this phone?",
                 "This clears ticks, settings, saved alerts and cached files on this phone. This can\u2019t be undone.",
                 "Reset data",
-                Ce,
+                clearAppStorage,
               );
           }),
         document.addEventListener("click", function (n) {
-          !W.hidden && !W.contains(n.target) && G(), !Qt.hidden && !Qt.contains(n.target) && Ut();
+          !logoutSheet.hidden && !logoutSheet.contains(n.target) && closeLogoutSheet(),
+            !confirmSheet.hidden && !confirmSheet.contains(n.target) && closeConfirm();
         }),
         document.addEventListener("keydown", function (n) {
-          n.key === "Escape" && (ut(!1), G(), Ut(), d2());
+          n.key === "Escape" && (closeSettings(!1), closeLogoutSheet(), closeConfirm(), closeLogin());
         });
-      var U = document.documentElement;
-      function Z() {
-        var n = U.getAttribute("data-theme");
+      var rootEl = document.documentElement;
+      function currentTheme() {
+        var n = rootEl.getAttribute("data-theme");
         return n === "light" || n === "dark"
           ? n
           : window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light";
       }
-      function tt() {
-        var n = Z();
-        r("[data-th]").forEach(function (L) {
+      function syncThemeButtons() {
+        var n = currentTheme();
+        findAll("[data-th]").forEach(function (L) {
           L.setAttribute("aria-pressed", L.dataset.th === n ? "true" : "false");
         });
       }
-      var st = o("vizag-theme");
-      (st === "light" || st === "dark") && U.setAttribute("data-theme", st),
-        r("[data-th]").forEach(function (n) {
+      var savedTheme = readStore("vizag-theme");
+      (savedTheme === "light" || savedTheme === "dark") && rootEl.setAttribute("data-theme", savedTheme),
+        findAll("[data-th]").forEach(function (n) {
           n.addEventListener("click", function () {
-            U.setAttribute("data-theme", n.dataset.th), l("vizag-theme", n.dataset.th), tt();
+            rootEl.setAttribute("data-theme", n.dataset.th),
+              writeStore("vizag-theme", n.dataset.th),
+              syncThemeButtons();
           });
         });
       try {
-        matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tt);
+        matchMedia("(prefers-color-scheme: dark)").addEventListener("change", syncThemeButtons);
       } catch (n) {}
       try {
-        new MutationObserver(tt).observe(U, { attributes: !0, attributeFilter: ["data-theme"] });
+        new MutationObserver(syncThemeButtons).observe(rootEl, {
+          attributes: !0,
+          attributeFilter: ["data-theme"],
+        });
       } catch (n) {}
-      tt(), wt("bottom");
+      syncThemeButtons(), setSheetPosition("bottom");
       for (
-        var ct = /\b([01]\d|2[0-3]):([0-5]\d)\b/g,
-          dt = document.createTreeWalker(document.querySelector("main"), NodeFilter.SHOW_TEXT, null),
-          pt = [];
-        dt.nextNode();
+        var TIME_PATTERN = /\b([01]\d|2[0-3]):([0-5]\d)\b/g,
+          textWalker = document.createTreeWalker(document.querySelector("main"), NodeFilter.SHOW_TEXT, null),
+          timeTextNodes = [];
+        textWalker.nextNode();
 
       )
-        (ct.lastIndex = 0), ct.test(dt.currentNode.nodeValue) && pt.push(dt.currentNode);
-      pt.forEach(function (n) {
+        (TIME_PATTERN.lastIndex = 0),
+          TIME_PATTERN.test(textWalker.currentNode.nodeValue) && timeTextNodes.push(textWalker.currentNode);
+      timeTextNodes.forEach(function (n) {
         var L = document.createDocumentFragment(),
           S = n.nodeValue,
           C = 0,
           N;
-        for (ct.lastIndex = 0; (N = ct.exec(S)); ) {
+        for (TIME_PATTERN.lastIndex = 0; (N = TIME_PATTERN.exec(S)); ) {
           N.index > C && L.appendChild(document.createTextNode(S.slice(C, N.index)));
           var h = document.createElement("span");
           (h.className = "hm"),
@@ -633,29 +655,29 @@ try {
         }
         C < S.length && L.appendChild(document.createTextNode(S.slice(C))), n.parentNode.replaceChild(L, n);
       });
-      function ht(n, L) {
+      function formatTime(n, L) {
         if (L === "24") return n;
         var S = +n.slice(0, 2),
           C = n.slice(3),
           N = S < 12 ? "AM" : "PM";
         return (S = S % 12 || 12), S + ":" + C + " " + N;
       }
-      var Tt = "12";
-      function Pt(n) {
-        (Tt = n),
-          r(".hm").forEach(function (L) {
-            L.textContent = ht(L.dataset.t, n);
+      var timeFormat = "12";
+      function setTimeFormat(n) {
+        (timeFormat = n),
+          findAll(".hm").forEach(function (L) {
+            L.textContent = formatTime(L.dataset.t, n);
           }),
-          r("[data-tf]").forEach(function (L) {
+          findAll("[data-tf]").forEach(function (L) {
             L.setAttribute("aria-pressed", L.dataset.tf === n ? "true" : "false");
           }),
-          arguments[1] || l("vizag-tf", n),
-          typeof V2 == "function" && V2(),
+          arguments[1] || writeStore("vizag-tf", n),
+          typeof refreshLastSync == "function" && refreshLastSync(),
           window.__retime && window.__retime(n);
       }
-      r("[data-tf]").forEach(function (n) {
+      findAll("[data-tf]").forEach(function (n) {
         n.addEventListener("click", function () {
-          Pt(n.dataset.tf);
+          setTimeFormat(n.dataset.tf);
         });
       }),
         (window.__dev24 = function () {
@@ -671,10 +693,19 @@ try {
             return !1;
           }
         });
-      Pt(o("vizag-tf") ? (o("vizag-tf") === "24" ? "24" : "12") : window.__dev24() ? "24" : "12", !0);
-      var ae = { hugeicons: "Icons", emoji: "Emoji" },
-        Zt = "hugeicons";
-      function te(n) {
+      setTimeFormat(
+        readStore("vizag-tf")
+          ? readStore("vizag-tf") === "24"
+            ? "24"
+            : "12"
+          : window.__dev24()
+            ? "24"
+            : "12",
+        !0,
+      );
+      var ICON_SET_LABELS = { hugeicons: "Icons", emoji: "Emoji" },
+        iconSet = "hugeicons";
+      function emojiCodepoints(n) {
         return Array.from(String(n))
           .filter(function (L) {
             return L !== "\uFE0F";
@@ -684,13 +715,13 @@ try {
           })
           .join("_");
       }
-      function $t(n) {
+      function applyIconSet(n) {
         (n || document).querySelectorAll("use[data-p]").forEach(function (L) {
           L.closest(".ichip") || L.setAttribute("href", "#i-hugeicons-" + L.getAttribute("data-p"));
         });
       }
       (window.__paintUses = function (n) {
-        $t(n);
+        applyIconSet(n);
       }),
         (function () {
           var n = {};
@@ -783,7 +814,7 @@ try {
                         Ft.push(Kt);
                     }
                   }),
-                    Ft.length && $t(nt.nodeType === 1 ? nt : Ft[0]);
+                    Ft.length && applyIconSet(nt.nodeType === 1 ? nt : Ft[0]);
                 } catch (Wt) {}
                 h && h.takeRecords(), (N = !1);
               }
@@ -804,7 +835,7 @@ try {
               h.observe(document.body, { childList: !0, subtree: !0, characterData: !0 })),
             ot(document.body);
         })(),
-        r("[data-tosettings]").forEach(function (n) {
+        findAll("[data-tosettings]").forEach(function (n) {
           n.addEventListener("click", function (L) {
             L.stopPropagation();
             var S = n.closest(".sheet");
@@ -815,13 +846,13 @@ try {
               N && (N.hidden = !0);
               return;
             }
-            typeof ut == "function" && ut(!0);
+            typeof closeSettings == "function" && closeSettings(!0);
           });
         }),
         (window.__stripFit = function () {
-          be();
+          setupScrollStrips();
         });
-      function oe(n) {
+      function enableDragScroll(n) {
         if (!n.dataset.ds) {
           n.dataset.ds = "1";
           var L = null,
@@ -855,7 +886,7 @@ try {
             );
         }
       }
-      function we(n, L) {
+      function scrollChipIntoView(n, L) {
         var S = n && n.parentNode;
         if (!S || S.scrollWidth <= S.clientWidth) return;
         var C = [].slice.call(S.children).filter(function (le) {
@@ -885,12 +916,12 @@ try {
           (mt = Math.max(0, Math.min(h, Math.round(mt)))),
           Math.abs(mt - J) > 1 && S.scrollTo({ left: mt, behavior: L === !1 ? "auto" : "smooth" });
       }
-      (window.__stripFocus = we),
+      (window.__stripFocus = scrollChipIntoView),
         document.addEventListener("click", function (n) {
           var L = n.target.closest && n.target.closest(".dstrip > .chip");
           L &&
             setTimeout(function () {
-              we(L);
+              scrollChipIntoView(L);
             }, 0);
         }),
         new MutationObserver(function (n) {
@@ -901,10 +932,10 @@ try {
               S.parentNode &&
               S.parentNode.classList.contains("dstrip") &&
               S.getAttribute("aria-pressed") === "true" &&
-              we(S);
+              scrollChipIntoView(S);
           });
         }).observe(document.body, { attributes: !0, subtree: !0, attributeFilter: ["aria-pressed"] });
-      function Ie(n) {
+      function updateScrollFade(n) {
         n.classList.toggle(
           "more",
           n.scrollWidth > n.clientWidth + 2 && n.scrollLeft + n.clientWidth < n.scrollWidth - 4,
@@ -915,39 +946,39 @@ try {
         "scroll",
         function (n) {
           var L = n.target;
-          L && L.classList && L.classList.contains("dstrip") && Ie(L);
+          L && L.classList && L.classList.contains("dstrip") && updateScrollFade(L);
         },
         !0,
       );
-      function be() {
-        r(".dstrip,.tplrow,.chatsugg,.tcards,.ptabs").forEach(oe),
-          r(".dstrip").forEach(function (n) {
+      function setupScrollStrips() {
+        findAll(".dstrip,.tplrow,.chatsugg,.tcards,.ptabs").forEach(enableDragScroll),
+          findAll(".dstrip").forEach(function (n) {
             if (n.offsetParent) {
               var L = n.scrollWidth > n.clientWidth + 2;
-              Ie(n);
+              updateScrollFade(n);
             }
           });
       }
       window.addEventListener("resize", function () {
-        clearTimeout(be.t), (be.t = setTimeout(be, 120));
+        clearTimeout(setupScrollStrips.t), (setupScrollStrips.t = setTimeout(setupScrollStrips, 120));
       }),
         document.addEventListener("click", function () {
-          setTimeout(be, 30);
+          setTimeout(setupScrollStrips, 30);
         }),
-        setTimeout(be, 300),
+        setTimeout(setupScrollStrips, 300),
         (function () {
-          var n = e("totop");
+          var n = byId("totop");
           if (!n) return;
           var L = null;
           function S(J) {
             return J === window ? window.scrollY : J.scrollTop;
           }
           var C = null,
-            N = e("fab");
+            N = byId("fab");
           function h(J) {
             var ot = S(J);
             L = J;
-            var nt = !e("planner").hidden;
+            var nt = !byId("planner").hidden;
             n.classList.toggle("inplan", nt);
             var rt = ot > 600;
             (n.hidden = !rt),
@@ -961,12 +992,12 @@ try {
           window.addEventListener(
             "scroll",
             function () {
-              e("planner").hidden && h(window);
+              byId("planner").hidden && h(window);
             },
             { passive: !0 },
           ),
             ["pl-form", "pl-main"].forEach(function (J) {
-              var ot = e(J);
+              var ot = byId(J);
               ot &&
                 ot.addEventListener(
                   "scroll",
@@ -977,8 +1008,8 @@ try {
                 );
             }),
             new MutationObserver(function () {
-              e("planner").hidden ? h(window) : (n.hidden = !0);
-            }).observe(e("planner"), { attributes: !0, attributeFilter: ["hidden"] }),
+              byId("planner").hidden ? h(window) : (n.hidden = !0);
+            }).observe(byId("planner"), { attributes: !0, attributeFilter: ["hidden"] }),
             n.addEventListener("click", function (J) {
               J.stopPropagation();
               var ot = L || window,
@@ -990,38 +1021,43 @@ try {
               }
             });
         })();
-      function ke(n) {
+      function setIconSet(n) {
         n === "emoji2d" && (n = "emoji"),
           n === "griddy" && (n = "ionicons"),
           n === "majesticons" && (n = "majesticons-solid"),
-          ae[n] || (n = "hugeicons");
+          ICON_SET_LABELS[n] || (n = "hugeicons");
         var L = n === "emoji";
-        (Zt = n),
-          l("vizag-icons4", n),
-          U.classList.toggle("line-icons", !L),
-          U.classList.remove("noto"),
-          $t(),
-          r("[data-icn]").forEach(function (C) {
+        (iconSet = n),
+          writeStore("vizag-icons4", n),
+          rootEl.classList.toggle("line-icons", !L),
+          rootEl.classList.remove("noto"),
+          applyIconSet(),
+          findAll("[data-icn]").forEach(function (C) {
             C.setAttribute("aria-pressed", C.dataset.icn === n ? "true" : "false");
           });
-        var S = e("icn-name");
-        S && (S.textContent = ae[n]);
+        var S = byId("icn-name");
+        S && (S.textContent = ICON_SET_LABELS[n]);
       }
-      r("[data-icn]").forEach(function (n) {
+      findAll("[data-icn]").forEach(function (n) {
         n.addEventListener("click", function () {
-          ke(n.dataset.icn), gt();
+          setIconSet(n.dataset.icn), restartSettingsAutoClose();
         });
       }),
-        ke("hugeicons");
-      var Le = { sun: "\u2600\uFE0F", cloudsun: "\u26C5", fog: "\u{1F32B}\uFE0F", rain: "\u{1F327}\uFE0F" };
-      function Te(n) {
+        setIconSet("hugeicons");
+      var WEATHER_EMOJI = {
+        sun: "\u2600\uFE0F",
+        cloudsun: "\u26C5",
+        fog: "\u{1F32B}\uFE0F",
+        rain: "\u{1F327}\uFE0F",
+      };
+      function weatherKind(n) {
         return n <= 1 ? "sun" : n <= 3 ? "cloudsun" : n === 45 || n === 48 ? "fog" : "rain";
       }
-      function Ye(n, L, S) {
-        var C = Te(L.code),
+      function renderWeather(n, L, S) {
+        var C = weatherKind(L.code),
           N = Math.round(L.hi) + "\xB0 / " + Math.round(L.lo) + "\xB0",
           h = L.rain != null ? " \xB7 " + L.rain + "% rain" : "";
-        r('[data-wx="' + n + '"]').forEach(function (ot) {
+        findAll('[data-wx="' + n + '"]').forEach(function (ot) {
           var nt = ot.querySelector(".wxhl");
           nt && (nt.textContent = N);
           var rt = ot.querySelector(".wxs");
@@ -1029,31 +1065,36 @@ try {
           var mt = ot.querySelector(".ic");
           if (mt) {
             var Mt = mt.querySelector(".ie");
-            Mt && ((Mt.textContent = Le[C]), Mt.setAttribute("data-e", te(Le[C])));
+            Mt &&
+              ((Mt.textContent = WEATHER_EMOJI[C]),
+              Mt.setAttribute("data-e", emojiCodepoints(WEATHER_EMOJI[C])));
             var Ft = mt.querySelector("use");
             Ft && Ft.setAttribute("data-p", C);
           }
         }),
-          $t();
-        var J = e("wx-note");
+          applyIconSet();
+        var J = byId("wx-note");
         J &&
           (J.textContent =
             "Live forecast from Open-Meteo" +
             (S ? ", updated " + S : "") +
             ". Forecasts change; check again the night before.");
       }
-      function He(n) {
+      function shortDate(n) {
         var L = new Date(n);
         return (
           L.getDate() +
           " " +
           ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][L.getMonth()] +
           ", " +
-          ht(String(L.getHours()).padStart(2, "0") + ":" + String(L.getMinutes()).padStart(2, "0"), Tt)
+          formatTime(
+            String(L.getHours()).padStart(2, "0") + ":" + String(L.getMinutes()).padStart(2, "0"),
+            timeFormat,
+          )
         );
       }
-      var Re = r(".wx[data-wx]");
-      function v1(n, L) {
+      var weatherSlots = findAll(".wx[data-wx]");
+      function addWeatherAlerts(n, L) {
         window.__addAlert &&
           (L.rain != null &&
             L.rain >= 40 &&
@@ -1085,18 +1126,18 @@ try {
               "sun",
             ));
       }
-      function s2(n) {
+      function fetchWeather(n) {
         var L = !!(window.claude && typeof window.claude.use == "function");
-        if (!(!Re.length || L || navigator.onLine === !1 || !window.fetch)) {
-          var S = new Date(Re[0].dataset.date + "T00:00:00+05:30"),
+        if (!(!weatherSlots.length || L || navigator.onLine === !1 || !window.fetch)) {
+          var S = new Date(weatherSlots[0].dataset.date + "T00:00:00+05:30"),
             C = (S - new Date()) / 864e5;
           if (!(C > 15.5 || C < -4)) {
-            var N = !!Ja[Ka()],
+            var N = !!DATE_TO_DAY[todayIso()],
               h = N ? 40 * 6e4 : 3 * 36e5;
-            Re.forEach(function (J) {
+            weatherSlots.forEach(function (J) {
               var ot = null;
               try {
-                ot = JSON.parse(o("vizag-wx-" + J.dataset.wx) || "null");
+                ot = JSON.parse(readStore("vizag-wx-" + J.dataset.wx) || "null");
               } catch (rt) {}
               if (!(!n && ot && ot.t && Date.now() - ot.t < h)) {
                 var nt =
@@ -1123,9 +1164,9 @@ try {
                           code: rt.daily.weather_code[0],
                         },
                         Mt = Date.now();
-                      l("vizag-wx-" + J.dataset.wx, JSON.stringify({ d: mt, t: Mt })),
-                        Ye(J.dataset.wx, mt, He(Mt)),
-                        v1(J.dataset.wx, mt);
+                      writeStore("vizag-wx-" + J.dataset.wx, JSON.stringify({ d: mt, t: Mt })),
+                        renderWeather(J.dataset.wx, mt, shortDate(Mt)),
+                        addWeatherAlerts(J.dataset.wx, mt);
                     }
                   })
                   .catch(function () {});
@@ -1134,98 +1175,107 @@ try {
           }
         }
       }
-      function m1() {
-        Re.forEach(function (n) {
+      function renderCachedWeather() {
+        weatherSlots.forEach(function (n) {
           try {
-            var L = JSON.parse(o("vizag-wx-" + n.dataset.wx) || "null");
-            L && L.d && (Ye(n.dataset.wx, L.d, He(L.t)), v1(n.dataset.wx, L.d));
+            var L = JSON.parse(readStore("vizag-wx-" + n.dataset.wx) || "null");
+            L &&
+              L.d &&
+              (renderWeather(n.dataset.wx, L.d, shortDate(L.t)), addWeatherAlerts(n.dataset.wx, L.d));
           } catch (S) {}
         }),
-          s2(!1),
+          fetchWeather(!1),
           setInterval(function () {
-            s2(!1);
+            fetchWeather(!1);
           }, 5 * 6e4),
           document.addEventListener("visibilitychange", function () {
-            document.hidden || s2(!1);
+            document.hidden || fetchWeather(!1);
           }),
           window.addEventListener("online", function () {
-            s2(!1);
+            fetchWeather(!1);
           });
       }
-      var ha = {
+      var SKINS = {
           auto: ["Auto", ""],
           light: ["Light", "#EFEFF2"],
           graphite: ["Dark", "#101012"],
           midnight: ["Midnight", "#000000"],
           navy: ["Navy", "#070C18"],
         },
-        j1 = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null,
-        j2 = "auto";
-      function Ua() {
-        var n = j2 === "auto" ? (j1 && j1.matches ? "graphite" : "light") : j2;
-        U.setAttribute("data-skin", n);
+        darkModeQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null,
+        skinChoice = "auto";
+      function applySkin() {
+        var n =
+          skinChoice === "auto"
+            ? darkModeQuery && darkModeQuery.matches
+              ? "graphite"
+              : "light"
+            : skinChoice;
+        rootEl.setAttribute("data-skin", n);
         var L = document.querySelector('meta[name="theme-color"]');
-        L && L.setAttribute("content", ha[n][1]);
+        L && L.setAttribute("content", SKINS[n][1]);
       }
-      function Wa(n) {
+      function setSkin(n) {
         (n === "lavender" || n === "sky") && (n = "light"),
           n === "dusk" && (n = "navy"),
-          ha[n] || (n = "auto"),
-          (j2 = n),
-          l("vizag-skin2", n),
-          Ua(),
-          r("button[data-skin]").forEach(function (S) {
+          SKINS[n] || (n = "auto"),
+          (skinChoice = n),
+          writeStore("vizag-skin2", n),
+          applySkin(),
+          findAll("button[data-skin]").forEach(function (S) {
             S.setAttribute("aria-pressed", S.dataset.skin === n ? "true" : "false");
           });
-        var L = e("skin-name");
-        L && (L.textContent = ha[n][0]);
+        var L = byId("skin-name");
+        L && (L.textContent = SKINS[n][0]);
       }
-      if (j1) {
-        var Ga = function () {
-          j2 === "auto" && Ua();
+      if (darkModeQuery) {
+        var onSystemThemeChange = function () {
+          skinChoice === "auto" && applySkin();
         };
-        j1.addEventListener ? j1.addEventListener("change", Ga) : j1.addListener && j1.addListener(Ga);
+        darkModeQuery.addEventListener
+          ? darkModeQuery.addEventListener("change", onSystemThemeChange)
+          : darkModeQuery.addListener && darkModeQuery.addListener(onSystemThemeChange);
       }
-      r("button[data-skin]").forEach(function (n) {
+      findAll("button[data-skin]").forEach(function (n) {
         n.addEventListener("click", function () {
-          Wa(n.dataset.skin), gt();
+          setSkin(n.dataset.skin), restartSettingsAutoClose();
         });
       }),
-        Wa(o("vizag-skin2") || "auto");
-      function Nn(n) {
-        l("vizag-band", n),
-          U.classList.toggle("band-blue", n === "blue"),
-          r("[data-hd]").forEach(function (L) {
+        setSkin(readStore("vizag-skin2") || "auto");
+      function setHeaderBand(n) {
+        writeStore("vizag-band", n),
+          rootEl.classList.toggle("band-blue", n === "blue"),
+          findAll("[data-hd]").forEach(function (L) {
             L.setAttribute("aria-pressed", L.dataset.hd === n ? "true" : "false");
           });
       }
-      r("[data-hd]").forEach(function (n) {
+      findAll("[data-hd]").forEach(function (n) {
         n.addEventListener("click", function () {
-          Nn(n.dataset.hd);
+          setHeaderBand(n.dataset.hd);
         });
       }),
-        U.classList.remove("band-blue");
-      var o2 = {};
+        rootEl.classList.remove("band-blue");
+      var laterStops = {};
       try {
-        o2 = JSON.parse(o("vizag-later") || "{}") || {};
+        laterStops = JSON.parse(readStore("vizag-later") || "{}") || {};
       } catch (n) {}
-      function Va() {
-        l("vizag-later", JSON.stringify(o2));
+      function saveLaterStops() {
+        writeStore("vizag-later", JSON.stringify(laterStops));
       }
-      function U2(n) {
+      function refreshLaterList(n) {
         var L = document.querySelector('.later-list[data-day="' + n + '"]');
         if (L) {
           var S = L.closest(".lgrp");
           S && (S.hidden = !L.children.length);
           var C = L.closest(".later");
           C && (C.hidden = !document.querySelector(".later-list .alert"));
-          var N = r(".alerts .alert").length;
-          r(".acnt").forEach(function (h) {
+          var N = findAll(".alerts .alert").length;
+          findAll(".acnt").forEach(function (h) {
             h.textContent = N ? String(N) : "";
           });
         }
       }
-      function W2(n, L) {
+      function moveStopToLater(n, L) {
         var S = n.closest("[data-day]").getAttribute("data-day"),
           C = document.querySelector('.later-list[data-day="' + S + '"]');
         function N() {
@@ -1234,9 +1284,9 @@ try {
           (h.textContent = "Restore"),
             h.setAttribute("aria-label", "Move back to top"),
             C.appendChild(n),
-            (o2[n.dataset.alert] = 1),
-            Va(),
-            U2(S);
+            (laterStops[n.dataset.alert] = 1),
+            saveLaterStops(),
+            refreshLaterList(S);
         }
         L
           ? ((n.style.transition = "transform .22s ease, opacity .22s ease"),
@@ -1247,7 +1297,7 @@ try {
             }, 220))
           : N();
       }
-      function Fn(n) {
+      function restoreStopFromLater(n) {
         var L = n.closest("[data-day]").getAttribute("data-day"),
           S = document.querySelector('.alerts[data-day="' + L + '"]');
         n.classList.remove("is-later");
@@ -1255,13 +1305,14 @@ try {
         (C.textContent = "Later"),
           C.setAttribute("aria-label", "Move to later"),
           S.appendChild(n),
-          delete o2[n.dataset.alert],
-          Va(),
-          U2(L);
+          delete laterStops[n.dataset.alert],
+          saveLaterStops(),
+          refreshLaterList(L);
       }
-      function Ya(n) {
+      function setupStopCard(n) {
         n.querySelector(".alater").addEventListener("click", function (J) {
-          J.stopPropagation(), n.classList.contains("is-later") ? Fn(n) : W2(n, !0);
+          J.stopPropagation(),
+            n.classList.contains("is-later") ? restoreStopFromLater(n) : moveStopToLater(n, !0);
         });
         var L = null,
           S = 0,
@@ -1288,7 +1339,7 @@ try {
         function h() {
           L !== null &&
             (N && Math.abs(S) > 90
-              ? ((n._dir = S > 0 ? 1 : -1), W2(n, !0))
+              ? ((n._dir = S > 0 ? 1 : -1), moveStopToLater(n, !0))
               : ((n.style.transition = "transform .18s ease, opacity .18s ease"),
                 (n.style.transform = ""),
                 (n.style.opacity = ""),
@@ -1300,11 +1351,11 @@ try {
         }
         n.addEventListener("pointerup", h), n.addEventListener("pointercancel", h);
       }
-      r(".alert").forEach(function (n) {
-        Ya(n), o2[n.dataset.alert] && W2(n, !1);
+      findAll(".alert").forEach(function (n) {
+        setupStopCard(n), laterStops[n.dataset.alert] && moveStopToLater(n, !1);
       }),
-        r(".later-list").forEach(function (n) {
-          U2(n.dataset.day);
+        findAll(".later-list").forEach(function (n) {
+          refreshLaterList(n.dataset.day);
         }),
         (window.__addAlert = function (n, L, S, C, N, h) {
           if (document.querySelector('[data-alert="' + L + '"]')) {
@@ -1319,7 +1370,7 @@ try {
               (nt.dataset.alert = L),
               (nt.innerHTML =
                 '<span class="aico"><span class="ic"><span class="ie" data-e="' +
-                te(S) +
+                emojiCodepoints(S) +
                 '">' +
                 S +
                 '</span><span class="il"><svg class="ph" aria-hidden="true"><use data-p="' +
@@ -1330,14 +1381,14 @@ try {
               (nt.querySelector(".at").textContent = C),
               (nt.querySelector(".as2").textContent = N),
               ot.insertBefore(nt, ot.firstChild),
-              Ya(nt),
-              typeof $t == "function" && $t(nt),
-              o2[L] && W2(nt, !1),
-              U2(n);
+              setupStopCard(nt),
+              typeof applyIconSet == "function" && applyIconSet(nt),
+              laterStops[L] && moveStopToLater(nt, !1),
+              refreshLaterList(n);
           }
         });
-      var Ja = { "2026-12-05": "1", "2026-12-06": "2", "2026-12-07": "3", "2026-12-08": "4" };
-      function Ka() {
+      var DATE_TO_DAY = { "2026-12-05": "1", "2026-12-06": "2", "2026-12-07": "3", "2026-12-08": "4" };
+      function todayIso() {
         var n = new Date();
         return (
           n.getFullYear() +
@@ -1347,20 +1398,20 @@ try {
           String(n.getDate()).padStart(2, "0")
         );
       }
-      function va() {
-        r(".stop.is-now,.stop.is-next").forEach(function (J) {
+      function findCurrentStop() {
+        findAll(".stop.is-now,.stop.is-next").forEach(function (J) {
           J.classList.remove("is-now", "is-next");
         }),
-          r(".nowtag").forEach(function (J) {
+          findAll(".nowtag").forEach(function (J) {
             J.remove();
           });
-        var n = Ja[Ka()];
+        var n = DATE_TO_DAY[todayIso()];
         if (!n) return null;
         var L = new Date(),
           S = L.getHours() * 60 + L.getMinutes(),
           C = null,
           N = null;
-        r('.day[data-day="' + n + '"] .stop[data-t]').forEach(function (J) {
+        findAll('.day[data-day="' + n + '"] .stop[data-t]').forEach(function (J) {
           var ot = J.dataset.t.split(":"),
             nt = +ot[0] * 60 + +ot[1];
           nt <= S ? (C = J) : N || (N = J);
@@ -1376,25 +1427,29 @@ try {
         }
         return h(C, "Now", "is-now"), h(N, "Next", "is-next"), { day: n, el: C || N };
       }
-      var y2 = o("vizag-now") === "off" ? "off" : "on";
-      function Xa() {
-        r("[data-now]").forEach(function (n) {
-          n.setAttribute("aria-pressed", n.dataset.now === y2 ? "true" : "false");
+      var openAtNow = readStore("vizag-now") === "off" ? "off" : "on";
+      function syncOpenAtNowButtons() {
+        findAll("[data-now]").forEach(function (n) {
+          n.setAttribute("aria-pressed", n.dataset.now === openAtNow ? "true" : "false");
         });
       }
-      r("[data-now]").forEach(function (n) {
+      findAll("[data-now]").forEach(function (n) {
         n.addEventListener("click", function () {
-          (y2 = n.dataset.now), l("vizag-now", y2), Xa(), gt(), y2 === "on" && $a();
+          (openAtNow = n.dataset.now),
+            writeStore("vizag-now", openAtNow),
+            syncOpenAtNowButtons(),
+            restartSettingsAutoClose(),
+            openAtNow === "on" && jumpToNow();
         });
       }),
-        Xa();
-      function $a() {
-        var n = va();
+        syncOpenAtNowButtons();
+      function jumpToNow() {
+        var n = findCurrentStop();
         !n ||
           !n.el ||
-          y2 !== "on" ||
+          openAtNow !== "on" ||
           document.getElementById("v-days").hidden ||
-          (p(n.day),
+          (showDay(n.day),
           setTimeout(function () {
             var L = n.el.getBoundingClientRect().top + window.scrollY - 90;
             try {
@@ -1404,347 +1459,366 @@ try {
             }
           }, 120));
       }
-      setTimeout($a, 300),
-        m1(),
-        setInterval(va, 6e4),
+      setTimeout(jumpToNow, 300),
+        renderCachedWeather(),
+        setInterval(findCurrentStop, 6e4),
         document.addEventListener("visibilitychange", function () {
-          document.hidden || va();
+          document.hidden || findCurrentStop();
         });
-      var Za = r(".checks input"),
-        _1 = {};
+      var packChecks = findAll(".checks input"),
+        checkedItems = {};
       try {
-        _1 = JSON.parse(o("vizag-checks") || "{}") || {};
+        checkedItems = JSON.parse(readStore("vizag-checks") || "{}") || {};
       } catch (n) {}
-      function tn() {
-        Za.forEach(function (n) {
-          n.checked = !!_1[n.id];
+      function applyChecks() {
+        packChecks.forEach(function (n) {
+          n.checked = !!checkedItems[n.id];
         }),
-          $();
+          updatePackCounts();
       }
-      function en() {
-        l("vizag-checks", JSON.stringify(_1));
+      function saveChecks() {
+        writeStore("vizag-checks", JSON.stringify(checkedItems));
       }
-      tn();
-      var ma = e("sync-btn"),
-        In = r(".sync-note"),
-        je = "local",
-        Ee = null,
-        l2 = null,
-        g1 = !1;
+      applyChecks();
+      var syncButton = byId("sync-btn"),
+        syncNotes = findAll(".sync-note"),
+        syncMode = "local",
+        signedInUser = null,
+        firebaseAuth = null,
+        syncNotConfigured = !1;
       window.__signedIn = function () {
-        return !!Ee;
+        return !!signedInUser;
       };
-      var Bn = r(".sn-title"),
-        m4 = r(".sn-ico");
-      function g4() {
-        var n = new Date().getHours();
-        return n >= 5 && n < 12
-          ? "Good morning"
-          : n >= 12 && n < 17
-            ? "Good afternoon"
-            : n >= 17 && n < 21
-              ? "Good evening"
-              : "Good night";
-      }
+      var syncNoteTitles = findAll(".sn-title"),
+        syncNoteIcons = findAll(".sn-ico");
       window.__FACE =
         '<svg class="tface" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 19.5c0-1.6 7.2-3 16-3s16 1.4 16 3-7.2 2.6-16 2.6S8 21.1 8 19.5z" fill="currentColor" opacity=".9"/><path d="M15.5 17.2c.6-5.6 4.1-9.2 8.5-9.2s7.9 3.6 8.5 9.2" fill="currentColor" opacity=".9"/><path d="M15 15.2h18" stroke="var(--surface)" stroke-width="1.6" stroke-linecap="round"/><circle cx="24" cy="29" r="10.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="16.2" y="25.3" width="6.4" height="4.6" rx="2.2" fill="currentColor"/><rect x="25.4" y="25.3" width="6.4" height="4.6" rx="2.2" fill="currentColor"/><path d="M22.6 27.2h2.8" stroke="currentColor" stroke-width="1.6"/><path d="M20.5 33.6c1 1 2.2 1.5 3.5 1.5s2.5-.5 3.5-1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
-      function G2() {
-        var n = e("acct-name"),
-          L = e("acct-av"),
-          S = e("acct-btn");
+      function renderAccount() {
+        var n = byId("acct-name"),
+          L = byId("acct-av"),
+          S = byId("acct-btn");
         if (n) {
           var C = window.__FACE,
-            N = je === "claude" || !!Ee,
+            N = syncMode === "claude" || !!signedInUser,
             h = window.__profName ? window.__profName() : { name: "", user: "" },
             J = window.__avatarHTML ? window.__avatarHTML() : "";
           if (J) (L.innerHTML = J), (n.textContent = h.name || "Your profile");
           else if (h.name) (n.textContent = h.name), (L.textContent = h.name.charAt(0).toUpperCase());
-          else if (Ee) {
-            var ot = String(Ee.email || "").split("@")[0] || "trip";
+          else if (signedInUser) {
+            var ot = String(signedInUser.email || "").split("@")[0] || "trip";
             (n.textContent = ot.charAt(0).toUpperCase() + ot.slice(1)),
               (L.textContent = ot.charAt(0).toUpperCase());
           } else (n.textContent = "Your profile"), (L.innerHTML = C);
-          L.classList.toggle("has", !!(h.name || Ee || J)),
+          L.classList.toggle("has", !!(h.name || signedInUser || J)),
             L.classList.toggle("pic", !!J),
-            L.classList.toggle("on", !!Ee),
-            w2 && (w2.textContent = N ? On() : "Saved on this phone");
-          var nt = e("acct-grid");
+            L.classList.toggle("on", !!signedInUser),
+            lastSyncLabel && (lastSyncLabel.textContent = N ? lastSyncText() : "Saved on this phone");
+          var nt = byId("acct-grid");
           nt && window.__acctGrid && (nt.innerHTML = window.__acctGrid()),
-            S && ((S.hidden = !Ee), (S.textContent = "Log out"), S.classList.toggle("out", !!Ee));
-          var rt = je === "firebase" || je === "fbfail" || g1,
-            mt = e("acct"),
-            Mt = e("acct-empty");
+            S &&
+              ((S.hidden = !signedInUser),
+              (S.textContent = "Log out"),
+              S.classList.toggle("out", !!signedInUser));
+          var rt = syncMode === "firebase" || syncMode === "fbfail" || syncNotConfigured,
+            mt = byId("acct"),
+            Mt = byId("acct-empty");
           mt && Mt && ((Mt.hidden = N || !rt), (mt.hidden = !(N || !rt)));
-          var Ft = e("acct-lvl");
+          var Ft = byId("acct-lvl");
           Ft && window.__profSummary && (Ft.textContent = h.line || "Add a username"),
-            !N && !rt && w2 && (w2.textContent = "Saved on this phone");
+            !N && !rt && lastSyncLabel && (lastSyncLabel.textContent = "Saved on this phone");
         }
       }
-      function ge(n, L, S, C, N) {
-        (ma.textContent = n),
-          ma.setAttribute("aria-pressed", S ? "true" : "false"),
-          G2(),
-          In.forEach(function (h) {
+      function setSyncStatus(n, L, S, C, N) {
+        (syncButton.textContent = n),
+          syncButton.setAttribute("aria-pressed", S ? "true" : "false"),
+          renderAccount(),
+          syncNotes.forEach(function (h) {
             h.textContent = L;
           }),
-          Bn.forEach(function (h) {
+          syncNoteTitles.forEach(function (h) {
             h.textContent = C || (S ? "Shared with your friends" : "Saved on this phone");
           });
       }
-      ge("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
-      var w2 = e("last-sync"),
-        Dn = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      function On() {
-        var n = o("vizag-last-sync"),
+      setSyncStatus("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
+      var lastSyncLabel = byId("last-sync"),
+        MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      function lastSyncText() {
+        var n = readStore("vizag-last-sync"),
           L = n ? new Date(n) : null;
         if (!L || isNaN(L)) return "Not synced yet";
         var S = String(L.getHours()).padStart(2, "0") + ":" + String(L.getMinutes()).padStart(2, "0"),
           C = new Date(),
           N = L.toDateString() === C.toDateString();
-        return "Synced " + (N ? "today" : L.getDate() + " " + Dn[L.getMonth()]) + ", " + ht(S, Tt);
+        return (
+          "Synced " +
+          (N ? "today" : L.getDate() + " " + MONTHS[L.getMonth()]) +
+          ", " +
+          formatTime(S, timeFormat)
+        );
       }
-      function V2() {
-        w2 && G2();
+      function refreshLastSync() {
+        lastSyncLabel && renderAccount();
       }
-      function an(n) {
-        (n && n.fromCache) || (l("vizag-last-sync", new Date().toISOString()), V2());
+      function markSynced(n) {
+        (n && n.fromCache) || (writeStore("vizag-last-sync", new Date().toISOString()), refreshLastSync());
       }
-      V2();
-      var b2 = function () {};
-      Za.forEach(function (n) {
+      refreshLastSync();
+      var saveCheckToCloud = function () {};
+      packChecks.forEach(function (n) {
         n.addEventListener("change", function () {
-          (_1[n.id] = n.checked), en(), $(), b2(n.id, n.checked);
+          (checkedItems[n.id] = n.checked),
+            saveChecks(),
+            updatePackCounts(),
+            saveCheckToCloud(n.id, n.checked);
         });
       });
-      function nn(n) {
-        (_1 = Object.assign({}, n || {})), en(), tn();
+      function loadChecks(n) {
+        (checkedItems = Object.assign({}, n || {})), saveChecks(), applyChecks();
       }
-      var ga = e("offline"),
-        ya = !1;
-      function wa() {
+      var offlineBanner = byId("offline"),
+        wasOffline = !1;
+      function updateOnlineState() {
         var n = navigator.onLine !== !1;
         n
-          ? ((ga.hidden = !0),
-            (ya = !1),
-            je === "firebase" && Ee && ge("Synced \u2713", "Ticks sync live between your phones.", !0))
-          : ((ga.hidden = ya),
-            je !== "local" &&
-              ge(
+          ? ((offlineBanner.hidden = !0),
+            (wasOffline = !1),
+            syncMode === "firebase" &&
+              signedInUser &&
+              setSyncStatus("Synced \u2713", "Ticks sync live between your phones.", !0))
+          : ((offlineBanner.hidden = wasOffline),
+            syncMode !== "local" &&
+              setSyncStatus(
                 "Offline",
                 "You\u2019re offline. Ticks save on this phone and sync when you reconnect.",
                 !1,
               ));
       }
-      e("offline-ok").addEventListener("click", function () {
-        (ya = !0), (ga.hidden = !0);
+      byId("offline-ok").addEventListener("click", function () {
+        (wasOffline = !0), (offlineBanner.hidden = !0);
       }),
-        window.addEventListener("online", wa),
-        window.addEventListener("offline", wa),
-        wa();
-      var c1 = e("login"),
-        ze = e("login-form"),
-        k2 = e("login-err"),
-        ba = e("login-msg"),
-        ka = e("login-fields"),
-        y1 = e("login-go"),
-        Y2 = e("login-cancel"),
-        La = e("login-signed"),
-        Ma = e("login-fine"),
-        xa = e("login-title"),
-        Hn =
+        window.addEventListener("online", updateOnlineState),
+        window.addEventListener("offline", updateOnlineState),
+        updateOnlineState();
+      var loginPage = byId("login"),
+        loginForm = byId("login-form"),
+        loginError = byId("login-err"),
+        loginMessage = byId("login-msg"),
+        loginFields = byId("login-fields"),
+        loginGoButton = byId("login-go"),
+        loginCancelButton = byId("login-cancel"),
+        loginSignedIn = byId("login-signed"),
+        loginFinePrint = byId("login-fine"),
+        loginTitle = byId("login-title"),
+        EYE_OPEN_SVG =
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
-        Rn =
+        EYE_CLOSED_SVG =
           '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7c2.2 0 4 .8 5.6 1.9M22 12s-3.6 7-10 7c-2.2 0-4-.8-5.6-1.9M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/></svg>';
-      e("lg-eye").addEventListener("click", function () {
-        var n = e("lg-pass"),
+      byId("lg-eye").addEventListener("click", function () {
+        var n = byId("lg-pass"),
           L = n.type === "text";
         (n.type = L ? "password" : "text"),
-          (this.innerHTML = L ? Hn : Rn),
+          (this.innerHTML = L ? EYE_OPEN_SVG : EYE_CLOSED_SVG),
           this.setAttribute("aria-label", L ? "Show password" : "Hide password");
       });
-      function rn(n) {
-        (k2.textContent = n), (k2.hidden = !1);
+      function showLoginError(n) {
+        (loginError.textContent = n), (loginError.hidden = !1);
       }
-      function L2(n) {
-        if ((delete ze.dataset.preview, ut(!1), (k2.hidden = !0), (c1.hidden = !1), g1 || je === "fbfail")) {
-          (xa.textContent = g1 ? "Sharing isn\u2019t on yet" : "Login unavailable"),
-            (ba.textContent = g1
+      function openLogin(n) {
+        if (
+          (delete loginForm.dataset.preview,
+          closeSettings(!1),
+          (loginError.hidden = !0),
+          (loginPage.hidden = !1),
+          syncNotConfigured || syncMode === "fbfail")
+        ) {
+          (loginTitle.textContent = syncNotConfigured ? "Sharing isn\u2019t on yet" : "Login unavailable"),
+            (loginMessage.textContent = syncNotConfigured
               ? "Your ticks are safe on this phone. Once login is set up, you can log in here and share them with your friends."
               : "Login couldn\u2019t load. Check your internet and reopen the page. Your ticks are safe on this phone meanwhile.");
-          var L = g1 ? "phone" : "wifioff";
-          (e("login").querySelector(".mtile").innerHTML =
+          var L = syncNotConfigured ? "phone" : "wifioff";
+          (byId("login").querySelector(".mtile").innerHTML =
             '<svg class="ph" aria-hidden="true"><use href="#i-hugeicons-' + L + '"/></svg>'),
-            (ka.hidden = !0),
-            (La.hidden = !0),
-            (y1.hidden = !0),
-            (Ma.hidden = !0),
-            (Y2.textContent = "OK");
+            (loginFields.hidden = !0),
+            (loginSignedIn.hidden = !0),
+            (loginGoButton.hidden = !0),
+            (loginFinePrint.hidden = !0),
+            (loginCancelButton.textContent = "OK");
           return;
         }
-        e("login").querySelector(".mtile").innerHTML =
+        byId("login").querySelector(".mtile").innerHTML =
           '<svg class="ph" aria-hidden="true"><use href="#i-hugeicons-repeat"/></svg>';
-        var S = !!Ee;
-        (y1.hidden = !1),
-          (xa.textContent = S ? "Logged in" : "Login"),
-          (ka.hidden = S),
-          (La.hidden = !S),
-          (Ma.hidden = S),
-          (ba.textContent = S
+        var S = !!signedInUser;
+        (loginGoButton.hidden = !1),
+          (loginTitle.textContent = S ? "Logged in" : "Login"),
+          (loginFields.hidden = S),
+          (loginSignedIn.hidden = !S),
+          (loginFinePrint.hidden = S),
+          (loginMessage.textContent = S
             ? "Ticks are shared between your phones."
             : "Log in to keep ticks the same on all three phones."),
-          (y1.textContent = S ? "Log out" : "Log in"),
-          (Y2.textContent = S ? "Close" : "Try demo mode"),
-          S && (e("signed-as").textContent = "Logged in as " + String(Ee.email || "").split("@")[0]);
+          (loginGoButton.textContent = S ? "Log out" : "Log in"),
+          (loginCancelButton.textContent = S ? "Close" : "Try demo mode"),
+          S &&
+            (byId("signed-as").textContent =
+              "Logged in as " + String(signedInUser.email || "").split("@")[0]);
       }
-      function sn() {
-        L2(),
-          (ze.dataset.preview = "1"),
-          (k2.hidden = !0),
-          (ka.hidden = !1),
-          (La.hidden = !0),
-          (y1.hidden = !1),
-          (Ma.hidden = !1),
-          (xa.textContent = "Login"),
-          (ba.textContent = "Log in to keep ticks the same on all three phones."),
-          (y1.textContent = "Log in"),
-          (Y2.textContent = "Close preview");
+      function openLoginPreview() {
+        openLogin(),
+          (loginForm.dataset.preview = "1"),
+          (loginError.hidden = !0),
+          (loginFields.hidden = !1),
+          (loginSignedIn.hidden = !0),
+          (loginGoButton.hidden = !1),
+          (loginFinePrint.hidden = !1),
+          (loginTitle.textContent = "Login"),
+          (loginMessage.textContent = "Log in to keep ticks the same on all three phones."),
+          (loginGoButton.textContent = "Log in"),
+          (loginCancelButton.textContent = "Close preview");
       }
-      ze.addEventListener(
+      loginForm.addEventListener(
         "submit",
         function (n) {
-          ze.dataset.preview &&
-            (Ee || je !== "firebase") &&
-            (n.preventDefault(), n.stopImmediatePropagation(), d2());
+          loginForm.dataset.preview &&
+            (signedInUser || syncMode !== "firebase") &&
+            (n.preventDefault(), n.stopImmediatePropagation(), closeLogin());
         },
         !0,
       );
-      var c2 = c1.querySelector(".lslides"),
-        U1 = c1.querySelector(".lart"),
-        Ea = Array.prototype.slice.call(c1.querySelectorAll(".ldots i")),
-        jn = Array.prototype.slice.call(c1.querySelectorAll(".lstep")),
-        W1 = 0,
-        M2 = null;
-      function J2(n) {
-        c2 &&
-          ((W1 = (n + Ea.length) % Ea.length),
-          c2.style.setProperty("--li", W1),
-          c2.style.setProperty("--dx", "0px"),
-          Ea.forEach(function (L, S) {
-            L.classList.toggle("on", S === W1);
+      var loginSlides = loginPage.querySelector(".lslides"),
+        loginArt = loginPage.querySelector(".lart"),
+        loginDots = Array.prototype.slice.call(loginPage.querySelectorAll(".ldots i")),
+        loginSteps = Array.prototype.slice.call(loginPage.querySelectorAll(".lstep")),
+        loginSlideIndex = 0,
+        loginAutoplay = null;
+      function showLoginSlide(n) {
+        loginSlides &&
+          ((loginSlideIndex = (n + loginDots.length) % loginDots.length),
+          loginSlides.style.setProperty("--li", loginSlideIndex),
+          loginSlides.style.setProperty("--dx", "0px"),
+          loginDots.forEach(function (L, S) {
+            L.classList.toggle("on", S === loginSlideIndex);
           }),
-          jn.forEach(function (L, S) {
-            L.classList.toggle("on", S === W1);
+          loginSteps.forEach(function (L, S) {
+            L.classList.toggle("on", S === loginSlideIndex);
           }));
       }
-      function on() {
-        clearInterval(M2);
+      function startLoginAutoplay() {
+        clearInterval(loginAutoplay);
         var n = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-        M2 = setInterval(
+        loginAutoplay = setInterval(
           function () {
-            ze.classList.contains("kb") || J2(W1 + 1);
+            loginForm.classList.contains("kb") || showLoginSlide(loginSlideIndex + 1);
           },
           n ? 4500 : 2500,
         );
       }
-      function Un() {
-        J2(0), on();
+      function resetLoginCarousel() {
+        showLoginSlide(0), startLoginAutoplay();
       }
-      function Wn() {
-        clearInterval(M2), (M2 = null);
+      function stopLoginAutoplay() {
+        clearInterval(loginAutoplay), (loginAutoplay = null);
       }
       (function () {
-        if (!U1) return;
+        if (!loginArt) return;
         var n = null,
           L = 0,
           S = 0,
           C = !1;
-        U1.addEventListener("pointerdown", function (h) {
+        loginArt.addEventListener("pointerdown", function (h) {
           h.target.closest(".lpick") || ((n = h.clientX), (L = h.clientY), (S = 0), (C = !1));
         }),
-          U1.addEventListener("pointermove", function (h) {
+          loginArt.addEventListener("pointermove", function (h) {
             if (n !== null) {
               if (((S = h.clientX - n), !C && Math.abs(S) > 6 && Math.abs(S) > Math.abs(h.clientY - L))) {
-                (C = !0), c2.classList.add("drag"), clearInterval(M2);
+                (C = !0), loginSlides.classList.add("drag"), clearInterval(loginAutoplay);
                 try {
-                  U1.setPointerCapture(h.pointerId);
+                  loginArt.setPointerCapture(h.pointerId);
                 } catch (J) {}
               }
-              C && c2.style.setProperty("--dx", S + "px");
+              C && loginSlides.style.setProperty("--dx", S + "px");
             }
           });
         function N() {
           n !== null &&
-            (c2.classList.remove("drag"),
-            C && Math.abs(S) > U1.clientWidth * 0.18 ? J2(W1 + (S < 0 ? 1 : -1)) : J2(W1),
+            (loginSlides.classList.remove("drag"),
+            C && Math.abs(S) > loginArt.clientWidth * 0.18
+              ? showLoginSlide(loginSlideIndex + (S < 0 ? 1 : -1))
+              : showLoginSlide(loginSlideIndex),
             (n = null),
             (C = !1),
-            on());
+            startLoginAutoplay());
         }
-        U1.addEventListener("pointerup", N), U1.addEventListener("pointercancel", N);
+        loginArt.addEventListener("pointerup", N), loginArt.addEventListener("pointercancel", N);
       })();
-      function ln(n) {
+      function setLoginArtStyle(n) {
         ["pastel", "line", "sketch"].indexOf(n) < 0 && (n = "pastel"),
-          ze.setAttribute("data-ls", n),
-          l("vizag-lstyle", n),
-          r("[data-ls]").forEach(function (S) {
+          loginForm.setAttribute("data-ls", n),
+          writeStore("vizag-lstyle", n),
+          findAll("[data-ls]").forEach(function (S) {
             S.tagName === "BUTTON" && S.setAttribute("aria-pressed", S.dataset.ls === n ? "true" : "false");
           });
-        var L = e("ls-name");
+        var L = byId("ls-name");
         L && (L.textContent = { pastel: "Pastel", line: "Line", sketch: "Sketch" }[n]);
       }
-      r("button[data-ls]").forEach(function (n) {
+      findAll("button[data-ls]").forEach(function (n) {
         n.addEventListener("click", function (L) {
-          L.stopPropagation(), ln(n.dataset.ls), typeof gt == "function" && !at.hidden && gt();
+          L.stopPropagation(),
+            setLoginArtStyle(n.dataset.ls),
+            typeof restartSettingsAutoClose == "function" &&
+              !settingsPanel.hidden &&
+              restartSettingsAutoClose();
         });
       }),
-        ln("sketch");
-      var cn = e("login-preview");
-      cn &&
-        cn.addEventListener("click", function (n) {
-          n.stopPropagation(), ut(!1), sn();
+        setLoginArtStyle("sketch");
+      var loginPreviewButton = byId("login-preview");
+      loginPreviewButton &&
+        loginPreviewButton.addEventListener("click", function (n) {
+          n.stopPropagation(), closeSettings(!1), openLoginPreview();
         }),
-        ze.addEventListener("focusin", function (n) {
-          n.target.tagName === "INPUT" && ze.classList.add("kb");
+        loginForm.addEventListener("focusin", function (n) {
+          n.target.tagName === "INPUT" && loginForm.classList.add("kb");
         }),
-        ze.addEventListener("focusout", function () {
+        loginForm.addEventListener("focusout", function () {
           setTimeout(function () {
             var n = document.activeElement;
-            (!n || n.tagName !== "INPUT" || !ze.contains(n)) && ze.classList.remove("kb");
+            (!n || n.tagName !== "INPUT" || !loginForm.contains(n)) && loginForm.classList.remove("kb");
           }, 120);
         }),
         new MutationObserver(function () {
-          c1.hidden
-            ? (Wn(), ze.classList.remove("kb"), document.documentElement.classList.remove("login-open"))
-            : (Un(), document.documentElement.classList.add("login-open"));
-        }).observe(c1, { attributes: !0, attributeFilter: ["hidden"] });
-      function d2() {
-        (c1.hidden = !0), delete ze.dataset.preview;
+          loginPage.hidden
+            ? (stopLoginAutoplay(),
+              loginForm.classList.remove("kb"),
+              document.documentElement.classList.remove("login-open"))
+            : (resetLoginCarousel(), document.documentElement.classList.add("login-open"));
+        }).observe(loginPage, { attributes: !0, attributeFilter: ["hidden"] });
+      function closeLogin() {
+        (loginPage.hidden = !0), delete loginForm.dataset.preview;
       }
-      Y2.addEventListener("click", function () {
-        !Ee && !ze.dataset.preview && l("vizag-skip-login2", "1"), d2();
+      loginCancelButton.addEventListener("click", function () {
+        !signedInUser && !loginForm.dataset.preview && writeStore("vizag-skip-login2", "1"), closeLogin();
       }),
-        c1.addEventListener("click", function (n) {
-          n.target === c1 && d2();
+        loginPage.addEventListener("click", function (n) {
+          n.target === loginPage && closeLogin();
         }),
-        ma.addEventListener("click", function () {
-          (je === "firebase" || je === "fbfail" || g1) && L2();
+        syncButton.addEventListener("click", function () {
+          (syncMode === "firebase" || syncMode === "fbfail" || syncNotConfigured) && openLogin();
         });
-      function Gn(n) {
-        n && n.stopPropagation(), Ee ? q() : L2();
+      function onAccountTap(n) {
+        n && n.stopPropagation(), signedInUser ? openLogoutSheet() : openLogin();
       }
-      e("lo-go").addEventListener("click", function () {
-        l2
-          ? l2.signOut().then(function () {
-              G(), ut(!0);
+      byId("lo-go").addEventListener("click", function () {
+        firebaseAuth
+          ? firebaseAuth.signOut().then(function () {
+              closeLogoutSheet(), closeSettings(!0);
             })
-          : G();
+          : closeLogoutSheet();
       }),
-        e("acct-btn").addEventListener("click", Gn),
-        (window.__renderAcct = G2),
+        byId("acct-btn").addEventListener("click", onAccountTap),
+        (window.__renderAcct = renderAccount),
         (function () {
           var n = document.querySelector('meta[name="theme-color"]'),
             L = n ? n.getAttribute("content") : "",
-            S = e("scrim");
+            S = byId("scrim");
           function C() {
             var J = document.getElementById("chat"),
               ot =
@@ -1895,11 +1969,11 @@ try {
             (L.style.webkitUserSelect = "none");
         })(),
         (function () {
-          var n = e("more-lists");
+          var n = byId("more-lists");
           if (!n) return;
           function L() {
             n.querySelectorAll(".seeall").forEach(function (S) {
-              var C = e(S.dataset.see);
+              var C = byId(S.dataset.see);
               S.hidden = !(C && C.querySelectorAll(".mprow").length > 2);
             });
           }
@@ -1917,36 +1991,36 @@ try {
             });
         })(),
         (function () {
-          var n = e("acct-top");
+          var n = byId("acct-top");
           function L(S) {
             if (!S.target.closest("#acct-edit")) {
               if (S.target.closest("#acct-av")) {
                 window.__avatarSheet && window.__avatarSheet();
                 return;
               }
-              var C = e("prof-open");
+              var C = byId("prof-open");
               C && C.click();
             }
           }
-          e("acct-edit").addEventListener("click", function (S) {
+          byId("acct-edit").addEventListener("click", function (S) {
             S.stopPropagation(), window.__editProfile && window.__editProfile();
           }),
             n.addEventListener("click", L),
             n.addEventListener("keydown", function (S) {
               (S.key === "Enter" || S.key === " ") && (S.preventDefault(), L(S));
             }),
-            e("acct-signin").addEventListener("click", function (S) {
-              S.stopPropagation(), L2();
+            byId("acct-signin").addEventListener("click", function (S) {
+              S.stopPropagation(), openLogin();
             }),
-            e("acct-prof").addEventListener("click", function (S) {
-              S.stopPropagation(), e("prof-open").click();
+            byId("acct-prof").addEventListener("click", function (S) {
+              S.stopPropagation(), byId("prof-open").click();
             });
         })(),
-        G2(),
-        ze.addEventListener("submit", function (n) {
+        renderAccount(),
+        loginForm.addEventListener("submit", function (n) {
           n.preventDefault();
         });
-      function Vn(n) {
+      function authErrorMessage(n) {
         switch (n) {
           case "auth/invalid-credential":
           case "auth/wrong-password":
@@ -1955,7 +2029,7 @@ try {
           case "auth/invalid-login-credentials":
             return (
               "Username or password didn\u2019t match. In Firebase, the user\u2019s email must be " +
-              Sa("vizag") +
+              usernameToEmail("vizag") +
               "."
             );
           case "auth/operation-not-allowed":
@@ -1973,25 +2047,25 @@ try {
             return "Login failed (" + (n || "unknown error") + ").";
         }
       }
-      function Sa(n) {
+      function usernameToEmail(n) {
         var L = window.TRIP_SYNC || {};
         return n + "@" + (L.emailDomain || "example.com");
       }
-      function Yn() {
+      function connectHostedDb() {
         window.claude
           .use("db")
           .then(function (n) {
             if (!n) {
-              (je = "hosted-local"),
-                ge("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
+              (syncMode = "hosted-local"),
+                setSyncStatus("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
               return;
             }
-            je = "claude";
+            syncMode = "claude";
             var L = n.doc("shared/ticks"),
               S = !1,
               C = Promise.resolve();
-            ge("Syncing\u2026", "Connecting to shared ticks\u2026", !1),
-              (b2 = function (N, h) {
+            setSyncStatus("Syncing\u2026", "Connecting to shared ticks\u2026", !1),
+              (saveCheckToCloud = function (N, h) {
                 S ||
                   (C = C.then(function () {
                     var J = { ticks: {} };
@@ -1999,11 +2073,15 @@ try {
                       (J.ticks[N] = h),
                       L.update(J).catch(function (ot) {
                         if (ot && ot.code === "invalid_argument")
-                          return L.set({ ticks: Object.assign({}, _1) }).catch(function (nt) {
+                          return L.set({ ticks: Object.assign({}, checkedItems) }).catch(function (nt) {
                             nt &&
                               nt.code === "invalid_argument" &&
                               ((S = !0),
-                              ge("View only", "You can see shared ticks; yours stay on this phone.", !1));
+                              setSyncStatus(
+                                "View only",
+                                "You can see shared ticks; yours stay on this phone.",
+                                !1,
+                              ));
                           });
                       })
                     );
@@ -2011,28 +2089,37 @@ try {
               }),
               L.onSnapshot(
                 function (N) {
-                  N.exists && nn((N.data() || {}).ticks),
-                    an(N.metadata),
-                    S || ge("Synced \u2713", "Ticks sync live for everyone this page is shared with.", !0);
+                  N.exists && loadChecks((N.data() || {}).ticks),
+                    markSynced(N.metadata),
+                    S ||
+                      setSyncStatus(
+                        "Synced \u2713",
+                        "Ticks sync live for everyone this page is shared with.",
+                        !0,
+                      );
                 },
                 function () {
-                  (b2 = function () {}),
-                    ge("On this phone", "Sync is unavailable right now; ticks are saved on this phone.", !1);
+                  (saveCheckToCloud = function () {}),
+                    setSyncStatus(
+                      "On this phone",
+                      "Sync is unavailable right now; ticks are saved on this phone.",
+                      !1,
+                    );
                 },
               );
           })
           .catch(function () {
-            (je = "hosted-local"),
-              ge("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
+            (syncMode = "hosted-local"),
+              setSyncStatus("On this phone", "Your ticks stay on this phone, even after a refresh.", !1);
           });
       }
-      function K2(n) {
+      function loadScript(n) {
         return new Promise(function (L, S) {
           var C = document.createElement("script");
           (C.src = n), (C.onload = L), (C.onerror = S), document.head.appendChild(C);
         });
       }
-      function dn() {
+      function readSyncConfig() {
         if (!(window.TRIP_SYNC && window.TRIP_SYNC.apiKey))
           try {
             typeof firebaseConfig != "undefined" &&
@@ -2045,15 +2132,15 @@ try {
               ));
           } catch (n) {}
       }
-      function un() {
-        if ((dn(), !window.TRIP_SYNC)) {
-          K2("sync-config.js").then(
+      function startSync() {
+        if ((readSyncConfig(), !window.TRIP_SYNC)) {
+          loadScript("sync-config.js").then(
             function () {
-              dn(),
+              readSyncConfig(),
                 window.TRIP_SYNC
-                  ? un()
-                  : ((g1 = !0),
-                    ge(
+                  ? startSync()
+                  : ((syncNotConfigured = !0),
+                    setSyncStatus(
                       "Not set up",
                       "Your ticks stay on this phone. Sharing between phones turns on once login is set up.",
                       !1,
@@ -2062,8 +2149,8 @@ try {
                     ));
             },
             function () {
-              (g1 = !0),
-                ge(
+              (syncNotConfigured = !0),
+                setSyncStatus(
                   "Not set up",
                   "Your ticks stay on this phone. Sharing between phones turns on once login is set up.",
                   !1,
@@ -2079,8 +2166,8 @@ try {
           return !C || /^YOUR_|^PASTE|REPLACE/i.test(String(C));
         }
         if ((L(n.appId) && delete n.appId, L(n.apiKey) || L(n.projectId))) {
-          (g1 = !0),
-            ge(
+          (syncNotConfigured = !0),
+            setSyncStatus(
               "Not set up",
               "Your ticks stay on this phone. Sharing between phones turns on once login is set up.",
               !1,
@@ -2090,12 +2177,15 @@ try {
           return;
         }
         var S = "https://www.gstatic.com/firebasejs/10.12.2/";
-        K2(S + "firebase-app-compat.js")
+        loadScript(S + "firebase-app-compat.js")
           .then(function () {
-            return Promise.all([K2(S + "firebase-auth-compat.js"), K2(S + "firebase-firestore-compat.js")]);
+            return Promise.all([
+              loadScript(S + "firebase-auth-compat.js"),
+              loadScript(S + "firebase-firestore-compat.js"),
+            ]);
           })
           .then(function () {
-            je = "firebase";
+            syncMode = "firebase";
             var C = {
               apiKey: n.apiKey,
               authDomain: n.authDomain || n.projectId + ".firebaseapp.com",
@@ -2106,33 +2196,41 @@ try {
             try {
               N.enablePersistence({ synchronizeTabs: !0 }).catch(function () {});
             } catch (rt) {}
-            l2 = firebase.auth();
+            firebaseAuth = firebase.auth();
             var h = N.collection("trips").doc("vizag-2026"),
               J = null,
               ot = Promise.resolve();
-            ge("Log in", "Log in from the settings button to share ticks between your phones.", !1);
+            setSyncStatus(
+              "Log in",
+              "Log in from the settings button to share ticks between your phones.",
+              !1,
+            );
             var nt = !0;
-            l2.onAuthStateChanged(function (rt) {
+            firebaseAuth.onAuthStateChanged(function (rt) {
               if (
-                ((Ee = rt),
+                ((signedInUser = rt),
                 J && (J(), (J = null)),
                 rt && window.__profFromAccount && window.__profFromAccount(rt),
                 !rt)
               ) {
-                (b2 = function () {}),
-                  ge("Log in", "Log in from the settings button to share ticks between your phones.", !1),
-                  nt && o("vizag-skip-login2") !== "1" && L2(),
+                (saveCheckToCloud = function () {}),
+                  setSyncStatus(
+                    "Log in",
+                    "Log in from the settings button to share ticks between your phones.",
+                    !1,
+                  ),
+                  nt && readStore("vizag-skip-login2") !== "1" && openLogin(),
                   (nt = !1);
                 return;
               }
               (nt = !1),
-                ge(
+                setSyncStatus(
                   navigator.onLine === !1 ? "Offline" : "Syncing\u2026",
                   "Connecting to shared ticks\u2026",
                   !1,
                 );
               var mt = !0;
-              (b2 = function (Mt, Ft) {
+              (saveCheckToCloud = function (Mt, Ft) {
                 ot = ot.then(function () {
                   var Wt = { ticks: {} };
                   return (Wt.ticks[Mt] = Ft), h.set(Wt, { merge: !0 }).catch(function () {});
@@ -2145,27 +2243,29 @@ try {
                     if (mt) {
                       var Wt = {},
                         re = !1;
-                      Object.keys(_1).forEach(function (Kt) {
-                        _1[Kt] && !(Kt in Ft) && ((Wt[Kt] = !0), (re = !0));
+                      Object.keys(checkedItems).forEach(function (Kt) {
+                        checkedItems[Kt] && !(Kt in Ft) && ((Wt[Kt] = !0), (re = !0));
                       }),
                         re &&
                           (h.set({ ticks: Wt }, { merge: !0 }).catch(function () {}), Object.assign(Ft, Wt)),
                         (mt = !1);
                     }
-                    nn(Ft),
-                      an(Mt.metadata),
+                    loadChecks(Ft),
+                      markSynced(Mt.metadata),
                       navigator.onLine !== !1 &&
-                        ge("Synced \u2713", "Ticks sync live between your phones.", !0);
+                        setSyncStatus("Synced \u2713", "Ticks sync live between your phones.", !0);
                   },
                   function (Mt) {
                     var Ft = Mt && Mt.code;
                     Ft === "permission-denied"
-                      ? ge(
+                      ? setSyncStatus(
                           "Blocked",
-                          "Firestore rules blocked this login. Check the rules allow " + Sa("vizag") + ".",
+                          "Firestore rules blocked this login. Check the rules allow " +
+                            usernameToEmail("vizag") +
+                            ".",
                           !1,
                         )
-                      : ge(
+                      : setSyncStatus(
                           "Sync error",
                           "Could not reach the database (" +
                             (Ft || "error") +
@@ -2175,58 +2275,59 @@ try {
                   },
                 ));
             }),
-              ze.addEventListener("submit", function () {
-                if (((k2.hidden = !0), Ee)) {
-                  l2.signOut().then(d2);
+              loginForm.addEventListener("submit", function () {
+                if (((loginError.hidden = !0), signedInUser)) {
+                  firebaseAuth.signOut().then(closeLogin);
                   return;
                 }
-                var rt = e("lg-user").value.trim().toLowerCase(),
-                  mt = e("lg-pass").value;
+                var rt = byId("lg-user").value.trim().toLowerCase(),
+                  mt = byId("lg-pass").value;
                 if (!rt || !mt) {
-                  rn("Enter the username and password.");
+                  showLoginError("Enter the username and password.");
                   return;
                 }
-                (y1.disabled = !0),
-                  (y1.textContent = "Logging in\u2026"),
-                  l2
-                    .signInWithEmailAndPassword(rt.indexOf("@") > 0 ? rt : Sa(rt), mt)
+                (loginGoButton.disabled = !0),
+                  (loginGoButton.textContent = "Logging in\u2026"),
+                  firebaseAuth
+                    .signInWithEmailAndPassword(rt.indexOf("@") > 0 ? rt : usernameToEmail(rt), mt)
                     .then(function () {
-                      l("vizag-skip-login2", ""), (e("lg-pass").value = ""), d2();
+                      writeStore("vizag-skip-login2", ""), (byId("lg-pass").value = ""), closeLogin();
                     })
                     .catch(function (Mt) {
-                      rn(Vn(Mt && Mt.code));
+                      showLoginError(authErrorMessage(Mt && Mt.code));
                     })
                     .then(function () {
-                      (y1.disabled = !1), (y1.textContent = Ee ? "Log out" : "Log in");
+                      (loginGoButton.disabled = !1),
+                        (loginGoButton.textContent = signedInUser ? "Log out" : "Log in");
                     });
               });
           })
           .catch(function () {
-            (je = "fbfail"),
-              ge(
+            (syncMode = "fbfail"),
+              setSyncStatus(
                 "Unavailable",
                 "Login couldn\u2019t load (check the internet). Ticks are saved on this phone.",
                 !1,
               );
           });
       }
-      var Aa = !!(window.claude && typeof window.claude.use == "function");
-      if (Aa) {
-        var Qn = e("pdf-row");
-        Qn && (Qn.hidden = !0);
+      var isHostedInClaude = !!(window.claude && typeof window.claude.use == "function");
+      if (isHostedInClaude) {
+        var pdfRow = byId("pdf-row");
+        pdfRow && (pdfRow.hidden = !0);
       }
-      if (!Aa && "serviceWorker" in navigator && location.protocol === "https:") {
+      if (!isHostedInClaude && "serviceWorker" in navigator && location.protocol === "https:") {
         let n = function () {
           try {
             if (sessionStorage.getItem("vizag-reloaded") === "1") {
-              var L = e("update-toast");
+              var L = byId("update-toast");
               L && (L.hidden = !1);
               return;
             }
             sessionStorage.setItem("vizag-reloaded", "1");
           } catch (N) {}
           var S = document.activeElement;
-          var C = e("update-toast");
+          var C = byId("update-toast");
           C && (C.hidden = !1);
         };
         var y4 = n;
@@ -2235,9 +2336,9 @@ try {
             sessionStorage.removeItem("vizag-reloaded");
           }, 15e3);
         } catch (L) {}
-        var Jn = !!navigator.serviceWorker.controller;
+        var hasServiceWorker = !!navigator.serviceWorker.controller;
         navigator.serviceWorker.addEventListener("controllerchange", function () {
-          Jn && n();
+          hasServiceWorker && n();
         }),
           navigator.serviceWorker
             .register("sw.js", { updateViaCache: "none" })
@@ -2269,12 +2370,12 @@ try {
           navigator.serviceWorker.addEventListener("message", function (L) {
             L.data === "updated" && n();
           }),
-          e("update-go").addEventListener("click", function () {
+          byId("update-go").addEventListener("click", function () {
             location.reload();
           });
       }
       (function () {
-        var n = r(".subp");
+        var n = findAll(".subp");
         n.forEach(function (S) {
           var C = Array.prototype.slice.call(S.children).filter(function (ot) {
             return ot.classList.contains("sec") && !ot.classList.contains("later");
@@ -2311,39 +2412,52 @@ try {
         });
         function L(S) {
           S !== "stack" && (S = "tabs"),
-            U.classList.toggle("sec-tabs", S === "tabs"),
-            l("vizag-secmode", S),
-            r("[data-sm]").forEach(function (C) {
+            rootEl.classList.toggle("sec-tabs", S === "tabs"),
+            writeStore("vizag-secmode", S),
+            findAll("[data-sm]").forEach(function (C) {
               C.setAttribute("aria-pressed", C.dataset.sm === S ? "true" : "false");
             });
         }
-        r("[data-sm]").forEach(function (S) {
+        findAll("[data-sm]").forEach(function (S) {
           S.addEventListener("click", function (C) {
-            C.stopPropagation(), L(S.dataset.sm), gt();
+            C.stopPropagation(), L(S.dataset.sm), restartSettingsAutoClose();
           });
         }),
-          L(o("vizag-secmode"));
+          L(readStore("vizag-secmode"));
       })(),
         (function () {
-          var n = null;
+          var indiaData = null;
           try {
-            n = JSON.parse((e("india-data") || {}).textContent || "null");
+            indiaData = JSON.parse((byId("india-data") || {}).textContent || "null");
           } catch (t) {}
-          if (!n) return;
-          var L = n.emo,
-            S = n.states,
-            C = n.cities,
-            N = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-            N2 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          function h(t) {
+          if (!indiaData) return;
+          var STATE_EMOJI = indiaData.emo,
+            PLACES_BY_STATE = indiaData.states,
+            CITIES = indiaData.cities,
+            WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            MONTH_NAMES = [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ];
+          function escapeHtml(t) {
             return String(t == null ? "" : t).replace(/[&<>"']/g, function (a) {
               return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[a];
             });
           }
-          function J(t) {
+          function mapsSearchUrl(t) {
             return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(t);
           }
-          function ot(t, a) {
+          function distanceKm(t, a) {
             var i = 6371,
               c = Math.PI / 180,
               g = (a[0] - t[0]) * c,
@@ -2353,46 +2467,46 @@ try {
                 Math.cos(t[0] * c) * Math.cos(a[0] * c) * Math.sin(E / 2) * Math.sin(E / 2);
             return 2 * i * Math.asin(Math.sqrt(z));
           }
-          function nt(t, a) {
-            return Math.round(ot(t, a) * 1.3);
+          function roadKm(t, a) {
+            return Math.round(distanceKm(t, a) * 1.3);
           }
-          function rt(t) {
+          function clockTime(t) {
             t = Math.round(t / 5) * 5;
             var a = Math.floor(t / 60) % 24,
               i = t % 60,
               c = String(a).padStart(2, "0") + ":" + String(i).padStart(2, "0");
-            return typeof Ba == "function" ? Ba(c, Tt) : c;
+            return typeof chatMarkup == "function" ? chatMarkup(c, timeFormat) : c;
           }
-          function mt(t, a) {
+          function dayInfo(t, a) {
             var i = new Date(t + "T00:00:00");
             return (
               i.setDate(i.getDate() + a),
               {
-                short: N[i.getDay()] + " " + i.getDate(),
-                long: N[i.getDay()] + " " + i.getDate() + " " + N2[i.getMonth()],
-                my: N2[i.getMonth()] + ", " + i.getFullYear(),
+                short: WEEKDAYS[i.getDay()] + " " + i.getDate(),
+                long: WEEKDAYS[i.getDay()] + " " + i.getDate() + " " + MONTH_NAMES[i.getMonth()],
+                my: MONTH_NAMES[i.getMonth()] + ", " + i.getFullYear(),
               }
             );
           }
-          var Mt = "any";
-          function Ft(t) {
+          var travelMode = "any";
+          function travelOption(t) {
             return t < 1.5
               ? ["\u{1F6B6}", "Walk"]
               : t < 40
                 ? ["\u{1F6FA}", "Auto / cab"]
-                : Mt === "road"
+                : travelMode === "road"
                   ? t < 900
                     ? ["\u{1F697}", "Car / cab"]
                     : ["\u2708\uFE0F", "Flight"]
-                  : Mt === "bus"
+                  : travelMode === "bus"
                     ? t < 900
                       ? ["\u{1F68C}", "Bus"]
                       : ["\u{1F686}", "Train"]
-                    : Mt === "train"
+                    : travelMode === "train"
                       ? t < 150
                         ? ["\u{1F695}", "Cab"]
                         : ["\u{1F686}", "Train"]
-                      : Mt === "flight"
+                      : travelMode === "flight"
                         ? t < 250
                           ? ["\u{1F695}", "Cab"]
                           : t < 500
@@ -2404,70 +2518,70 @@ try {
                             ? ["\u{1F686}", "Train or overnight bus"]
                             : ["\u2708\uFE0F", "Flight"];
           }
-          var Wt = {
+          var PACE = {
               relaxed: [17.5 * 60, 150, "Relaxed"],
               moderate: [1140, 300, "Moderate"],
               packed: [20.5 * 60, 500, "Packed"],
             },
-            re = {
+            BUDGET_LEVELS = {
               budget: [800, 1500, 400, 700, "Budget"],
               mid: [1500, 3500, 600, 1200, "Mid-range"],
               premium: [4e3, 9e3, 1200, 2500, "Premium"],
             };
-          function Kt(t) {
+          function travellerCount(t) {
             var a = (t.men || 0) + (t.women || 0);
             return (
               !a && !t.kids && (a = t.people || 1),
               { adults: Math.max(1, a), kids: t.kids || 0, total: Math.max(1, a) + (t.kids || 0) }
             );
           }
-          function Be() {
+          function anyDatesAllowed() {
             try {
               return localStorage.getItem("vizag-anydates") === "1";
             } catch (t) {
               return !1;
             }
           }
-          function le() {
-            var t = e("pl-start").value,
-              a = e("pl-end").value,
-              i = Ge(new Date()),
+          function validateDates() {
+            var t = byId("pl-start").value,
+              a = byId("pl-end").value,
+              i = isoDate(new Date()),
               c = "";
-            !Be() && t && t < i && !qe
+            !anyDatesAllowed() && t && t < i && !editingTrip
               ? (c = "Trips can\u2019t start in the past. Pick today or a later date.")
               : t && a && a < t
                 ? (c = "End date can\u2019t be before the start date.")
                 : t && a && a === t && (c = "End date must be at least 1 day after the start date.");
-            var g = e("pl-derr");
+            var g = byId("pl-derr");
             return (
               g && ((g.textContent = c), (g.hidden = !c)),
-              e("pl-start").classList.toggle("bad", /start in the past/.test(c)),
-              e("pl-end").classList.toggle("bad", !!c && !/start in the past/.test(c)),
-              Be()
-                ? (e("pl-start").removeAttribute("min"), e("pl-end").removeAttribute("min"))
-                : ((e("pl-start").min = qe ? "" : i),
-                  (e("pl-end").min = t ? Ge(new Date(new Date(t).getTime() + 864e5)) : i)),
+              byId("pl-start").classList.toggle("bad", /start in the past/.test(c)),
+              byId("pl-end").classList.toggle("bad", !!c && !/start in the past/.test(c)),
+              anyDatesAllowed()
+                ? (byId("pl-start").removeAttribute("min"), byId("pl-end").removeAttribute("min"))
+                : ((byId("pl-start").min = editingTrip ? "" : i),
+                  (byId("pl-end").min = t ? isoDate(new Date(new Date(t).getTime() + 864e5)) : i)),
               !c
             );
           }
           window.__dateErr = function () {
-            return le();
+            return validateDates();
           };
-          function Qe(t) {
+          function tripDayCount(t) {
             if (t.start && t.end) {
               var a = Math.round((new Date(t.end) - new Date(t.start)) / 864e5) + 1;
               return a > 0 ? a : 0;
             }
             return t.days || 0;
           }
-          function G1(t) {
+          function durationText(t) {
             return t < 1 ? Math.round(t * 60) + " min" : Math.round(t * 2) / 2 + " h";
           }
-          var Se = [];
+          var trips = [];
           try {
-            Se = JSON.parse(o("vizag-trips") || "[]") || [];
+            trips = JSON.parse(readStore("vizag-trips") || "[]") || [];
           } catch (t) {}
-          Se.forEach(function (t) {
+          trips.forEach(function (t) {
             t &&
               t.name &&
               (t.name = String(t.name)
@@ -2475,26 +2589,29 @@ try {
                 .replace(/\s{2,}/g, " ")
                 .trim());
           });
-          var ve = o("vizag-active-trip") || "vizag",
-            C1 = o("vizag-hide-vz") === "1",
-            V1 = !1,
-            x2 = {};
+          var activeTripId = readStore("vizag-active-trip") || "vizag",
+            hideSampleTrip = readStore("vizag-hide-vz") === "1",
+            editingSampleTrip = !1,
+            tickedStops = {};
           try {
-            x2 = JSON.parse(o("vizag-ct-ticks") || "{}") || {};
+            tickedStops = JSON.parse(readStore("vizag-ct-ticks") || "{}") || {};
           } catch (t) {}
-          function Ze() {
-            l("vizag-trips", JSON.stringify(Se));
+          function saveTrips() {
+            writeStore("vizag-trips", JSON.stringify(trips));
           }
-          function u2() {
-            C1 && ve === "vizag" && ((ve = Se[0] ? Se[0].id : "none"), l("vizag-active-trip", ve));
+          function fixActiveTrip() {
+            hideSampleTrip &&
+              activeTripId === "vizag" &&
+              ((activeTripId = trips[0] ? trips[0].id : "none"),
+              writeStore("vizag-active-trip", activeTripId));
           }
-          function Ae() {
-            for (var t = 0; t < Se.length; t++) if (Se[t].id === ve) return Se[t];
+          function activeTrip() {
+            for (var t = 0; t < trips.length; t++) if (trips[t].id === activeTripId) return trips[t];
             return null;
           }
-          function T1(t) {
-            Mt = t.mode || "any";
-            var a = Wt[t.pace] || Wt.moderate,
+          function buildItinerary(t) {
+            travelMode = t.mode || "any";
+            var a = PACE[t.pace] || PACE.moderate,
               i = 0,
               c = t.places.slice(),
               g = [t.from[1], t.from[2]];
@@ -2503,7 +2620,7 @@ try {
               var B = 0,
                 j = 1e9;
               c.forEach(function (bt, Nt) {
-                var O = ot(z, [bt[2], bt[3]]);
+                var O = distanceKm(z, [bt[2], bt[3]]);
                 O < j && ((j = O), (B = Nt));
               });
               var D = c.splice(B, 1)[0];
@@ -2521,9 +2638,9 @@ try {
             }
             ee();
             var _t = E[0],
-              Ht = nt(g, [_t[2], _t[3]]);
+              Ht = roadKm(g, [_t[2], _t[3]]);
             if (Ht > 250) {
-              var ce = Ft(Ht);
+              var ce = travelOption(Ht);
               kt.stops.push({
                 t: At,
                 emo: ce[0],
@@ -2545,17 +2662,17 @@ try {
                 (It = [_t[2], _t[3]]);
             }
             E.forEach(function (bt) {
-              var Nt = nt(It, [bt[2], bt[3]]),
+              var Nt = roadKm(It, [bt[2], bt[3]]),
                 O = Math.max(15, (Nt / 40) * 60),
                 ft = bt[5] * 60;
               if (O > 240 && kt.stops.length) {
                 At + O > Me && ee();
-                var jt = Ft(Nt);
+                var jt = travelOption(Nt);
                 kt.stops.push({
                   t: At,
                   emo: jt[0],
                   title: "Travel to " + bt[1],
-                  desc: "About " + Nt + " km by " + jt[1].toLowerCase() + " (~" + G1(O / 60) + ")",
+                  desc: "About " + Nt + " km by " + jt[1].toLowerCase() + " (~" + durationText(O / 60) + ")",
                   q: bt[1],
                   kind: "travel",
                   km: Nt,
@@ -2569,12 +2686,12 @@ try {
                 (At += O),
                 (Fe += Nt),
                 (i += Nt);
-              var Et = Ft(Nt);
+              var Et = travelOption(Nt);
               kt.stops.push({
                 t: At,
-                emo: L[bt[4]] || "\u{1F4CD}",
+                emo: STATE_EMOJI[bt[4]] || "\u{1F4CD}",
                 title: bt[0],
-                desc: "In " + bt[1] + " \xB7 spend about " + G1(bt[5]),
+                desc: "In " + bt[1] + " \xB7 spend about " + durationText(bt[5]),
                 q: bt[0] + " " + bt[1],
                 kind: bt[4],
                 km: Nt,
@@ -2620,8 +2737,8 @@ try {
                     town: he,
                   }),
                   kt.towns.push(he);
-            var me = nt(It, g),
-              de = Ft(me);
+            var me = roadKm(It, g),
+              de = travelOption(me);
             kt.stops.push({
               t: Math.max(At, 1020),
               emo: de[0],
@@ -2655,22 +2772,22 @@ try {
               { days: et, total: Fe, inbound: Ht, back: me }
             );
           }
-          var i1 = {
-              home: e("ct-home"),
-              days: e("ct-days"),
-              route: e("ct-route"),
-              plan: e("ct-plan"),
-              alerts: e("ct-alerts"),
+          var TAB_CONTENT = {
+              home: byId("ct-home"),
+              days: byId("ct-days"),
+              route: byId("ct-route"),
+              plan: byId("ct-plan"),
+              alerts: byId("ct-alerts"),
             },
-            w1 = {};
-          function t1(t, a, i, c) {
+            chosenTabs = {};
+          function tabbedCard(t, a, i, c) {
             var g =
                 c &&
-                w1[c] &&
+                chosenTabs[c] &&
                 t.some(function (j) {
-                  return j[0] === w1[c];
+                  return j[0] === chosenTabs[c];
                 })
-                  ? w1[c]
+                  ? chosenTabs[c]
                   : t[0][0],
               E = t.length,
               z = a === "ctseg",
@@ -2701,29 +2818,29 @@ try {
               "</div></div></div>"
             );
           }
-          function d1(t, a, i) {
-            var c = w1[t];
+          function tabHiddenClass(t, a, i) {
+            var c = chosenTabs[t];
             return (c ? c !== a : !i) ? " hidden" : "";
           }
-          function u1(t, a) {
+          function cardHtml(t, a) {
             return '<div class="card ' + (a || "") + '">' + t + "</div>";
           }
-          function b1(t, a, i, c) {
+          function summaryCardHtml(t, a, i, c) {
             return (
               '<div class="card summary"><div class="shead"><div class="label">' +
-              h(t) +
+              escapeHtml(t) +
               "</div><h2>" +
               a +
               '</h2><p class="hdesc">' +
-              h(i) +
+              escapeHtml(i) +
               '</p></div><div class="sgrid">' +
               c
                 .map(function (g) {
                   return (
                     '<div class="mi"><span class="mk">' +
-                    h(g[0]) +
+                    escapeHtml(g[0]) +
                     '</span><span class="mv">' +
-                    h(g[1]) +
+                    escapeHtml(g[1]) +
                     "</span></div>"
                   );
                 })
@@ -2731,7 +2848,7 @@ try {
               "</div></div>"
             );
           }
-          function Y1(t, a) {
+          function sectionHtml(t, a) {
             return (
               '<section class="sec"><h3 class="sech-wrap"><span class="sech static">' +
               t +
@@ -2740,12 +2857,12 @@ try {
               "</div></section>"
             );
           }
-          function k1() {
+          function arrowSvg() {
             return '<svg class="tarr" viewBox="0 0 16 10" aria-hidden="true"><path d="M1 5h14M12 2.4 15 5l-3 2.6"/></svg>';
           }
-          function z1(t, a) {
-            var i = Kt(t),
-              c = re[t.budget] || re.mid,
+          function budgetCardHtml(t, a) {
+            var i = travellerCount(t),
+              c = BUDGET_LEVELS[t.budget] || BUDGET_LEVELS.mid,
               g = Math.max(0, a.days.length - 1),
               E = t.places.length,
               z = Math.ceil(i.adults / 2),
@@ -2778,45 +2895,7 @@ try {
               level: c[4],
             };
           }
-          function fn(t, a) {
-            var i = {};
-            t.places.forEach(function (g) {
-              i[g[4]] = 1;
-            });
-            var c = [];
-            return (
-              i.temple &&
-                c.push(
-                  "Temples: carry modest clothes, expect queues on weekends, and leave footwear at the counter.",
-                ),
-              i.wildlife &&
-                c.push(
-                  "Safaris need advance booking on the official forest website; morning slots sell out first.",
-                ),
-              (i.hill || i.monastery) &&
-                c.push(
-                  "Hills get cold after sunset. Keep a warm layer and check road status for high passes.",
-                ),
-              i.beach && c.push("Beaches: carry sunscreen and a change of clothes; obey lifeguard flags."),
-              i.waterfall && c.push("Waterfalls are slippery; wear shoes with grip and avoid the edge."),
-              a.inbound > 250 &&
-                c.push(
-                  "Book the long journey to " +
-                    (t.places[0] || ["", ""])[1] +
-                    " early; overnight trains save a hotel night.",
-                ),
-              ["Arunachal Pradesh", "Nagaland", "Mizoram", "Manipur"].indexOf(t.state) >= 0 &&
-                c.push(
-                  "An Inner Line Permit is needed to enter " + t.state + ". Apply online before the trip.",
-                ),
-              t.state === "Ladakh" && c.push("Rest a full day in Leh to acclimatise before going higher."),
-              c.push(
-                "Times are estimates from straight-line distance. Check road conditions and opening hours the day before.",
-              ),
-              c
-            );
-          }
-          var E2 = {
+          var ENTRY_FEES = {
               temple: "Entry free; special darshan extra",
               fort: "Entry ~\u20B950\u2013600",
               palace: "Entry ~\u20B9100\u2013700",
@@ -2832,7 +2911,7 @@ try {
               train: "Ride ~\u20B9200\u20131,500",
               ceremony: "Free; arrive early",
             },
-            J1 = {
+            PACKING_TIPS = {
               temple: "Modest clothes; socks for hot floors",
               beach: "Sunscreen, towel, spare clothes",
               waterfall: "Shoes with grip, dry bag",
@@ -2845,7 +2924,7 @@ try {
               nature: "Water and snacks",
               adventure: "Sports shoes, ID",
             },
-            Ue = {
+            KIND_TIPS = {
               temple: "Temples: modest clothes, footwear at the counter, queues are shorter early.",
               wildlife: "Safaris: be at the gate 15 minutes early with ID; no bright colours.",
               hill: "Hills: it gets cold after sunset and roads are slow; keep buffer time.",
@@ -2857,7 +2936,7 @@ try {
               monastery: "Monasteries: walk clockwise and ask before photos.",
               museum: "Museums are usually closed on Mondays or Fridays; check ahead.",
             };
-          function L1(t) {
+          function travelOptions(t) {
             return t < 1.5
               ? [["\u{1F6B6}", "Walk"]]
               : t < 15
@@ -2871,12 +2950,12 @@ try {
                       ["\u{1F68C}", "Bus"],
                     ]
                   : t < 250
-                    ? Mt === "train"
+                    ? travelMode === "train"
                       ? [
                           ["\u{1F686}", "Train"],
                           ["\u{1F695}", "Cab"],
                         ]
-                      : Mt === "bus"
+                      : travelMode === "bus"
                         ? [
                             ["\u{1F68C}", "Bus"],
                             ["\u{1F695}", "Cab"],
@@ -2886,7 +2965,7 @@ try {
                             ["\u{1F68C}", "Bus"],
                             ["\u{1F686}", "Train"],
                           ]
-                    : Mt === "flight" || t > 900
+                    : travelMode === "flight" || t > 900
                       ? [
                           ["\u2708\uFE0F", "Flight"],
                           ["\u{1F686}", "Train"],
@@ -2896,7 +2975,7 @@ try {
                           ["\u{1F68C}", "Overnight bus"],
                         ];
           }
-          function X2(t, a, i, c, g) {
+          function dayHighlightsHtml(t, a, i, c, g) {
             var E = i.stops.filter(function (et) {
                 return et.kind !== "travel" && et.kind !== "food" && et.kind !== "free";
               }),
@@ -2905,7 +2984,7 @@ try {
               j = {};
             i.stops.forEach(function (et) {
               et.km > 0 &&
-                L1(et.km)
+                travelOptions(et.km)
                   .slice(0, 1)
                   .forEach(function (kt) {
                     j[kt[1]] = 1;
@@ -2932,10 +3011,12 @@ try {
                   ["Transport", "None planned"],
                 ]
               : [
-                  ["Wake up", rt(Math.max(240, (z ? z.t : 480) - 45))],
+                  ["Wake up", clockTime(Math.max(240, (z ? z.t : 480) - 45))],
                   [
                     "Sleep",
-                    c < a.days.length - 1 ? rt(Math.min(1380, (B ? B.t : 1140) + 150)) : "On the way home",
+                    c < a.days.length - 1
+                      ? clockTime(Math.min(1380, (B ? B.t : 1140) + 150))
+                      : "On the way home",
                   ],
                   ["Stay", D],
                   [
@@ -2955,11 +3036,11 @@ try {
                   ["Transport", Object.keys(j).join(", ") || "Local cab"],
                 ];
           }
-          function $2(t, a, i, c) {
+          function dayTipsHtml(t, a, i, c) {
             var g = [],
               E = {};
             i.stops.forEach(function (B) {
-              Ue[B.kind] && !E[B.kind] && ((E[B.kind] = 1), g.push(Ue[B.kind]));
+              KIND_TIPS[B.kind] && !E[B.kind] && ((E[B.kind] = 1), g.push(KIND_TIPS[B.kind]));
             });
             var z = i.stops.reduce(function (B, j) {
               return B + (j.kind === "travel" ? 0 : j.km);
@@ -2975,34 +3056,36 @@ try {
               g
             );
           }
-          function Z2(t, a, i, c) {
+          function stopHtml(t, a, i, c) {
             var g = (t.edits || {})[a.title] || {},
               E = a.kind !== "travel" && a.kind !== "food" && a.kind !== "free",
               z =
                 a.km > 0
                   ? '<div class="modes"><span class="ml">Get there by</span><ol>' +
-                    L1(a.km)
+                    travelOptions(a.km)
                       .map(function (et) {
-                        return "<li>" + et[0] + " " + h(et[1]) + "</li>";
+                        return "<li>" + et[0] + " " + escapeHtml(et[1]) + "</li>";
                       })
                       .join("") +
                     "</ol></div>"
                   : "",
               B = "";
-            E && E2[a.kind] && (B += '<span class="cost">' + h(E2[a.kind]) + "</span>"),
+            E &&
+              ENTRY_FEES[a.kind] &&
+              (B += '<span class="cost">' + escapeHtml(ENTRY_FEES[a.kind]) + "</span>"),
               a.km >= 5 &&
                 a.km < 250 &&
                 (B +=
                   '<span class="cost">Cab ~\u20B9' +
                   (Math.round((a.km * 16) / 50) * 50).toLocaleString("en-IN") +
                   "</span>");
-            var j = g.carry || (E ? J1[a.kind] : "");
-            j && (B += '<span class="carry">Carry \u2013 ' + h(j) + "</span>"),
-              g.note && (B += '<span class="cost cnote">Note \u2013 ' + h(g.note) + "</span>");
+            var j = g.carry || (E ? PACKING_TIPS[a.kind] : "");
+            j && (B += '<span class="carry">Carry \u2013 ' + escapeHtml(j) + "</span>"),
+              g.note && (B += '<span class="cost cnote">Note \u2013 ' + escapeHtml(g.note) + "</span>");
             var D =
               E &&
               a.t >= 16.5 * 60 &&
-              (S[t.state] || [])
+              (PLACES_BY_STATE[t.state] || [])
                 .map(function (et) {
                   return et[0];
                 })
@@ -3013,9 +3096,9 @@ try {
               '"><div class="row1"><span class="tile"' +
               (E
                 ? ' data-pn="' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   '" role="button" tabindex="0" aria-label="About ' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   '"'
                 : ' aria-hidden="true"') +
               ">" +
@@ -3024,27 +3107,27 @@ try {
               (D ? '<span class="skip">Skip if late</span>' : "") +
               (a.ai ? '<span class="skip">AI pick</span>' : "") +
               "<time>" +
-              rt(a.t) +
+              clockTime(a.t) +
               "</time>" +
               (E
                 ? '<button type="button" class="sedit" data-sedit="' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   '" aria-label="Edit ' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   '">Edit</button>'
                 : "") +
               "</span></div><h3>" +
               (E
                 ? '<span class="pnlink plain" data-pn="' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   '" role="button" tabindex="0">' +
-                  h(a.title) +
+                  escapeHtml(a.title) +
                   "</span>"
-                : h(a.title)) +
+                : escapeHtml(a.title)) +
               ' <a class="ext" href="' +
-              J(a.q) +
+              mapsSearchUrl(a.q) +
               '" target="_blank" rel="noopener" aria-label="Open in Google Maps">\u2197</a></h3><p class="desc">' +
-              h(a.desc) +
+              escapeHtml(a.desc) +
               (a.km > 0 && E ? " \xB7 " + a.km + " km from the last stop" : "") +
               "</p>" +
               z +
@@ -3052,77 +3135,85 @@ try {
               "</li>"
             );
           }
-          function De() {
-            var t = Ae();
-            if ((U.classList.toggle("ct-on", !!t), ea(), !t)) return;
-            var a = T1(t),
-              i = z1(t, a),
-              c = function (O) {
-                return mt(t.start, O);
+          function renderTrip() {
+            var trip = activeTrip();
+            if ((rootEl.classList.toggle("ct-on", !!trip), renderTripCards(), !trip)) return;
+            var plan = buildItinerary(trip),
+              budgetHtml = budgetCardHtml(trip, plan),
+              dayOf = function (O) {
+                return dayInfo(trip.start, O);
               },
-              g = function (O) {
-                var ft = new Date(t.start + "T00:00:00");
+              dayDateLabel = function (O) {
+                var ft = new Date(trip.start + "T00:00:00");
                 return ft.setDate(ft.getDate() + O), "\u2019" + String(ft.getFullYear()).slice(2);
               };
-            U.dataset.tstart = t.start;
-            var E = h(Q1(t.name || "").trim() || t.from[0] + " to " + t.state),
-              z = Qe(t),
-              B =
-                z && a.days.length > z
+            rootEl.dataset.tstart = trip.start;
+            var tripTitle = escapeHtml(
+                cleanTripName(trip.name || "").trim() || trip.from[0] + " to " + trip.state,
+              ),
+              plannedDays = tripDayCount(trip),
+              tooShortWarning =
+                plannedDays && plan.days.length > plannedDays
                   ? '<p class="ctwarn">Needs about ' +
-                    a.days.length +
+                    plan.days.length +
                     " days, not " +
-                    z +
+                    plannedDays +
                     ". Remove places or add days, and we\u2019ll update the plan.</p>"
                   : "",
-              j = re[t.budget] || re.mid;
-            (i1.home.innerHTML =
+              budgetLevel = BUDGET_LEVELS[trip.budget] || BUDGET_LEVELS.mid;
+            (TAB_CONTENT.home.innerHTML =
               '<div class="card summary cthero"><div class="ctcover">' +
-              Q2(P1(t.name + " " + t.state + " " + t.places.join(" "), Kt(t).total), "scn big") +
+              sceneSvg(
+                pickScenes(
+                  trip.name + " " + trip.state + " " + trip.places.join(" "),
+                  travellerCount(trip).total,
+                ),
+                "scn big",
+              ) +
               '</div><button type="button" class="ctedit" data-ctedit="1" aria-label="Edit trip" title="Edit trip"><svg class="ph" aria-hidden="true"><use data-p="edit" href="#i-hugeicons-edit"/></svg></button><div class="shead"><div class="label">' +
-              c(0).long +
+              dayOf(0).long +
               " " +
-              g(0) +
+              dayDateLabel(0) +
               " \u2013 " +
-              c(Math.max(0, a.days.length - 1)).long +
+              dayOf(Math.max(0, plan.days.length - 1)).long +
               " " +
-              g(Math.max(0, a.days.length - 1)) +
+              dayDateLabel(Math.max(0, plan.days.length - 1)) +
               '</div><h2><button type="button" class="tswitch" data-tswitch aria-label="Switch trip: ' +
-              E +
+              tripTitle +
               '"><span class="tsname">' +
-              E +
+              tripTitle +
               "</span>" +
-              zt("chev") +
+              iconSvg("chev") +
               '</button></h2><p class="hdesc">' +
-              h(t.from[0]) +
+              escapeHtml(trip.from[0]) +
               " " +
-              k1() +
+              arrowSvg() +
               " " +
-              h(t.state) +
+              escapeHtml(trip.state) +
               " \xB7 " +
-              Kt(t).total +
+              travellerCount(trip).total +
               " traveller" +
-              (Kt(t).total === 1 ? "" : "s") +
+              (travellerCount(trip).total === 1 ? "" : "s") +
               '</p></div><div class="sgrid"><div class="mi"><span class="mk">Days</span><span class="mv">' +
-              a.days.length +
+              plan.days.length +
               '</span></div><div class="mi"><span class="mk">Places</span><span class="mv">' +
-              t.places.length +
+              trip.places.length +
               '</span></div><div class="mi"><span class="mk">Distance</span><span class="mv">~' +
-              a.total +
+              plan.total +
               ' km</span></div><div class="mi"><span class="mk">Per person</span><span class="mv">' +
-              i.pp +
+              budgetHtml.pp +
               "</span></div></div></div>" +
-              B +
-              t1(
-                a.days.map(function (O, ft) {
-                  return [ft, "<b>D" + (ft + 1) + "</b><span>" + c(ft).short + "</span>"];
+              tooShortWarning +
+              tabbedCard(
+                plan.days.map(function (O, ft) {
+                  return [ft, "<b>D" + (ft + 1) + "</b><span>" + dayOf(ft).short + "</span>"];
                 }),
                 "ctseg",
                 "data-chd",
               ) +
-              a.days
+              plan.days
                 .map(function (O, ft) {
-                  var jt = X2(t, a, O, ft, j),
+                  var jt = dayHighlightsHtml(trip, plan, O, ft, budgetLevel),
                     Et = O.stops.filter(function (xe) {
                       return xe.kind !== "travel" && xe.kind !== "food" && xe.kind !== "free";
                     }),
@@ -3136,17 +3227,17 @@ try {
                     '><div class="card summary"><div class="shead"><div class="label">Day ' +
                     (ft + 1) +
                     " \xB7 " +
-                    c(ft).my +
+                    dayOf(ft).my +
                     "</div><h2>" +
-                    h(O.towns.join(" \u2192 ") || "Travel day") +
+                    escapeHtml(O.towns.join(" \u2192 ") || "Travel day") +
                     '</h2></div><div class="sgrid">' +
                     jt
                       .map(function (xe) {
                         return (
                           '<div class="mi"><span class="mk">' +
-                          h(xe[0]) +
+                          escapeHtml(xe[0]) +
                           '</span><span class="mv">' +
-                          h(xe[1]) +
+                          escapeHtml(xe[1]) +
                           "</span></div>"
                         );
                       })
@@ -3154,16 +3245,20 @@ try {
                     '</div><div class="hspan"><span>' +
                     (O.free ? "Free day" : Et.length + " place" + (Et.length === 1 ? "" : "s")) +
                     "</span>" +
-                    (Dt ? "<span>First <time>" + rt(Dt.t) + "</time> " + h(Dt.title) + "</span>" : "") +
-                    (ye ? "<span>Last <time>" + rt(ye.t) + "</time> " + h(ye.title) + "</span>" : "") +
+                    (Dt
+                      ? "<span>First <time>" + clockTime(Dt.t) + "</time> " + escapeHtml(Dt.title) + "</span>"
+                      : "") +
+                    (ye
+                      ? "<span>Last <time>" + clockTime(ye.t) + "</time> " + escapeHtml(ye.title) + "</span>"
+                      : "") +
                     '</div><button type="button" class="hgo" data-cd="' +
                     ft +
                     '">View day</button></div><section class="sec htips"><h3 class="sech-wrap"><span class="sech static">Day tips</span></h3><div class="secb">' +
-                    u1(
+                    cardHtml(
                       '<ul class="tips">' +
-                        $2(t, a, O, ft)
+                        dayTipsHtml(trip, plan, O, ft)
                           .map(function (xe) {
-                            return "<li>" + h(xe) + "</li>";
+                            return "<li>" + escapeHtml(xe) + "</li>";
                           })
                           .join("") +
                         "</ul>",
@@ -3172,15 +3267,15 @@ try {
                   );
                 })
                 .join("")),
-              (i1.days.innerHTML =
-                t1(
-                  a.days.map(function (O, ft) {
-                    return [ft, "<b>D" + (ft + 1) + "</b><span>" + c(ft).short + "</span>"];
+              (TAB_CONTENT.days.innerHTML =
+                tabbedCard(
+                  plan.days.map(function (O, ft) {
+                    return [ft, "<b>D" + (ft + 1) + "</b><span>" + dayOf(ft).short + "</span>"];
                   }),
                   "ctseg",
                   "data-cdd",
                 ) +
-                a.days
+                plan.days
                   .map(function (O, ft) {
                     return (
                       '<section class="ctdayv" data-cdv="' +
@@ -3190,60 +3285,60 @@ try {
                       '><div class="dhead"><div class="label">Day ' +
                       (ft + 1) +
                       "</div><h2>" +
-                      h(O.towns.join(" \u2192 ") || "Travel day") +
+                      escapeHtml(O.towns.join(" \u2192 ") || "Travel day") +
                       '</h2></div><ol class="tl">' +
                       O.stops
                         .map(function (jt, Et) {
-                          return Z2(t, jt, Et, ft);
+                          return stopHtml(trip, jt, Et, ft);
                         })
                         .join("") +
                       "</ol></section>"
                     );
                   })
                   .join(""));
-            var D = [];
-            a.days.forEach(function (O) {
+            var dayCards = [];
+            plan.days.forEach(function (O) {
               O.towns.forEach(function (ft) {
-                D.indexOf(ft) < 0 && D.push(ft);
+                dayCards.indexOf(ft) < 0 && dayCards.push(ft);
               });
             });
-            var et = {};
-            t.places.forEach(function (O) {
-              et[O[0]] = 1;
+            var visitedPlaces = {};
+            trip.places.forEach(function (O) {
+              visitedPlaces[O[0]] = 1;
             });
-            var kt = (S[t.state] || []).filter(function (O) {
-                return !et[O[0]];
+            var extraPlaces = (PLACES_BY_STATE[trip.state] || []).filter(function (O) {
+                return !visitedPlaces[O[0]];
               }),
-              At = [t.from[1], t.from[2]],
-              It = t.from[0],
-              Fe =
+              homeCoords = [trip.from[1], trip.from[2]],
+              homeCity = trip.from[0],
+              routeHtml =
                 '<ol class="route">' +
                 [
                   [
                     "\u{1F3E0}",
-                    t.from[0],
+                    trip.from[0],
                     "Start \xB7 " +
-                      a.days.length +
+                      plan.days.length +
                       " days \xB7 ~" +
-                      a.total.toLocaleString("en-IN") +
+                      plan.total.toLocaleString("en-IN") +
                       " km in all",
                   ],
                 ]
                   .concat(
-                    a.days.reduce(function (O, ft, jt) {
+                    plan.days.reduce(function (O, ft, jt) {
                       return O.concat(
                         ft.stops
                           .filter(function (Et) {
                             return Et.kind !== "food" && Et.kind !== "travel";
                           })
                           .map(function (Et) {
-                            var Dt = t.places.filter(function (ja) {
+                            var Dt = trip.places.filter(function (ja) {
                                 return ja[0] === Et.title;
                               })[0],
-                              ye = Dt ? nt(At, [Dt[2], Dt[3]]) : Et.km,
-                              xe = It;
+                              ye = Dt ? roadKm(homeCoords, [Dt[2], Dt[3]]) : Et.km,
+                              xe = homeCity;
                             return (
-                              Dt && ((At = [Dt[2], Dt[3]]), (It = Dt[0])),
+                              Dt && ((homeCoords = [Dt[2], Dt[3]]), (homeCity = Dt[0])),
                               [
                                 Et.emo,
                                 Et.title,
@@ -3266,50 +3361,50 @@ try {
                       '<li><div class="rh"><span class="rhi">' +
                       O[0] +
                       "</span><span>" +
-                      h(jt) +
+                      escapeHtml(jt) +
                       '</span></div><div class="t">' +
-                      h(O[1]) +
+                      escapeHtml(O[1]) +
                       '</div><div class="s">' +
-                      h(ft.join(" \xB7 ")) +
+                      escapeHtml(ft.join(" \xB7 ")) +
                       "</div></li>"
                     );
                   })
                   .join("") +
                 "</ol>",
-              se = {};
-            a.days.forEach(function (O, ft) {
+              seenKinds = {};
+            plan.days.forEach(function (O, ft) {
               O.towns.forEach(function (jt) {
-                jt in se || (se[jt] = ft + 1);
+                jt in seenKinds || (seenKinds[jt] = ft + 1);
               });
             });
-            var Me = t.budget || "mid",
-              ee = {
+            var budgetKey = trip.budget || "mid",
+              MEAL_COST = {
                 budget: "\u20B9100\u2013250",
                 mid: "\u20B9250\u2013600",
                 premium: "\u20B9700\u20132,000",
-              }[Me],
-              _t = {
+              }[budgetKey],
+              EAT_IDEAS = {
                 food: [
                   [
                     "veg",
                     "Pure veg",
                     "Thalis, tiffins and South Indian meals",
                     "pure veg restaurants in ",
-                    ee + " a meal",
+                    MEAL_COST + " a meal",
                   ],
                   [
                     "both",
                     "Veg & non-veg",
                     "Local favourites with both menus",
                     "best restaurants in ",
-                    ee + " a meal",
+                    MEAL_COST + " a meal",
                   ],
                   [
                     "nonveg",
                     "Non-veg & seafood",
                     "Biryani, grills and fresh catch",
                     "non veg seafood restaurants in ",
-                    ee + " a meal",
+                    MEAL_COST + " a meal",
                   ],
                 ],
                 stays: [
@@ -3353,22 +3448,13 @@ try {
                   ],
                 ],
               };
-            function Ht(O, ft) {
-              return O === "veg"
-                ? '<span class="fmark veg" title="Pure veg"><i></i></span>'
-                : O === "nonveg"
-                  ? '<span class="fmark nonveg" title="Non-veg"><i></i></span>'
-                  : O === "both"
-                    ? '<span class="fmark both" title="Veg and non-veg"><i></i><i></i></span>'
-                    : '<span class="fmark tag">' + zt(ce) + "</span>";
-            }
-            var ce = "hotel";
-            function Oe(O) {
+            var stayIcon = "hotel";
+            function listIcon(O) {
               var ft = { stays: "hotel", shop: "bag", food: "food" }[O],
                 jt = { veg: "leaf", both: "food", nonveg: "chicken" };
               return (
                 '<div class="twtabs" role="tablist">' +
-                a.days
+                plan.days
                   .map(function (Et, Dt) {
                     return (
                       '<button type="button" class="twt" role="tab" data-twt="' +
@@ -3384,17 +3470,17 @@ try {
                   })
                   .join("") +
                 "</div>" +
-                a.days
+                plan.days
                   .map(function (Et, Dt) {
                     var ye =
                         O === "stays"
-                          ? Et.night || Et.towns[Et.towns.length - 1] || t.state
-                          : Et.towns[0] || Et.night || t.state,
+                          ? Et.night || Et.towns[Et.towns.length - 1] || trip.state
+                          : Et.towns[0] || Et.night || trip.state,
                       xe = Et.stops.filter(function (r1) {
                         return r1.kind !== "travel" && r1.kind !== "food" && r1.kind !== "free";
                       }),
                       ja =
-                        c(Dt).long +
+                        dayOf(Dt).long +
                         " \xB7 " +
                         (xe.length
                           ? xe.length +
@@ -3411,7 +3497,7 @@ try {
                                 (xe.length > 2 ? "\u2026" : "")
                               : "")
                           : "Travel day") +
-                        (O === "stays" && Dt < a.days.length - 1 ? " \xB7 night in " + ye : "");
+                        (O === "stays" && Dt < plan.days.length - 1 ? " \xB7 night in " + ye : "");
                     return (
                       '<div class="twpanel" data-twp="' +
                       O +
@@ -3420,26 +3506,26 @@ try {
                       '"' +
                       (Dt ? " hidden" : "") +
                       '><div class="twhead"><b>' +
-                      h(ye) +
+                      escapeHtml(ye) +
                       "</b><small>" +
-                      h(ja) +
+                      escapeHtml(ja) +
                       '</small></div><div class="places twl">' +
-                      _t[O].map(function (r1) {
+                      EAT_IDEAS[O].map(function (r1) {
                         return (
                           '<a href="' +
-                          J(r1[3] + ye + " " + t.state) +
+                          mapsSearchUrl(r1[3] + ye + " " + trip.state) +
                           '" target="_blank" rel="noopener" data-title="' +
-                          h(r1[1] + " in " + ye) +
+                          escapeHtml(r1[1] + " in " + ye) +
                           '"><span class="twic">' +
-                          zt(O === "food" ? jt[r1[0]] : ft) +
+                          iconSvg(O === "food" ? jt[r1[0]] : ft) +
                           '</span><span class="pn">' +
-                          h(r1[1]) +
+                          escapeHtml(r1[1]) +
                           "<small>" +
-                          h(r1[2]) +
+                          escapeHtml(r1[2]) +
                           "</small><em>" +
-                          h(r1[4]) +
+                          escapeHtml(r1[4]) +
                           '</em></span><span class="arr">' +
-                          zt("chev") +
+                          iconSvg("chev") +
                           "</span></a>"
                         );
                       }).join("") +
@@ -3449,8 +3535,8 @@ try {
                   .join("")
               );
             }
-            i1.route.innerHTML =
-              t1(
+            TAB_CONTENT.route.innerHTML =
+              tabbedCard(
                 [
                   ["route", "Route"],
                   ["more", "Places"],
@@ -3463,59 +3549,59 @@ try {
                 "route",
               ) +
               '<div class="ctsub" data-cs="route"' +
-              d1("route", "route", 1) +
+              tabHiddenClass("route", "route", 1) +
               ">" +
-              b1(
-                t.state,
+              summaryCardHtml(
+                trip.state,
                 "Route",
                 "Stops in the order the plan visits them. Distances are rough road estimates.",
                 [
-                  ["Stops", String(t.places.length)],
-                  ["Road distance", "~" + a.total + " km"],
-                  ["Bases", String(D.length)],
-                  ["Start", t.from[0]],
+                  ["Stops", String(trip.places.length)],
+                  ["Road distance", "~" + plan.total + " km"],
+                  ["Bases", String(dayCards.length)],
+                  ["Start", trip.from[0]],
                 ],
               ) +
-              u1(Fe) +
+              cardHtml(routeHtml) +
               '</div><div class="ctsub" data-cs="more"' +
-              d1("route", "more") +
+              tabHiddenClass("route", "more") +
               ">" +
-              b1(
-                t.state,
+              summaryCardHtml(
+                trip.state,
                 "Places",
-                "Well-known places in " + t.state + ". Tap a photo to add it to your trip or remove it.",
+                "Well-known places in " + trip.state + ". Tap a photo to add it to your trip or remove it.",
                 [
-                  ["In your trip", String(t.places.length)],
-                  ["More to see", String(kt.length)],
+                  ["In your trip", String(trip.places.length)],
+                  ["More to see", String(extraPlaces.length)],
                 ],
               ) +
-              Xn.replace(
+              VIEW_TOGGLE_HTML.replace(
                 "<span>View</span>",
                 '<span class="vtt"><b>Places in ' +
-                  h(t.state) +
+                  escapeHtml(trip.state) +
                   "</b><small>" +
-                  t.places.length +
+                  trip.places.length +
                   " in your trip \xB7 " +
-                  kt.length +
+                  extraPlaces.length +
                   " more</small></span>",
               ) +
               '<div class="ctcards">' +
               (function () {
-                var O = S[t.state] || [],
+                var O = PLACES_BY_STATE[trip.state] || [],
                   ft = function (Dt) {
-                    var ye = !!et[Dt[0]];
+                    var ye = !!visitedPlaces[Dt[0]];
                     return window
-                      .__placeCard(Dt, ye, O.indexOf(Dt), [t.from[1], t.from[2]])
+                      .__placeCard(Dt, ye, O.indexOf(Dt), [trip.from[1], trip.from[2]])
                       .replace(
                         '<input type="checkbox" class="cbx"',
-                        '<input type="checkbox" class="cbx" data-addp="' + h(Dt[0]) + '"',
+                        '<input type="checkbox" class="cbx" data-addp="' + escapeHtml(Dt[0]) + '"',
                       );
                   },
                   jt = O.filter(function (Dt) {
-                    return et[Dt[0]];
+                    return visitedPlaces[Dt[0]];
                   }),
                   Et = O.filter(function (Dt) {
-                    return !et[Dt[0]];
+                    return !visitedPlaces[Dt[0]];
                   });
                 return (
                   (jt.length
@@ -3529,7 +3615,7 @@ try {
                     ? '<section class="xgrp xout"><h4 class="xgh">Add more <span>' +
                       Et.length +
                       '</span></h4><p class="xdesc">Popular in ' +
-                      h(t.state) +
+                      escapeHtml(trip.state) +
                       ' but not in your plan yet. Tap Add to include one.</p><div class="pcards">' +
                       Et.map(ft).join("") +
                       "</div></section>"
@@ -3543,43 +3629,49 @@ try {
                     '<div class="ctsub" data-cs="' +
                     O +
                     '"' +
-                    d1("route", O) +
+                    tabHiddenClass("route", O) +
                     ">" +
-                    b1(
-                      t.state,
+                    summaryCardHtml(
+                      trip.state,
                       { stays: "Places to stay", food: "Where to eat", shop: "Shopping" }[O],
                       "Google Maps searches near each base on this trip.",
-                      [["Bases", String(D.length)]],
+                      [["Bases", String(dayCards.length)]],
                     ) +
                     '<div class="twwrap">' +
-                    Oe(O) +
+                    listIcon(O) +
                     "</div></div>"
                   );
                 })
                 .join("");
-            var he = [];
-            a.inbound > 250 &&
-              he.push(["Tickets to " + t.places[0][1], "From " + t.from[0] + ", about " + a.inbound + " km"]),
-              a.days.forEach(function (O, ft) {
-                ft < a.days.length - 1 && O.night && he.push(["Stay in " + O.night, c(ft).long + " night"]);
-              }),
-              he.push([
-                "Local cab or car rental",
-                "For " + a.days.length + " day" + (a.days.length === 1 ? "" : "s") + " of sightseeing",
+            var bookings = [];
+            plan.inbound > 250 &&
+              bookings.push([
+                "Tickets to " + trip.places[0][1],
+                "From " + trip.from[0] + ", about " + plan.inbound + " km",
               ]),
-              t.places.some(function (O) {
+              plan.days.forEach(function (O, ft) {
+                ft < plan.days.length - 1 &&
+                  O.night &&
+                  bookings.push(["Stay in " + O.night, dayOf(ft).long + " night"]);
+              }),
+              bookings.push([
+                "Local cab or car rental",
+                "For " + plan.days.length + " day" + (plan.days.length === 1 ? "" : "s") + " of sightseeing",
+              ]),
+              trip.places.some(function (O) {
                 return O[4] === "wildlife";
-              }) && he.push(["Safari permits", "Book on the official forest booking site"]),
-              ["Arunachal Pradesh", "Nagaland", "Mizoram", "Manipur"].indexOf(t.state) >= 0 &&
-                he.push(["Inner Line Permit", "Required for " + t.state]),
-              a.back > 250 && he.push(["Return tickets to " + t.from[0], "About " + a.back + " km"]);
-            var me = [
+              }) && bookings.push(["Safari permits", "Book on the official forest booking site"]),
+              ["Arunachal Pradesh", "Nagaland", "Mizoram", "Manipur"].indexOf(trip.state) >= 0 &&
+                bookings.push(["Inner Line Permit", "Required for " + trip.state]),
+              plan.back > 250 &&
+                bookings.push(["Return tickets to " + trip.from[0], "About " + plan.back + " km"]);
+            var DAY_BEFORE_CHECKS = [
                 ["\u{1F686}", "Train / flight times", "Check live status a day before"],
                 ["\u{1F559}", "Opening hours", "Many sights close one day a week"],
-                ["\u{1F326}\uFE0F", "Weather", "Check the forecast for " + t.state],
+                ["\u{1F326}\uFE0F", "Weather", "Check the forecast for " + trip.state],
                 ["\u{1F6E3}\uFE0F", "Road conditions", "Especially for hill and ghat roads"],
               ],
-              de = [
+              PACK_GROUPS = [
                 [
                   "Docs",
                   [
@@ -3624,17 +3716,18 @@ try {
                   ],
                 ],
               ];
-            t.places.some(function (O) {
+            trip.places.some(function (O) {
               return O[4] === "hill" || O[4] === "monastery";
-            }) && de[2][1].push(["warm", "Warm layers for the hills"]),
-              t.places.some(function (O) {
+            }) && PACK_GROUPS[2][1].push(["warm", "Warm layers for the hills"]),
+              trip.places.some(function (O) {
                 return O[4] === "temple";
-              }) && de[2][1].push(["temple", "Temple-appropriate clothes"]),
-              t.places.some(function (O) {
+              }) && PACK_GROUPS[2][1].push(["temple", "Temple-appropriate clothes"]),
+              trip.places.some(function (O) {
                 return O[4] === "beach";
-              }) && de[2][1].push(["swim", "Swimwear & quick-dry towel"]),
-              Kt(t).kids && de[3][1].push(["kids", "Kids\u2019 snacks, wipes and a change of clothes"]);
-            var n1 = [
+              }) && PACK_GROUPS[2][1].push(["swim", "Swimwear & quick-dry towel"]),
+              travellerCount(trip).kids &&
+                PACK_GROUPS[3][1].push(["kids", "Kids\u2019 snacks, wipes and a change of clothes"]);
+            var DOC_ITEMS = [
               ["id", "ID cards"],
               ["tickets", "Tickets (phone + screenshot)"],
               ["cash", "Cash in small notes"],
@@ -3646,31 +3739,31 @@ try {
               ["sun", "Sunscreen, cap & sunglasses"],
               ["rain", "Light rain jacket"],
             ];
-            t.places.some(function (O) {
+            trip.places.some(function (O) {
               return O[4] === "hill" || O[4] === "monastery";
-            }) && n1.push(["warm", "Warm layers for the hills"]),
-              t.places.some(function (O) {
+            }) && DOC_ITEMS.push(["warm", "Warm layers for the hills"]),
+              trip.places.some(function (O) {
                 return O[4] === "temple";
-              }) && n1.push(["temple", "Temple-appropriate clothes"]),
-              t.places.some(function (O) {
+              }) && DOC_ITEMS.push(["temple", "Temple-appropriate clothes"]),
+              trip.places.some(function (O) {
                 return O[4] === "beach";
-              }) && n1.push(["swim", "Swimwear & quick-dry towel"]);
-            function bt(O, ft, jt) {
-              var Et = t.id + "-" + O;
+              }) && DOC_ITEMS.push(["swim", "Swimwear & quick-dry towel"]);
+            function tickRow(O, ft, jt) {
+              var Et = trip.id + "-" + O;
               return (
                 '<li><label><input type="checkbox" data-ctk="' +
-                h(Et) +
+                escapeHtml(Et) +
                 '"' +
-                (x2[Et] ? " checked" : "") +
+                (tickedStops[Et] ? " checked" : "") +
                 '><span class="ct"><span class="t">' +
-                h(ft) +
+                escapeHtml(ft) +
                 "</span>" +
-                (jt ? '<span class="s">' + h(jt) + "</span>" : "") +
+                (jt ? '<span class="s">' + escapeHtml(jt) + "</span>" : "") +
                 "</span></label></li>"
               );
             }
-            i1.plan.innerHTML =
-              t1(
+            TAB_CONTENT.plan.innerHTML =
+              tabbedCard(
                 [
                   ["book", "Bookings"],
                   ["pack", "Packing"],
@@ -3681,97 +3774,96 @@ try {
                 "plan",
               ) +
               '<div class="ctsub" data-cs="book"' +
-              d1("plan", "book", 1) +
+              tabHiddenClass("plan", "book", 1) +
               ">" +
-              b1(
+              summaryCardHtml(
                 "Before you leave",
                 "Book ahead",
                 "Generated from your plan. Tick things off as you book them.",
-                [["To book", String(he.length)]],
+                [["To book", String(bookings.length)]],
               ) +
               '<div class="ctcols">' +
-              Y1(
+              sectionHtml(
                 "To book",
-                u1(
+                cardHtml(
                   '<ul class="checks">' +
-                    he
+                    bookings
                       .map(function (O, ft) {
-                        return bt("bk" + ft, O[0], O[1]);
+                        return tickRow("bk" + ft, O[0], O[1]);
                       })
                       .join("") +
                     "</ul>",
                 ),
               ) +
-              Y1(
+              sectionHtml(
                 "Recheck",
-                u1(
+                cardHtml(
                   '<ul class="list2">' +
-                    me
-                      .map(function (O) {
-                        return (
-                          '<li class="two"><span class="emo">' +
-                          O[0] +
-                          '</span><div><div class="t">' +
-                          h(O[1]) +
-                          '</div><div class="s">' +
-                          h(O[2]) +
-                          "</div></div></li>"
-                        );
-                      })
-                      .join("") +
+                    DAY_BEFORE_CHECKS.map(function (O) {
+                      return (
+                        '<li class="two"><span class="emo">' +
+                        O[0] +
+                        '</span><div><div class="t">' +
+                        escapeHtml(O[1]) +
+                        '</div><div class="s">' +
+                        escapeHtml(O[2]) +
+                        "</div></div></li>"
+                      );
+                    }).join("") +
                     "</ul>",
                 ),
               ) +
               '</div></div><div class="ctsub" data-cs="pack"' +
-              d1("plan", "pack") +
+              tabHiddenClass("plan", "pack") +
               ">" +
-              b1("Bags", "Packing", "A starting list based on the places you picked.", [
+              summaryCardHtml("Bags", "Packing", "A starting list based on the places you picked.", [
                 [
                   "Items",
                   String(
-                    de.reduce(function (O, ft) {
+                    PACK_GROUPS.reduce(function (O, ft) {
                       return O + ft[1].length;
                     }, 0),
                   ),
                 ],
               ]) +
               '<div class="ctgrid">' +
-              de
-                .map(function (O) {
-                  return Y1(
-                    O[0],
-                    u1(
-                      '<ul class="checks">' +
-                        O[1]
-                          .map(function (ft) {
-                            return bt("pk-" + ft[0], ft[1]);
-                          })
-                          .join("") +
-                        "</ul>",
-                    ),
-                  );
-                })
-                .join("") +
+              PACK_GROUPS.map(function (O) {
+                return sectionHtml(
+                  O[0],
+                  cardHtml(
+                    '<ul class="checks">' +
+                      O[1]
+                        .map(function (ft) {
+                          return tickRow("pk-" + ft[0], ft[1]);
+                        })
+                        .join("") +
+                      "</ul>",
+                  ),
+                );
+              }).join("") +
               '</div></div><div class="ctsub" data-cs="budget"' +
-              d1("plan", "budget") +
+              tabHiddenClass("plan", "budget") +
               ">" +
-              b1(
-                "For " + Kt(t).total + " traveller" + (Kt(t).total === 1 ? "" : "s"),
+              summaryCardHtml(
+                "For " +
+                  travellerCount(trip).total +
+                  " traveller" +
+                  (travellerCount(trip).total === 1 ? "" : "s"),
                 "Budget",
                 "Rough ground costs per person. Long-distance tickets are not included.",
                 [
-                  ["Per person", i.pp],
-                  ["Whole group", i.whole],
+                  ["Per person", budgetHtml.pp],
+                  ["Whole group", budgetHtml.whole],
                 ],
               ) +
-              u1(
-                i.rows
+              cardHtml(
+                budgetHtml.rows
                   .map(function (O) {
                     return (
                       '<div class="kv"><span>' +
-                      h(O[0]) +
+                      escapeHtml(O[0]) +
                       '</span><span class="kvv">' +
-                      h(O[1]) +
+                      escapeHtml(O[1]) +
                       "</span></div>"
                     );
                   })
@@ -3779,13 +3871,13 @@ try {
                 "opt",
               ) +
               "</div>";
-            var Nt = [];
-            a.days.forEach(function (O, ft) {
+            var tripAlerts = [];
+            plan.days.forEach(function (O, ft) {
               var jt = O.stops.reduce(function (Et, Dt) {
                 return Et + (Dt.kind === "travel" ? 0 : Dt.km);
               }, 0);
               jt > 200 &&
-                Nt.push([
+                tripAlerts.push([
                   "\u{1F697}",
                   "Long drive today",
                   "About " + jt + " km. Start early and take breaks.",
@@ -3793,17 +3885,17 @@ try {
                 ]),
                 O.stops.forEach(function (Et) {
                   Et.kind === "temple" &&
-                    Nt.push([
+                    tripAlerts.push([
                       "\u{1F6D5}",
                       Et.title + " queues",
                       "Go early; weekends and festivals are busy.",
                       ft,
                     ]),
                     Et.kind === "wildlife" &&
-                      Nt.push(["\u{1F405}", Et.title + " safari", "Book a slot in advance.", ft]),
+                      tripAlerts.push(["\u{1F405}", Et.title + " safari", "Book a slot in advance.", ft]),
                     Et.kind === "travel" &&
                       Et.km > 250 &&
-                      Nt.push([
+                      tripAlerts.push([
                         "\u{1F3AB}",
                         Et.title,
                         "About " + Et.km + " km. Keep tickets and ID ready.",
@@ -3812,7 +3904,7 @@ try {
                     Et.t >= 1020 &&
                       Et.kind !== "travel" &&
                       Et.kind !== "food" &&
-                      Nt.push([
+                      tripAlerts.push([
                         "\u{1F307}",
                         Et.title + " is late in the day",
                         "It may close at sunset. Go earlier.",
@@ -3822,36 +3914,42 @@ try {
                 ft === 0 &&
                   O.stops[0] &&
                   O.stops[0].t < 420 &&
-                  Nt.push(["\u23F0", "Early start", "First stop at " + rt(O.stops[0].t) + ".", ft]);
+                  tripAlerts.push([
+                    "\u23F0",
+                    "Early start",
+                    "First stop at " + clockTime(O.stops[0].t) + ".",
+                    ft,
+                  ]);
             }),
-              Nt.length || Nt.push(["\u2705", "Nothing urgent", "No long drives or tricky bookings.", 0]),
-              (i1.alerts.innerHTML =
+              tripAlerts.length ||
+                tripAlerts.push(["\u2705", "Nothing urgent", "No long drives or tricky bookings.", 0]),
+              (TAB_CONTENT.alerts.innerHTML =
                 '<div class="ctsub" data-cs="alerts"' +
-                d1("alerts", "alerts", 1) +
+                tabHiddenClass("alerts", "alerts", 1) +
                 ">" +
-                b1(t.state, "Alerts", "Things to watch out for on this plan.", [
-                  ["Alerts", String(Nt.length)],
+                summaryCardHtml(trip.state, "Alerts", "Things to watch out for on this plan.", [
+                  ["Alerts", String(tripAlerts.length)],
                 ]) +
-                a.days
+                plan.days
                   .map(function (O, ft) {
-                    var jt = Nt.filter(function (Et) {
+                    var jt = tripAlerts.filter(function (Et) {
                       return Et[3] === ft;
                     });
                     return jt.length
-                      ? Y1(
-                          c(ft).long + " \xB7 Day " + (ft + 1),
+                      ? sectionHtml(
+                          dayOf(ft).long + " \xB7 Day " + (ft + 1),
                           '<div class="alerts ctal">' +
                             jt
                               .map(function (Et) {
                                 return (
                                   '<div class="alert" data-cal="' +
-                                  h(t.id + "|" + Et[1]) +
+                                  escapeHtml(trip.id + "|" + Et[1]) +
                                   '"><span class="aico">' +
                                   Et[0] +
                                   '</span><div class="atx"><div class="at">' +
-                                  h(Et[1]) +
+                                  escapeHtml(Et[1]) +
                                   '</div><div class="as2">' +
-                                  h(Et[2]) +
+                                  escapeHtml(Et[2]) +
                                   '</div></div><button type="button" class="alater" aria-label="Move to later">Later</button></div>'
                                 );
                               })
@@ -3862,14 +3960,14 @@ try {
                   })
                   .join("") +
                 "</div>"),
-              r(".ctv [data-twt]").forEach(function (O) {
+              findAll(".ctv [data-twt]").forEach(function (O) {
                 O.onclick = function () {
                   var ft = O.parentNode,
                     jt = O.dataset.twt.split("-")[0];
                   ft.querySelectorAll("[data-twt]").forEach(function (ye) {
                     ye.setAttribute("aria-selected", ye === O ? "true" : "false");
                   }),
-                    r('.ctv [data-twp^="' + jt + '-"]').forEach(function (ye) {
+                    findAll('.ctv [data-twp^="' + jt + '-"]').forEach(function (ye) {
                       ye.hidden = ye.dataset.twp !== O.dataset.twt;
                     });
                   var Et = O.getBoundingClientRect(),
@@ -3881,39 +3979,39 @@ try {
                     });
                 };
               }),
-              S2(),
+              setupCollapsibles(),
               setTimeout(function () {
                 window.__stripFit && window.__stripFit();
               }, 60);
           }
-          function S2() {
-            r(".ctv [data-chd]").forEach(function (t) {
+          function setupCollapsibles() {
+            findAll(".ctv [data-chd]").forEach(function (t) {
               t.onclick = function () {
-                r(".ctv [data-chd]").forEach(function (a) {
+                findAll(".ctv [data-chd]").forEach(function (a) {
                   a.setAttribute("aria-pressed", a === t ? "true" : "false");
                 }),
-                  r(".ctday2").forEach(function (a) {
+                  findAll(".ctday2").forEach(function (a) {
                     a.hidden = a.dataset.chv !== t.dataset.chd;
                   });
               };
             }),
-              r(".ctv [data-sedit]").forEach(function (t) {
+              findAll(".ctv [data-sedit]").forEach(function (t) {
                 t.onclick = function () {
-                  _a(t.dataset.sedit);
+                  openStopEdit(t.dataset.sedit);
                 };
               }),
-              r(".ctv [data-cdd]").forEach(function (t) {
+              findAll(".ctv [data-cdd]").forEach(function (t) {
                 t.onclick = function () {
-                  r(".ctv [data-cdd]").forEach(function (a) {
+                  findAll(".ctv [data-cdd]").forEach(function (a) {
                     a.setAttribute("aria-pressed", a === t ? "true" : "false");
                   }),
-                    r(".ctdayv").forEach(function (a) {
+                    findAll(".ctdayv").forEach(function (a) {
                       a.hidden = a.dataset.cdv !== t.dataset.cdd;
                     }),
                     window.scrollTo(0, 0);
                 };
               }),
-              r(".ctv [data-csub]").forEach(function (t) {
+              findAll(".ctv [data-csub]").forEach(function (t) {
                 t.onclick = function () {
                   var a = t.closest(".ctv");
                   a.querySelectorAll("[data-csub]").forEach(function (i) {
@@ -3922,33 +4020,34 @@ try {
                     a.querySelectorAll(".ctsub").forEach(function (i) {
                       i.hidden = i.dataset.cs !== t.dataset.csub;
                     }),
-                    (w1[a.id.slice(3)] = t.dataset.csub),
+                    (chosenTabs[a.id.slice(3)] = t.dataset.csub),
                     window.scrollTo(0, 0);
                 };
               }),
-              r(".ctv [data-cd]").forEach(function (t) {
+              findAll(".ctv [data-cd]").forEach(function (t) {
                 t.onclick = function () {
-                  Q("days");
+                  showTab("days");
                   var a = document.querySelector('.ctv [data-cdd="' + t.dataset.cd + '"]');
                   a && a.click();
                 };
               }),
-              r(".ctv [data-ctk]").forEach(function (t) {
+              findAll(".ctv [data-ctk]").forEach(function (t) {
                 t.onchange = function () {
-                  (x2[t.dataset.ctk] = t.checked), l("vizag-ct-ticks", JSON.stringify(x2));
+                  (tickedStops[t.dataset.ctk] = t.checked),
+                    writeStore("vizag-ct-ticks", JSON.stringify(tickedStops));
                 };
               }),
-              r(".ctv [data-ctedit]").forEach(function (t) {
+              findAll(".ctv [data-ctedit]").forEach(function (t) {
                 t.onclick = function () {
-                  o1(Ae());
+                  openPlanner(activeTrip());
                 };
               }),
-              window.__loadImgs && window.__loadImgs(i1.route),
-              r(".ctv [data-addp]").forEach(function (t) {
+              window.__loadImgs && window.__loadImgs(TAB_CONTENT.route),
+              findAll(".ctv [data-addp]").forEach(function (t) {
                 t.onchange = function () {
-                  var a = Ae(),
+                  var a = activeTrip(),
                     i = t.dataset.addp,
-                    c = (S[a.state] || []).filter(function (B) {
+                    c = (PLACES_BY_STATE[a.state] || []).filter(function (B) {
                       return B[0] === i;
                     })[0];
                   if (c) {
@@ -3961,22 +4060,22 @@ try {
                         }))
                       : a.places.push(c);
                     var E = window.scrollY;
-                    Ze(), De(), Q("route");
+                    saveTrips(), renderTrip(), showTab("route");
                     var z = document.querySelector('#ct-route [data-csub="more"]');
                     z && z.click(),
                       window.scrollTo(0, E),
-                      F1(
+                      showOkToast(
                         g ? "Removed " + i + " from your trip" : "Added " + i + " to your trip",
                         "Undo",
                         function () {
-                          var B = Ae();
+                          var B = activeTrip();
                           g
                             ? B.places.push(c)
                             : (B.places = B.places.filter(function (et) {
                                 return et[0] !== i;
                               }));
                           var j = window.scrollY;
-                          Ze(), De(), Q("route");
+                          saveTrips(), renderTrip(), showTab("route");
                           var D = document.querySelector('#ct-route [data-csub="more"]');
                           D && D.click(), window.scrollTo(0, j);
                         },
@@ -3985,76 +4084,81 @@ try {
                 };
               });
           }
-          var K1 = e("stop-edit"),
-            e1 = null;
-          function _a(t) {
-            var a = Ae();
+          var stopEditSheet = byId("stop-edit"),
+            editingStop = null;
+          function openStopEdit(t) {
+            var a = activeTrip();
             if (a) {
-              e1 = t;
+              editingStop = t;
               var i = (a.edits || {})[t] || {},
-                c = T1(a),
+                c = buildItinerary(a),
                 g = null;
               c.days.forEach(function (z) {
                 z.stops.forEach(function (B) {
                   B.title === t && (g = B);
                 });
               }),
-                (e("se-title").textContent = t);
+                (byId("se-title").textContent = t);
               var E = g ? Math.round(g.t) : 480;
-              (e("se-time").value =
+              (byId("se-time").value =
                 i.t || String(Math.floor(E / 60)).padStart(2, "0") + ":" + String(E % 60).padStart(2, "0")),
-                (e("se-note").value = i.note || ""),
-                (e("se-carry").value = i.carry || ""),
-                (e("se-carry").placeholder = (g && J1[g.kind]) || "e.g. water, cash for tickets"),
-                (K1.hidden = !1),
-                (e("scrim").hidden = !1);
+                (byId("se-note").value = i.note || ""),
+                (byId("se-carry").value = i.carry || ""),
+                (byId("se-carry").placeholder =
+                  (g && PACKING_TIPS[g.kind]) || "e.g. water, cash for tickets"),
+                (stopEditSheet.hidden = !1),
+                (byId("scrim").hidden = !1);
             }
           }
-          function q1() {
-            (K1.hidden = !0), (e("scrim").hidden = !0);
+          function closeStopEdit() {
+            (stopEditSheet.hidden = !0), (byId("scrim").hidden = !0);
           }
-          e("se-close").addEventListener("click", q1),
-            K1.addEventListener("click", function (t) {
+          byId("se-close").addEventListener("click", closeStopEdit),
+            stopEditSheet.addEventListener("click", function (t) {
               t.stopPropagation();
             }),
-            e("scrim").addEventListener("click", function () {
-              K1.hidden || q1();
+            byId("scrim").addEventListener("click", function () {
+              stopEditSheet.hidden || closeStopEdit();
             }),
-            e("se-save").addEventListener("click", function () {
-              var t = Ae();
+            byId("se-save").addEventListener("click", function () {
+              var t = activeTrip();
               if (t) {
                 (t.edits = t.edits || {}),
-                  (t.edits[e1] = {
-                    t: e("se-time").value,
-                    note: e("se-note").value.trim(),
-                    carry: e("se-carry").value.trim(),
+                  (t.edits[editingStop] = {
+                    t: byId("se-time").value,
+                    note: byId("se-note").value.trim(),
+                    carry: byId("se-carry").value.trim(),
                   }),
-                  Ze(),
-                  q1();
+                  saveTrips(),
+                  closeStopEdit();
                 var a = document.querySelector('.ctv [data-cdd][aria-pressed="true"]');
-                if ((De(), Q("days"), a)) {
+                if ((renderTrip(), showTab("days"), a)) {
                   var i = document.querySelector('.ctv [data-cdd="' + a.dataset.cdd + '"]');
                   i && i.click();
                 }
               }
             }),
-            e("se-reset").addEventListener("click", function () {
-              var t = Ae();
-              t && t.edits && delete t.edits[e1], Ze(), q1(), De(), Q("days");
+            byId("se-reset").addEventListener("click", function () {
+              var t = activeTrip();
+              t && t.edits && delete t.edits[editingStop],
+                saveTrips(),
+                closeStopEdit(),
+                renderTrip(),
+                showTab("days");
             }),
-            e("se-remove").addEventListener("click", function () {
-              var t = Ae();
+            byId("se-remove").addEventListener("click", function () {
+              var t = activeTrip();
               t &&
                 ((t.places = t.places.filter(function (a) {
-                  return a[0] !== e1;
+                  return a[0] !== editingStop;
                 })),
-                t.edits && delete t.edits[e1],
-                Ze(),
-                q1(),
-                De(),
-                Q("days"));
+                t.edits && delete t.edits[editingStop],
+                saveTrips(),
+                closeStopEdit(),
+                renderTrip(),
+                showTab("days"));
             });
-          function X1() {
+          function centerActiveTripCard() {
             var t = document.querySelector("#trips .tcards"),
               a = t && t.querySelector(".tcard.on");
             t &&
@@ -4065,41 +4169,42 @@ try {
           document.addEventListener(
             "click",
             function (t) {
-              t.target.closest('.nav button[data-v="home"]') && setTimeout(X1, 0);
+              t.target.closest('.nav button[data-v="home"]') && setTimeout(centerActiveTripCard, 0);
             },
             !0,
           ),
             window.addEventListener("resize", function () {
-              clearTimeout(X1.t), (X1.t = setTimeout(X1, 150));
+              clearTimeout(centerActiveTripCard.t),
+                (centerActiveTripCard.t = setTimeout(centerActiveTripCard, 150));
             }),
             document.addEventListener("click", function (t) {
               t.target.closest &&
                 t.target.closest("[data-tswitch]") &&
-                (t.preventDefault(), A2(window.__tripCards || []));
+                (t.preventDefault(), openPlaceInfo(window.__tripCards || []));
             }),
             (window.__listSheet = function (t, a, i) {
-              var c = e(i);
+              var c = byId(i);
               if (c) {
-                e("ps-body").innerHTML =
+                byId("ps-body").innerHTML =
                   '<div class="lshead"><span class="lsico">' +
-                  zt(a) +
+                  iconSvg(a) +
                   '</span><div class="lst"><h3>' +
-                  h(t) +
+                  escapeHtml(t) +
                   "</h3><p>" +
                   (function (n) {
                     return n + (n === 1 ? " item" : " items");
                   })(c.querySelectorAll(".mprow").length) +
                   '</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="pspanel tppanel"><label class="lssearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="search" id="ls-q" placeholder="Search ' +
-                  h(t.toLowerCase()) +
+                  escapeHtml(t.toLowerCase()) +
                   '" autocomplete="off" enterkeyhint="search"></label><div class="mplist lsall" id="ls-all"></div><p class="lsnone" id="ls-none" hidden>Nothing matches your search.</p></div>';
-                var g = e("ls-all");
+                var g = byId("ls-all");
                 g.innerHTML = c.innerHTML;
-                var E = Vt.querySelector(".psbox"),
+                var E = placeSheet.querySelector(".psbox"),
                   z = function () {
                     E && !E.style.minHeight && (E.style.minHeight = E.getBoundingClientRect().height + "px");
                   };
-                e("ls-q").addEventListener("focus", z),
-                  e("ls-q").addEventListener("input", function () {
+                byId("ls-q").addEventListener("focus", z),
+                  byId("ls-q").addEventListener("input", function () {
                     z();
                     var B = this.value.trim().toLowerCase(),
                       j = 0;
@@ -4108,7 +4213,7 @@ try {
                       (et.hidden = !kt), kt && j++;
                     });
                     var D = g.querySelector(".mpaddrow");
-                    D && (D.hidden = !!B), (e("ls-none").hidden = j > 0);
+                    D && (D.hidden = !!B), (byId("ls-none").hidden = j > 0);
                   }),
                   g.addEventListener("click", function (B) {
                     var j = B.target.closest("[data-mt],[data-gi],[data-mpdel],[data-rto]");
@@ -4119,7 +4224,7 @@ try {
                         ),
                         et = D.indexOf(j),
                         kt = c.querySelectorAll("[data-mt],[data-gi],[data-mpdel],[data-rto]")[et];
-                      Ne(),
+                      fitPlaceSheet(),
                         kt &&
                           setTimeout(function () {
                             kt.click();
@@ -4128,26 +4233,26 @@ try {
                   }),
                   window.__paintUses && window.__paintUses(g),
                   E && (E.style.minHeight = ""),
-                  (p1 = { name: "list" }),
-                  Vt.classList.remove("full", "tpsheet"),
-                  Vt.classList.add("lsheet"),
-                  (Vt.hidden = !1),
-                  U.classList.add("ps-open"),
+                  (placeSheetSource = { name: "list" }),
+                  placeSheet.classList.remove("full", "tpsheet"),
+                  placeSheet.classList.add("lsheet"),
+                  (placeSheet.hidden = !1),
+                  rootEl.classList.add("ps-open"),
                   requestAnimationFrame(function () {
-                    Vt.classList.add("in");
+                    placeSheet.classList.add("in");
                   }),
-                  (e("ps-close").onclick = Ne);
+                  (byId("ps-close").onclick = fitPlaceSheet);
               }
             });
-          function A2(t, a, i, c) {
-            (e("ps-body").innerHTML =
+          function openPlaceInfo(t, a, i, c) {
+            (byId("ps-body").innerHTML =
               '<div class="lshead"><span class="lsico">' +
-              zt(i || "map") +
+              iconSvg(i || "map") +
               '</span><div class="lst"><h3>' +
               (c === "past" ? "Past trips" : a || "My trips") +
               "</h3><p>" +
               (function () {
-                var j = Ge(new Date()),
+                var j = isoDate(new Date()),
                   D = t.filter(function (et) {
                     return c === "past" ? et.end && et.end < j : !et.end || et.end >= j;
                   }).length;
@@ -4156,14 +4261,14 @@ try {
               '</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>' +
               (c === "past" || t.length > 4
                 ? '<div class="tpsrch"><label class="psearch">' +
-                  zt("search") +
+                  iconSvg("search") +
                   '<input id="ts-q" type="search" placeholder="' +
                   (c === "past" ? "Search past trips" : "Search your trips") +
                   '" autocomplete="off"></label></div>'
                 : "") +
               '<div class="pspanel tppanel">' +
               (function () {
-                var j = Ge(new Date()),
+                var j = isoDate(new Date()),
                   D = t.filter(function (It) {
                     return !It.end || It.end >= j;
                   }),
@@ -4173,21 +4278,21 @@ try {
                 function kt(It) {
                   return (
                     '<button type="button" class="tplr' +
-                    (It.id === ve ? " cur" : "") +
+                    (It.id === activeTripId ? " cur" : "") +
                     '" data-tsi="' +
-                    h(It.id) +
+                    escapeHtml(It.id) +
                     '" data-q="' +
-                    h((It.name + " " + It.sub).toLowerCase()) +
+                    escapeHtml((It.name + " " + It.sub).toLowerCase()) +
                     '"><span class="tplci">' +
                     It.emo +
                     '</span><span class="tplt"><b>' +
-                    h(It.name) +
+                    escapeHtml(It.name) +
                     '</b><small class="mtsub">' +
-                    $1(It) +
+                    tripMetaHtml(It) +
                     '</small></span><span class="tplgo">' +
-                    (It.id === ve
+                    (It.id === activeTripId
                       ? '<svg class="tkck" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'
-                      : zt("chev")) +
+                      : iconSvg("chev")) +
                     "</span></button>"
                   );
                 }
@@ -4204,76 +4309,76 @@ try {
                     ? '<button type="button" class="tspast" id="ts-past"><span class="tsplab">Past trips</span><span class="tspn">' +
                       et.length +
                       "</span>" +
-                      zt("chev") +
+                      iconSvg("chev") +
                       "</button>"
                     : "")
                 );
               })() +
               '</div><p class="pqempty" id="ts-none" hidden>No trips match.</p><button type="button" class="pcadd tsnew" id="ts-new">' +
-              zt("plus") +
+              iconSvg("plus") +
               "Plan a new trip</button></div>"),
-              window.__paintUses && window.__paintUses(e("ps-body")),
-              (p1 = { name: "trips" }),
-              Vt.classList.remove("full", "tpsheet"),
-              Vt.classList.add("lsheet"),
-              Vt.classList.toggle("full", c === "past"),
-              (Vt.hidden = !1),
-              U.classList.add("ps-open"),
+              window.__paintUses && window.__paintUses(byId("ps-body")),
+              (placeSheetSource = { name: "trips" }),
+              placeSheet.classList.remove("full", "tpsheet"),
+              placeSheet.classList.add("lsheet"),
+              placeSheet.classList.toggle("full", c === "past"),
+              (placeSheet.hidden = !1),
+              rootEl.classList.add("ps-open"),
               requestAnimationFrame(function () {
-                Vt.classList.add("in");
+                placeSheet.classList.add("in");
               }),
-              (e("ps-close").onclick = Ne);
-            var g = e("ts-past");
+              (byId("ps-close").onclick = fitPlaceSheet);
+            var g = byId("ts-past");
             if (
               (g &&
                 (g.onclick = function () {
-                  Ne(),
+                  fitPlaceSheet(),
                     setTimeout(function () {
-                      A2(t, a, i, "past");
+                      openPlaceInfo(t, a, i, "past");
                     }, 300);
                 }),
-              c === "past" || e("ts-new2"))
+              c === "past" || byId("ts-new2"))
             ) {
-              var E = e("ts-new");
+              var E = byId("ts-new");
               E && (E.hidden = !0);
             }
-            var z = e("ts-new2");
+            var z = byId("ts-new2");
             z &&
               (z.onclick = function () {
-                Ne(), o1(null);
+                fitPlaceSheet(), openPlanner(null);
               });
-            var B = e("ts-q");
+            var B = byId("ts-q");
             B &&
               B.addEventListener("input", function () {
                 var j = this.value.trim().toLowerCase(),
                   D = 0;
-                r("#ts-list .tplr").forEach(function (et) {
+                findAll("#ts-list .tplr").forEach(function (et) {
                   var kt = !j || et.dataset.q.indexOf(j) >= 0;
                   (et.hidden = !kt), kt && D++;
                 }),
-                  r("#ts-list .tpgrp").forEach(function (et) {
+                  findAll("#ts-list .tpgrp").forEach(function (et) {
                     for (var kt = et.nextElementSibling, At = !1; kt && !kt.classList.contains("tpgrp"); )
                       kt.hidden || (At = !0), (kt = kt.nextElementSibling);
                     et.hidden = !At;
                   }),
-                  (e("ts-none").hidden = !!D);
+                  (byId("ts-none").hidden = !!D);
               }),
-              e("ts-list").addEventListener("click", function (j) {
+              byId("ts-list").addEventListener("click", function (j) {
                 var D = j.target.closest("[data-tsi]");
                 D &&
-                  ((ve = D.dataset.tsi),
-                  l("vizag-active-trip", ve),
-                  Ne(),
+                  ((activeTripId = D.dataset.tsi),
+                  writeStore("vizag-active-trip", activeTripId),
+                  fitPlaceSheet(),
                   window.__skel && window.__skel(700),
                   setTimeout(function () {
-                    De(), window.__ctmergeNow && window.__ctmergeNow(), window.scrollTo(0, 0);
+                    renderTrip(), window.__ctmergeNow && window.__ctmergeNow(), window.scrollTo(0, 0);
                   }, 40));
               }),
-              (e("ts-new").onclick = function () {
-                Ne(), o1(null);
+              (byId("ts-new").onclick = function () {
+                fitPlaceSheet(), openPlanner(null);
               });
           }
-          var _2 = [
+          var SCENE_NAMES = [
             "beach couple",
             "beach friends",
             "mountain hiker",
@@ -4284,11 +4389,11 @@ try {
             "viewpoint",
             "cave waterfall",
           ];
-          function P1(t, a) {
+          function pickScenes(t, a) {
             var i = (t || "").toLowerCase(),
               c = a || 3,
               g = function (E) {
-                return _2.indexOf(E);
+                return SCENE_NAMES.indexOf(E);
               };
             return /cave|waterfall|falls|borra|meghalaya|cherrapunji/.test(i)
               ? g("viewpoint")
@@ -4312,7 +4417,7 @@ try {
                             : g(c === 2 ? "trek couple" : "viewpoint")
                           : g("hammock");
           }
-          function Q2(t, a) {
+          function sceneSvg(t, a) {
             return (
               '<svg class="' +
               (a || "scn") +
@@ -4321,8 +4426,8 @@ try {
               '" width="100%" height="100%"/></svg>'
             );
           }
-          (window.__sceneFor = P1), (window.__sceneSVG = Q2);
-          function $1(t) {
+          (window.__sceneFor = pickScenes), (window.__sceneSVG = sceneSvg);
+          function tripMetaHtml(t) {
             var a = function (i, c, g) {
               return (
                 '<span class="mti" aria-label="' +
@@ -4337,7 +4442,7 @@ try {
               );
             };
             return (
-              h(t.sub) +
+              escapeHtml(t.sub) +
               (t.np != null
                 ? a(
                     '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
@@ -4352,13 +4457,13 @@ try {
                 : "")
             );
           }
-          function ta() {
-            var t = e("mytrips-list"),
+          function renderMyTrips() {
+            var t = byId("mytrips-list"),
               a = (window.__tripCards || []).slice().sort(function (g, E) {
-                return (E.id === ve) - (g.id === ve);
+                return (E.id === activeTripId) - (g.id === activeTripId);
               });
             if (t) {
-              var i = Ge(new Date()),
+              var i = isoDate(new Date()),
                 c = a.filter(function (g) {
                   return !g.end || g.end >= i;
                 }).length;
@@ -4370,17 +4475,17 @@ try {
                   .map(function (g) {
                     return (
                       '<div class="mprow grow" data-mt="' +
-                      h(g.id) +
+                      escapeHtml(g.id) +
                       '" role="button" tabindex="0"><span class="gav">' +
                       g.emo +
                       '</span><div class="mpt"><b>' +
-                      h(g.name) +
+                      escapeHtml(g.name) +
                       '</b><small class="mtsub">' +
-                      $1(g) +
+                      tripMetaHtml(g) +
                       "</small></div>" +
-                      (g.id === ve
+                      (g.id === activeTripId
                         ? '<span class="mtcur">Current</span>'
-                        : '<span class="achev">' + zt("chev") + "</span>") +
+                        : '<span class="achev">' + iconSvg("chev") + "</span>") +
                       "</div>"
                     );
                   })
@@ -4391,33 +4496,33 @@ try {
                       sessionStorage.removeItem("vizag-dev-empty"),
                         localStorage.removeItem("vizag-dev-empty");
                     } catch (E) {}
-                    (ve = g.dataset.mt),
-                      l("vizag-active-trip", ve),
+                    (activeTripId = g.dataset.mt),
+                      writeStore("vizag-active-trip", activeTripId),
                       window.__skel && window.__skel(650),
-                      Q("home"),
-                      setTimeout(De, 60);
+                      showTab("home"),
+                      setTimeout(renderTrip, 60);
                   };
                 }),
                 window.__paintUses && window.__paintUses(t);
             }
           }
-          window.__drawMyTrips = ta;
-          var C2 = e("home-new");
-          C2 &&
-            C2.addEventListener("click", function (t) {
-              t.stopPropagation(), o1(null);
+          window.__drawMyTrips = renderMyTrips;
+          var homeNewButton = byId("home-new");
+          homeNewButton &&
+            homeNewButton.addEventListener("click", function (t) {
+              t.stopPropagation(), openPlanner(null);
             });
-          var Je = e("mytrips-new");
-          Je &&
-            Je.addEventListener("click", function (t) {
-              t.stopPropagation(), o1(null);
+          var myTripsNewButton = byId("mytrips-new");
+          myTripsNewButton &&
+            myTripsNewButton.addEventListener("click", function (t) {
+              t.stopPropagation(), openPlanner(null);
             });
-          function ea() {
-            var t = e("trips");
+          function renderTripCards() {
+            var t = byId("trips");
             if (t) {
-              u2();
+              fixActiveTrip();
               var a = (
-                C1
+                hideSampleTrip
                   ? []
                   : [
                       {
@@ -4431,120 +4536,130 @@ try {
                       },
                     ]
               ).concat(
-                Se.map(function (i) {
+                trips.map(function (i) {
                   return {
                     id: i.id,
-                    emo: (i.places[0] && L[i.places[0][4]]) || "\u{1F9ED}",
-                    name: Q1(i.name || "").trim() || i.from[0] + " to " + i.state,
-                    sub: mt(i.start, 0).long,
+                    emo: (i.places[0] && STATE_EMOJI[i.places[0][4]]) || "\u{1F9ED}",
+                    name: cleanTripName(i.name || "").trim() || i.from[0] + " to " + i.state,
+                    sub: dayInfo(i.start, 0).long,
                     np: i.places.length,
-                    nq: Kt(i).total,
+                    nq: travellerCount(i).total,
                     end:
                       i.end ||
                       (i.start
-                        ? Ge(new Date(new Date(i.start).getTime() + 864e5 * Math.max(0, (i.days || 1) - 1)))
+                        ? isoDate(
+                            new Date(new Date(i.start).getTime() + 864e5 * Math.max(0, (i.days || 1) - 1)),
+                          )
                         : ""),
                   };
                 }),
               );
               (window.__tripCards = a),
-                U.classList.toggle("notrips", !a.length || /[?&]empty=1/.test(location.search)),
-                U.classList.toggle("vzgone", C1),
+                rootEl.classList.toggle("notrips", !a.length || /[?&]empty=1/.test(location.search)),
+                rootEl.classList.toggle("vzgone", hideSampleTrip),
                 (t.innerHTML = '<button type="button" id="trip-new" hidden></button>'),
-                ta(),
-                (e("trip-new").onclick = function () {
-                  o1(null);
+                renderMyTrips(),
+                (byId("trip-new").onclick = function () {
+                  openPlanner(null);
                 }),
                 (window.__newTrip = function () {
-                  o1(null);
+                  openPlanner(null);
                 });
             }
           }
-          var ne = e("planner"),
-            M1 = e("pl-form"),
-            qe = null,
-            s1 = [],
-            We = 1;
-          function x1(t, a, i) {
-            return '<option value="' + h(t) + '"' + (i ? " selected" : "") + ">" + h(a) + "</option>";
+          var plannerPage = byId("planner"),
+            plannerForm = byId("pl-form"),
+            editingTrip = null,
+            customPlaces = [],
+            plannerStep = 1;
+          function optionHtml(t, a, i) {
+            return (
+              '<option value="' +
+              escapeHtml(t) +
+              '"' +
+              (i ? " selected" : "") +
+              ">" +
+              escapeHtml(a) +
+              "</option>"
+            );
           }
-          function fe(t, a) {
-            r("#" + t + " button").forEach(function (i) {
+          function setSegment(t, a) {
+            findAll("#" + t + " button").forEach(function (i) {
               i.setAttribute("aria-pressed", i.dataset.val === a ? "true" : "false");
             });
           }
-          function f2(t) {
+          function segmentValue(t) {
             var a = document.querySelector("#" + t + ' button[aria-pressed="true"]');
             return a ? a.dataset.val : "";
           }
-          r(".pseg").forEach(function (t) {
+          findAll(".pseg").forEach(function (t) {
             t.addEventListener("click", function (a) {
               var i = a.target.closest("button");
-              i && (fe(t.id, i.dataset.val), D1());
+              i && (setSegment(t.id, i.dataset.val), plannerHints());
             });
           });
-          function Ge(t) {
+          function isoDate(t) {
             return t.toISOString().slice(0, 10);
           }
-          function o1(t, a) {
-            (qe = a ? null : t),
-              (s1 = t
+          function openPlanner(t, a) {
+            (editingTrip = a ? null : t),
+              (customPlaces = t
                 ? t.places.filter(function (E) {
                     return E[6];
                   })
                 : []),
-              r(".pgroup.pcol").forEach(function (E) {
+              findAll(".pgroup.pcol").forEach(function (E) {
                 E.classList.remove("pcol");
               }),
-              (e("pl-title").textContent = t ? "Edit trip" : "Plan a new trip"),
-              (e("pl-go").textContent = t ? "Update plan" : "Create plan");
+              (byId("pl-title").textContent = t ? "Edit trip" : "Plan a new trip"),
+              (byId("pl-go").textContent = t ? "Update plan" : "Create plan");
             var i = window.__myPlaces ? window.__myPlaces() : [];
-            (e("pl-from").innerHTML =
+            (byId("pl-from").innerHTML =
               (i.length
                 ? '<optgroup label="My places">' +
                   i
                     .map(function (E, z) {
-                      return x1("@" + z, E.emo + " " + E.label, t ? t.from[0] === E.label : z === 0);
+                      return optionHtml("@" + z, E.emo + " " + E.label, t ? t.from[0] === E.label : z === 0);
                     })
                     .join("") +
                   '</optgroup><optgroup label="Cities">'
                 : "") +
-              C.map(function (E) {
-                return x1(E[0], E[0], t ? t.from[0] === E[0] : !i.length && E[0] === "Hyderabad");
+              CITIES.map(function (E) {
+                return optionHtml(E[0], E[0], t ? t.from[0] === E[0] : !i.length && E[0] === "Hyderabad");
               }).join("") +
               (i.length ? "</optgroup>" : "")),
-              (e("pl-state").innerHTML = Object.keys(S)
+              (byId("pl-state").innerHTML = Object.keys(PLACES_BY_STATE)
                 .sort()
                 .map(function (E) {
-                  return x1(E, E, t ? t.state === E : E === "Kerala");
+                  return optionHtml(E, E, t ? t.state === E : E === "Kerala");
                 })
                 .join(""));
             var c = new Date();
             c.setDate(c.getDate() + 14);
             var g = new Date(c);
             g.setDate(g.getDate() + 3),
-              (e("pl-start").value = t ? t.start : Ge(c)),
-              (e("pl-end").value =
+              (byId("pl-start").value = t ? t.start : isoDate(c)),
+              (byId("pl-end").value =
                 t && t.end
                   ? t.end
-                  : Ge(
+                  : isoDate(
                       t ? new Date(new Date(t.start).getTime() + 864e5 * Math.max(0, (t.days || 4) - 1)) : g,
                     )),
-              (e("pl-men").value = t ? t.men || 0 : 1),
-              (e("pl-women").value = t ? t.women || 0 : 1),
-              (e("pl-kids").value = (t && t.kids) || 0),
-              fe("pl-budget", (t && t.budget) || "mid"),
-              fe("pl-mode", (t && t.mode) || "any"),
-              fe("pl-pace", (t && t.pace) || "moderate"),
-              lt(),
-              (e("pl-name").value = t ? Q1(t.name || "").trim() : ""),
-              (e("pl-name").dataset.touched = t ? "1" : ""),
-              (e("pl-nerr").hidden = !0),
-              e("pl-name").classList.remove("bad"),
+              (byId("pl-men").value = t ? t.men || 0 : 1),
+              (byId("pl-women").value = t ? t.women || 0 : 1),
+              (byId("pl-kids").value = (t && t.kids) || 0),
+              setSegment("pl-budget", (t && t.budget) || "mid"),
+              setSegment("pl-mode", (t && t.mode) || "any"),
+              setSegment("pl-pace", (t && t.pace) || "moderate"),
+              renderGroupOptions(),
+              (byId("pl-name").value = t ? cleanTripName(t.name || "").trim() : ""),
+              (byId("pl-name").dataset.touched = t ? "1" : ""),
+              (byId("pl-nerr").hidden = !0),
+              byId("pl-name").classList.remove("bad"),
               t || void 0,
-              (V1 = !1),
-              (e("pl-del").hidden = !qe),
-              P2(
+              (editingSampleTrip = !1),
+              (byId("pl-del").hidden = !editingTrip),
+              renderPlaces(
                 t
                   ? t.places.map(function (E) {
                       return E[0];
@@ -4552,24 +4667,24 @@ try {
                   : null,
               ),
               (function () {
-                var E = e("pl-start"),
-                  z = e("pl-end"),
-                  B = e("pl-dlock");
+                var E = byId("pl-start"),
+                  z = byId("pl-end"),
+                  B = byId("pl-dlock");
                 if (
                   ((E.disabled = !1),
                   (z.disabled = !1),
-                  e("pl-go").classList.remove("locked"),
-                  (e("pl-next").disabled = !1),
+                  byId("pl-go").classList.remove("locked"),
+                  (byId("pl-next").disabled = !1),
                   B && (B.hidden = !0),
                   !(!t || a))
                 ) {
                   var j = Date.now(),
                     D = new Date(t.start + "T00:00:00").getTime(),
-                    et = new Date((e("pl-end").value || t.start) + "T23:59:59").getTime() + 864e5;
+                    et = new Date((byId("pl-end").value || t.start) + "T23:59:59").getTime() + 864e5;
                   j > et
                     ? ((E.disabled = !0),
                       (z.disabled = !0),
-                      e("pl-go").classList.add("locked"),
+                      byId("pl-go").classList.add("locked"),
                       B &&
                         ((B.textContent = "This trip has ended, so it can\u2019t be changed."),
                         (B.hidden = !1)))
@@ -4580,84 +4695,89 @@ try {
                         (B.hidden = !1)));
                 }
               })(),
-              t || Ot(),
-              B1("own"),
-              _e(t ? 1 : 0),
-              setTimeout(le, 0),
-              (ne.hidden = !1),
-              U.classList.add("login-open"),
-              p2(),
+              t || renderTemplates(),
+              setPlannerMode("own"),
+              goToStep(t ? 1 : 0),
+              setTimeout(validateDates, 0),
+              (plannerPage.hidden = !1),
+              rootEl.classList.add("login-open"),
+              scrollPlannerTop(),
               setTimeout(function () {
-                (ne.__snap = T2()), (ne.__dirty = !1);
+                (plannerPage.__snap = plannerSnapshot()), (plannerPage.__dirty = !1);
               }, 120);
           }
-          function T2() {
+          function plannerSnapshot() {
             return (
               [].map
-                .call(ne.querySelectorAll("input,select,textarea"), function (t) {
+                .call(plannerPage.querySelectorAll("input,select,textarea"), function (t) {
                   return t.type === "checkbox" || t.type === "radio" ? (t.checked ? 1 : 0) : t.value;
                 })
                 .join("|") +
               "#" +
               [].map
-                .call(ne.querySelectorAll('[aria-pressed="true"]'), function (t) {
+                .call(plannerPage.querySelectorAll('[aria-pressed="true"]'), function (t) {
                   return t.textContent.trim();
                 })
                 .join(",")
             );
           }
-          function E1() {
-            var t = ne.querySelector(".phead");
-            t && M1.style.setProperty("--phh", t.offsetHeight + "px");
+          function measurePlannerHeader() {
+            var t = plannerPage.querySelector(".phead");
+            t && plannerForm.style.setProperty("--phh", t.offsetHeight + "px");
           }
-          window.addEventListener("resize", E1);
-          function p2() {
-            E1(),
-              [ne, M1, e("pl-main"), e("pl-side")].forEach(function (t) {
+          window.addEventListener("resize", measurePlannerHeader);
+          function scrollPlannerTop() {
+            measurePlannerHeader(),
+              [plannerPage, plannerForm, byId("pl-main"), byId("pl-side")].forEach(function (t) {
                 t && (t.scrollTop = 0);
               }),
               requestAnimationFrame(function () {
-                [ne, M1, e("pl-main")].forEach(function (t) {
+                [plannerPage, plannerForm, byId("pl-main")].forEach(function (t) {
                   t && (t.scrollTop = 0);
                 });
               });
           }
-          function z2() {}
-          function q2(t) {
+          function shortName(t) {
             return (t = String(t || "")), t.length > 23 ? t.slice(0, 23).replace(/\s+$/, "") + "\u2026" : t;
           }
-          window.__shortName = q2;
-          function Q1(t) {
+          window.__shortName = shortName;
+          function cleanTripName(t) {
             return String(t || "")
               .replace(/[^A-Za-z0-9\u00C0-\u024F\u0900-\u0DFF ]+/g, " ")
               .replace(/\s{2,}/g, " ")
               .replace(/^\s+/, "");
           }
-          window.__cleanName = Q1;
-          function N1() {
-            var t = e("pl-name");
-            (t.value = Q1(t.value).trim()),
-              (e("pl-nerr").textContent = "Use letters and numbers only, with at least 6 letters.");
+          window.__cleanName = cleanTripName;
+          function checkTripName() {
+            var t = byId("pl-name");
+            (t.value = cleanTripName(t.value).trim()),
+              (byId("pl-nerr").textContent = "Use letters and numbers only, with at least 6 letters.");
             var a = t.value,
               i = (a.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g) || []).length >= 6;
             return (
-              (e("pl-nerr").hidden = i),
+              (byId("pl-nerr").hidden = i),
               t.classList.toggle("bad", !i),
               i ||
-                (We !== 1 && _e(1),
+                (plannerStep !== 1 && goToStep(1),
                 setTimeout(function () {
                   t.scrollIntoView({ block: "center" }), t.focus({ preventScroll: !0 });
                 }, 60)),
               i
             );
           }
-          var _ = { budget: "Budget", mid: "Mid-range", premium: "Premium" },
-            P = { any: "Any transport", train: "Train", flight: "Flight", road: "Car", bus: "Bus" },
-            I = { relaxed: "Relaxed pace", moderate: "Moderate pace", packed: "Packed pace" },
-            X = ["budget", "mid", "premium"],
-            Lt = { budget: [1300, 2450], mid: [2150, 4450], premium: [4700, 1e4] },
-            Ct = 2;
-          function lt() {
+          var BUDGET_LABELS = { budget: "Budget", mid: "Mid-range", premium: "Premium" },
+            TRANSPORT_LABELS = {
+              any: "Any transport",
+              train: "Train",
+              flight: "Flight",
+              road: "Car",
+              bus: "Bus",
+            },
+            PACE_LABELS = { relaxed: "Relaxed pace", moderate: "Moderate pace", packed: "Packed pace" },
+            BUDGET_KEYS = ["budget", "mid", "premium"],
+            BUDGET_PER_DAY = { budget: [1300, 2450], mid: [2150, 4450], premium: [4700, 1e4] },
+            defaultBudgetIndex = 2;
+          function renderGroupOptions() {
             var t = window.__groups ? window.__groups() : [];
             [
               [
@@ -4665,9 +4785,9 @@ try {
                 ".qguests",
                 function (a) {
                   window.__gcounts && (a = window.__gcounts(a)),
-                    (Ke = { women: a.women || 0, men: a.men || 0, kids: a.kids || 0 }),
+                    (travellers = { women: a.women || 0, men: a.men || 0, kids: a.kids || 0 }),
                     ["women", "men", "kids"].forEach(function (i) {
-                      e("q-" + i).textContent = Ke[i];
+                      byId("q-" + i).textContent = travellers[i];
                     });
                 },
               ],
@@ -4676,14 +4796,14 @@ try {
                 ".pgrid.p3",
                 function (a) {
                   window.__gcounts && (a = window.__gcounts(a)),
-                    (e("pl-women").value = a.women || 0),
-                    (e("pl-men").value = a.men || 0),
-                    (e("pl-kids").value = a.kids || 0),
-                    D1();
+                    (byId("pl-women").value = a.women || 0),
+                    (byId("pl-men").value = a.men || 0),
+                    (byId("pl-kids").value = a.kids || 0),
+                    plannerHints();
                 },
               ],
             ].forEach(function (a) {
-              var i = e(a[0]);
+              var i = byId(a[0]);
               if (!i) return;
               i.hidden = !t.length;
               var c = i.parentNode.querySelector(a[1]),
@@ -4710,7 +4830,7 @@ try {
                       '<button type="button" class="gchip" data-gc="' +
                       B +
                       '"><b>' +
-                      h(z.name) +
+                      escapeHtml(z.name) +
                       "</b><span>" +
                       E(z) +
                       "</span></button>"
@@ -4737,11 +4857,11 @@ try {
                       ? D.map(function (et) {
                           return (
                             '<div class="gmli"><span class="gmav">' +
-                            h(et.n.replace(/^@/, "").charAt(0).toUpperCase()) +
+                            escapeHtml(et.n.replace(/^@/, "").charAt(0).toUpperCase()) +
                             "</span><div><b>" +
-                            h(et.n) +
+                            escapeHtml(et.n) +
                             "</b><small>" +
-                            h(et.t) +
+                            escapeHtml(et.t) +
                             "</small></div></div>"
                           );
                         }).join("")
@@ -4752,140 +4872,144 @@ try {
                 });
             });
           }
-          window.__drawGroupChips = lt;
-          function Ot() {
-            lt(),
-              (e("pl-tpls").innerHTML = S1.map(function (a, i) {
+          window.__drawGroupChips = renderGroupOptions;
+          function renderTemplates() {
+            renderGroupOptions(),
+              (byId("pl-tpls").innerHTML = TRIP_TEMPLATES.map(function (a, i) {
                 return (
                   '<button type="button" class="tplr" data-q0tpl="' +
                   i +
                   '"><span class="tplci">' +
                   a.e +
                   '</span><span class="tplt"><b>' +
-                  h(a.n) +
+                  escapeHtml(a.n) +
                   "</b><small>" +
-                  h(a.s) +
+                  escapeHtml(a.s) +
                   " \xB7 " +
                   a.d +
                   " days \xB7 " +
                   a.p.length +
                   ' places</small></span><span class="tplgo">' +
-                  zt("chev") +
+                  iconSvg("chev") +
                   "</span></button>"
                 );
               }).join("")),
-              (e("pl-tpls").hidden = !0),
-              e("q-browse").setAttribute("aria-expanded", "false"),
-              (e("q-state").value = ""),
-              (e("q-where").value = ""),
-              (e("q-sug").hidden = !0);
-            var t = e("q-werr");
+              (byId("pl-tpls").hidden = !0),
+              byId("q-browse").setAttribute("aria-expanded", "false"),
+              (byId("q-state").value = ""),
+              (byId("q-where").value = ""),
+              (byId("q-sug").hidden = !0);
+            var t = byId("q-werr");
             t && (t.hidden = !0),
-              (Ke = { women: 1, men: 1, kids: 0 }),
+              (travellers = { women: 1, men: 1, kids: 0 }),
               ["women", "men", "kids"].forEach(function (a) {
-                e("q-" + a).textContent = Ke[a];
+                byId("q-" + a).textContent = travellers[a];
               }),
-              (e("q-budget").value = 1),
-              fe("q-mode", "any"),
-              pe();
+              (byId("q-budget").value = 1),
+              setSegment("q-mode", "any"),
+              updateBudgetLabel();
           }
-          function pe() {
-            var t = X[+e("q-budget").value],
-              a = Lt[t];
-            (e("q-bv").textContent = _[t]),
-              r("[data-qb]").forEach(function (i) {
-                i.classList.toggle("on", i.dataset.qb === String(e("q-budget").value));
+          function updateBudgetLabel() {
+            var t = BUDGET_KEYS[+byId("q-budget").value],
+              a = BUDGET_PER_DAY[t];
+            (byId("q-bv").textContent = BUDGET_LABELS[t]),
+              findAll("[data-qb]").forEach(function (i) {
+                i.classList.toggle("on", i.dataset.qb === String(byId("q-budget").value));
               }),
-              (e("q-fill").style.width = +e("q-budget").value * 50 + "%"),
-              r(".qtrack i").forEach(function (i, c) {
-                i.classList.toggle("on", c <= +e("q-budget").value);
+              (byId("q-fill").style.width = +byId("q-budget").value * 50 + "%"),
+              findAll(".qtrack i").forEach(function (i, c) {
+                i.classList.toggle("on", c <= +byId("q-budget").value);
               }),
-              (e("q-bhint").textContent =
+              (byId("q-bhint").textContent =
                 "About \u20B9" +
                 a[0].toLocaleString("en-IN") +
                 "\u2013" +
                 (Math.round(a[1] / 100) * 100).toLocaleString("en-IN") +
                 " a day per person");
           }
-          e("q-budget").addEventListener("input", pe),
-            e("q-browse").addEventListener("click", function () {
-              Gt();
+          byId("q-budget").addEventListener("input", updateBudgetLabel),
+            byId("q-browse").addEventListener("click", function () {
+              openPlannerTips();
             });
-          function Gt() {
-            (e("ps-body").innerHTML =
+          function openPlannerTips() {
+            (byId("ps-body").innerHTML =
               '<div class="lshead"><span class="lsico">' +
-              zt("star") +
+              iconSvg("star") +
               '</span><div class="lst"><h3>Popular trips</h3><p>' +
-              S1.length +
+              TRIP_TEMPLATES.length +
               ' ready-made routes</p></div><button type="button" class="shclose" id="ps-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="tpsrch"><label class="psearch">' +
-              zt("search") +
+              iconSvg("search") +
               '<input id="tp-q" type="search" placeholder="Search by state, place or theme" autocomplete="off"></label></div><div class="pspanel tppanel"><div class="poplist" id="tp-list">' +
-              S1.map(function (t, a) {
+              TRIP_TEMPLATES.map(function (t, a) {
                 return (
                   '<button type="button" class="tplr" data-tpi="' +
                   a +
                   '" data-q="' +
-                  h((t.n + " " + t.s + " " + t.p.join(" ")).toLowerCase()) +
+                  escapeHtml((t.n + " " + t.s + " " + t.p.join(" ")).toLowerCase()) +
                   '"><span class="tplci">' +
                   t.e +
                   '</span><span class="tplt"><b>' +
-                  h(t.n) +
+                  escapeHtml(t.n) +
                   "</b><small>" +
-                  h(t.s) +
+                  escapeHtml(t.s) +
                   " \xB7 " +
                   t.d +
                   " days \xB7 " +
                   t.p.length +
                   ' places</small></span><span class="tplgo">' +
-                  zt("chev") +
+                  iconSvg("chev") +
                   "</span></button>"
                 );
               }).join("") +
               '</div><p class="pqempty" id="tp-none" hidden>No trips match. Try a state name.</p></div>'),
-              window.__paintUses && window.__paintUses(e("ps-body")),
-              (p1 = { name: "tpl" }),
-              Vt.classList.remove("full"),
-              Vt.classList.add("lsheet", "tpsheet"),
-              (Vt.hidden = !1),
-              U.classList.add("ps-open"),
+              window.__paintUses && window.__paintUses(byId("ps-body")),
+              (placeSheetSource = { name: "tpl" }),
+              placeSheet.classList.remove("full"),
+              placeSheet.classList.add("lsheet", "tpsheet"),
+              (placeSheet.hidden = !1),
+              rootEl.classList.add("ps-open"),
               requestAnimationFrame(function () {
-                Vt.classList.add("in");
+                placeSheet.classList.add("in");
               }),
-              (e("ps-close").onclick = Ne),
-              e("tp-q").addEventListener("input", function () {
+              (byId("ps-close").onclick = fitPlaceSheet),
+              byId("tp-q").addEventListener("input", function () {
                 var t = this.value.trim().toLowerCase(),
                   a = 0;
-                r("#tp-list .tplr").forEach(function (i) {
+                findAll("#tp-list .tplr").forEach(function (i) {
                   var c = !t || i.dataset.q.indexOf(t) >= 0;
                   (i.hidden = !c), c && a++;
                 }),
-                  (e("tp-none").hidden = !!a);
+                  (byId("tp-none").hidden = !!a);
               }),
-              e("tp-list").addEventListener("click", function (t) {
+              byId("tp-list").addEventListener("click", function (t) {
                 var a = t.target.closest("[data-tpi]");
-                a && (Ne(), ca(S1[+a.dataset.tpi]), B1("own"), _e(1));
+                a &&
+                  (fitPlaceSheet(),
+                  applyTemplate(TRIP_TEMPLATES[+a.dataset.tpi]),
+                  setPlannerMode("own"),
+                  goToStep(1));
               });
           }
-          var Pe = [];
-          Object.keys(S)
+          var stateSuggestions = [];
+          Object.keys(PLACES_BY_STATE)
             .sort()
             .forEach(function (t) {
-              Pe.push({ t, s: t, k: "state" }),
-                S[t].forEach(function (a) {
-                  Pe.push({ t: a[0], s: t, k: "place", sub: a[1] });
+              stateSuggestions.push({ t, s: t, k: "state" }),
+                PLACES_BY_STATE[t].forEach(function (a) {
+                  stateSuggestions.push({ t: a[0], s: t, k: "place", sub: a[1] });
                 });
             });
-          function aa() {
-            var t = e("q-where").value.trim().toLowerCase(),
-              a = e("q-sug"),
+          function suggestStates() {
+            var t = byId("q-where").value.trim().toLowerCase(),
+              a = byId("q-sug"),
               i = (
                 t
-                  ? Pe.filter(function (c) {
+                  ? stateSuggestions.filter(function (c) {
                       return (
                         c.t.toLowerCase().indexOf(t) >= 0 || (c.sub && c.sub.toLowerCase().indexOf(t) >= 0)
                       );
                     })
-                  : Pe.filter(function (c) {
+                  : stateSuggestions.filter(function (c) {
                       return c.k === "state";
                     })
               )
@@ -4903,128 +5027,134 @@ try {
                   .map(function (c) {
                     return (
                       '<li role="option" data-st="' +
-                      h(c.s) +
+                      escapeHtml(c.s) +
                       '" data-tx="' +
-                      h(c.k === "state" ? c.s : c.t) +
+                      escapeHtml(c.k === "state" ? c.s : c.t) +
                       '"><b>' +
-                      h(c.t) +
+                      escapeHtml(c.t) +
                       "</b><small>" +
-                      (c.k === "state" ? "State" : h(c.sub) + " \xB7 " + h(c.s)) +
+                      (c.k === "state" ? "State" : escapeHtml(c.sub) + " \xB7 " + escapeHtml(c.s)) +
                       "</small></li>"
                     );
                   })
                   .join("")
               : '<li class="none">No matches. Try a state name.</li>'),
               (a.hidden = !1),
-              e("q-where").setAttribute("aria-expanded", "true");
+              byId("q-where").setAttribute("aria-expanded", "true");
           }
-          e("q-where").addEventListener("input", aa),
-            e("q-where").addEventListener("focus", function () {
-              this.select(), aa();
+          byId("q-where").addEventListener("input", suggestStates),
+            byId("q-where").addEventListener("focus", function () {
+              this.select(), suggestStates();
             }),
-            e("q-where").addEventListener("blur", function () {
+            byId("q-where").addEventListener("blur", function () {
               setTimeout(function () {
-                (e("q-sug").hidden = !0),
-                  e("q-where").setAttribute("aria-expanded", "false"),
-                  e("q-where").value.trim() || (e("q-state").value = "");
+                (byId("q-sug").hidden = !0),
+                  byId("q-where").setAttribute("aria-expanded", "false"),
+                  byId("q-where").value.trim() || (byId("q-state").value = "");
               }, 250);
             });
-          function f1(t) {
+          function pickSuggestion(t) {
             var a = t.target.closest("li[data-st]");
             if (a) {
               t.preventDefault();
-              var i = e("q-werr");
+              var i = byId("q-werr");
               i && (i.hidden = !0),
-                (e("q-state").value = a.dataset.st),
-                (e("q-where").value =
+                (byId("q-state").value = a.dataset.st),
+                (byId("q-where").value =
                   a.dataset.tx === a.dataset.st ? a.dataset.st : a.dataset.tx + ", " + a.dataset.st),
-                (e("q-sug").hidden = !0),
-                e("q-where").blur();
+                (byId("q-sug").hidden = !0),
+                byId("q-where").blur();
             }
           }
-          e("q-sug").addEventListener("pointerdown", f1),
-            e("q-sug").addEventListener("mousedown", function (t) {
+          byId("q-sug").addEventListener("pointerdown", pickSuggestion),
+            byId("q-sug").addEventListener("mousedown", function (t) {
               t.preventDefault();
             }),
-            e("q-where").addEventListener("input", function () {
-              e("q-state").value = "";
+            byId("q-where").addEventListener("input", function () {
+              byId("q-state").value = "";
             });
-          var Ke = { women: 1, men: 1, kids: 0 };
-          r("[data-qs]").forEach(function (t) {
+          var travellers = { women: 1, men: 1, kids: 0 };
+          findAll("[data-qs]").forEach(function (t) {
             t.addEventListener("click", function () {
               var a = t.dataset.qk;
-              (Ke[a] = Math.max(0, Math.min(30, Ke[a] + +t.dataset.qs))),
-                Ke.women + Ke.men < 1 && (Ke[a] = 1),
-                (e("q-" + a).textContent = Ke[a]);
+              (travellers[a] = Math.max(0, Math.min(30, travellers[a] + +t.dataset.qs))),
+                travellers.women + travellers.men < 1 && (travellers[a] = 1),
+                (byId("q-" + a).textContent = travellers[a]);
             });
           }),
-            e("q-budget").addEventListener("change", pe),
-            r("[data-qb]").forEach(function (t) {
+            byId("q-budget").addEventListener("change", updateBudgetLabel),
+            findAll("[data-qb]").forEach(function (t) {
               t.addEventListener("click", function () {
-                (e("q-budget").value = t.dataset.qb), pe();
+                (byId("q-budget").value = t.dataset.qb), updateBudgetLabel();
               });
             }),
-            e("pl-tpls").addEventListener("click", function (t) {
+            byId("pl-tpls").addEventListener("click", function (t) {
               var a = t.target.closest("[data-q0tpl]");
-              a && (ca(S1[+a.dataset.q0tpl]), B1("own"), _e(1));
+              a && (applyTemplate(TRIP_TEMPLATES[+a.dataset.q0tpl]), setPlannerMode("own"), goToStep(1));
             });
-          function na() {
-            var t = I1(),
-              a = Kt(t).total;
-            (e("pgs-who").textContent =
+          function updatePlannerSummary() {
+            var t = readPlannerForm(),
+              a = travellerCount(t).total;
+            (byId("pgs-who").textContent =
               a +
               " traveller" +
               (a === 1 ? "" : "s") +
               (t.kids ? " \xB7 " + t.kids + " child" + (t.kids === 1 ? "" : "ren") : "")),
-              (e("pgs-how").textContent = [_[t.budget], P[t.mode], I[t.pace]].filter(Boolean).join(" \xB7 "));
+              (byId("pgs-how").textContent = [
+                BUDGET_LABELS[t.budget],
+                TRANSPORT_LABELS[t.mode],
+                PACE_LABELS[t.pace],
+              ]
+                .filter(Boolean)
+                .join(" \xB7 "));
           }
-          e("pl-start-go").addEventListener("click", function () {
-            e("q-go").click();
+          byId("pl-start-go").addEventListener("click", function () {
+            byId("q-go").click();
           }),
-            e("q-go").addEventListener("click", function () {
-              if (!e("q-state").value) {
-                var t = e("q-where").value.trim().toLowerCase(),
-                  a = Pe.filter(function (g) {
+            byId("q-go").addEventListener("click", function () {
+              if (!byId("q-state").value) {
+                var t = byId("q-where").value.trim().toLowerCase(),
+                  a = stateSuggestions.filter(function (g) {
                     return g.t.toLowerCase() === t;
                   })[0];
-                a && (e("q-state").value = a.s);
+                a && (byId("q-state").value = a.s);
               }
-              if (!e("q-state").value) {
-                var i = e("q-werr");
-                i && (i.hidden = !1), e("q-where").focus();
+              if (!byId("q-state").value) {
+                var i = byId("q-werr");
+                i && (i.hidden = !1), byId("q-where").focus();
                 return;
               }
-              var c = e("q-state").value;
-              (e("pl-state").value = c),
-                P2(null),
-                (e("pl-men").value = Ke.men),
-                (e("pl-women").value = Ke.women),
-                (e("pl-kids").value = Ke.kids),
-                fe("pl-budget", X[+e("q-budget").value]),
-                fe("pl-mode", f2("q-mode") || "any"),
-                (e("pl-name").dataset.touched = ""),
-                B1("own"),
-                na(),
-                r('.pgroup[data-pg="who"],.pgroup[data-pg="how"]').forEach(function (g) {
+              var c = byId("q-state").value;
+              (byId("pl-state").value = c),
+                renderPlaces(null),
+                (byId("pl-men").value = travellers.men),
+                (byId("pl-women").value = travellers.women),
+                (byId("pl-kids").value = travellers.kids),
+                setSegment("pl-budget", BUDGET_KEYS[+byId("q-budget").value]),
+                setSegment("pl-mode", segmentValue("q-mode") || "any"),
+                (byId("pl-name").dataset.touched = ""),
+                setPlannerMode("own"),
+                updatePlannerSummary(),
+                findAll('.pgroup[data-pg="who"],.pgroup[data-pg="how"]').forEach(function (g) {
                   g.classList.add("pcol");
                 }),
-                _e(1);
+                goToStep(1);
             }),
-            r("[data-pgopen]").forEach(function (t) {
+            findAll("[data-pgopen]").forEach(function (t) {
               t.addEventListener("click", function () {
                 var a = t.closest(".pgroup");
-                na(),
-                  r(".pgroup.pexp").forEach(function (i) {
+                updatePlannerSummary(),
+                  findAll(".pgroup.pexp").forEach(function (i) {
                     i !== a && (i.classList.add("pcol"), i.classList.remove("pexp"));
                   }),
                   a.classList.remove("pcol"),
                   a.classList.add("pexp");
               });
             }),
-            r("[data-pgdone]").forEach(function (t) {
+            findAll("[data-pgdone]").forEach(function (t) {
               t.addEventListener("click", function () {
                 var a = t.closest(".pgroup");
-                na(), a.classList.add("pcol"), a.classList.remove("pexp");
+                updatePlannerSummary(), a.classList.add("pcol"), a.classList.remove("pexp");
               });
             }),
             (window.__toast = function (t, a) {
@@ -5041,10 +5171,10 @@ try {
                 var g = t.match(/^(.+?[.!?])\s+(.+)$/);
                 return window.__notify(g ? g[1] : t, g ? g[2] : "", null, a);
               }
-              F1(t, "OK", function () {}, a);
+              showOkToast(t, "OK", function () {}, a);
             });
-          function F1(t, a, i, c) {
-            var g = e("ok-toast");
+          function showOkToast(t, a, i, c) {
+            var g = byId("ok-toast");
             if (g) {
               g.querySelector("span").textContent = t;
               var E = g.querySelector("button");
@@ -5057,8 +5187,8 @@ try {
                 g.classList.remove("in"),
                 g.offsetWidth,
                 g.classList.add("in"),
-                clearTimeout(F1.t),
-                (F1.t = setTimeout(function () {
+                clearTimeout(showOkToast.t),
+                (showOkToast.t = setTimeout(function () {
                   g.hidden = !0;
                 }, c || 4800)),
                 !g.dataset.sw)
@@ -5068,7 +5198,7 @@ try {
                     var kt = et.clientX - z,
                       At = et.clientY - B;
                     (z = null),
-                      (Math.abs(kt) > 70 || At > 40) && ((g.hidden = !0), clearTimeout(F1.t)),
+                      (Math.abs(kt) > 70 || At > 40) && ((g.hidden = !0), clearTimeout(showOkToast.t)),
                       (g.style.transform = ""),
                       (g.style.opacity = "");
                   }
@@ -5093,59 +5223,59 @@ try {
               }
             }
           }
-          function Z1() {
-            (ne.hidden = !0), U.classList.remove("login-open");
+          function closePlanner() {
+            (plannerPage.hidden = !0), rootEl.classList.remove("login-open");
           }
-          function _e(t) {
-            (We = t),
-              M1.classList.toggle("st0", t === 0),
-              r(".pstep").forEach(function (i) {
+          function goToStep(t) {
+            (plannerStep = t),
+              plannerForm.classList.toggle("st0", t === 0),
+              findAll(".pstep").forEach(function (i) {
                 i.hidden = +i.dataset.step !== t;
               }),
-              r(".pdot").forEach(function (i) {
+              findAll(".pdot").forEach(function (i) {
                 i.classList.toggle("on", +i.dataset.step <= t);
               }),
-              (e("pl-back").hidden = !0),
-              (e("pl-hback").hidden = !(t === 2 || (t === 1 && !qe))),
-              r(".pdot").forEach(function (i) {
+              (byId("pl-back").hidden = !0),
+              (byId("pl-hback").hidden = !(t === 2 || (t === 1 && !editingTrip))),
+              findAll(".pdot").forEach(function (i) {
                 i.setAttribute("aria-selected", +i.dataset.step === t ? "true" : "false"),
                   i.classList.toggle("cur", +i.dataset.step === t);
               }),
-              (e("pl-next").hidden = t !== 1),
-              (e("pl-go").hidden = t !== 2),
-              (e("pl-start-go").hidden = t !== 0),
-              (e("pl-form").scrollTop = 0),
-              ne.hidden || p2();
-            var a = e("pl-q");
-            a && t !== 2 && a.value && ((a.value = ""), ra()), D1();
+              (byId("pl-next").hidden = t !== 1),
+              (byId("pl-go").hidden = t !== 2),
+              (byId("pl-start-go").hidden = t !== 0),
+              (byId("pl-form").scrollTop = 0),
+              plannerPage.hidden || scrollPlannerTop();
+            var a = byId("pl-q");
+            a && t !== 2 && a.value && ((a.value = ""), filterPlaces()), plannerHints();
           }
-          function I1() {
-            var t = e("pl-state").value,
-              a = (S[t] || []).concat(s1),
-              i = r("#pl-places input:checked").map(function (B) {
+          function readPlannerForm() {
+            var t = byId("pl-state").value,
+              a = (PLACES_BY_STATE[t] || []).concat(customPlaces),
+              i = findAll("#pl-places input:checked").map(function (B) {
                 return B.value;
               }),
-              c = e("pl-from").value,
+              c = byId("pl-from").value,
               g = window.__myPlaces ? window.__myPlaces() : [],
               E;
             if (c.charAt(0) === "@") {
               var z = g[+c.slice(1)];
-              E = z ? [z.label, z.city[1], z.city[2]] : C[0];
+              E = z ? [z.label, z.city[1], z.city[2]] : CITIES[0];
             } else
-              E = C.filter(function (B) {
+              E = CITIES.filter(function (B) {
                 return B[0] === c;
               })[0];
             return {
               from: E,
               state: t,
-              start: e("pl-start").value,
-              end: e("pl-end").value,
-              men: +e("pl-men").value || 0,
-              women: +e("pl-women").value || 0,
-              kids: +e("pl-kids").value || 0,
-              budget: f2("pl-budget"),
-              mode: f2("pl-mode"),
-              pace: f2("pl-pace"),
+              start: byId("pl-start").value,
+              end: byId("pl-end").value,
+              men: +byId("pl-men").value || 0,
+              women: +byId("pl-women").value || 0,
+              kids: +byId("pl-kids").value || 0,
+              budget: segmentValue("pl-budget"),
+              mode: segmentValue("pl-mode"),
+              pace: segmentValue("pl-pace"),
               places: i
                 .map(function (B) {
                   return a.filter(function (j) {
@@ -5155,27 +5285,28 @@ try {
                 .filter(Boolean),
             };
           }
-          function ra() {
-            var t = (e("pl-q").value || "").trim().toLowerCase(),
+          function filterPlaces() {
+            var t = (byId("pl-q").value || "").trim().toLowerCase(),
               a = 0,
-              i = r("#pl-places .pcard");
+              i = findAll("#pl-places .pcard");
             i.forEach(function (c) {
               var g = !t || (c.dataset.q || "").indexOf(t) >= 0;
               (c.hidden = !g), g && a++;
             }),
-              r("#pl-places .pgrp").forEach(function (c) {
+              findAll("#pl-places .pgrp").forEach(function (c) {
                 c.hidden = !c.querySelector(".pcard:not([hidden])");
               }),
-              (e("pl-qn").textContent = t ? a + " of " + i.length : ""),
-              (e("pl-qempty").hidden = !(t && !a)),
+              (byId("pl-qn").textContent = t ? a + " of " + i.length : ""),
+              (byId("pl-qempty").hidden = !(t && !a)),
               t &&
                 !a &&
-                (e("pl-qnt").textContent = "No places match \u201C" + e("pl-q").value.trim() + "\u201D");
+                (byId("pl-qnt").textContent =
+                  "No places match \u201C" + byId("pl-q").value.trim() + "\u201D");
           }
-          function P2(t) {
-            var a = e("pl-state").value,
-              i = (S[a] || []).concat(
-                s1.filter(function (z) {
+          function renderPlaces(t) {
+            var a = byId("pl-state").value,
+              i = (PLACES_BY_STATE[a] || []).concat(
+                customPlaces.filter(function (z) {
                   return z[7] === a;
                 }),
               ),
@@ -5183,47 +5314,47 @@ try {
             i.forEach(function (z) {
               (c[z[1]] = c[z[1]] || []).push(z);
             });
-            var g = I1().from,
+            var g = readPlannerForm().from,
               E = g ? [g[1], g[2]] : null;
-            (e("pl-places").innerHTML = hn(i, S[a] || [], function (z, B) {
+            (byId("pl-places").innerHTML = groupedPlacesHtml(i, PLACES_BY_STATE[a] || [], function (z, B) {
               var j = i.indexOf(z),
                 D = t ? t.indexOf(z[0]) >= 0 : j < 6;
-              return pn(z, D, B, E);
+              return placeCardHtml(z, D, B, E);
             })),
-              mn(e("pl-places")),
-              ia(),
-              e("pl-q") && ra();
+              observePlaceImages(byId("pl-places")),
+              syncSelectAll(),
+              byId("pl-q") && filterPlaces();
           }
-          function ia() {
-            var t = r("#pl-places input"),
+          function syncSelectAll() {
+            var t = findAll("#pl-places input"),
               a =
                 t.length &&
                 t.every(function (c) {
                   return c.checked;
                 });
-            e("pl-all") && (e("pl-all").textContent = a ? "Unselect all" : "Select all"),
-              r("#pl-places .pcard").forEach(function (c) {
+            byId("pl-all") && (byId("pl-all").textContent = a ? "Unselect all" : "Select all"),
+              findAll("#pl-places .pcard").forEach(function (c) {
                 var g = c.querySelector("input");
                 c.classList.toggle("on", g.checked);
               }),
-              r("#pl-side [data-sv]").forEach(function (c) {
-                var g = Array.prototype.filter.call(r("#pl-places input"), function (E) {
+              findAll("#pl-side [data-sv]").forEach(function (c) {
+                var g = Array.prototype.filter.call(findAll("#pl-places input"), function (E) {
                   return E.value === c.dataset.sv;
                 })[0];
                 c.checked = !!(g && g.checked);
               });
-            var i = r("#pl-places input:checked").length;
-            (e("pl-count").textContent = i + " selected"), (e("pl-go").disabled = !i), D1();
+            var i = findAll("#pl-places input:checked").length;
+            (byId("pl-count").textContent = i + " selected"), (byId("pl-go").disabled = !i), plannerHints();
           }
           try {
             localStorage.getItem("vizag-wimg-v") !== "3" &&
               (localStorage.removeItem("vizag-wimg"), localStorage.setItem("vizag-wimg-v", "3"));
           } catch (t) {}
-          var a1 = {};
+          var placeImageCache = {};
           try {
-            a1 = JSON.parse(o("vizag-wimg") || "{}") || {};
+            placeImageCache = JSON.parse(readStore("vizag-wimg") || "{}") || {};
           } catch (t) {}
-          var h2 = {
+          var KIND_LABELS = {
             temple: "Temple",
             hill: "Hills",
             beach: "Beach",
@@ -5248,54 +5379,54 @@ try {
             ceremony: "Ceremony",
             train: "Heritage train",
           };
-          function pn(t, a, i, c) {
-            var g = c ? nt(c, [t[2], t[3]]) : 0;
+          function placeCardHtml(t, a, i, c) {
+            var g = c ? roadKm(c, [t[2], t[3]]) : 0;
             return (
               '<label class="pcard' +
               (a ? " on" : "") +
               '" data-q="' +
-              h((t[0] + " " + t[1] + " " + (h2[t[4]] || "") + " " + t[4]).toLowerCase()) +
+              escapeHtml((t[0] + " " + t[1] + " " + (KIND_LABELS[t[4]] || "") + " " + t[4]).toLowerCase()) +
               '"><div class="pimg" data-wq="' +
-              h(t[0] + " " + t[1]) +
+              escapeHtml(t[0] + " " + t[1]) +
               '" data-cat="' +
-              h(t[4]) +
+              escapeHtml(t[4]) +
               '"><span class="pemo">' +
-              (L[t[4]] || "\u{1F4CD}") +
+              (STATE_EMOJI[t[4]] || "\u{1F4CD}") +
               '</span><span class="pbadge2" aria-hidden="true">' +
-              zt("tick") +
+              iconSvg("tick") +
               '</span></div><span class="pchk" aria-hidden="true">' +
-              zt("tick") +
-              zt("plus") +
+              iconSvg("tick") +
+              iconSvg("plus") +
               '</span><div class="pinfo"><div class="ptop"><b data-pn="' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '">' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '</b><span class="pinf" data-pn="' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '" data-full="1" role="button" aria-label="More about ' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '">' +
-              zt("chev") +
+              iconSvg("chev") +
               '</span><input type="checkbox" class="cbx" value="' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '"' +
               (a ? " checked" : "") +
               ' aria-label="Include ' +
-              h(t[0]) +
+              escapeHtml(t[0]) +
               '"></div><small class="pdesc">' +
-              h(h2[t[4]] || "Sight") +
+              escapeHtml(KIND_LABELS[t[4]] || "Sight") +
               " \xB7 " +
-              h(t[1]) +
+              escapeHtml(t[1]) +
               '</small><small class="pwd"></small><span class="pchips"><span>' +
-              zt("clock") +
-              G1(t[5]) +
+              iconSvg("clock") +
+              durationText(t[5]) +
               "</span>" +
-              (g ? "<span>" + zt("pin") + "~" + g.toLocaleString("en-IN") + " km</span>" : "") +
-              (la(t) ? "<span>" + zt("calendar") + la(t) + "</span>" : "") +
+              (g ? "<span>" + iconSvg("pin") + "~" + g.toLocaleString("en-IN") + " km</span>" : "") +
+              (seasonNote(t) ? "<span>" + iconSvg("calendar") + seasonNote(t) + "</span>" : "") +
               "</span></div></label>"
             );
           }
-          function hn(t, a, i) {
+          function groupedPlacesHtml(t, a, i) {
             var c = [
               ["Must see", []],
               ["AI picks", []],
@@ -5324,21 +5455,21 @@ try {
                 .join("")
             );
           }
-          window.__groupCards = hn;
-          var Kn = "";
-          function sa() {
-            return Kn;
+          window.__groupCards = groupedPlacesHtml;
+          var placesApiKey = "";
+          function getPlacesApiKey() {
+            return placesApiKey;
           }
-          var t2 = {};
+          var placePhotoCache = {};
           try {
-            t2 = JSON.parse(o("vizag-gphoto") || "{}") || {};
+            placePhotoCache = JSON.parse(readStore("vizag-gphoto") || "{}") || {};
           } catch (t) {}
-          function Ca(t, a) {
-            var i = sa();
+          function fetchPlacePhoto(t, a) {
+            var i = getPlacesApiKey();
             return !i || !window.fetch
               ? Promise.resolve(null)
-              : t2[t]
-                ? Promise.resolve(t2[t].replace("{w}", a || 800))
+              : placePhotoCache[t]
+                ? Promise.resolve(placePhotoCache[t].replace("{w}", a || 800))
                 : fetch("https://places.googleapis.com/v1/places:searchText", {
                     method: "POST",
                     headers: {
@@ -5360,11 +5491,11 @@ try {
                         g.name +
                         "/media?maxWidthPx={w}&key=" +
                         encodeURIComponent(i);
-                      t2[t] = E;
-                      var z = Object.keys(t2);
+                      placePhotoCache[t] = E;
+                      var z = Object.keys(placePhotoCache);
                       return (
-                        z.length > 300 && delete t2[z[0]],
-                        l("vizag-gphoto", JSON.stringify(t2)),
+                        z.length > 300 && delete placePhotoCache[z[0]],
+                        writeStore("vizag-gphoto", JSON.stringify(placePhotoCache)),
                         E.replace("{w}", a || 800)
                       );
                     })
@@ -5372,8 +5503,8 @@ try {
                       return null;
                     });
           }
-          window.__gphoto = Ca;
-          function oa(t) {
+          window.__gphoto = fetchPlacePhoto;
+          function fetchOpenversePhoto(t) {
             return window.fetch
               ? fetch(
                   "https://api.openverse.org/v1/images/?page_size=1&mature=false&q=" + encodeURIComponent(t),
@@ -5404,7 +5535,7 @@ try {
                   })
               : Promise.resolve(null);
           }
-          function vn(t) {
+          function loadPlaceImage(t) {
             if (t.dataset.done) return;
             t.dataset.done = "1";
             var a = t.dataset.wq;
@@ -5437,15 +5568,15 @@ try {
                 }
               }
             }
-            if (sa()) {
-              Ca(a, window.__imgW || 640).then(function (g) {
-                g ? i({ s: g, d: (a1[a] && a1[a].d) || "" }) : c();
+            if (getPlacesApiKey()) {
+              fetchPlacePhoto(a, window.__imgW || 640).then(function (g) {
+                g ? i({ s: g, d: (placeImageCache[a] && placeImageCache[a].d) || "" }) : c();
               });
               return;
             }
             c();
             function c() {
-              if (a in a1) return i(a1[a]);
+              if (a in placeImageCache) return i(placeImageCache[a]);
               navigator.onLine === !1 ||
                 !window.fetch ||
                 fetch(
@@ -5473,13 +5604,15 @@ try {
                       };
                     }
                     function j(D) {
-                      a1[a] = D;
-                      var et = Object.keys(a1);
-                      et.length > 400 && delete a1[et[0]], l("vizag-wimg", JSON.stringify(a1)), i(D);
+                      placeImageCache[a] = D;
+                      var et = Object.keys(placeImageCache);
+                      et.length > 400 && delete placeImageCache[et[0]],
+                        writeStore("vizag-wimg", JSON.stringify(placeImageCache)),
+                        i(D);
                     }
                     z && z.s
                       ? j(z)
-                      : oa(a).then(function (D) {
+                      : fetchOpenversePhoto(a).then(function (D) {
                           j({
                             s: (D && D.u) || "",
                             d: (z && z.d) || "",
@@ -5491,31 +5624,31 @@ try {
                         });
                   })
                   .catch(function () {
-                    oa(a).then(function (g) {
+                    fetchOpenversePhoto(a).then(function (g) {
                       g && g.u && i({ s: g.u, d: "", c: g.c, l: g.l });
                     });
                   });
             }
           }
-          var Ta = window.IntersectionObserver
+          var imageObserver = window.IntersectionObserver
             ? new IntersectionObserver(
                 function (t) {
                   t.forEach(function (a) {
-                    a.isIntersecting && (Ta.unobserve(a.target), vn(a.target));
+                    a.isIntersecting && (imageObserver.unobserve(a.target), loadPlaceImage(a.target));
                   });
                 },
                 { rootMargin: "200px" },
               )
             : null;
-          function mn(t) {
+          function observePlaceImages(t) {
             (t || document).querySelectorAll(".pimg[data-wq]:not([data-done])").forEach(function (a) {
-              Ta ? Ta.observe(a) : vn(a);
+              imageObserver ? imageObserver.observe(a) : loadPlaceImage(a);
             });
           }
-          (window.__placeCard = pn), (window.__loadImgs = mn);
-          var Xn =
+          (window.__placeCard = placeCardHtml), (window.__loadImgs = observePlaceImages);
+          var VIEW_TOGGLE_HTML =
             '<div class="vtogrow"><span>View</span><div class="vtog" role="group" aria-label="View"><button type="button" data-pv="list" aria-label="List view"><svg class="ph" aria-hidden="true"><use data-p="list" href="#i-hugeicons-list"/></svg></button><button type="button" data-pv="card" aria-label="Card view"><svg class="ph" aria-hidden="true"><use data-p="grid" href="#i-hugeicons-grid"/></svg></button></div></div>';
-          function zt(t) {
+          function iconSvg(t) {
             return (
               '<svg class="ph pci" aria-hidden="true"><use data-p="' +
               t +
@@ -5524,60 +5657,84 @@ try {
               '"/></svg>'
             );
           }
-          var N2 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-          function gn(t) {
+          var MONTH_NAMES = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          function stateOfPlace(t) {
             if (t[7]) return t[7];
-            for (var a in S) if (S[a].indexOf(t) >= 0) return a;
+            for (var a in PLACES_BY_STATE) if (PLACES_BY_STATE[a].indexOf(t) >= 0) return a;
             return "";
           }
-          function la(t) {
-            var a = typeof B2 != "undefined" && B2 ? B2[gn(t)] : null;
+          function seasonNote(t) {
+            var a = typeof BEST_SEASONS != "undefined" && BEST_SEASONS ? BEST_SEASONS[stateOfPlace(t)] : null;
             if (!a || !a.best.length) return "";
             var i = a.best;
-            return N2[i[0] - 1] + "\u2013" + N2[i[i.length - 1] - 1];
+            return MONTH_NAMES[i[0] - 1] + "\u2013" + MONTH_NAMES[i[i.length - 1] - 1];
           }
-          function F2(t) {
-            for (var a in S) {
-              var i = S[a].filter(function (c) {
+          function findPlace(t) {
+            for (var a in PLACES_BY_STATE) {
+              var i = PLACES_BY_STATE[a].filter(function (c) {
                 return c[0] === t;
               })[0];
               if (i) return i;
             }
             return (
-              s1.filter(function (c) {
+              customPlaces.filter(function (c) {
                 return c[0] === t;
               })[0] || null
             );
           }
-          var e2 = {};
+          var placeDetailsCache = {};
           try {
-            e2 = JSON.parse(o("vizag-wdet") || "{}") || {};
+            placeDetailsCache = JSON.parse(readStore("vizag-wdet") || "{}") || {};
           } catch (t) {}
-          var Ve = {};
+          var favourites = {};
           try {
-            Ve = JSON.parse(o("vizag-favs") || "{}") || {};
+            favourites = JSON.parse(readStore("vizag-favs") || "{}") || {};
           } catch (t) {}
-          Object.keys(Ve).forEach(function (t) {
-            Ve[t] === !0 && (Ve[t] = { n: t, k: "place", t: Date.now() });
+          Object.keys(favourites).forEach(function (t) {
+            favourites[t] === !0 && (favourites[t] = { n: t, k: "place", t: Date.now() });
           });
-          function $n() {
-            l("vizag-favs", JSON.stringify(Ve)), za();
+          function saveFavourites() {
+            writeStore("vizag-favs", JSON.stringify(favourites)), renderFavourites();
           }
-          function yn(t, a, i) {
-            Ve[t] ? delete Ve[t] : ((a.t = Date.now()), (Ve[t] = a)),
-              $n(),
-              i && i.classList.toggle("on", !!Ve[t]),
-              F1(Ve[t] ? "Saved to My places" : "Removed from My places", "View", function () {
-                Q("more");
-              });
+          function toggleFavourite(t, a, i) {
+            favourites[t] ? delete favourites[t] : ((a.t = Date.now()), (favourites[t] = a)),
+              saveFavourites(),
+              i && i.classList.toggle("on", !!favourites[t]),
+              showOkToast(
+                favourites[t] ? "Saved to My places" : "Removed from My places",
+                "View",
+                function () {
+                  showTab("more");
+                },
+              );
           }
-          var Zn = { place: "pin", food: "food", hotel: "hotel", bag: "bag", pin: "pin", globe: "globe" };
-          function za() {
-            var t = e("fav-list");
+          var FAV_ICONS = {
+            place: "pin",
+            food: "food",
+            hotel: "hotel",
+            bag: "bag",
+            pin: "pin",
+            globe: "globe",
+          };
+          function renderFavourites() {
+            var t = byId("fav-list");
             if (t) {
-              var a = Object.keys(Ve)
+              var a = Object.keys(favourites)
                 .map(function (i) {
-                  return Ve[i];
+                  return favourites[i];
                 })
                 .sort(function (i, c) {
                   return (c.t || 0) - (i.t || 0);
@@ -5585,16 +5742,16 @@ try {
               (t.innerHTML = a.length
                 ? a
                     .map(function (i, c) {
-                      var g = i.k === "place" ? F2(i.n) : null;
+                      var g = i.k === "place" ? findPlace(i.n) : null;
                       return (
                         '<div class="mprow grow" data-fv="' +
                         c +
                         '" role="button" tabindex="0"><span class="gav">' +
-                        (g ? L[g[4]] || "\u{1F4CD}" : zt(Zn[i.k] || "pin")) +
+                        (g ? STATE_EMOJI[g[4]] || "\u{1F4CD}" : iconSvg(FAV_ICONS[i.k] || "pin")) +
                         '</span><div class="mpt"><b>' +
-                        h(i.n) +
+                        escapeHtml(i.n) +
                         "</b><small>" +
-                        h(i.s || (g ? (h2[g[4]] || "Place") + " \xB7 " + g[1] : "")) +
+                        escapeHtml(i.s || (g ? (KIND_LABELS[g[4]] || "Place") + " \xB7 " + g[1] : "")) +
                         '</small></div><span class="favh"><svg class="ph pci hf" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.4 19.97C7.59 17.86 2 13.03 2 8.69 2 5.83 4.1 3.5 7 3.5c1.5 0 3 .5 5 2.5 2-2 3.5-2.5 5-2.5 2.9 0 5 2.33 5 5.19 0 4.34-5.59 9.17-8.41 11.28a2.64 2.64 0 0 1-3.19 0z"/></svg></span></div>'
                       );
                     })
@@ -5604,24 +5761,24 @@ try {
                   i.onclick = function (c) {
                     c.stopPropagation();
                     var g = a[+i.dataset.fv];
-                    if (g.k === "place" && F2(g.n)) v2(g.n);
+                    if (g.k === "place" && findPlace(g.n)) openPlaceSheet(g.n);
                     else if (g.u) {
                       var E = document.createElement("a");
                       if (((E.href = g.u), (E.dataset.title = g.n), (E.dataset.kind = g.k), g.s)) {
                         var z = document.createElement("small");
                         (z.textContent = g.s), E.appendChild(z);
                       }
-                      Ln(E);
+                      linkLabel(E);
                     }
                   };
                 }),
                 window.__paintUses && window.__paintUses(t);
             }
           }
-          window.__drawFavs = za;
-          var Vt = e("place-sheet"),
-            p1 = null;
-          function wn(t, a) {
+          window.__drawFavs = renderFavourites;
+          var placeSheet = byId("place-sheet"),
+            placeSheetSource = null;
+          function mapTileFor(t, a) {
             for (
               var i = 12,
                 c = Math.pow(2, i),
@@ -5652,8 +5809,8 @@ try {
                   'px)">';
             return kt;
           }
-          function bn() {
-            var t = e("ps-about");
+          function clampAbout() {
+            var t = byId("ps-about");
             t &&
               (t.classList.add("clamp3"),
               requestAnimationFrame(function () {
@@ -5678,7 +5835,7 @@ try {
                 }
               }));
           }
-          function t4(t) {
+          function typicalHours(t) {
             return (
               {
                 temple: "6 AM\u201312 PM, 4\u20138:30 PM",
@@ -5703,16 +5860,22 @@ try {
               }[t] || "Daytime"
             );
           }
-          function v2(t, a, i) {
-            var c = F2(t);
+          function openPlaceSheet(t, a, i) {
+            var c = findPlace(t);
             if (!c) return;
-            var g = gn(c),
-              E = Ae(),
-              z = a || (ne.hidden ? (E ? [E.from[1], E.from[2]] : null) : [I1().from[1], I1().from[2]]),
-              B = z ? nt(z, [c[2], c[3]]) : 0,
-              j = ne.hidden
+            var g = stateOfPlace(c),
+              E = activeTrip(),
+              z =
+                a ||
+                (plannerPage.hidden
+                  ? E
+                    ? [E.from[1], E.from[2]]
+                    : null
+                  : [readPlannerForm().from[1], readPlannerForm().from[2]]),
+              B = z ? roadKm(z, [c[2], c[3]]) : 0,
+              j = plannerPage.hidden
                 ? null
-                : r("#pl-places .pcard").filter(function (_t) {
+                : findAll("#pl-places .pcard").filter(function (_t) {
                     var Ht = _t.querySelector("input");
                     return Ht && Ht.value === t;
                   })[0],
@@ -5722,7 +5885,7 @@ try {
                 E.places.some(function (_t) {
                   return _t[0] === t;
                 });
-            p1 = { name: t, card: j, addp: D };
+            placeSheetSource = { name: t, card: j, addp: D };
             var kt = j ? j.querySelector("input").checked : et,
               At = j
                 ? kt
@@ -5733,28 +5896,28 @@ try {
                   : et
                     ? "In your trip"
                     : "Open in Maps",
-              It = (S[g] || []).indexOf(c),
+              It = (PLACES_BY_STATE[g] || []).indexOf(c),
               Fe = c[6] ? "AI pick" : It >= 0 && It < 3 ? "Must see" : "";
-            (e("ps-body").innerHTML =
+            (byId("ps-body").innerHTML =
               '<div class="pshero" id="ps-hero" data-cat="' +
-              h(c[4]) +
+              escapeHtml(c[4]) +
               '"><span class="pshemo">' +
-              (L[c[4]] || "\u{1F4CD}") +
+              (STATE_EMOJI[c[4]] || "\u{1F4CD}") +
               '</span><button type="button" class="hback psb" id="ps-close" aria-label="Close">' +
-              zt("back") +
+              iconSvg("back") +
               '</button><button type="button" class="hback psfav' +
-              (Ve[t] ? " on" : "") +
+              (favourites[t] ? " on" : "") +
               '" id="ps-fav" aria-label="Save to My places">' +
-              zt("heart") +
+              iconSvg("heart") +
               '<svg class="ph pci hf" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.4 19.97C7.59 17.86 2 13.03 2 8.69 2 5.83 4.1 3.5 7 3.5c1.5 0 3 .5 5 2.5 2-2 3.5-2.5 5-2.5 2.9 0 5 2.33 5 5.19 0 4.34-5.59 9.17-8.41 11.28a2.64 2.64 0 0 1-3.19 0z"/></svg></button></div><div class="pspanel"><div class="pshead"><div><h3>' +
-              h(t) +
+              escapeHtml(t) +
               "</h3><p>" +
-              h(c[1]) +
-              (g ? ", " + h(g) : "") +
+              escapeHtml(c[1]) +
+              (g ? ", " + escapeHtml(g) : "") +
               '</p></div><div class="psdur"><b>' +
-              G1(c[5]) +
+              durationText(c[5]) +
               '</b><small>visit</small></div></div><div class="pschips"><span>' +
-              zt(
+              iconSvg(
                 {
                   temple: "temple",
                   hill: "mountain",
@@ -5781,51 +5944,51 @@ try {
                   train: "train",
                 }[c[4]] || "pin",
               ) +
-              h(h2[c[4]] || "Sight") +
+              escapeHtml(KIND_LABELS[c[4]] || "Sight") +
               "</span>" +
-              (Fe ? '<span class="hot">' + zt("star") + Fe + "</span>" : "") +
-              (B ? "<span>" + zt("car") + "~" + B.toLocaleString("en-IN") + " km away</span>" : "") +
-              (la(c) ? "<span>" + zt("calendar") + "Best " + la(c) + "</span>" : "") +
+              (Fe ? '<span class="hot">' + iconSvg("star") + Fe + "</span>" : "") +
+              (B ? "<span>" + iconSvg("car") + "~" + B.toLocaleString("en-IN") + " km away</span>" : "") +
+              (seasonNote(c) ? "<span>" + iconSvg("calendar") + "Best " + seasonNote(c) + "</span>" : "") +
               '</div><h4>About</h4><p class="psabout clamp3" id="ps-about">' +
-              h(h2[c[4]] || "Sight") +
+              escapeHtml(KIND_LABELS[c[4]] || "Sight") +
               " in " +
-              h(c[1]) +
+              escapeHtml(c[1]) +
               ", " +
-              h(g) +
+              escapeHtml(g) +
               ". Plan about " +
-              G1(c[5]) +
+              durationText(c[5]) +
               ' here.</p><div class="psfacts"><div><span>' +
-              zt("clock") +
+              iconSvg("clock") +
               "Timings</span><b>" +
-              t4(c[4]) +
+              typicalHours(c[4]) +
               "</b></div><div><span>" +
-              zt("note") +
+              iconSvg("note") +
               "Entry</span><b>" +
-              h((E2[c[4]] || "Usually free").replace(/^Entry /, "")) +
+              escapeHtml((ENTRY_FEES[c[4]] || "Usually free").replace(/^Entry /, "")) +
               '</b></div></div><p class="psfine">Typical for this kind of place. Check before you go.</p><h4>Location</h4><p class="psloc">' +
-              h(c[1]) +
+              escapeHtml(c[1]) +
               ", " +
-              h(g) +
+              escapeHtml(g) +
               " \xB7 " +
               c[2].toFixed(3) +
               ", " +
               c[3].toFixed(3) +
               '</p><a class="psmap" data-ext="1" href="' +
-              J(t + " " + c[1] + " " + g) +
+              mapsSearchUrl(t + " " + c[1] + " " + g) +
               '" target="_blank" rel="noopener" aria-label="Open ' +
-              h(t) +
+              escapeHtml(t) +
               ' in Google Maps"><span class="pstiles">' +
-              wn(c[2], c[3]) +
+              mapTileFor(c[2], c[3]) +
               '</span><span class="pspin">' +
-              zt("pin") +
+              iconSvg("pin") +
               '</span><small>\xA9 OpenStreetMap</small></a></div><div class="psfoot"><a class="btn ghost psdir" data-title="Directions to ' +
-              h(t) +
+              escapeHtml(t) +
               '" href="https://www.google.com/maps/dir/?api=1&destination=' +
               c[2] +
               "," +
               c[3] +
               '" target="_blank" rel="noopener">' +
-              zt("directions") +
+              iconSvg("directions") +
               'Directions</a><button type="button" class="btn psact' +
               (kt && j ? " on" : "") +
               '" id="ps-act"' +
@@ -5833,38 +5996,46 @@ try {
               ">" +
               At +
               "</button></div>"),
-              window.__paintUses && window.__paintUses(e("ps-body")),
-              bn(),
-              r("#ps-body .pstiles img").forEach(function (_t) {
+              window.__paintUses && window.__paintUses(byId("ps-body")),
+              clampAbout(),
+              findAll("#ps-body .pstiles img").forEach(function (_t) {
                 _t.addEventListener("error", function () {
                   _t.remove();
                 });
               }),
-              Vt.classList.remove("lsheet", "tpsheet"),
-              Vt.classList.toggle("full", !!i),
-              (Vt.hidden = !1),
-              U.classList.add("ps-open"),
+              placeSheet.classList.remove("lsheet", "tpsheet"),
+              placeSheet.classList.toggle("full", !!i),
+              (placeSheet.hidden = !1),
+              rootEl.classList.add("ps-open"),
               requestAnimationFrame(function () {
-                Vt.classList.add("in");
+                placeSheet.classList.add("in");
               }),
-              (e("ps-close").onclick = Ne),
-              (e("ps-fav").onclick = function () {
-                yn(t, { n: t, k: "place", s: (h2[c[4]] || "Place") + " \xB7 " + c[1] }, this);
+              (byId("ps-close").onclick = fitPlaceSheet),
+              (byId("ps-fav").onclick = function () {
+                toggleFavourite(
+                  t,
+                  { n: t, k: "place", s: (KIND_LABELS[c[4]] || "Place") + " \xB7 " + c[1] },
+                  this,
+                );
               }),
-              (e("ps-act").onclick = function () {
+              (byId("ps-act").onclick = function () {
                 if (j) {
                   var _t = j.querySelector("input");
-                  (_t.checked = !_t.checked), _t.dispatchEvent(new Event("change", { bubbles: !0 })), Ne();
+                  (_t.checked = !_t.checked),
+                    _t.dispatchEvent(new Event("change", { bubbles: !0 })),
+                    fitPlaceSheet();
                 } else
                   D
-                    ? ((D.checked = !0), D.dispatchEvent(new Event("change", { bubbles: !0 })), Ne())
-                    : et || window.open(J(t + " " + c[1] + " " + g), "_blank", "noopener");
+                    ? ((D.checked = !0),
+                      D.dispatchEvent(new Event("change", { bubbles: !0 })),
+                      fitPlaceSheet())
+                    : et || window.open(mapsSearchUrl(t + " " + c[1] + " " + g), "_blank", "noopener");
               });
             var se = t + "|" + c[1],
-              Me = e("ps-hero");
+              Me = byId("ps-hero");
             (function () {
               var _t = c[0] + " " + c[1],
-                Ht = a1[_t];
+                Ht = placeImageCache[_t];
               if (!Ht || !Ht.c) return;
               var ce = document.createElement("p");
               ce.className = "pscredit";
@@ -5873,13 +6044,15 @@ try {
                 me = Oe.join(" \xB7 ");
               function de() {
                 ce.innerHTML =
-                  (Ht.l ? '<a href="' + h(Ht.l) + '" target="_blank" rel="noopener">' : "") +
+                  (Ht.l ? '<a href="' + escapeHtml(Ht.l) + '" target="_blank" rel="noopener">' : "") +
                   '<span class="cr1">' +
-                  h(he) +
+                  escapeHtml(he) +
                   "</span>" +
                   (me || Ht.a
                     ? '<span class="cr2">' +
-                      h([Ht.a ? "by " + Ht.a : "", Ht.lic || "", me].filter(Boolean).join(" \xB7 ")) +
+                      escapeHtml(
+                        [Ht.a ? "by " + Ht.a : "", Ht.lic || "", me].filter(Boolean).join(" \xB7 "),
+                      ) +
                       "</span>"
                     : "") +
                   (Ht.l ? "</a>" : "");
@@ -5904,37 +6077,37 @@ try {
                         (jt.innerHTML = (ft.Artist && ft.Artist.value) || ""),
                           (Ht.a = (jt.textContent || "").trim().slice(0, 60)),
                           (Ht.lic = (ft.LicenseShortName && ft.LicenseShortName.value) || ""),
-                          (a1[_t] = Ht),
-                          l("vizag-wimg", JSON.stringify(a1)),
+                          (placeImageCache[_t] = Ht),
+                          writeStore("vizag-wimg", JSON.stringify(placeImageCache)),
                           de();
                       }
                     })
                     .catch(function () {});
-              var n1 = e("ps-body").querySelectorAll(".pspanel");
-              (n1[n1.length - 1] || e("ps-body")).appendChild(ce);
+              var n1 = byId("ps-body").querySelectorAll(".pspanel");
+              (n1[n1.length - 1] || byId("ps-body")).appendChild(ce);
             })();
             function ee(_t) {
               !_t ||
-                !Vt ||
-                Vt.hidden ||
-                !p1 ||
-                p1.name !== t ||
+                !placeSheet ||
+                placeSheet.hidden ||
+                !placeSheetSource ||
+                placeSheetSource.name !== t ||
                 (_t.s &&
-                  !(sa() && Me.classList.contains("has")) &&
+                  !(getPlacesApiKey() && Me.classList.contains("has")) &&
                   ((Me.style.backgroundImage = 'url("' + _t.s.replace(/"/g, "") + '")'),
                   Me.classList.add("has")),
-                _t.x && ((e("ps-about").textContent = _t.x), bn()));
+                _t.x && ((byId("ps-about").textContent = _t.x), clampAbout()));
             }
-            sa() &&
-              Ca(c[0] + " " + c[1], 1200).then(function (_t) {
+            getPlacesApiKey() &&
+              fetchPlacePhoto(c[0] + " " + c[1], 1200).then(function (_t) {
                 _t &&
-                  p1 &&
-                  p1.name === t &&
+                  placeSheetSource &&
+                  placeSheetSource.name === t &&
                   ((Me.style.backgroundImage = 'url("' + _t.replace(/"/g, "") + '")'),
                   Me.classList.add("has"));
               }),
-              e2[se]
-                ? ee(e2[se])
+              placeDetailsCache[se]
+                ? ee(placeDetailsCache[se])
                 : navigator.onLine !== !1 &&
                   window.fetch &&
                   fetch(
@@ -5958,59 +6131,63 @@ try {
                         };
                       }
                       function he(me) {
-                        e2[se] = me;
-                        var de = Object.keys(e2);
-                        de.length > 200 && delete e2[de[0]], l("vizag-wdet", JSON.stringify(e2)), ee(me);
+                        placeDetailsCache[se] = me;
+                        var de = Object.keys(placeDetailsCache);
+                        de.length > 200 && delete placeDetailsCache[de[0]],
+                          writeStore("vizag-wdet", JSON.stringify(placeDetailsCache)),
+                          ee(me);
                       }
                       ce && ce.s
                         ? he(ce)
-                        : oa(t + " " + c[1]).then(function (me) {
+                        : fetchOpenversePhoto(t + " " + c[1]).then(function (me) {
                             (ce = ce || { x: "", u: "" }), (ce.s = me || ""), he(ce);
                           });
                     })
                     .catch(function () {
-                      oa(t + " " + c[1]).then(function (_t) {
+                      fetchOpenversePhoto(t + " " + c[1]).then(function (_t) {
                         _t && ee({ s: _t });
                       });
                     });
           }
-          function Ne() {
-            var t = Vt.querySelector(".psbox");
+          function fitPlaceSheet() {
+            var t = placeSheet.querySelector(".psbox");
             t &&
               setTimeout(function () {
                 t.style.minHeight = "";
               }, 230),
-              Vt.classList.remove("in"),
-              U.classList.remove("ps-open"),
+              placeSheet.classList.remove("in"),
+              rootEl.classList.remove("ps-open"),
               setTimeout(function () {
-                Vt.hidden = !0;
+                placeSheet.hidden = !0;
               }, 220),
-              (p1 = null);
+              (placeSheetSource = null);
           }
-          Vt.addEventListener("click", function (t) {
-            (t.target === Vt || t.target.classList.contains("psbg")) && Ne();
+          placeSheet.addEventListener("click", function (t) {
+            (t.target === placeSheet || t.target.classList.contains("psbg")) && fitPlaceSheet();
           }),
             document.addEventListener("keydown", function (t) {
-              t.key === "Escape" && !Vt.hidden && Ne(),
+              t.key === "Escape" && !placeSheet.hidden && fitPlaceSheet(),
                 (t.key === "Enter" || t.key === " ") &&
                   t.target.matches &&
                   t.target.matches('[data-pn][role="button"]') &&
-                  (t.preventDefault(), v2(t.target.dataset.pn));
+                  (t.preventDefault(), openPlaceSheet(t.target.dataset.pn));
             }),
             document.addEventListener(
               "click",
               function (t) {
                 var a = t.target.closest && t.target.closest("[data-pn]");
                 a &&
-                  (t.preventDefault(), t.stopPropagation(), v2(a.dataset.pn, null, a.dataset.full === "1"));
+                  (t.preventDefault(),
+                  t.stopPropagation(),
+                  openPlaceSheet(a.dataset.pn, null, a.dataset.full === "1"));
               },
               !0,
             ),
-            (window.__openPlace = v2);
-          var kn = e("vz-edit");
-          kn &&
-            kn.addEventListener("click", function () {
-              var t = S["Andhra Pradesh"] || [],
+            (window.__openPlace = openPlaceSheet);
+          var sampleEditButton = byId("vz-edit");
+          sampleEditButton &&
+            sampleEditButton.addEventListener("click", function () {
+              var t = PLACES_BY_STATE["Andhra Pradesh"] || [],
                 a = [
                   "Annavaram Temple",
                   "Kailasagiri",
@@ -6020,10 +6197,10 @@ try {
                   "Vanjangi Hills",
                 ],
                 i =
-                  C.filter(function (c) {
+                  CITIES.filter(function (c) {
                     return c[0] === "Hyderabad";
-                  })[0] || C[0];
-              o1(
+                  })[0] || CITIES[0];
+              openPlanner(
                 {
                   from: i,
                   state: "Andhra Pradesh",
@@ -6042,10 +6219,10 @@ try {
                 },
                 !0,
               ),
-                (V1 = !0),
-                (e("pl-del").hidden = !1);
+                (editingSampleTrip = !0),
+                (byId("pl-del").hidden = !1);
             });
-          function e4(t) {
+          function placeFromMapsUrl(t) {
             try {
               var a = new URL(t),
                 i =
@@ -6062,7 +6239,7 @@ try {
               return "";
             }
           }
-          function a4(t) {
+          function stopTitle(t) {
             if (t.dataset.title) return t.dataset.title;
             var a = "",
               i = t.querySelector(".pn");
@@ -6077,37 +6254,37 @@ try {
             }
             return a;
           }
-          var h1 = null;
-          function n4(t) {
-            h1 ||
-              ((h1 = {}),
-              Object.keys(S).forEach(function (c) {
-                S[c].forEach(function (g) {
-                  h1[g[1]] || (h1[g[1]] = [g[2], g[3]]);
+          var placeIndex = null;
+          function lookupPlace(t) {
+            placeIndex ||
+              ((placeIndex = {}),
+              Object.keys(PLACES_BY_STATE).forEach(function (c) {
+                PLACES_BY_STATE[c].forEach(function (g) {
+                  placeIndex[g[1]] || (placeIndex[g[1]] = [g[2], g[3]]);
                 });
               }),
-              C.forEach(function (c) {
-                h1[c[0]] || (h1[c[0]] = [c[1], c[2]]);
+              CITIES.forEach(function (c) {
+                placeIndex[c[0]] || (placeIndex[c[0]] = [c[1], c[2]]);
               }),
-              (h1.Vizag = h1.Visakhapatnam));
+              (placeIndex.Vizag = placeIndex.Visakhapatnam));
             var a = (t || "").toLowerCase(),
               i = null;
             return (
-              Object.keys(h1).forEach(function (c) {
+              Object.keys(placeIndex).forEach(function (c) {
                 c.length > 3 && a.indexOf(c.toLowerCase()) >= 0 && (!i || c.length > i.length) && (i = c);
               }),
-              i ? { name: i, ll: h1[i] } : null
+              i ? { name: i, ll: placeIndex[i] } : null
             );
           }
-          function Ln(t) {
+          function linkLabel(t) {
             var a = t.href,
               i = "";
             try {
               i = new URL(a).hostname.replace(/^www\./, "");
             } catch (ee) {}
             var c = /google\.[a-z.]+\/maps|maps\.app\.goo\.gl|maps\.google\./.test(a),
-              g = c ? e4(a) : "",
-              E = a4(t) || g || i,
+              g = c ? placeFromMapsUrl(a) : "",
+              E = stopTitle(t) || g || i,
               z = t.querySelector("small"),
               B = t.closest("li"),
               j =
@@ -6115,13 +6292,13 @@ try {
                 (B && B.querySelector(".s") && B.querySelector(".s").textContent) ||
                 "",
               D = (t.querySelector("em") || {}).textContent || "",
-              et = F2(E);
+              et = findPlace(E);
             if (et) {
-              v2(et[0]);
+              openPlaceSheet(et[0]);
               return;
             }
             var kt = (g || "").match(/^(-?\d+\.\d+),\s*(-?\d+\.\d+)$/),
-              At = kt ? null : n4(E + " " + g),
+              At = kt ? null : lookupPlace(E + " " + g),
               It = kt ? [+kt[1], +kt[2]] : At && At.ll,
               Fe = {
                 food: ["food", "food", "Food"],
@@ -6139,75 +6316,79 @@ try {
                       : c
                         ? ["pin", "city", "Place"]
                         : ["globe", "city", "Link"]);
-            (e("ps-body").innerHTML =
+            (byId("ps-body").innerHTML =
               '<div class="pshero" data-cat="' +
               se[1] +
               '"><span class="pshemo">' +
-              zt(se[0]) +
+              iconSvg(se[0]) +
               '</span><button type="button" class="hback psb" id="ps-close" aria-label="Close">' +
-              zt("back") +
+              iconSvg("back") +
               '</button><button type="button" class="hback psfav' +
-              (Ve[a] ? " on" : "") +
+              (favourites[a] ? " on" : "") +
               '" id="ps-fav" aria-label="Save to My places">' +
-              zt("heart") +
+              iconSvg("heart") +
               '<svg class="ph pci hf" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.4 19.97C7.59 17.86 2 13.03 2 8.69 2 5.83 4.1 3.5 7 3.5c1.5 0 3 .5 5 2.5 2-2 3.5-2.5 5-2.5 2.9 0 5 2.33 5 5.19 0 4.34-5.59 9.17-8.41 11.28a2.64 2.64 0 0 1-3.19 0z"/></svg></button></div><div class="pspanel"><div class="pshead"><div><h3>' +
-              h(E) +
+              escapeHtml(E) +
               "</h3><p>" +
-              h(At ? At.name : c ? "Google Maps" : i) +
+              escapeHtml(At ? At.name : c ? "Google Maps" : i) +
               '</p></div></div><div class="pschips"><span>' +
-              zt(se[0]) +
+              iconSvg(se[0]) +
               se[2] +
               "</span>" +
-              (D ? "<span>" + zt("wallet") + h(D) + "</span>" : "") +
-              (c ? "<span>" + zt("search") + "Live results in Maps</span>" : "") +
+              (D ? "<span>" + iconSvg("wallet") + escapeHtml(D) + "</span>" : "") +
+              (c ? "<span>" + iconSvg("search") + "Live results in Maps</span>" : "") +
               "</div>" +
-              (j ? '<h4>About</h4><p class="psabout">' + h(j) + "</p>" : "") +
+              (j ? '<h4>About</h4><p class="psabout">' + escapeHtml(j) + "</p>" : "") +
               (c
                 ? "<h4>Location</h4>" +
                   (It
                     ? '<p class="psloc">' +
-                      h(At ? "Around " + At.name : "Pinned location") +
+                      escapeHtml(At ? "Around " + At.name : "Pinned location") +
                       '</p><a class="psmap" data-ext="1" href="' +
-                      h(a) +
+                      escapeHtml(a) +
                       '" target="_blank" rel="noopener"><span class="pstiles">' +
-                      wn(It[0], It[1]) +
+                      mapTileFor(It[0], It[1]) +
                       '</span><span class="pspin">' +
-                      zt("pin") +
+                      iconSvg("pin") +
                       "</span><small>\xA9 OpenStreetMap</small></a>"
-                    : '<div class="lsq">' + zt("search") + "<span>" + h(g || E) + "</span></div>") +
+                    : '<div class="lsq">' +
+                      iconSvg("search") +
+                      "<span>" +
+                      escapeHtml(g || E) +
+                      "</span></div>") +
                   '<p class="psfine">Opens the Google Maps app if it\u2019s installed, otherwise a new tab, with current listings, ratings and opening hours.</p>'
                 : '<h4>Link</h4><div class="lsq">' +
-                  zt("link") +
+                  iconSvg("link") +
                   "<span>" +
-                  h(a.replace(/^https?:\/\//, "").slice(0, 80)) +
+                  escapeHtml(a.replace(/^https?:\/\//, "").slice(0, 80)) +
                   "</span></div>") +
               '</div><div class="psfoot"><button type="button" class="btn ghost psdir" id="ls-copy">' +
-              zt("copy") +
+              iconSvg("copy") +
               'Copy link</button><a class="btn psact" data-ext="1" href="' +
-              h(a) +
+              escapeHtml(a) +
               '" target="_blank" rel="noopener">' +
-              zt("open") +
+              iconSvg("open") +
               (c ? "Open in Maps" : "Open") +
               "</a></div>"),
-              window.__paintUses && window.__paintUses(e("ps-body")),
-              r("#ps-body .pstiles img").forEach(function (ee) {
+              window.__paintUses && window.__paintUses(byId("ps-body")),
+              findAll("#ps-body .pstiles img").forEach(function (ee) {
                 ee.addEventListener("error", function () {
                   ee.remove();
                 });
               }),
-              (p1 = { name: "link" }),
-              Vt.classList.remove("full", "tpsheet", "lsheet"),
-              (Vt.hidden = !1),
-              U.classList.add("ps-open"),
+              (placeSheetSource = { name: "link" }),
+              placeSheet.classList.remove("full", "tpsheet", "lsheet"),
+              (placeSheet.hidden = !1),
+              rootEl.classList.add("ps-open"),
               requestAnimationFrame(function () {
-                Vt.classList.add("in");
+                placeSheet.classList.add("in");
               }),
-              (e("ps-close").onclick = Ne);
+              (byId("ps-close").onclick = fitPlaceSheet);
             var Me = (At ? At.name : "") + (D ? (At ? " \xB7 " : "") + D : "");
-            (e("ps-fav").onclick = function () {
-              yn(a, { n: E, k: se[0], u: a, s: Me || j }, this);
+            (byId("ps-fav").onclick = function () {
+              toggleFavourite(a, { n: E, k: se[0], u: a, s: Me || j }, this);
             }),
-              (e("ls-copy").onclick = function () {
+              (byId("ls-copy").onclick = function () {
                 var ee = this;
                 function _t() {
                   (ee.lastChild.textContent = "Copied"),
@@ -6219,8 +6400,8 @@ try {
                   navigator.clipboard.writeText(a).then(_t, function () {});
                 } catch (Ht) {}
               }),
-              Vt.querySelector(".psact").addEventListener("click", function () {
-                setTimeout(Ne, 300);
+              placeSheet.querySelector(".psact").addEventListener("click", function () {
+                setTimeout(fitPlaceSheet, 300);
               });
           }
           document.addEventListener(
@@ -6238,16 +6419,16 @@ try {
                 t.preventDefault(), t.stopPropagation();
                 var i = a.closest(".stop"),
                   c = i && i.querySelector("[data-pn]");
-                if (c && F2(c.dataset.pn)) {
-                  v2(c.dataset.pn);
+                if (c && findPlace(c.dataset.pn)) {
+                  openPlaceSheet(c.dataset.pn);
                   return;
                 }
-                Ln(a);
+                linkLabel(a);
               }
             },
             !0,
           );
-          var S1 = [
+          var TRIP_TEMPLATES = [
               {
                 n: "Kerala classic",
                 s: "Kerala",
@@ -6390,42 +6571,43 @@ try {
                 p: ["RK Beach", "Kailasagiri", "Borra Caves", "Araku Valley", "Vanjangi Hills"],
               },
             ],
-            r4 = {};
+            templateRatings = {};
           try {
-            r4 = JSON.parse(o("vizag-profile") || "{}").tplRating || {};
+            templateRatings = JSON.parse(readStore("vizag-profile") || "{}").tplRating || {};
           } catch (t) {}
-          var I2 = "start";
-          function B1(t) {
-            (t === "start" || t === "browse") && (Ot(), _e(0), (t = "own")), (I2 = t || I2);
-            var a = e("pl-side");
+          var plannerMode = "start";
+          function setPlannerMode(t) {
+            (t === "start" || t === "browse") && (renderTemplates(), goToStep(0), (t = "own")),
+              (plannerMode = t || plannerMode);
+            var a = byId("pl-side");
             if (a) {
-              var i = e("pl-state").value;
-              if (I2 === "start")
+              var i = byId("pl-state").value;
+              if (plannerMode === "start")
                 a.innerHTML =
                   '<div class="psempty"><div class="psico">\u{1F9ED}</div><h4>How do you want to start?</h4><p>Pick a ready-made route or build your own from scratch.</p><button type="button" class="pch" data-side="browse"><span class="pche">\u2B50</span><span><b>Popular trips</b><small>' +
-                  S1.length +
+                  TRIP_TEMPLATES.length +
                   " curated routes across India</small></span>" +
-                  k1() +
+                  arrowSvg() +
                   '</button><button type="button" class="pch" data-side="own"><span class="pche">\u270F\uFE0F</span><span><b>Build my own</b><small>Pick a state, then add places</small></span>' +
-                  k1() +
+                  arrowSvg() +
                   "</button></div>";
-              else if (I2 === "browse")
+              else if (plannerMode === "browse")
                 (a.innerHTML =
                   '<button type="button" class="psback" data-side="start">\u2039 Back</button><div class="pgl">Popular trips</div><p class="ppophint">Tick a trip to use it' +
                   (window.matchMedia && matchMedia("(min-width:900px)").matches
                     ? ", or drag it onto the form"
                     : "") +
                   '.</p><div class="ppoplist">' +
-                  S1.map(function (E, z) {
+                  TRIP_TEMPLATES.map(function (E, z) {
                     return (
                       '<label class="tpl" draggable="true" data-tpl="' +
                       z +
                       '"><span class="tpemo">' +
                       E.e +
                       '</span><span class="tpt"><b>' +
-                      h(E.n) +
+                      escapeHtml(E.n) +
                       "</b><small>" +
-                      h(E.s) +
+                      escapeHtml(E.s) +
                       " \xB7 " +
                       E.d +
                       " days \xB7 " +
@@ -6433,7 +6615,7 @@ try {
                       ' places</small><span class="tpbadge">Curated</span></span><input type="checkbox" class="cbx" data-tplc="' +
                       z +
                       '" aria-label="Use ' +
-                      h(E.n) +
+                      escapeHtml(E.n) +
                       '"></label>'
                     );
                   }).join("") +
@@ -6450,43 +6632,43 @@ try {
                   }),
                   a.querySelectorAll("[data-tplc]").forEach(function (E) {
                     E.addEventListener("change", function () {
-                      E.checked && ca(S1[+E.dataset.tplc]);
+                      E.checked && applyTemplate(TRIP_TEMPLATES[+E.dataset.tplc]);
                     });
                   });
               else {
-                var c = (S[i] || []).concat(
-                    s1.filter(function (E) {
+                var c = (PLACES_BY_STATE[i] || []).concat(
+                    customPlaces.filter(function (E) {
                       return E[7] === i;
                     }),
                   ),
                   g = {};
-                r("#pl-places input:checked").forEach(function (E) {
+                findAll("#pl-places input:checked").forEach(function (E) {
                   g[E.value] = 1;
                 }),
                   (a.innerHTML =
                     '<button type="button" class="psback" data-side="start">\u2039 Back</button><div class="pgl">Curated places \xB7 ' +
-                    h(i) +
+                    escapeHtml(i) +
                     '</div><p class="ppophint">Tick to add or remove. Change the state in the form.</p><div class="pslist">' +
                     c
                       .map(function (E, z) {
                         return (
                           '<label class="psrow"><span class="emo" data-pn="' +
-                          h(E[0]) +
+                          escapeHtml(E[0]) +
                           '" role="button" aria-label="About ' +
-                          h(E[0]) +
+                          escapeHtml(E[0]) +
                           '">' +
-                          (L[E[4]] || "\u{1F4CD}") +
+                          (STATE_EMOJI[E[4]] || "\u{1F4CD}") +
                           '</span><span class="mpt"><b data-pn="' +
-                          h(E[0]) +
+                          escapeHtml(E[0]) +
                           '">' +
-                          h(E[0]) +
+                          escapeHtml(E[0]) +
                           "</b><small>" +
-                          h(E[1]) +
+                          escapeHtml(E[1]) +
                           " \xB7 " +
-                          G1(E[5]) +
+                          durationText(E[5]) +
                           (z < 3 && !E[6] ? " \xB7 Must see" : "") +
                           '</small></span><input type="checkbox" class="cbx" data-sv="' +
-                          h(E[0]) +
+                          escapeHtml(E[0]) +
                           '"' +
                           (g[E[0]] ? " checked" : "") +
                           "></label>"
@@ -6496,40 +6678,40 @@ try {
                     "</div>"),
                   a.querySelectorAll("[data-sv]").forEach(function (E) {
                     E.addEventListener("change", function () {
-                      var z = Array.prototype.filter.call(r("#pl-places input"), function (B) {
+                      var z = Array.prototype.filter.call(findAll("#pl-places input"), function (B) {
                         return B.value === E.dataset.sv;
                       })[0];
-                      z && ((z.checked = E.checked), ia());
+                      z && ((z.checked = E.checked), syncSelectAll());
                     });
                   });
               }
               a.querySelectorAll("[data-side]").forEach(function (E) {
                 E.addEventListener("click", function () {
                   var z = E.dataset.side;
-                  B1(z), z === "own" && Mn() && _e(1);
+                  setPlannerMode(z), z === "own" && isPhoneWidth() && goToStep(1);
                 });
               });
             }
           }
-          function Mn() {
+          function isPhoneWidth() {
             return !(window.matchMedia && matchMedia("(min-width:900px)").matches);
           }
-          function ca(t) {
-            (e("pl-state").value = t.s), P2(t.p);
-            var a = e("pl-start").value ? new Date(e("pl-start").value) : new Date(),
+          function applyTemplate(t) {
+            (byId("pl-state").value = t.s), renderPlaces(t.p);
+            var a = byId("pl-start").value ? new Date(byId("pl-start").value) : new Date(),
               i = new Date(a);
             i.setDate(i.getDate() + t.d - 1),
-              (e("pl-end").value = Ge(i)),
-              (!e("pl-name").dataset.touched || !e("pl-name").value) && (e("pl-name").value = t.n);
-            var c = e("pl-main");
+              (byId("pl-end").value = isoDate(i)),
+              (!byId("pl-name").dataset.touched || !byId("pl-name").value) && (byId("pl-name").value = t.n);
+            var c = byId("pl-main");
             c.classList.remove("flash"),
               c.offsetWidth,
               c.classList.add("flash"),
-              Mn() ? _e(1) : B1("own"),
-              D1();
+              isPhoneWidth() ? goToStep(1) : setPlannerMode("own"),
+              plannerHints();
           }
           (function () {
-            var t = e("pl-main");
+            var t = byId("pl-main");
             t &&
               (t.addEventListener("dragover", function (a) {
                 a.dataTransfer &&
@@ -6544,11 +6726,11 @@ try {
                 var i = a.dataTransfer.getData("text/plain");
                 if (i.indexOf("tpl:") === 0) {
                   var c = +i.slice(4);
-                  ca(S1[c]);
+                  applyTemplate(TRIP_TEMPLATES[c]);
                 }
               }));
           })();
-          var B2 = {
+          var BEST_SEASONS = {
               Rajasthan: {
                 best: [10, 11, 12, 1, 2, 3],
                 bad: [4, 5, 6],
@@ -6642,14 +6824,14 @@ try {
                 badNote: "Delhi summers are very hot; winter smog can be heavy in November\u2013January.",
               },
             },
-            xn = {
+            STATE_HIGHLIGHTS = {
               Uttarakhand: "Kedarnath and the Valley of Flowers",
               Nagaland: "Dzukou Valley",
               "Jammu & Kashmir": "Vaishno Devi",
               Meghalaya: "the root bridges",
             };
-          function i4(t) {
-            var a = S[t] || [],
+          function stateStats(t) {
+            var a = PLACES_BY_STATE[t] || [],
               i = 0,
               c = 0;
             return (
@@ -6659,10 +6841,10 @@ try {
               a.length ? [i / a.length, c / a.length] : [20, 78]
             );
           }
-          function D1() {
-            var t = I1(),
+          function plannerHints() {
+            var t = readPlannerForm(),
               a = [],
-              i = Qe(t),
+              i = tripDayCount(t),
               c = t.men + t.women,
               g = c + t.kids,
               E = "when",
@@ -6673,14 +6855,14 @@ try {
               }),
               !!t.from)
             ) {
-              var B = nt([t.from[1], t.from[2]], i4(t.state));
-              if (We === 1) {
+              var B = roadKm([t.from[1], t.from[2]], stateStats(t.state));
+              if (plannerStep === 1) {
                 if (((E = "when"), !t.start || !t.end))
                   a.push(["\u{1F4C5}", "Pick start and end dates to size the plan."]);
                 else if (i <= 0) a.push(["\u26A0\uFE0F", "The end date is before the start date."]);
                 else {
                   var j = t.start ? new Date(t.start).getMonth() + 1 : 0,
-                    D = B2[t.state],
+                    D = BEST_SEASONS[t.state],
                     et = D && j && D.best.indexOf(j) >= 0;
                   a.push([
                     "\u{1F4C5}",
@@ -6716,14 +6898,16 @@ try {
                       : a.push(["\u{1F697}", "~" + B.toLocaleString("en-IN") + " km away \xB7 easy by road"]),
                   (E = "when");
                 var kt = t.start ? new Date(t.start).getMonth() + 1 : 0,
-                  At = B2[t.state];
+                  At = BEST_SEASONS[t.state];
                 At && kt && At.bad.indexOf(kt) >= 0 && a.push(["\u{1F326}\uFE0F", At.badNote]),
                   (E = "who"),
                   t.kids > 0 &&
                     (a.push([
                       "\u{1F9D2}",
                       "With kids, keep a relaxed pace and short drives." +
-                        (xn[t.state] ? " " + xn[t.state] + " involves a long trek." : ""),
+                        (STATE_HIGHLIGHTS[t.state]
+                          ? " " + STATE_HIGHLIGHTS[t.state] + " involves a long trek."
+                          : ""),
                     ]),
                     t.pace === "packed" &&
                       a.push(["\u26A0\uFE0F", "A packed pace is tiring with kids; try Moderate."])),
@@ -6747,7 +6931,7 @@ try {
                       (Math.round(Nt / 100) * 100).toLocaleString("en-IN")
                     );
                   };
-                e("pl-binfo").innerHTML =
+                byId("pl-binfo").innerHTML =
                   '<div class="bhead">Per person</div><div class="bstat"><div><b>' +
                   se(It[0], It[1]) +
                   "</b><small>a day</small></div>" +
@@ -6766,7 +6950,7 @@ try {
                   moderate: "About 3 places and 300 km of driving a day.",
                   packed: "4+ places and up to 500 km a day.",
                 };
-                (e("pl-pacehint").textContent = Me[t.pace] || Me.moderate),
+                (byId("pl-pacehint").textContent = Me[t.pace] || Me.moderate),
                   t.budget === "budget" &&
                     t.mode === "flight" &&
                     a.push(["\u{1F4B8}", "Overnight trains save the fare and a hotel night."]),
@@ -6777,7 +6961,7 @@ try {
                 var ee = t.places.length;
                 if (!ee) a.push(["\u{1F4CD}", "Pick at least one place to build a plan."]);
                 else {
-                  var _t = T1(t);
+                  var _t = buildItinerary(t);
                   if (
                     (a.push([
                       "\u{1F5FA}\uFE0F",
@@ -6796,8 +6980,8 @@ try {
                   ) {
                     var Ht = t.places.slice().sort(function (bt, Nt) {
                       return (
-                        ot([Nt[2], Nt[3]], [t.from[1], t.from[2]]) -
-                        ot([bt[2], bt[3]], [t.from[1], t.from[2]])
+                        distanceKm([Nt[2], Nt[3]], [t.from[1], t.from[2]]) -
+                        distanceKm([bt[2], bt[3]], [t.from[1], t.from[2]])
                       );
                     })[0];
                     a.push([
@@ -6827,10 +7011,10 @@ try {
                       a.push(["\u{1F9D2}", "Some activities have age limits for kids."]);
                 }
               }
-              if (We === 2) {
-                var Oe = e("pl-sum"),
+              if (plannerStep === 2) {
+                var Oe = byId("pl-sum"),
                   he = t.places.length,
-                  me = he ? T1(t) : null,
+                  me = he ? buildItinerary(t) : null,
                   de =
                     a.filter(function (bt) {
                       return bt[0] === "\u26A0\uFE0F";
@@ -6851,10 +7035,10 @@ try {
                   '"><span class="hi">' +
                   (de ? de[0] : "\u2705") +
                   "</span><span>" +
-                  h(de ? de[1] : "Looks good. Tap a card to add or remove it.") +
+                  escapeHtml(de ? de[1] : "Looks good. Tap a card to add or remove it.") +
                   "</span></p>";
               }
-              r(".ghints").forEach(function (bt) {
+              findAll(".ghints").forEach(function (bt) {
                 var Nt = a.filter(function (O) {
                   return O[2] === bt.dataset.g;
                 });
@@ -6863,18 +7047,18 @@ try {
                     '<li><span class="hi">' +
                     O[0] +
                     '</span><span class="ht">' +
-                    h(O[1]).replace(/\n/g, "<br>") +
+                    escapeHtml(O[1]).replace(/\n/g, "<br>") +
                     "</span></li>"
                   );
                 }).join("")),
                   (bt.hidden = !Nt.length);
               }),
-                We === 1 && e("pgs-who") && na(),
-                requestAnimationFrame(s4);
+                plannerStep === 1 && byId("pgs-who") && updatePlannerSummary(),
+                requestAnimationFrame(setupHints);
             }
           }
-          function s4() {
-            r("#planner .ghints li, #planner .psnote").forEach(function (t) {
+          function setupHints() {
+            findAll("#planner .ghints li, #planner .psnote").forEach(function (t) {
               var a = t.querySelector(".ht") || t.querySelector("span:last-child");
               if (
                 !(!a || t.querySelector(".hmore")) &&
@@ -6894,34 +7078,35 @@ try {
             });
           }
           ["pl-from", "pl-start", "pl-end", "pl-men", "pl-women", "pl-kids"].forEach(function (t) {
-            e(t).addEventListener("input", D1), e(t).addEventListener("change", D1);
+            byId(t).addEventListener("input", plannerHints), byId(t).addEventListener("change", plannerHints);
           }),
             ["pl-start", "pl-end"].forEach(function (t) {
-              e(t).addEventListener("change", le), e(t).addEventListener("input", le);
+              byId(t).addEventListener("change", validateDates),
+                byId(t).addEventListener("input", validateDates);
             }),
-            e("pl-state").addEventListener("change", function () {
-              P2(null), I2 === "own" && B1("own");
+            byId("pl-state").addEventListener("change", function () {
+              renderPlaces(null), plannerMode === "own" && setPlannerMode("own");
             }),
-            e("pl-places").addEventListener("change", ia);
-          function En(t) {
+            byId("pl-places").addEventListener("change", syncSelectAll);
+          function setPlacesView(t) {
             (t = t === "card" ? "card" : "list"),
-              U.classList.toggle("pv-card", t === "card"),
-              l("vizag-pview", t),
-              r("[data-pv]").forEach(function (a) {
+              rootEl.classList.toggle("pv-card", t === "card"),
+              writeStore("vizag-pview", t),
+              findAll("[data-pv]").forEach(function (a) {
                 a.setAttribute("aria-pressed", a.dataset.pv === t ? "true" : "false");
               });
           }
           document.addEventListener("click", function (t) {
             var a = t.target.closest && t.target.closest("[data-pv]");
-            a && (t.preventDefault(), En(a.dataset.pv));
+            a && (t.preventDefault(), setPlacesView(a.dataset.pv));
           }),
-            En(o("vizag-pview") || "list"),
-            e("pl-q").addEventListener("input", ra),
-            e("pl-qclear").addEventListener("click", function () {
-              (e("pl-q").value = ""), ra(), e("pl-q").focus();
+            setPlacesView(readStore("vizag-pview") || "list"),
+            byId("pl-q").addEventListener("input", filterPlaces),
+            byId("pl-qclear").addEventListener("click", function () {
+              (byId("pl-q").value = ""), filterPlaces(), byId("pl-q").focus();
             }),
             (function () {
-              var t = e("pl-q"),
+              var t = byId("pl-q"),
                 a = null,
                 i = null;
               function c(z) {
@@ -6934,7 +7119,7 @@ try {
               function g() {
                 var z = 0;
                 return (
-                  r("#planner .phead,#planner .pdots").forEach(function (B) {
+                  findAll("#planner .phead,#planner .pdots").forEach(function (B) {
                     if (B.offsetParent) {
                       var j = B.getBoundingClientRect();
                       getComputedStyle(B).position === "sticky" && (z = Math.max(z, j.bottom));
@@ -6965,24 +7150,24 @@ try {
                   }, 150);
                 });
             })(),
-            e("pl-q").addEventListener("keydown", function (t) {
+            byId("pl-q").addEventListener("keydown", function (t) {
               t.key === "Enter" && t.preventDefault();
             }),
-            ne.addEventListener(
+            plannerPage.addEventListener(
               "input",
               function () {
-                ne.__dirty = !0;
+                plannerPage.__dirty = !0;
               },
               !0,
             ),
-            ne.addEventListener(
+            plannerPage.addEventListener(
               "change",
               function () {
-                ne.__dirty = !0;
+                plannerPage.__dirty = !0;
               },
               !0,
             ),
-            ne.addEventListener(
+            plannerPage.addEventListener(
               "click",
               function (t) {
                 var a = t.target.closest("button,.pcard,[role=button],label");
@@ -6990,23 +7175,23 @@ try {
                   a.closest(
                     "#pl-close,#pl-hback,#pl-back,#pl-next,.pdot,[data-pgopen],[data-pgdone],.pnav",
                   ) ||
-                  (ne.__dirty = !0);
+                  (plannerPage.__dirty = !0);
               },
               !0,
             ),
-            e("pl-close").addEventListener("click", function () {
-              if (e("pl-go").classList.contains("locked")) {
-                Z1();
+            byId("pl-close").addEventListener("click", function () {
+              if (byId("pl-go").classList.contains("locked")) {
+                closePlanner();
                 return;
               }
-              if (ne.__dirty || (ne.__snap && T2() !== ne.__snap)) {
+              if (plannerPage.__dirty || (plannerPage.__snap && plannerSnapshot() !== plannerPage.__snap)) {
                 var t = function () {
-                  (ne.__snap = null), (ne.__dirty = !1), Z1();
+                  (plannerPage.__snap = null), (plannerPage.__dirty = !1), closePlanner();
                 };
                 window.__confirm
                   ? setTimeout(function () {
-                      var a = (e("pl-name").value || "").trim();
-                      qe || (e("pl-title").textContent || "").indexOf("Edit") === 0
+                      var a = (byId("pl-name").value || "").trim();
+                      editingTrip || (byId("pl-title").textContent || "").indexOf("Edit") === 0
                         ? window.__confirm(
                             "Discard trip changes?",
                             "New dates, travellers and place picks for " +
@@ -7028,22 +7213,22 @@ try {
                   : t();
                 return;
               }
-              Z1();
+              closePlanner();
             }),
-            e("pl-next").addEventListener("click", function () {
-              if (!le()) {
-                e("pl-end").focus();
+            byId("pl-next").addEventListener("click", function () {
+              if (!validateDates()) {
+                byId("pl-end").focus();
                 return;
               }
-              if (Qe(I1()) <= 0) {
-                e("pl-end").focus(), D1();
+              if (tripDayCount(readPlannerForm()) <= 0) {
+                byId("pl-end").focus(), plannerHints();
                 return;
               }
-              N1() && _e(2);
+              checkTripName() && goToStep(2);
             }),
-            e("pl-name").addEventListener("input", function () {
-              var t = Q1(this.value),
-                a = e("pl-nerr");
+            byId("pl-name").addEventListener("input", function () {
+              var t = cleanTripName(this.value),
+                a = byId("pl-nerr");
               if (t.length > 25) {
                 (t = t.slice(0, 25)),
                   (this.value = t),
@@ -7070,116 +7255,125 @@ try {
                   (a.__t = setTimeout(function () {
                     (a.hidden = !0),
                       (a.textContent = "Use letters and numbers only, with at least 6 letters."),
-                      e("pl-name").classList.remove("bad");
+                      byId("pl-name").classList.remove("bad");
                   }, 2800));
                 return;
               }
-              if (((this.dataset.touched = "1"), !e("pl-nerr").hidden)) {
+              if (((this.dataset.touched = "1"), !byId("pl-nerr").hidden)) {
                 var c = (this.value.match(/[A-Za-z\u00C0-\u024F\u0900-\u0DFF]/g) || []).length >= 6;
-                (e("pl-nerr").hidden = c), this.classList.toggle("bad", !c);
+                (byId("pl-nerr").hidden = c), this.classList.toggle("bad", !c);
               }
             }),
-            e("pl-hback").addEventListener("click", function () {
-              We === 2 ? _e(1) : We === 1 && !qe ? (Ot(), _e(0)) : Z1();
+            byId("pl-hback").addEventListener("click", function () {
+              plannerStep === 2
+                ? goToStep(1)
+                : plannerStep === 1 && !editingTrip
+                  ? (renderTemplates(), goToStep(0))
+                  : closePlanner();
             }),
-            r(".pdot").forEach(function (t) {
+            findAll(".pdot").forEach(function (t) {
               t.addEventListener("click", function () {
                 var a = +t.dataset.step;
-                a !== We && (a === 1 ? _e(1) : Qe(I1()) > 0 && N1() && _e(2));
+                a !== plannerStep &&
+                  (a === 1
+                    ? goToStep(1)
+                    : tripDayCount(readPlannerForm()) > 0 && checkTripName() && goToStep(2));
               });
             }),
             ["pl-start", "pl-end"].forEach(function (t) {
-              var a = e(t);
+              var a = byId(t);
               a.addEventListener("click", function () {
                 try {
                   a.showPicker && a.showPicker();
                 } catch (i) {}
               });
             }),
-            e("pl-back").addEventListener("click", function () {
-              We === 2 ? _e(1) : (B1("start"), _e(0));
+            byId("pl-back").addEventListener("click", function () {
+              plannerStep === 2 ? goToStep(1) : (setPlannerMode("start"), goToStep(0));
             }),
-            e("pl-all").addEventListener("click", function () {
-              var t = r("#pl-places input"),
+            byId("pl-all").addEventListener("click", function () {
+              var t = findAll("#pl-places input"),
                 a = t.every(function (i) {
                   return i.checked;
                 });
               t.forEach(function (i) {
                 i.checked = !a;
               }),
-                ia();
+                syncSelectAll();
             }),
-            e("pl-del").addEventListener("click", function () {
-              if (!qe && V1) {
-                (C1 = !0),
-                  l("vizag-hide-vz", "1"),
-                  (ve = "vizag"),
-                  u2(),
-                  Z1(),
-                  De(),
-                  Q("home"),
+            byId("pl-del").addEventListener("click", function () {
+              if (!editingTrip && editingSampleTrip) {
+                (hideSampleTrip = !0),
+                  writeStore("vizag-hide-vz", "1"),
+                  (activeTripId = "vizag"),
+                  fixActiveTrip(),
+                  closePlanner(),
+                  renderTrip(),
+                  showTab("home"),
                   window.__toast && window.__toast("Trip deleted");
                 return;
               }
-              qe &&
-                ((Se = Se.filter(function (t) {
-                  return t.id !== qe.id;
+              editingTrip &&
+                ((trips = trips.filter(function (t) {
+                  return t.id !== editingTrip.id;
                 })),
-                Ze(),
-                (ve = C1 ? (Se[0] ? Se[0].id : "none") : "vizag"),
-                C1 && u2(),
-                l("vizag-active-trip", ve),
-                Z1(),
-                De(),
-                Q("home"));
+                saveTrips(),
+                (activeTripId = hideSampleTrip ? (trips[0] ? trips[0].id : "none") : "vizag"),
+                hideSampleTrip && fixActiveTrip(),
+                writeStore("vizag-active-trip", activeTripId),
+                closePlanner(),
+                renderTrip(),
+                showTab("home"));
             }),
-            M1.addEventListener("submit", function (t) {
-              if ((t.preventDefault(), e("pl-go").classList.contains("locked"))) {
-                F1("Past trips can\u2019t be edited", "OK", function () {});
+            plannerForm.addEventListener("submit", function (t) {
+              if ((t.preventDefault(), byId("pl-go").classList.contains("locked"))) {
+                showOkToast("Past trips can\u2019t be edited", "OK", function () {});
                 return;
               }
-              if (!le()) {
-                _e(1);
+              if (!validateDates()) {
+                goToStep(1);
                 return;
               }
-              if (N1()) {
-                if (We === 1) {
-                  _e(2);
+              if (checkTripName()) {
+                if (plannerStep === 1) {
+                  goToStep(2);
                   return;
                 }
-                var a = I1(),
-                  i = qe || { id: "t" + Date.now().toString(36) };
+                var a = readPlannerForm(),
+                  i = editingTrip || { id: "t" + Date.now().toString(36) };
                 Object.keys(a).forEach(function (g) {
                   i[g] = a[g];
                 }),
-                  (i.name = Q1(e("pl-name").value).trim()),
-                  (i.days = Qe(a)),
-                  (i.people = Kt(i).total);
-                var c = !qe;
+                  (i.name = cleanTripName(byId("pl-name").value).trim()),
+                  (i.days = tripDayCount(a)),
+                  (i.people = travellerCount(i).total);
+                var c = !editingTrip;
                 if (c && window.__tripGate && !window.__tripGate()) return;
-                qe || Se.push(i),
-                  c && V1 && ((C1 = !0), l("vizag-hide-vz", "1"), (V1 = !1)),
-                  Ze(),
-                  (ve = i.id),
-                  l("vizag-active-trip", ve),
-                  Z1(),
-                  De(),
-                  Q("home"),
+                editingTrip || trips.push(i),
+                  c &&
+                    editingSampleTrip &&
+                    ((hideSampleTrip = !0), writeStore("vizag-hide-vz", "1"), (editingSampleTrip = !1)),
+                  saveTrips(),
+                  (activeTripId = i.id),
+                  writeStore("vizag-active-trip", activeTripId),
+                  closePlanner(),
+                  renderTrip(),
+                  showTab("home"),
                   window.__notify
                     ? window.__notify(c ? "Trip created" : "Trip updated", (i && i.name) || "", {
                         label: "View",
                         fn: function () {
-                          Q("days");
+                          showTab("days");
                         },
                       })
-                    : F1(c ? "Trip created" : "Trip updated", "View", function () {
-                        Q("days");
+                    : showOkToast(c ? "Trip created" : "Trip updated", "View", function () {
+                        showTab("days");
                       });
               }
             });
-          var O1 = e("pl-ai"),
-            a2 = null,
-            xt = {
+          var aiPlanButton = byId("pl-ai"),
+            claudeAi = null,
+            aiSettings = {
               src: "off",
               url: "",
               token: "",
@@ -7191,67 +7385,74 @@ try {
               gmodel: "gemini-2.0-flash",
             };
           try {
-            xt = Object.assign(xt, JSON.parse(o("vizag-ai2") || "{}"));
+            aiSettings = Object.assign(aiSettings, JSON.parse(readStore("vizag-ai2") || "{}"));
           } catch (t) {}
-          function D2() {
-            l("vizag-ai2", JSON.stringify(xt));
+          function saveAiSettings() {
+            writeStore("vizag-ai2", JSON.stringify(aiSettings));
           }
-          function da() {
+          function aiReady() {
             return (
-              (xt.src === "claude" && a2) ||
-              (xt.src === "mcp" && xt.url && xt.tool) ||
-              (xt.src === "openai" && xt.okey) ||
-              (xt.src === "gemini" && xt.gkey)
+              (aiSettings.src === "claude" && claudeAi) ||
+              (aiSettings.src === "mcp" && aiSettings.url && aiSettings.tool) ||
+              (aiSettings.src === "openai" && aiSettings.okey) ||
+              (aiSettings.src === "gemini" && aiSettings.gkey)
             );
           }
-          var o4 = { off: "Off", claude: "Claude", openai: "ChatGPT", gemini: "Gemini", mcp: "MCP server" };
-          function n2() {
-            (O1.hidden = !da()),
-              r("[data-ai]").forEach(function (t) {
-                var a = t.dataset.ai === xt.src;
+          var AI_SOURCE_LABELS = {
+            off: "Off",
+            claude: "Claude",
+            openai: "ChatGPT",
+            gemini: "Gemini",
+            mcp: "MCP server",
+          };
+          function syncAiUi() {
+            (aiPlanButton.hidden = !aiReady()),
+              findAll("[data-ai]").forEach(function (t) {
+                var a = t.dataset.ai === aiSettings.src;
                 t.classList.toggle("on", a);
                 var i = t.querySelector("input");
                 i && (i.checked = a);
               }),
-              r(".aicfg").forEach(function (t) {
-                t.hidden = t.dataset.for !== xt.src;
+              findAll(".aicfg").forEach(function (t) {
+                t.hidden = t.dataset.for !== aiSettings.src;
               }),
-              (e("ai-name").textContent =
-                o4[xt.src] + (xt.src !== "off" && !da() ? " \xB7 needs setup" : "")),
-              (e("ai-claude-st").textContent = a2
+              (byId("ai-name").textContent =
+                AI_SOURCE_LABELS[aiSettings.src] +
+                (aiSettings.src !== "off" && !aiReady() ? " \xB7 needs setup" : "")),
+              (byId("ai-claude-st").textContent = claudeAi
                 ? "Ready in this app."
                 : "Available when this page is opened inside the Claude app."),
-              (e("mcp-url").value = xt.url || ""),
-              (e("mcp-token").value = xt.token || ""),
-              (e("ai-okey").value = xt.okey || ""),
-              (e("ai-omodel").value = xt.omodel || ""),
-              (e("ai-gkey").value = xt.gkey || ""),
-              (e("ai-gmodel").value = xt.gmodel || "");
+              (byId("mcp-url").value = aiSettings.url || ""),
+              (byId("mcp-token").value = aiSettings.token || ""),
+              (byId("ai-okey").value = aiSettings.okey || ""),
+              (byId("ai-omodel").value = aiSettings.omodel || ""),
+              (byId("ai-gkey").value = aiSettings.gkey || ""),
+              (byId("ai-gmodel").value = aiSettings.gmodel || "");
           }
-          var qa = e("ai-sheet");
-          e("ai-open").addEventListener("click", function (t) {
+          var aiSheet = byId("ai-sheet");
+          byId("ai-open").addEventListener("click", function (t) {
             t.stopPropagation(),
-              typeof ut == "function" && ut(!1),
-              n2(),
-              (qa.hidden = !1),
-              (e("scrim").hidden = !1);
+              typeof closeSettings == "function" && closeSettings(!1),
+              syncAiUi(),
+              (aiSheet.hidden = !1),
+              (byId("scrim").hidden = !1);
           });
-          function Sn() {
-            (qa.hidden = !0), (e("scrim").hidden = !0);
+          function closeAiSheet() {
+            (aiSheet.hidden = !0), (byId("scrim").hidden = !0);
           }
-          e("ai-close").addEventListener("click", Sn),
-            qa.addEventListener("click", function (t) {
+          byId("ai-close").addEventListener("click", closeAiSheet),
+            aiSheet.addEventListener("click", function (t) {
               t.stopPropagation();
             }),
-            e("scrim").addEventListener("click", Sn),
+            byId("scrim").addEventListener("click", closeAiSheet),
             [
               ["ai-okey", "okey"],
               ["ai-omodel", "omodel"],
               ["ai-gkey", "gkey"],
               ["ai-gmodel", "gmodel"],
             ].forEach(function (t) {
-              e(t[0]).addEventListener("change", function () {
-                (xt[t[1]] = this.value.trim()), D2(), n2();
+              byId(t[0]).addEventListener("change", function () {
+                (aiSettings[t[1]] = this.value.trim()), saveAiSettings(), syncAiUi();
               });
             }),
             window.claude &&
@@ -7259,109 +7460,112 @@ try {
               window.claude
                 .use("sample")
                 .then(function (t) {
-                  t && ((a2 = t), n2());
+                  t && ((claudeAi = t), syncAiUi());
                 })
                 .catch(function () {}),
-            r("[data-ai]").forEach(function (t) {
+            findAll("[data-ai]").forEach(function (t) {
               t.addEventListener("click", function (a) {
-                a.target.closest(".aicfg") || ((xt.src = t.dataset.ai), D2(), n2());
+                a.target.closest(".aicfg") || ((aiSettings.src = t.dataset.ai), saveAiSettings(), syncAiUi());
               });
             }),
             ["mcp-url", "mcp-token"].forEach(function (t) {
-              e(t).addEventListener("input", function () {
-                typeof gt == "function" && gt();
+              byId(t).addEventListener("input", function () {
+                typeof restartSettingsAutoClose == "function" && restartSettingsAutoClose();
               });
             });
-          var l4 = 0,
-            m2 = "";
-          function O2(t, a, i) {
+          var mcpRequestId = 0,
+            mcpSession = "";
+          function mcpCall(t, a, i) {
             var c = { "Content-Type": "application/json", Accept: "application/json, text/event-stream" };
-            xt.token && (c.Authorization = "Bearer " + xt.token), m2 && (c["Mcp-Session-Id"] = m2);
+            aiSettings.token && (c.Authorization = "Bearer " + aiSettings.token),
+              mcpSession && (c["Mcp-Session-Id"] = mcpSession);
             var g = { jsonrpc: "2.0", method: t };
             return (
               a && (g.params = a),
-              i || (g.id = ++l4),
-              fetch(xt.url, { method: "POST", headers: c, body: JSON.stringify(g) }).then(function (E) {
-                var z = E.headers.get("Mcp-Session-Id");
-                if ((z && (m2 = z), i)) return null;
-                if (!E.ok) throw new Error("HTTP " + E.status);
-                var B = E.headers.get("content-type") || "";
-                return E.text().then(function (j) {
-                  var D = null;
-                  if (
-                    (B.indexOf("event-stream") >= 0
-                      ? j.split("\n").forEach(function (et) {
-                          if (et.indexOf("data:") === 0)
-                            try {
-                              var kt = JSON.parse(et.slice(5));
-                              kt.id === g.id && (D = kt);
-                            } catch (At) {}
-                        })
-                      : (D = JSON.parse(j)),
-                    !D)
-                  )
-                    throw new Error("No reply");
-                  if (D.error) throw new Error(D.error.message || "Server error");
-                  return D.result;
-                });
-              })
+              i || (g.id = ++mcpRequestId),
+              fetch(aiSettings.url, { method: "POST", headers: c, body: JSON.stringify(g) }).then(
+                function (E) {
+                  var z = E.headers.get("Mcp-Session-Id");
+                  if ((z && (mcpSession = z), i)) return null;
+                  if (!E.ok) throw new Error("HTTP " + E.status);
+                  var B = E.headers.get("content-type") || "";
+                  return E.text().then(function (j) {
+                    var D = null;
+                    if (
+                      (B.indexOf("event-stream") >= 0
+                        ? j.split("\n").forEach(function (et) {
+                            if (et.indexOf("data:") === 0)
+                              try {
+                                var kt = JSON.parse(et.slice(5));
+                                kt.id === g.id && (D = kt);
+                              } catch (At) {}
+                          })
+                        : (D = JSON.parse(j)),
+                      !D)
+                    )
+                      throw new Error("No reply");
+                    if (D.error) throw new Error(D.error.message || "Server error");
+                    return D.result;
+                  });
+                },
+              )
             );
           }
-          function Pa() {
+          function mcpConnect() {
             return (
-              (m2 = ""),
-              O2("initialize", {
+              (mcpSession = ""),
+              mcpCall("initialize", {
                 protocolVersion: "2025-03-26",
                 capabilities: {},
                 clientInfo: { name: "trip-planner", version: "1.0" },
               })
                 .then(function () {
-                  return O2("notifications/initialized", null, !0);
+                  return mcpCall("notifications/initialized", null, !0);
                 })
                 .then(function () {
-                  return O2("tools/list", {});
+                  return mcpCall("tools/list", {});
                 })
             );
           }
-          e("mcp-connect").addEventListener("click", function (t) {
+          byId("mcp-connect").addEventListener("click", function (t) {
             t.stopPropagation(),
-              (xt.url = e("mcp-url").value.trim()),
-              (xt.token = e("mcp-token").value.trim()),
-              D2();
-            var a = e("mcp-status");
+              (aiSettings.url = byId("mcp-url").value.trim()),
+              (aiSettings.token = byId("mcp-token").value.trim()),
+              saveAiSettings();
+            var a = byId("mcp-status");
             (a.textContent = "Connecting\u2026"),
-              Pa()
+              mcpConnect()
                 .then(function (i) {
                   var c = (i && i.tools) || [];
                   if (!c.length) throw new Error("The server has no tools");
-                  (e("mcp-tool").innerHTML = c
+                  (byId("mcp-tool").innerHTML = c
                     .map(function (z) {
-                      return x1(
+                      return optionHtml(
                         z.name,
                         z.name + (z.description ? " \u2014 " + z.description.slice(0, 60) : ""),
-                        z.name === xt.tool,
+                        z.name === aiSettings.tool,
                       );
                     })
                     .join("")),
-                    (e("mcp-tool-row").hidden = !1),
-                    (!xt.tool ||
+                    (byId("mcp-tool-row").hidden = !1),
+                    (!aiSettings.tool ||
                       !c.some(function (z) {
-                        return z.name === xt.tool;
+                        return z.name === aiSettings.tool;
                       })) &&
-                      (xt.tool = c[0].name);
+                      (aiSettings.tool = c[0].name);
                   var g =
                       c.filter(function (z) {
-                        return z.name === xt.tool;
+                        return z.name === aiSettings.tool;
                       })[0] || c[0],
                     E = (g.inputSchema && g.inputSchema.properties) || {};
-                  (xt.key =
+                  (aiSettings.key =
                     Object.keys(E).filter(function (z) {
                       return E[z].type === "string";
                     })[0] || "prompt"),
-                    D2(),
+                    saveAiSettings(),
                     (a.textContent = "Connected \xB7 " + c.length + " tool" + (c.length === 1 ? "" : "s")),
-                    n2(),
-                    (xt._tools = c);
+                    syncAiUi(),
+                    (aiSettings._tools = c);
                 })
                 .catch(function (i) {
                   a.textContent =
@@ -7370,32 +7574,32 @@ try {
                     ". The server must allow requests from this site (CORS).";
                 });
           }),
-            e("mcp-tool").addEventListener("change", function () {
-              xt.tool = this.value;
-              var t = (xt._tools || []).filter(function (i) {
-                  return i.name === xt.tool;
+            byId("mcp-tool").addEventListener("change", function () {
+              aiSettings.tool = this.value;
+              var t = (aiSettings._tools || []).filter(function (i) {
+                  return i.name === aiSettings.tool;
                 })[0],
                 a = (t && t.inputSchema && t.inputSchema.properties) || {};
-              (xt.key =
+              (aiSettings.key =
                 Object.keys(a).filter(function (i) {
                   return a[i].type === "string";
                 })[0] || "prompt"),
-                D2(),
-                n2();
+                saveAiSettings(),
+                syncAiUi();
             });
-          function c4(t) {
-            if (xt.src === "claude" && a2) return a2.json(t, { modelTier: "quick" });
+          function aiJson(t) {
+            if (aiSettings.src === "claude" && claudeAi) return claudeAi.json(t, { modelTier: "quick" });
             function a(c) {
               var g = String(c || "").match(/\[[\s\S]*\]/);
               if (!g) throw new Error("No list in reply");
               return JSON.parse(g[0]);
             }
-            if (xt.src === "openai")
+            if (aiSettings.src === "openai")
               return fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: "Bearer " + xt.okey },
+                headers: { "Content-Type": "application/json", Authorization: "Bearer " + aiSettings.okey },
                 body: JSON.stringify({
-                  model: xt.omodel || "gpt-4o-mini",
+                  model: aiSettings.omodel || "gpt-4o-mini",
                   messages: [{ role: "user", content: t }],
                   temperature: 0.4,
                 }),
@@ -7407,14 +7611,14 @@ try {
                 .then(function (c) {
                   return a(c.choices && c.choices[0] && c.choices[0].message.content);
                 });
-            if (xt.src === "gemini")
+            if (aiSettings.src === "gemini")
               return fetch(
                 "https://generativelanguage.googleapis.com/v1beta/models/" +
-                  encodeURIComponent(xt.gmodel || "gemini-2.0-flash") +
+                  encodeURIComponent(aiSettings.gmodel || "gemini-2.0-flash") +
                   ":generateContent",
                 {
                   method: "POST",
-                  headers: { "Content-Type": "application/json", "x-goog-api-key": xt.gkey },
+                  headers: { "Content-Type": "application/json", "x-goog-api-key": aiSettings.gkey },
                   body: JSON.stringify({ contents: [{ parts: [{ text: t }] }] }),
                 },
               )
@@ -7433,13 +7637,13 @@ try {
                         .join(""),
                   );
                 });
-            if (xt.src === "mcp") {
+            if (aiSettings.src === "mcp") {
               var i = {};
               return (
-                (i[xt.key || "prompt"] = t),
-                (m2 ? Promise.resolve() : Pa())
+                (i[aiSettings.key || "prompt"] = t),
+                (mcpSession ? Promise.resolve() : mcpConnect())
                   .then(function () {
-                    return O2("tools/call", { name: xt.tool, arguments: i });
+                    return mcpCall("tools/call", { name: aiSettings.tool, arguments: i });
                   })
                   .then(function (c) {
                     var g = ((c && c.content) || [])
@@ -7455,22 +7659,22 @@ try {
             }
             return Promise.reject(new Error("AI is off"));
           }
-          O1.addEventListener("click", function () {
-            var t = e("pl-state").value,
-              a = (S[t] || []).concat(s1).map(function (i) {
+          aiPlanButton.addEventListener("click", function () {
+            var t = byId("pl-state").value,
+              a = (PLACES_BY_STATE[t] || []).concat(customPlaces).map(function (i) {
                 return i[0];
               });
-            (O1.disabled = !0),
-              (O1.textContent = "Asking AI\u2026"),
-              c4(
+            (aiPlanButton.disabled = !0),
+              (aiPlanButton.textContent = "Asking AI\u2026"),
+              aiJson(
                 "Suggest up to 8 more well-known tourist places in " +
                   t +
                   ", India for a trip starting from " +
-                  e("pl-from").value +
+                  byId("pl-from").value +
                   ". Do not repeat any of these: " +
                   a.join("; ") +
                   ". Reply with only a JSON array of objects with keys name, town, lat, lon (decimal degrees), category (one of: " +
-                  Object.keys(L).join(", ") +
+                  Object.keys(STATE_EMOJI).join(", ") +
                   "), hours (typical hours to spend).",
               )
                 .then(function (i) {
@@ -7480,38 +7684,41 @@ try {
                       isFinite(g.lat) &&
                       isFinite(g.lon) &&
                       a.indexOf(g.name) < 0 &&
-                      s1.push([
+                      customPlaces.push([
                         String(g.name),
                         String(g.town || t),
                         +g.lat,
                         +g.lon,
-                        L[g.category] ? g.category : "city",
+                        STATE_EMOJI[g.category] ? g.category : "city",
                         Math.min(8, Math.max(0.5, +g.hours || 2)),
                         1,
                         t,
                       ]);
                   });
-                  var c = r("#pl-places input:checked").map(function (g) {
+                  var c = findAll("#pl-places input:checked").map(function (g) {
                     return g.value;
                   });
-                  P2(c), (O1.textContent = "\u2728 Suggest more with AI"), (O1.disabled = !1);
+                  renderPlaces(c),
+                    (aiPlanButton.textContent = "\u2728 Suggest more with AI"),
+                    (aiPlanButton.disabled = !1);
                 })
                 .catch(function (i) {
-                  (O1.textContent = "AI unavailable \u2014 try again"), (O1.disabled = !1);
+                  (aiPlanButton.textContent = "AI unavailable \u2014 try again"),
+                    (aiPlanButton.disabled = !1);
                 });
           }),
-            n2();
-          function d4(t) {
-            if (xt.src === "claude" && a2)
-              return a2(t, { modelTier: "quick" }).then(function (i) {
+            syncAiUi();
+          function aiText(t) {
+            if (aiSettings.src === "claude" && claudeAi)
+              return claudeAi(t, { modelTier: "quick" }).then(function (i) {
                 return (i && i.text) || "";
               });
-            if (xt.src === "openai")
+            if (aiSettings.src === "openai")
               return fetch("https://api.openai.com/v1/chat/completions", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: "Bearer " + xt.okey },
+                headers: { "Content-Type": "application/json", Authorization: "Bearer " + aiSettings.okey },
                 body: JSON.stringify({
-                  model: xt.omodel || "gpt-4o-mini",
+                  model: aiSettings.omodel || "gpt-4o-mini",
                   messages: [{ role: "user", content: t }],
                 }),
               })
@@ -7522,14 +7729,14 @@ try {
                 .then(function (i) {
                   return (i.choices && i.choices[0] && i.choices[0].message.content) || "";
                 });
-            if (xt.src === "gemini")
+            if (aiSettings.src === "gemini")
               return fetch(
                 "https://generativelanguage.googleapis.com/v1beta/models/" +
-                  encodeURIComponent(xt.gmodel || "gemini-2.0-flash") +
+                  encodeURIComponent(aiSettings.gmodel || "gemini-2.0-flash") +
                   ":generateContent",
                 {
                   method: "POST",
-                  headers: { "Content-Type": "application/json", "x-goog-api-key": xt.gkey },
+                  headers: { "Content-Type": "application/json", "x-goog-api-key": aiSettings.gkey },
                   body: JSON.stringify({ contents: [{ parts: [{ text: t }] }] }),
                 },
               )
@@ -7544,13 +7751,13 @@ try {
                     })
                     .join("");
                 });
-            if (xt.src === "mcp") {
+            if (aiSettings.src === "mcp") {
               var a = {};
               return (
-                (a[xt.key || "prompt"] = t),
-                (m2 ? Promise.resolve() : Pa())
+                (a[aiSettings.key || "prompt"] = t),
+                (mcpSession ? Promise.resolve() : mcpConnect())
                   .then(function () {
-                    return O2("tools/call", { name: xt.tool, arguments: a });
+                    return mcpCall("tools/call", { name: aiSettings.tool, arguments: a });
                   })
                   .then(function (i) {
                     return ((i && i.content) || [])
@@ -7563,7 +7770,7 @@ try {
             }
             return Promise.reject(new Error("off"));
           }
-          var H1 = {
+          var TAB_LABELS = {
               home: "Home",
               days: "Days",
               plan: "Plan",
@@ -7571,14 +7778,14 @@ try {
               alerts: "Alerts",
               more: "More",
             },
-            ie = e("chat"),
-            Xe = e("chat-log"),
-            l1 = "home",
-            g2 = [];
-          function Na(t) {
-            var a = e("v-" + t);
+            chatPage = byId("chat"),
+            chatLog = byId("chat-log"),
+            chatContext = "home",
+            chatHistory = [];
+          function pageContext(t) {
+            var a = byId("v-" + t);
             if (!a) return "";
-            var i = Ae(),
+            var i = activeTrip(),
               c = i ? a.querySelector(".ctv") : a.querySelector(".vz"),
               g = ((c || a).innerText || (c || a).textContent || "")
                 .replace(/[ \t]+/g, " ")
@@ -7586,35 +7793,35 @@ try {
                 .trim();
             return g;
           }
-          var ua = {};
+          var chatsByTrip = {};
           try {
-            ua = JSON.parse(o("vizag-chat") || "{}") || {};
+            chatsByTrip = JSON.parse(readStore("vizag-chat") || "{}") || {};
           } catch (t) {}
-          var Qa = null;
-          function Fa() {
-            if (Qa) {
+          var chatTripId = null;
+          function saveChat() {
+            if (chatTripId) {
               var t = Array.prototype.filter
-                .call(Xe.children, function (a) {
+                .call(chatLog.children, function (a) {
                   return a.classList.contains("cmsg") && !a.classList.contains("cm-typing");
                 })
                 .slice(-40);
-              ua[Qa] = {
+              chatsByTrip[chatTripId] = {
                 h: t.map(function (a) {
                   return [a.className, a.innerHTML];
                 }),
-                m: g2.slice(-12),
+                m: chatHistory.slice(-12),
               };
               try {
-                l("vizag-chat", JSON.stringify(ua));
+                writeStore("vizag-chat", JSON.stringify(chatsByTrip));
               } catch (a) {}
             }
           }
-          function u4() {
-            var t = Ae() ? Ae().id : "vizag";
-            if (Qa !== t) {
-              Qa = t;
-              var a = ua[t] || { h: [], m: [] };
-              (Xe.innerHTML = a.h
+          function loadChat() {
+            var t = activeTrip() ? activeTrip().id : "vizag";
+            if (chatTripId !== t) {
+              chatTripId = t;
+              var a = chatsByTrip[t] || { h: [], m: [] };
+              (chatLog.innerHTML = a.h
                 .filter(function (i) {
                   return i[1].indexOf("Hi! Ask me anything") < 0;
                 })
@@ -7622,12 +7829,12 @@ try {
                   return '<div class="' + i[0] + '">' + i[1] + "</div>";
                 })
                 .join("")),
-                (g2 = a.m || []),
-                (Xe.scrollTop = Xe.scrollHeight);
+                (chatHistory = a.m || []),
+                (chatLog.scrollTop = chatLog.scrollHeight);
             }
           }
-          function Q4() {
-            r(".chint,.cdiv").forEach(function (i) {
+          function addChatHint() {
+            findAll(".chint,.cdiv").forEach(function (i) {
               i.remove();
             });
             var t = document.createElement("div");
@@ -7635,24 +7842,24 @@ try {
               ((t.className = "chint"),
               (t.innerHTML =
                 '<span class="chico"><svg class="chstar" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5C25.6 17 31 22.4 43 24C31 25.6 25.6 31 24 43C22.4 31 17 25.6 5 24C17 22.4 22.4 17 24 5Z"/><circle cx="38" cy="10" r="2.6"/></svg></span><p class="chl">Ask about ' +
-                (l1 === "home" ? "your trip" : "the <b>" + H1[l1] + "</b> page") +
+                (chatContext === "home" ? "your trip" : "the <b>" + TAB_LABELS[chatContext] + "</b> page") +
                 '</p><p class="chs">' +
-                (da() ? "Answers start from this page." : "AI is off \xB7 answers come from the app") +
+                (aiReady() ? "Answers start from this page." : "AI is off \xB7 answers come from the app") +
                 '</p><div class="chatsugg">' +
-                (v4[l1] || [])
+                (CHAT_SUGGESTIONS[chatContext] || [])
                   .map(function (i) {
-                    return '<button type="button" class="csug">' + h(i) + "</button>";
+                    return '<button type="button" class="csug">' + escapeHtml(i) + "</button>";
                   })
                   .join("") +
                 "</div>"),
-              Xe.insertBefore(t, Xe.firstChild),
-              Xe.querySelector(".cmsg"))
+              chatLog.insertBefore(t, chatLog.firstChild),
+              chatLog.querySelector(".cmsg"))
             ) {
               var a = document.createElement("div");
               (a.className = "cdiv"), (a.innerHTML = "<span>Chat</span>"), t.after(a);
             }
           }
-          function f4(t) {
+          function localAnswer(t) {
             var a = t
               .toLowerCase()
               .replace(/[^a-z\s']/g, " ")
@@ -7663,14 +7870,14 @@ try {
               c = i < 12 ? "morning" : i < 17 ? "afternoon" : "evening",
               g = (function () {
                 try {
-                  var D = JSON.parse(o("vizag-profile") || "{}");
+                  var D = JSON.parse(readStore("vizag-profile") || "{}");
                   return (D.name || "").split(" ")[0];
                 } catch (et) {
                   return "";
                 }
               })(),
-              E = g ? " " + h(g) : "",
-              z = H1[l1] || "this page",
+              E = g ? " " + escapeHtml(g) : "",
+              z = TAB_LABELS[chatContext] || "this page",
               B = function (D) {
                 return D[Math.floor(Math.random() * D.length)];
               };
@@ -7720,41 +7927,41 @@ try {
                       ? "No worries at all! What would you like to know?"
                       : "";
           }
-          function R1(t, a) {
-            if (!Xe.querySelector(".cdiv")) {
+          function addChatMessage(t, a) {
+            if (!chatLog.querySelector(".cdiv")) {
               var i = document.createElement("div");
               (i.className = "cdiv"), (i.innerHTML = "<span>Chat</span>");
-              var c = Xe.querySelector(".chint");
-              c ? c.after(i) : Xe.appendChild(i);
+              var c = chatLog.querySelector(".chint");
+              c ? c.after(i) : chatLog.appendChild(i);
             }
             var g = document.createElement("div");
             return (
               (g.className = "cmsg cm-" + t.replace(" ", " cm-")),
               (g.innerHTML = a),
-              Xe.appendChild(g),
-              (Xe.scrollTop = Xe.scrollHeight),
-              t.indexOf("typing") < 0 && setTimeout(Fa, 0),
+              chatLog.appendChild(g),
+              (chatLog.scrollTop = chatLog.scrollHeight),
+              t.indexOf("typing") < 0 && setTimeout(saveChat, 0),
               g
             );
           }
-          function Ia(t) {
+          function googleLink(t) {
             return (
               '<a class="cgoogle" data-ext="1" target="_blank" rel="noopener" href="https://www.google.com/search?q=' +
               encodeURIComponent(t) +
               '">' +
-              zt("google") +
+              iconSvg("google") +
               "Search Google for \u201C" +
-              h(t.slice(0, 60)) +
+              escapeHtml(t.slice(0, 60)) +
               "\u201D</a>"
             );
           }
-          function Ba(t) {
-            return h(t)
+          function chatMarkup(t) {
+            return escapeHtml(t)
               .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
               .replace(/^[-•]\s?/gm, "\u2022 ")
               .replace(/\n/g, "<br>");
           }
-          function p4(t) {
+          function chatKeywords(t) {
             var a = t
               .toLowerCase()
               .replace(/[^a-z0-9\u0900-\u0DFF ]/g, " ")
@@ -7788,12 +7995,12 @@ try {
               });
             if (!a.length) return [];
             var i = [];
-            Object.keys(H1)
+            Object.keys(TAB_LABELS)
               .filter(function (E) {
                 return E !== "more";
               })
               .forEach(function (E) {
-                Na(E)
+                pageContext(E)
                   .split("\n")
                   .forEach(function (z) {
                     var B = z.toLowerCase(),
@@ -7804,7 +8011,7 @@ try {
                       j &&
                         z.length > 3 &&
                         z.length < 260 &&
-                        i.push({ v: E, line: z, s: j + (E === l1 ? 0.5 : 0) });
+                        i.push({ v: E, line: z, s: j + (E === chatContext ? 0.5 : 0) });
                   });
               });
             var c = Math.max(1, Math.ceil(a.length * 0.5));
@@ -7821,36 +8028,36 @@ try {
               })
               .slice(0, 5);
           }
-          function An(t) {
+          function sendChat(t) {
             if (((t = (t || "").trim()), !!t)) {
-              R1("me", h(t));
-              var a = R1("ai typing", "<span></span><span></span><span></span>"),
-                i = f4(t);
+              addChatMessage("me", escapeHtml(t));
+              var a = addChatMessage("ai typing", "<span></span><span></span><span></span>"),
+                i = localAnswer(t);
               if (i) {
                 setTimeout(function () {
                   a.remove(),
-                    R1("ai", "<p>" + i + "</p>"),
-                    g2.push(["Traveller", t], ["Atlas", i.replace(/<[^>]+>/g, "")]),
-                    Fa();
+                    addChatMessage("ai", "<p>" + i + "</p>"),
+                    chatHistory.push(["Traveller", t], ["Atlas", i.replace(/<[^>]+>/g, "")]),
+                    saveChat();
                 }, 450);
                 return;
               }
-              if (!da()) {
-                var c = p4(t);
+              if (!aiReady()) {
+                var c = chatKeywords(t);
                 if ((a.remove(), c.length)) {
                   var g = c.filter(function (D) {
-                      return D.v === l1;
+                      return D.v === chatContext;
                     }),
                     E = c.filter(function (D) {
-                      return D.v !== l1;
+                      return D.v !== chatContext;
                     });
-                  R1(
+                  addChatMessage(
                     "ai",
                     (g.length
                       ? '<div class="clab">On this page</div>' +
                         g
                           .map(function (D) {
-                            return '<p class="chit">' + h(D.line) + "</p>";
+                            return '<p class="chit">' + escapeHtml(D.line) + "</p>";
                           })
                           .join("")
                       : "") +
@@ -7859,11 +8066,11 @@ try {
                           E.map(function (D) {
                             return (
                               '<p class="chit">' +
-                              h(D.line) +
+                              escapeHtml(D.line) +
                               ' <button type="button" class="cgo" data-goto="' +
                               D.v +
                               '" data-chatclose>' +
-                              H1[D.v] +
+                              TAB_LABELS[D.v] +
                               " \u203A</button></p>"
                             );
                           }).join("")
@@ -7871,38 +8078,45 @@ try {
                       '<p class="cnote">For full answers, pick an AI assistant. <button type="button" class="caiset" data-chatclose>Choose assistant</button></p>',
                   );
                 } else
-                  R1(
+                  addChatMessage(
                     "ai",
                     "<p>I couldn\u2019t find that in your trip.</p>" +
-                      Ia(t) +
+                      googleLink(t) +
                       '<p class="cnote">For full answers, pick an AI assistant. <button type="button" class="caiset" data-chatclose>Choose assistant</button></p>',
                   );
                 return;
               }
-              var z = Ae(),
-                B = Object.keys(H1)
+              var z = activeTrip(),
+                B = Object.keys(TAB_LABELS)
                   .filter(function (D) {
-                    return D !== l1 && D !== "more";
+                    return D !== chatContext && D !== "more";
                   })
                   .map(function (D) {
-                    return "### " + H1[D] + " page\n" + Na(D).slice(0, 1500);
+                    return "### " + TAB_LABELS[D] + " page\n" + pageContext(D).slice(0, 1500);
                   })
                   .join("\n\n"),
                 j =
                   'You are the assistant inside a trip-planner app for India. The traveller is on the "' +
-                  H1[l1] +
+                  TAB_LABELS[chatContext] +
                   '" page.\nTrip: ' +
                   (z
-                    ? (z.name || z.state) + " from " + z.from[0] + " to " + z.state + ", " + h4(z) + " days"
+                    ? (z.name || z.state) +
+                      " from " +
+                      z.from[0] +
+                      " to " +
+                      z.state +
+                      ", " +
+                      tripLength(z) +
+                      " days"
                     : "Vizag \xB7 Araku \xB7 Vanjangi, 5\u20138 Dec 2026, 3 friends") +
                   ".\n\n## Current page (answer from this first)\n" +
-                  Na(l1).slice(0, 5e3) +
+                  pageContext(chatContext).slice(0, 5e3) +
                   "\n\n## Other pages\n" +
                   B +
                   "\n\n" +
-                  (g2.length
+                  (chatHistory.length
                     ? "## Conversation so far\n" +
-                      g2
+                      chatHistory
                         .slice(-6)
                         .map(function (D) {
                           return D[0] + ": " + D[1];
@@ -7913,32 +8127,37 @@ try {
                   "Question: " +
                   t +
                   "\n\nRules: Answer briefly (under 120 words) in plain text, using facts from the current page first, then other pages, then general travel knowledge for India. Say which page the answer is on when it comes from another page. Do not invent bookings, prices or timings that are not on the pages; say when something should be rechecked. If the question has nothing to do with travel, places, this trip or this app, reply with exactly OFFTOPIC.";
-              d4(j)
+              aiText(j)
                 .then(function (D) {
                   if ((a.remove(), (D = (D || "").trim()), !D || /^OFFTOPIC\b/i.test(D))) {
-                    R1("ai", "<p>That\u2019s outside what I can help with here. Try Google:</p>" + Ia(t));
+                    addChatMessage(
+                      "ai",
+                      "<p>That\u2019s outside what I can help with here. Try Google:</p>" + googleLink(t),
+                    );
                     return;
                   }
-                  g2.push(["Traveller", t], ["Assistant", D]), R1("ai", "<p>" + Ba(D) + "</p>"), Fa();
+                  chatHistory.push(["Traveller", t], ["Assistant", D]),
+                    addChatMessage("ai", "<p>" + chatMarkup(D) + "</p>"),
+                    saveChat();
                 })
                 .catch(function () {
                   a.remove(),
-                    R1(
+                    addChatMessage(
                       "ai",
                       "<p>The AI assistant didn\u2019t respond. Check its setup in More \u2192 AI suggestions, or try Google:</p>" +
-                        Ia(t),
+                        googleLink(t),
                     );
                 });
             }
           }
-          function h4(t) {
+          function tripLength(t) {
             try {
-              return T1(t).days.length;
+              return buildItinerary(t).days.length;
             } catch (a) {
-              return Qe(t) || "";
+              return tripDayCount(t) || "";
             }
           }
-          var v4 = {
+          var CHAT_SUGGESTIONS = {
             home: [
               "What\u2019s the plan for day 1?",
               "How much will the trip cost?",
@@ -7955,26 +8174,26 @@ try {
             more: ["How do I change the theme?", "How do I add my home address?"],
           };
           (window.__chat = function (t) {
-            u4(),
-              (Yt.hidden = !0),
-              (H2 = !1),
-              l("vizag-bubhide", ""),
-              (l1 = H1[t] ? t : "home"),
-              Q4(),
+            loadChat(),
+              (chatBubble.hidden = !0),
+              (chatBubbleHidden = !1),
+              writeStore("vizag-bubhide", ""),
+              (chatContext = TAB_LABELS[t] ? t : "home"),
+              addChatHint(),
               (Oa = window.scrollY),
               (document.body.style.position = "fixed"),
               (document.body.style.top = -Oa + "px"),
               (document.body.style.left = "0"),
               (document.body.style.right = "0"),
-              (ie.hidden = !1),
-              U.classList.add("ps-open"),
+              (chatPage.hidden = !1),
+              rootEl.classList.add("ps-open"),
               requestAnimationFrame(function () {
-                ie.classList.add("in"),
+                chatPage.classList.add("in"),
                   setTimeout(function () {
-                    e("chat-q").focus({ preventScroll: !0 });
+                    byId("chat-q").focus({ preventScroll: !0 });
                   }, 200);
               }),
-              window.__paintUses && window.__paintUses(ie);
+              window.__paintUses && window.__paintUses(chatPage);
           }),
             (function () {
               var t = document.createElement("div");
@@ -7989,9 +8208,9 @@ try {
                 g = 0;
               function E() {
                 return (
-                  ne.hidden &&
-                  ie.hidden &&
-                  Vt.hidden &&
+                  plannerPage.hidden &&
+                  chatPage.hidden &&
+                  placeSheet.hidden &&
                   !document.querySelector(
                     "[hidden]#__none,.sheet:not([hidden]):not(.inpage),.passsh:not([hidden])",
                   ) &&
@@ -8061,7 +8280,7 @@ try {
                             t.style.removeProperty("--p"),
                             window.__pullGo
                               ? window.__pullGo()
-                              : (document.documentElement.dataset.view === "home" && De(),
+                              : (document.documentElement.dataset.view === "home" && renderTrip(),
                                 window.__chat &&
                                   window.__chat(document.documentElement.dataset.view || "home"));
                         }, 1150)));
@@ -8114,89 +8333,94 @@ try {
                     (j.preventDefault(), window.__chat(document.documentElement.dataset.view || "home"));
                 });
             })();
-          var H2 = o("vizag-bubhide") === "1",
-            A1 = o("vizag-chatmode") || "off";
-          A1 !== "off" && (A1 = "bubble");
-          var Yt = e("chatbub"),
-            r2 = e("cbzone");
-          function _n() {
-            r("[data-cmode]").forEach(function (i) {
-              i.setAttribute("aria-pressed", i.dataset.cmode === A1 ? "true" : "false");
+          var chatBubbleHidden = readStore("vizag-bubhide") === "1",
+            chatMode = readStore("vizag-chatmode") || "off";
+          chatMode !== "off" && (chatMode = "bubble");
+          var chatBubble = byId("chatbub"),
+            chatDropZone = byId("cbzone");
+          function syncChatModeButtons() {
+            findAll("[data-cmode]").forEach(function (i) {
+              i.setAttribute("aria-pressed", i.dataset.cmode === chatMode ? "true" : "false");
             }),
-              ie.classList.remove("docked", "half"),
-              ie.classList.add("full");
-            var t = e("chat-min");
+              chatPage.classList.remove("docked", "half"),
+              chatPage.classList.add("full");
+            var t = byId("chat-min");
             if (t) {
-              var a = A1 === "bubble";
+              var a = chatMode === "bubble";
               t.setAttribute("aria-label", a ? "Minimise chat to bubble" : "Close chat"),
                 t.querySelector("path").setAttribute("d", "M6 6l12 12M18 6 6 18");
             }
-            (Yt.hidden = A1 !== "bubble" || H2 || !ie.hidden), Yt.hidden || Ha(!1);
+            (chatBubble.hidden = chatMode !== "bubble" || chatBubbleHidden || !chatPage.hidden),
+              chatBubble.hidden || snapBubble(!1);
           }
-          r("[data-cmode]").forEach(function (t) {
+          findAll("[data-cmode]").forEach(function (t) {
             t.addEventListener("click", function (a) {
               a.stopPropagation(),
-                (A1 = t.dataset.cmode),
-                l("vizag-chatmode", A1),
-                A1 === "bubble" && ((H2 = !1), l("vizag-bubhide", "")),
-                _n();
+                (chatMode = t.dataset.cmode),
+                writeStore("vizag-chatmode", chatMode),
+                chatMode === "bubble" && ((chatBubbleHidden = !1), writeStore("vizag-bubhide", "")),
+                syncChatModeButtons();
             });
           });
-          var Da = 0;
-          function i2() {
+          var maxViewportHeight = 0;
+          function fitChatToKeyboard() {
             var t = window.visualViewport;
-            if (!(!t || ie.hidden)) {
-              Da = Math.max(Da, t.height, window.innerHeight * 0.5);
+            if (!(!t || chatPage.hidden)) {
+              maxViewportHeight = Math.max(maxViewportHeight, t.height, window.innerHeight * 0.5);
               var a = document.activeElement,
                 i =
                   a &&
-                  ie.contains(a) &&
+                  chatPage.contains(a) &&
                   /INPUT|TEXTAREA/.test(a.tagName) &&
                   matchMedia("(pointer:coarse)").matches,
-                c = t.height < window.innerHeight - 120 || t.height < Da - 120;
-              U.classList.toggle("kbd", c);
-              var g = ie.querySelector(".chatbox");
+                c = t.height < window.innerHeight - 120 || t.height < maxViewportHeight - 120;
+              rootEl.classList.toggle("kbd", c);
+              var g = chatPage.querySelector(".chatbox");
               c && window.innerWidth < 1024
-                ? (ie.style.setProperty("position", "fixed", "important"),
-                  ie.style.setProperty("top", Math.round(t.offsetTop) + "px", "important"),
-                  ie.style.setProperty("height", Math.round(t.height) + "px", "important"),
-                  ie.style.setProperty("bottom", "auto", "important"),
-                  ie.style.setProperty("left", "0", "important"),
-                  ie.style.setProperty("right", "0", "important"),
+                ? (chatPage.style.setProperty("position", "fixed", "important"),
+                  chatPage.style.setProperty("top", Math.round(t.offsetTop) + "px", "important"),
+                  chatPage.style.setProperty("height", Math.round(t.height) + "px", "important"),
+                  chatPage.style.setProperty("bottom", "auto", "important"),
+                  chatPage.style.setProperty("left", "0", "important"),
+                  chatPage.style.setProperty("right", "0", "important"),
                   g.style.setProperty("height", "100%", "important"),
                   g.style.setProperty("max-height", "100%", "important"),
                   g.style.setProperty("margin-top", "0", "important"),
                   g.style.setProperty("align-self", "stretch", "important"))
                 : (["position", "top", "height", "bottom", "left", "right"].forEach(function (z) {
-                    ie.style.removeProperty(z);
+                    chatPage.style.removeProperty(z);
                   }),
                   ["height", "max-height", "margin-top", "align-self"].forEach(function (z) {
                     g.style.removeProperty(z);
                   }));
-              var E = e("chat-log");
+              var E = byId("chat-log");
               E.scrollTop = E.scrollHeight;
             }
           }
           window.visualViewport &&
-            (visualViewport.addEventListener("resize", i2), visualViewport.addEventListener("scroll", i2)),
-            ie.addEventListener("focusin", function () {
+            (visualViewport.addEventListener("resize", fitChatToKeyboard),
+            visualViewport.addEventListener("scroll", fitChatToKeyboard)),
+            chatPage.addEventListener("focusin", function () {
               [40, 150, 300, 500, 800].forEach(function (t) {
-                setTimeout(i2, t);
+                setTimeout(fitChatToKeyboard, t);
               });
             }),
-            ie.addEventListener("focusout", function () {
-              setTimeout(i2, 120);
+            chatPage.addEventListener("focusout", function () {
+              setTimeout(fitChatToKeyboard, 120);
             }),
-            e("chat-q").addEventListener("focus", function () {
-              (window.__cqF = Date.now()), setTimeout(i2, 60), setTimeout(i2, 350), setTimeout(i2, 700);
+            byId("chat-q").addEventListener("focus", function () {
+              (window.__cqF = Date.now()),
+                setTimeout(fitChatToKeyboard, 60),
+                setTimeout(fitChatToKeyboard, 350),
+                setTimeout(fitChatToKeyboard, 700);
             }),
-            e("chat-q").addEventListener("blur", function () {
-              setTimeout(i2, 120);
+            byId("chat-q").addEventListener("blur", function () {
+              setTimeout(fitChatToKeyboard, 120);
             });
           var Oa = 0;
-          function Cn() {
-            U.classList.remove("kbd");
-            var t = ie.querySelector(".chatbox");
+          function resetChatLayout() {
+            rootEl.classList.remove("kbd");
+            var t = chatPage.querySelector(".chatbox");
             (t.style.height = ""),
               (t.style.marginTop = ""),
               document.body.style.position === "fixed" &&
@@ -8205,18 +8429,18 @@ try {
                 (document.body.style.left = ""),
                 (document.body.style.right = ""),
                 window.scrollTo(0, Oa)),
-              ie.classList.remove("in"),
-              U.classList.remove("ps-open"),
+              chatPage.classList.remove("in"),
+              rootEl.classList.remove("ps-open"),
               setTimeout(function () {
-                (ie.hidden = !0),
-                  (H2 = !1),
-                  l("vizag-bubhide", ""),
-                  (Yt.hidden = A1 !== "bubble"),
-                  Yt.hidden ||
-                    (Ha(!1),
-                    Yt.classList.add("pop"),
+                (chatPage.hidden = !0),
+                  (chatBubbleHidden = !1),
+                  writeStore("vizag-bubhide", ""),
+                  (chatBubble.hidden = chatMode !== "bubble"),
+                  chatBubble.hidden ||
+                    (snapBubble(!1),
+                    chatBubble.classList.add("pop"),
                     setTimeout(function () {
-                      Yt.classList.remove("pop");
+                      chatBubble.classList.remove("pop");
                     }, 400));
               }, 220);
           }
@@ -8225,37 +8449,39 @@ try {
             zn = 0,
             qn = 0,
             fa = !1;
-          function pa(t, a) {
+          function clampBubble(t, a) {
             var i = window.innerWidth,
               c = window.innerHeight,
-              g = Yt.offsetWidth || 56;
+              g = chatBubble.offsetWidth || 56;
             (t = Math.max(8, Math.min(i - g - 8, t))),
               (a = Math.max(60, Math.min(c - g - 90, a))),
-              (Yt.style.left = t + "px"),
-              (Yt.style.top = a + "px");
+              (chatBubble.style.left = t + "px"),
+              (chatBubble.style.top = a + "px");
           }
-          function Ha(t) {
-            var a = Yt.getBoundingClientRect(),
+          function snapBubble(t) {
+            var a = chatBubble.getBoundingClientRect(),
               i = window.innerWidth,
               c = a.left + a.width / 2 < i / 2,
-              g = Yt.offsetWidth || 56,
+              g = chatBubble.offsetWidth || 56,
               E = c ? 8 : i - g - 8;
             t &&
-              (Yt.classList.add("snap"),
+              (chatBubble.classList.add("snap"),
               setTimeout(function () {
-                Yt.classList.remove("snap");
+                chatBubble.classList.remove("snap");
               }, 250));
             var z = Math.max(60, Math.min(window.innerHeight - g - 90, a.top || window.innerHeight * 0.55));
-            (Yt.style.left = E + "px"),
-              (Yt.style.top = z + "px"),
-              Yt.classList.toggle("left", c),
-              l("vizag-bubpos", JSON.stringify([E, z]));
+            (chatBubble.style.left = E + "px"),
+              (chatBubble.style.top = z + "px"),
+              chatBubble.classList.toggle("left", c),
+              writeStore("vizag-bubpos", JSON.stringify([E, z]));
           }
           try {
-            var Ra = JSON.parse(o("vizag-bubpos") || "null");
-            Ra ? pa(Ra[0], Ra[1]) : pa(window.innerWidth - 72, window.innerHeight * 0.55);
+            var savedBubblePos = JSON.parse(readStore("vizag-bubpos") || "null");
+            savedBubblePos
+              ? clampBubble(savedBubblePos[0], savedBubblePos[1])
+              : clampBubble(window.innerWidth - 72, window.innerHeight * 0.55);
           } catch (t) {
-            pa(window.innerWidth - 72, window.innerHeight * 0.55);
+            clampBubble(window.innerWidth - 72, window.innerHeight * 0.55);
           }
           var dX = 0,
             dY = 0,
@@ -8269,17 +8495,17 @@ try {
             vy = 0;
           function bP() {
             bR = 0;
-            Yt.style.transform = "translate3d(" + dX + "px," + dY + "px,0)";
-            var h = !r2.hidden && qn + dY + bH / 2 > window.innerHeight * 0.8;
-            if (h !== r2.classList.contains("hot")) {
-              r2.classList.toggle("hot", h);
-              r2.querySelector("b").textContent = h ? "Release to close" : "Drop to close chat";
+            chatBubble.style.transform = "translate3d(" + dX + "px," + dY + "px,0)";
+            var h = !chatDropZone.hidden && qn + dY + bH / 2 > window.innerHeight * 0.8;
+            if (h !== chatDropZone.classList.contains("hot")) {
+              chatDropZone.classList.toggle("hot", h);
+              chatDropZone.querySelector("b").textContent = h ? "Release to close" : "Drop to close chat";
               h && navigator.vibrate && navigator.vibrate(8);
             }
           }
-          Yt.addEventListener("pointerdown", function (t) {
+          chatBubble.addEventListener("pointerdown", function (t) {
             (R2 = t.clientX), (Tn = t.clientY);
-            var a = Yt.getBoundingClientRect();
+            var a = chatBubble.getBoundingClientRect();
             (zn = a.left),
               (qn = a.top),
               (bH = a.height),
@@ -8290,19 +8516,19 @@ try {
               (lvX = t.clientX),
               (lvY = t.clientY);
             try {
-              Yt.setPointerCapture(t.pointerId);
+              chatBubble.setPointerCapture(t.pointerId);
             } catch (e) {}
-            Yt.classList.add("drag");
-            Yt.style.willChange = "transform";
+            chatBubble.classList.add("drag");
+            chatBubble.style.willChange = "transform";
           }),
-            Yt.addEventListener("pointermove", function (t) {
+            chatBubble.addEventListener("pointermove", function (t) {
               if (R2 !== null) {
                 var a = t.clientX - R2,
                   i = t.clientY - Tn;
                 if (
                   (Math.abs(a) + Math.abs(i) > 6 &&
                     !fa &&
-                    ((fa = !0), clearTimeout(window.__cbt), (r2.hidden = !1)),
+                    ((fa = !0), clearTimeout(window.__cbt), (chatDropZone.hidden = !1)),
                   fa)
                 ) {
                   (dX = a), (dY = i);
@@ -8318,91 +8544,91 @@ try {
             });
           function Pn(t) {
             if (R2 !== null) {
-              (R2 = null), bR && cancelAnimationFrame(bR), (bR = 0), Yt.classList.remove("drag");
-              var a = r2.classList.contains("hot");
-              clearTimeout(window.__cbt), (r2.hidden = !0), r2.classList.remove("hot");
+              (R2 = null), bR && cancelAnimationFrame(bR), (bR = 0), chatBubble.classList.remove("drag");
+              var a = chatDropZone.classList.contains("hot");
+              clearTimeout(window.__cbt), (chatDropZone.hidden = !0), chatDropZone.classList.remove("hot");
               var x0 = zn + dX,
                 y0 = qn + dY;
-              (Yt.style.transform = ""), (Yt.style.willChange = "");
+              (chatBubble.style.transform = ""), (chatBubble.style.willChange = "");
               if (!fa) {
-                (Yt.hidden = !0), window.__chat(document.documentElement.dataset.view || "home");
+                (chatBubble.hidden = !0), window.__chat(document.documentElement.dataset.view || "home");
                 return;
               }
               if (a) {
-                (Yt.hidden = !0),
-                  (H2 = !0),
-                  l("vizag-bubhide", "1"),
-                  pa(window.innerWidth - 72, window.innerHeight * 0.55),
-                  Yt.classList.remove("left"),
+                (chatBubble.hidden = !0),
+                  (chatBubbleHidden = !0),
+                  writeStore("vizag-bubhide", "1"),
+                  clampBubble(window.innerWidth - 72, window.innerHeight * 0.55),
+                  chatBubble.classList.remove("left"),
                   window.__toast && window.__toast("Chat hidden. Long-press Home to bring it back");
                 return;
               }
               performance.now() - lvT > 90 && (vx = vy = 0);
-              (Yt.style.left = x0 + "px"), (Yt.style.top = y0 + "px");
+              (chatBubble.style.left = x0 + "px"), (chatBubble.style.top = y0 + "px");
               var W = window.innerWidth,
                 px = x0 + Math.max(-1.6, Math.min(1.6, vx)) * 160,
                 py = y0 + Math.max(-1.6, Math.min(1.6, vy)) * 160,
                 c = px + bW / 2 < W / 2,
                 E = c ? 8 : W - bW - 8,
                 z = Math.max(60, Math.min(window.innerHeight - bH - 90, py));
-              Yt.offsetWidth;
-              Yt.classList.add("snap"),
-                Yt.classList.toggle("left", c),
-                (Yt.style.left = E + "px"),
-                (Yt.style.top = z + "px"),
-                l("vizag-bubpos", JSON.stringify([E, z])),
+              chatBubble.offsetWidth;
+              chatBubble.classList.add("snap"),
+                chatBubble.classList.toggle("left", c),
+                (chatBubble.style.left = E + "px"),
+                (chatBubble.style.top = z + "px"),
+                writeStore("vizag-bubpos", JSON.stringify([E, z])),
                 clearTimeout(window.__cbs),
                 (window.__cbs = setTimeout(function () {
-                  Yt.classList.remove("snap");
+                  chatBubble.classList.remove("snap");
                 }, 460));
             }
           }
-          _n(),
-            Yt.addEventListener("pointerup", Pn),
-            Yt.addEventListener("pointercancel", Pn),
-            ie.addEventListener("click", function (t) {
-              t.target.closest("[data-chatclose]") && Cn();
+          syncChatModeButtons(),
+            chatBubble.addEventListener("pointerup", Pn),
+            chatBubble.addEventListener("pointercancel", Pn),
+            chatPage.addEventListener("click", function (t) {
+              t.target.closest("[data-chatclose]") && resetChatLayout();
               var a = t.target.closest(".csug");
-              a && An(a.textContent);
+              a && sendChat(a.textContent);
             }),
-            e("chat-form").addEventListener("submit", function (t) {
+            byId("chat-form").addEventListener("submit", function (t) {
               t.preventDefault();
-              var a = e("chat-q");
-              An(a.value), (a.value = "");
+              var a = byId("chat-q");
+              sendChat(a.value), (a.value = "");
             }),
             document.addEventListener("keydown", function (t) {
-              t.key === "Escape" && !ie.hidden && Cn();
+              t.key === "Escape" && !chatPage.hidden && resetChatLayout();
             }),
-            De(),
-            za(),
-            (window.__tripRender = De);
+            renderTrip(),
+            renderFavourites(),
+            (window.__tripRender = renderTrip);
         })(),
         (function () {
-          var n = null;
+          var indiaData = null;
           try {
-            n = JSON.parse((e("india-data") || {}).textContent || "null");
+            indiaData = JSON.parse((byId("india-data") || {}).textContent || "null");
           } catch (_) {}
-          if (!n) return;
-          var L = n.cities,
-            S = n.states;
-          function C(_) {
+          if (!indiaData) return;
+          var CITIES = indiaData.cities,
+            STATES = indiaData.states;
+          function escapeHtml(_) {
             return String(_ == null ? "" : _).replace(/[&<>"']/g, function (P) {
               return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[P];
             });
           }
-          var N = [];
+          var myPlaces = [];
           try {
-            N = JSON.parse(o("vizag-places") || "[]") || [];
+            myPlaces = JSON.parse(readStore("vizag-places") || "[]") || [];
           } catch (_) {}
-          var h = { name: "", rating: {} };
+          var profile = { name: "", rating: {} };
           try {
-            h = Object.assign(h, JSON.parse(o("vizag-profile") || "{}"));
+            profile = Object.assign(profile, JSON.parse(readStore("vizag-profile") || "{}"));
           } catch (_) {}
-          function J() {
-            l("vizag-places", JSON.stringify(N));
+          function saveMyPlaces() {
+            writeStore("vizag-places", JSON.stringify(myPlaces));
           }
-          function ot() {
-            l("vizag-profile", JSON.stringify(h));
+          function saveProfile() {
+            writeStore("vizag-profile", JSON.stringify(profile));
           }
           (window.__profFromAccount = function (_) {
             if (_) {
@@ -8421,70 +8647,79 @@ try {
                   X.toLowerCase().replace(/[^a-z0-9]/g, "") ||
                   "traveller" + String(_.uid || "").slice(0, 4);
               if (
-                ((h.name || "").trim() || ((h.name = X), (I = !0)),
-                (h.user || "").trim() || ((h.user = Lt), (I = !0)),
-                !h.photo && _.photoURL && ((h.photo = _.photoURL), (I = !0)),
-                !h.email && _.email && ((h.email = _.email), (I = !0)),
+                ((profile.name || "").trim() || ((profile.name = X), (I = !0)),
+                (profile.user || "").trim() || ((profile.user = Lt), (I = !0)),
+                !profile.photo && _.photoURL && ((profile.photo = _.photoURL), (I = !0)),
+                !profile.email && _.email && ((profile.email = _.email), (I = !0)),
                 I)
               ) {
-                ot(), window.__renderAcct && window.__renderAcct();
-                var Ct = e("profile");
-                Ct && !Ct.hidden && t1();
+                saveProfile(), window.__renderAcct && window.__renderAcct();
+                var Ct = byId("profile");
+                Ct && !Ct.hidden && renderProfile();
               }
             }
           }),
-            o("vizag-places-v2") ||
-              (N.forEach(function (_) {
+            readStore("vizag-places-v2") ||
+              (myPlaces.forEach(function (_) {
                 _.kind === "Home"
                   ? ((_.kind = "Current"), _.label === "Home" && (_.label = "Current"))
                   : _.kind === "Native town" &&
                     ((_.kind = "Home"), _.label === "Native town" && (_.label = "Home"));
               }),
-              J(),
-              l("vizag-places-v2", "1"));
-          var nt = { Current: "\u{1F4CD}", Office: "\u{1F3E2}", Home: "\u{1F3E0}", Other: "\u{1F4CC}" };
-          window.__myPlaces = function () {
-            return N.map(function (_) {
-              var P = L.filter(function (I) {
-                return I[0] === _.city;
-              })[0];
-              return P
-                ? {
-                    label: _.label + (_.label === _.city ? "" : " \xB7 " + _.city),
-                    city: P,
-                    emo: nt[_.kind] || "\u{1F4CD}",
-                  }
-                : null;
-            }).filter(Boolean);
+              saveMyPlaces(),
+              writeStore("vizag-places-v2", "1"));
+          var PLACE_LABEL_EMOJI = {
+            Current: "\u{1F4CD}",
+            Office: "\u{1F3E2}",
+            Home: "\u{1F3E0}",
+            Other: "\u{1F4CC}",
           };
-          function rt() {
-            var _ = e("mp-list");
+          window.__myPlaces = function () {
+            return myPlaces
+              .map(function (_) {
+                var P = CITIES.filter(function (I) {
+                  return I[0] === _.city;
+                })[0];
+                return P
+                  ? {
+                      label: _.label + (_.label === _.city ? "" : " \xB7 " + _.city),
+                      city: P,
+                      emo: PLACE_LABEL_EMOJI[_.kind] || "\u{1F4CD}",
+                    }
+                  : null;
+              })
+              .filter(Boolean);
+          };
+          function renderMyPlaces() {
+            var _ = byId("mp-list");
             _ &&
-              ((_.innerHTML = N.length
-                ? N.map(function (P, I) {
-                    return (
-                      '<div class="mprow"><span class="emo">' +
-                      (nt[P.kind] || "\u{1F4CD}") +
-                      '</span><div class="mpt"><b>' +
-                      C(P.label) +
-                      "</b><small>" +
-                      C([P.address, P.city, P.pin].filter(Boolean).join(" \xB7 ")) +
-                      '</small></div><button type="button" class="mpdel" data-mpdel="' +
-                      I +
-                      '" aria-label="Remove ' +
-                      C(P.label) +
-                      '">\xD7</button></div>'
-                    );
-                  }).join("")
+              ((_.innerHTML = myPlaces.length
+                ? myPlaces
+                    .map(function (P, I) {
+                      return (
+                        '<div class="mprow"><span class="emo">' +
+                        (PLACE_LABEL_EMOJI[P.kind] || "\u{1F4CD}") +
+                        '</span><div class="mpt"><b>' +
+                        escapeHtml(P.label) +
+                        "</b><small>" +
+                        escapeHtml([P.address, P.city, P.pin].filter(Boolean).join(" \xB7 ")) +
+                        '</small></div><button type="button" class="mpdel" data-mpdel="' +
+                        I +
+                        '" aria-label="Remove ' +
+                        escapeHtml(P.label) +
+                        '">\xD7</button></div>'
+                      );
+                    })
+                    .join("")
                 : '<p class="mpempty">Save where you live now, your office or your home town to start trips from them.</p>'),
               _.querySelectorAll("[data-mpdel]").forEach(function (P) {
                 P.onclick = function (I) {
                   I.stopPropagation();
                   var X = +P.dataset.mpdel,
-                    Lt = N[X];
+                    Lt = myPlaces[X];
                   if (Lt) {
                     var Ct = function () {
-                      N.splice(X, 1), J(), rt(), t1();
+                      myPlaces.splice(X, 1), saveMyPlaces(), renderMyPlaces(), renderProfile();
                     };
                     window.__confirm
                       ? window.__confirm(
@@ -8498,60 +8733,64 @@ try {
                 };
               }));
           }
-          var mt = e("mp-city");
-          mt &&
-            (mt.innerHTML = L.map(function (_) {
-              return "<option>" + C(_[0]) + "</option>";
+          var myPlaceCityInput = byId("mp-city");
+          myPlaceCityInput &&
+            (myPlaceCityInput.innerHTML = CITIES.map(function (_) {
+              return "<option>" + escapeHtml(_[0]) + "</option>";
             }).join(""));
-          var Mt = e("mp-label"),
-            Ft = "Current",
-            Wt = e("mp-sheet");
-          e("mp-kinds").addEventListener("click", function (_) {
+          var myPlaceLabelRow = byId("mp-label"),
+            myPlaceLabel = "Current",
+            myPlacesSheet = byId("mp-sheet");
+          byId("mp-kinds").addEventListener("click", function (_) {
             var P = _.target.closest("button");
             P &&
-              ((Ft = P.dataset.val),
-              r("#mp-kinds button").forEach(function (I) {
+              ((myPlaceLabel = P.dataset.val),
+              findAll("#mp-kinds button").forEach(function (I) {
                 I.setAttribute("aria-pressed", I === P ? "true" : "false");
               }),
-              Ft !== "Other" ? (Mt.value = Ft) : ((Mt.value = ""), Mt.focus()));
+              myPlaceLabel !== "Other"
+                ? (myPlaceLabelRow.value = myPlaceLabel)
+                : ((myPlaceLabelRow.value = ""), myPlaceLabelRow.focus()));
           });
-          function re() {
-            typeof ut == "function" && ut(!1), (Wt.hidden = !1), (e("scrim").hidden = !1);
+          function openMyPlaces() {
+            typeof closeSettings == "function" && closeSettings(!1),
+              (myPlacesSheet.hidden = !1),
+              (byId("scrim").hidden = !1);
           }
-          function Kt() {
-            (Wt.hidden = !0), (e("scrim").hidden = !0);
+          function closeMyPlaces() {
+            (myPlacesSheet.hidden = !0), (byId("scrim").hidden = !0);
           }
-          e("mp-new").addEventListener("click", function (_) {
-            _.stopPropagation(), re();
+          byId("mp-new").addEventListener("click", function (_) {
+            _.stopPropagation(), openMyPlaces();
           }),
-            e("mp-close").addEventListener("click", Kt),
-            Wt.addEventListener("click", function (_) {
+            byId("mp-close").addEventListener("click", closeMyPlaces),
+            myPlacesSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             }),
-            e("scrim").addEventListener("click", Kt),
-            e("mp-add").addEventListener("click", function () {
-              var _ = (Mt.value || Ft).trim(),
-                P = e("mp-addr").value.trim(),
-                I = mt.value,
-                X = (e("mp-pin").value || "").replace(/\D/g, "").slice(0, 6);
+            byId("scrim").addEventListener("click", closeMyPlaces),
+            byId("mp-add").addEventListener("click", function () {
+              var _ = (myPlaceLabelRow.value || myPlaceLabel).trim(),
+                P = byId("mp-addr").value.trim(),
+                I = myPlaceCityInput.value,
+                X = (byId("mp-pin").value || "").replace(/\D/g, "").slice(0, 6);
               if (X && X.length !== 6) {
-                e("mp-pin").focus();
+                byId("mp-pin").focus();
                 return;
               }
-              N.push({ kind: Ft, label: _, address: P, pin: X, city: I }),
-                J(),
-                (e("mp-addr").value = ""),
-                (e("mp-pin").value = ""),
-                rt(),
-                t1(),
-                Kt(),
-                typeof ut == "function" && ut(!0);
+              myPlaces.push({ kind: myPlaceLabel, label: _, address: P, pin: X, city: I }),
+                saveMyPlaces(),
+                (byId("mp-addr").value = ""),
+                (byId("mp-pin").value = ""),
+                renderMyPlaces(),
+                renderProfile(),
+                closeMyPlaces(),
+                typeof closeSettings == "function" && closeSettings(!0);
             });
-          var Be = ["Newbie", "Explorer", "Voyager", "Globetrotter", "Legend"];
-          function le() {
+          var TRAVELLER_LEVELS = ["Newbie", "Explorer", "Voyager", "Globetrotter", "Legend"];
+          function readTrips() {
             var _ = [];
             try {
-              _ = JSON.parse(o("vizag-trips") || "[]") || [];
+              _ = JSON.parse(readStore("vizag-trips") || "[]") || [];
             } catch (Gt) {}
             var P = {
                 id: "vizag",
@@ -8590,7 +8829,7 @@ try {
             var Ct = Lt.places + Lt.states * 5 + Lt.days * 2,
               lt = Math.min(5, 1 + Math.floor(Ct / 30)),
               Ot = I.map(function (Gt) {
-                return h.rating[Gt.id] || 0;
+                return profile.rating[Gt.id] || 0;
               }).filter(Boolean),
               pe = Ot.length
                 ? Ot.reduce(function (Gt, Pe) {
@@ -8599,19 +8838,19 @@ try {
                 : 0;
             return { all: I, tot: Lt, pts: Ct, lvl: lt, avg: pe, next: lt < 5 ? lt * 30 - Ct : 0 };
           }
-          function Qe(_, P) {
+          function starsHtml(_, P) {
             for (var I = "", X = 1; X <= 5; X++)
               I += '<span class="' + (P || "st") + (X <= Math.round(_) ? " on" : "") + '">\u2605</span>';
             return I;
           }
-          var G1 = { woman: "Woman", man: "Man", nb: "Non-binary" },
-            Se = ["kav1", "kav2", "kav3", "kav4", "kav5", "kav6", "kav7", "kav8"].map(function (_) {
+          var GENDER_LABELS = { woman: "Woman", man: "Man", nb: "Non-binary" },
+            AVATAR_FACES = ["kav1", "kav2", "kav3", "kav4", "kav5", "kav6", "kav7", "kav8"].map(function (_) {
               return [_];
             });
-          function ve(_) {
+          function avatarEmoji(_) {
             return "";
           }
-          function C1(_) {
+          function emojiAvatar(_) {
             var o = [
               "\u{1F600}",
               "\u{1F60E}",
@@ -8628,42 +8867,44 @@ try {
               "\u{1F634}",
             ].indexOf(_);
             return (
-              Se.filter(function (P) {
+              AVATAR_FACES.filter(function (P) {
                 return P[0] === _;
-              })[0] || (o >= 0 ? Se[o % Se.length] : void 0)
+              })[0] || (o >= 0 ? AVATAR_FACES[o % AVATAR_FACES.length] : void 0)
             );
           }
-          function V1() {
-            if (h.photo) return '<img class="avimg" src="' + h.photo + '" alt="">';
-            var _ = h.avatar && C1(h.avatar);
+          function avatarHtml() {
+            if (profile.photo) return '<img class="avimg" src="' + profile.photo + '" alt="">';
+            var _ = profile.avatar && emojiAvatar(profile.avatar);
             if (_) return '<span class="avemo" data-noicon>' + window.__kavf(_[0]) + "</span>";
-            var P = (h.user || h.name || "").replace(/^@/, "").trim().charAt(0).toUpperCase() || "A";
-            return '<span class="avlet">' + C(P) + "</span>";
+            var P =
+              (profile.user || profile.name || "").replace(/^@/, "").trim().charAt(0).toUpperCase() || "A";
+            return '<span class="avlet">' + escapeHtml(P) + "</span>";
           }
-          function x2() {
-            return (h.name || "").trim().charAt(0).toUpperCase();
-          }
-          var Ze = e("av-sheet");
-          function u2() {
-            var _ = h.photo ? "photo" : h.avatar || "";
-            (e("av-body").innerHTML =
+          var avatarSheet = byId("av-sheet");
+          function renderAvatarSheet() {
+            var _ = profile.photo ? "photo" : profile.avatar || "";
+            (byId("av-body").innerHTML =
               '<div class="avpick big" data-noicon><button type="button" class="avopt avph" data-ph="1" aria-pressed="' +
               (_ === "photo") +
               '" aria-label="Use a photo">' +
-              (h.photo ? '<img src="' + h.photo + '" alt="">' : z1("camera")) +
+              (profile.photo ? '<img src="' + profile.photo + '" alt="">' : contactIcon("camera")) +
               '</button><button type="button" class="avopt avinit" data-init="1" aria-pressed="' +
               (_ === "aa" || !_) +
               '" aria-label="Letter from your username"><span class="avlet">' +
-              C(((h.user || h.name || "").replace(/^@/, "").trim().charAt(0) || "A").toUpperCase()) +
+              escapeHtml(
+                (
+                  (profile.user || profile.name || "").replace(/^@/, "").trim().charAt(0) || "A"
+                ).toUpperCase(),
+              ) +
               "</span></button>" +
-              Se.map(function (I) {
+              AVATAR_FACES.map(function (I) {
                 return (
                   '<button type="button" class="avopt" data-av="' +
                   I[0] +
                   '" aria-pressed="' +
                   (_ === I[0]) +
                   '" style="' +
-                  ve(I) +
+                  avatarEmoji(I) +
                   '" aria-label="Avatar ' +
                   I[0].slice(3) +
                   '">' +
@@ -8672,33 +8913,38 @@ try {
                 );
               }).join("") +
               "</div>" +
-              (h.photo ? '<button type="button" class="avclear" id="av-rmph">Remove photo</button>' : "")),
-              window.__paintUses && window.__paintUses(e("av-body")),
-              e("av-body")
+              (profile.photo
+                ? '<button type="button" class="avclear" id="av-rmph">Remove photo</button>'
+                : "")),
+              window.__paintUses && window.__paintUses(byId("av-body")),
+              byId("av-body")
                 .querySelectorAll(".avopt")
                 .forEach(function (I) {
                   I.onclick = function () {
                     if (I.dataset.ph) {
-                      e("av-file").click();
+                      byId("av-file").click();
                       return;
                     }
                     I.dataset.init
-                      ? ((h.avatar = "aa"), (h.photo = ""))
-                      : ((h.avatar = I.dataset.av), (h.photo = "")),
-                      Ae(),
-                      i1();
+                      ? ((profile.avatar = "aa"), (profile.photo = ""))
+                      : ((profile.avatar = I.dataset.av), (profile.photo = "")),
+                      saveAvatarChoice(),
+                      closeAvatarSheet();
                   };
                 });
-            var P = e("av-rmph");
+            var P = byId("av-rmph");
             P &&
               (P.onclick = function () {
-                (h.photo = ""), Ae();
+                (profile.photo = ""), saveAvatarChoice();
               });
           }
-          function Ae() {
-            ot(), u2(), window.__renderAcct && window.__renderAcct(), Ue.hidden || t1();
+          function saveAvatarChoice() {
+            saveProfile(),
+              renderAvatarSheet(),
+              window.__renderAcct && window.__renderAcct(),
+              profileSheet.hidden || renderProfile();
           }
-          e("av-file").addEventListener("change", function () {
+          byId("av-file").addEventListener("change", function () {
             var _ = this.files && this.files[0];
             if (_) {
               var P = new FileReader();
@@ -8720,9 +8966,9 @@ try {
                       Lt,
                       Lt,
                     ),
-                    (h.photo = X.toDataURL("image/jpeg", 0.82)),
-                    Ae(),
-                    i1();
+                    (profile.photo = X.toDataURL("image/jpeg", 0.82)),
+                    saveAvatarChoice(),
+                    closeAvatarSheet();
                 }),
                   (I.src = P.result);
               }),
@@ -8730,30 +8976,35 @@ try {
                 (this.value = "");
             }
           });
-          var T1 = !1;
+          var returnToProfile = !1;
           window.__avatarSheet = function () {
-            (T1 = !Ue.hidden), (Ue.hidden = !0), u2(), (Ze.hidden = !1), (e("scrim").hidden = !1);
+            (returnToProfile = !profileSheet.hidden),
+              (profileSheet.hidden = !0),
+              renderAvatarSheet(),
+              (avatarSheet.hidden = !1),
+              (byId("scrim").hidden = !1);
           };
-          function i1() {
-            (Ze.hidden = !0), T1 ? (t1(), (Ue.hidden = !1)) : (e("scrim").hidden = !0);
+          function closeAvatarSheet() {
+            (avatarSheet.hidden = !0),
+              returnToProfile ? (renderProfile(), (profileSheet.hidden = !1)) : (byId("scrim").hidden = !0);
           }
-          e("av-close").addEventListener("click", i1),
-            Ze.addEventListener("click", function (_) {
+          byId("av-close").addEventListener("click", closeAvatarSheet),
+            avatarSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             }),
-            e("scrim").addEventListener("click", function () {
-              Ze.hidden || i1();
+            byId("scrim").addEventListener("click", function () {
+              avatarSheet.hidden || closeAvatarSheet();
             }),
-            (window.__avatarHTML = V1);
-          function w1() {
-            return h.user ? "@" + h.user : "";
+            (window.__avatarHTML = avatarHtml);
+          function usernameLabel() {
+            return profile.user ? "@" + profile.user : "";
           }
-          window.__idLine = w1;
-          function t1() {
-            var _ = e("prof-body");
+          window.__idLine = usernameLabel;
+          function renderProfile() {
+            var _ = byId("prof-body");
             if (_) {
               var P = !!(window.__signedIn && window.__signedIn()),
-                I = le();
+                I = readTrips();
               P ||
                 (I = {
                   all: I.all,
@@ -8763,30 +9014,30 @@ try {
                   next: 30,
                   tot: { trips: 0, days: 0, places: 0, states: 0, km: 0 },
                 });
-              var X = (h.name || "").trim().charAt(0).toUpperCase();
+              var X = (profile.name || "").trim().charAt(0).toUpperCase();
               (_.innerHTML =
                 '<div class="pcard1"><div class="phero pidcard"><span class="pav' +
-                (V1() ? " pic" : X ? "" : " face") +
+                (avatarHtml() ? " pic" : X ? "" : " face") +
                 '">' +
-                (V1() || (X ? C(X) : window.__FACE || z1("user"))) +
+                (avatarHtml() || (X ? escapeHtml(X) : window.__FACE || contactIcon("user"))) +
                 '</span><div class="pid"><b class="pnm">' +
-                C(h.name || "Your name") +
+                escapeHtml(profile.name || "Your name") +
                 "</b><small>" +
-                C(w1() || "Add a username and socials") +
+                escapeHtml(usernameLabel() || "Add a username and socials") +
                 "</small></div>" +
                 (P
                   ? '<button type="button" class="aico2" id="prof-edit" aria-label="Edit profile">' +
-                    z1("edit") +
+                    contactIcon("edit") +
                     "</button>"
                   : '<button type="button" class="psign" id="prof-signin">Sign in</button>') +
                 '</div><div id="prof-contacts"></div><div class="plevel"><div><div class="plv">' +
-                Be[I.lvl - 1] +
+                TRAVELLER_LEVELS[I.lvl - 1] +
                 '</div><div class="pstars">' +
-                Qe(I.lvl) +
+                starsHtml(I.lvl) +
                 '</div></div><div class="ppts"><b>' +
                 I.pts +
                 "</b><small>travel points" +
-                (I.next ? " \xB7 " + I.next + " to " + Be[I.lvl] : "") +
+                (I.next ? " \xB7 " + I.next + " to " + TRAVELLER_LEVELS[I.lvl] : "") +
                 '</small></div></div></div><p class="pptsnote">Points: 1 per place, 2 per day, 5 per state.</p><div class="pstats">' +
                 [
                   ["Trips", I.tot.trips],
@@ -8802,14 +9053,14 @@ try {
                 (P
                   ? '<p class="pnote">Your details are saved to your account and stay the same on all of your devices.</p>'
                   : '<p class="pnote">Sign in to start earning travel points. Your trips, days and places count once you\'re signed in.</p>')),
-                e("prof-edit") &&
-                  (e("prof-edit").onclick = function (Ct) {
-                    Ct.stopPropagation(), $2();
+                byId("prof-edit") &&
+                  (byId("prof-edit").onclick = function (Ct) {
+                    Ct.stopPropagation(), renderProfileEditor();
                   }),
-                e("prof-signin") &&
-                  (e("prof-signin").onclick = function (Ct) {
-                    Ct.stopPropagation(), (Ue.hidden = !0), (e("scrim").hidden = !0);
-                    var lt = e("acct-signin");
+                byId("prof-signin") &&
+                  (byId("prof-signin").onclick = function (Ct) {
+                    Ct.stopPropagation(), (profileSheet.hidden = !0), (byId("scrim").hidden = !0);
+                    var lt = byId("acct-signin");
                     lt && lt.click();
                   });
               var Lt = _.querySelector(".pav");
@@ -8819,23 +9070,29 @@ try {
                 (Lt.onclick = function (Ct) {
                   Ct.stopPropagation(), window.__avatarSheet();
                 })),
-                E2(),
+                renderContacts(),
                 window.__paintUses && window.__paintUses(_);
             }
           }
-          var d1 = [
+          var CONTACT_FIELDS = [
             ["email", "Email", "email", "you@example.com", "mail"],
             ["instagram", "Instagram", "text", "@username", "insta"],
             ["x", "X", "text", "@username", "xlogo"],
             ["facebook", "Facebook", "text", "Profile link or username", "fb"],
           ];
-          function u1() {
-            var _ = h.emailPending;
-            return !_ || !_.e ? (h.email ? "ok" : "") : Date.now() - _.t > 864e5 ? "expired" : "pending";
+          function emailStatus() {
+            var _ = profile.emailPending;
+            return !_ || !_.e
+              ? profile.email
+                ? "ok"
+                : ""
+              : Date.now() - _.t > 864e5
+                ? "expired"
+                : "pending";
           }
-          function b1() {
-            var _ = u1();
-            return _ === "ok" && h.emailVerified
+          function emailBadge() {
+            var _ = emailStatus();
+            return _ === "ok" && profile.emailVerified
               ? ' <i class="embadge ok">Verified</i>'
               : _ === "pending"
                 ? ' <i class="embadge">Not verified</i>'
@@ -8843,14 +9100,14 @@ try {
                   ? ' <i class="embadge bad">Link expired</i>'
                   : "";
           }
-          function Y1() {
-            var _ = u1(),
-              P = h.emailPending;
+          function emailNote() {
+            var _ = emailStatus(),
+              P = profile.emailPending;
             if (_ === "pending") {
               var I = Math.max(1, Math.ceil((864e5 - (Date.now() - P.t)) / 36e5));
               return (
                 "We sent a verification link to " +
-                C(P.e) +
+                escapeHtml(P.e) +
                 ". It expires in " +
                 I +
                 " hour" +
@@ -8860,16 +9117,16 @@ try {
             }
             return _ === "expired"
               ? "The link to " +
-                  C(P.e) +
+                  escapeHtml(P.e) +
                   ' expired. <button type="button" class="emrs" data-emrs>Send a new link</button>'
               : "New emails are added after you confirm them from a link we send.";
           }
-          window.__emState = u1;
-          function k1(_) {
-            var P = h.social || {};
-            return P[_] || (_ === "email" && h.email) || "";
+          window.__emState = emailStatus;
+          function contactValue(_) {
+            var P = profile.social || {};
+            return P[_] || (_ === "email" && profile.email) || "";
           }
-          function z1(_) {
+          function contactIcon(_) {
             return (
               '<svg class="ph" aria-hidden="true"><use data-p="' +
               _ +
@@ -8878,7 +9135,7 @@ try {
               '"/></svg>'
             );
           }
-          function fn(_, P) {
+          function contactLink(_, P) {
             if (((P = (P || "").trim()), !P)) return "";
             if (/^https?:/i.test(P)) return P;
             var I = P.replace(/^@/, "");
@@ -8891,28 +9148,28 @@ try {
               }[_] || ""
             );
           }
-          function E2() {
-            var _ = e("prof-contacts");
+          function renderContacts() {
+            var _ = byId("prof-contacts");
             if (_) {
-              var P = d1.filter(function (X) {
-                return k1(X[0]);
+              var P = CONTACT_FIELDS.filter(function (X) {
+                return contactValue(X[0]);
               });
               _.hidden = !P.length;
               var I = function (X, Lt) {
-                var Ct = fn(X[0], k1(X[0]));
+                var Ct = contactLink(X[0], contactValue(X[0]));
                 return (
                   '<a class="' +
                   Lt +
                   '" href="' +
-                  C(Ct) +
+                  escapeHtml(Ct) +
                   '"' +
                   (X[0] === "email" ? "" : ' target="_blank" rel="noopener"') +
                   ' data-title="' +
-                  C(X[1] + " \xB7 " + k1(X[0])) +
+                  escapeHtml(X[1] + " \xB7 " + contactValue(X[0])) +
                   '" aria-label="' +
-                  C(X[1]) +
+                  escapeHtml(X[1]) +
                   '">' +
-                  z1(X[4]) +
+                  contactIcon(X[4]) +
                   (Lt === "spill" ? "<span>" + X[1] + "</span>" : "") +
                   "</a>"
                 );
@@ -8926,19 +9183,19 @@ try {
                 window.__paintUses && window.__paintUses(_);
             }
           }
-          var J1 = e("soc-sheet"),
-            Ue = e("profile"),
-            L1 = "",
-            X2 = !1;
-          function $2() {
-            (L1 = h.gender || ""), (X2 = !Ue.hidden);
-            var _ = h.avatar || "",
-              P = h.photo || "";
-            (e("soc-body").innerHTML =
+          var socialSheet = byId("soc-sheet"),
+            profileSheet = byId("profile"),
+            chosenGender = "",
+            profileWasOpen = !1;
+          function renderProfileEditor() {
+            (chosenGender = profile.gender || ""), (profileWasOpen = !profileSheet.hidden);
+            var _ = profile.avatar || "",
+              P = profile.photo || "";
+            (byId("soc-body").innerHTML =
               '<div class="pgl ptitle">You</div><div class="pfgrp"><label class="pf"><span>Name</span><input id="ep-name" maxlength="26" value="' +
-              C(h.name || "") +
+              escapeHtml(profile.name || "") +
               '" placeholder="Your name"><small class="perr" id="ep-nerr" hidden>Names can be up to 25 characters.</small></label><label class="pf"><span>Username</span><div class="epuser"><span>@</span><input id="ep-user" value="' +
-              C(h.user || "") +
+              escapeHtml(profile.user || "") +
               '" placeholder="username" maxlength="11" autocomplete="off" autocapitalize="none" spellcheck="false"></div><small class="perr" id="ep-uerr" hidden>Usernames can be up to 10 characters.</small><small class="uavail" id="ep-uav"></small></label><div class="pf"><span>Gender</span><div class="pills" id="ep-gender">' +
               [
                 ["woman", "Woman"],
@@ -8950,7 +9207,7 @@ try {
                     '<button type="button" data-val="' +
                     lt[0] +
                     '" aria-pressed="' +
-                    (L1 === lt[0] ? "true" : "false") +
+                    (chosenGender === lt[0] ? "true" : "false") +
                     '">' +
                     lt[1] +
                     "</button>"
@@ -8964,7 +9221,7 @@ try {
                     '<option value="' +
                     lt +
                     '"' +
-                    (h.age === lt ? " selected" : "") +
+                    (profile.age === lt ? " selected" : "") +
                     ">" +
                     (lt || "Prefer not to say") +
                     "</option>"
@@ -8972,33 +9229,37 @@ try {
                 })
                 .join("") +
               '</select></label></div><div class="pgl ptitle">Social &amp; email</div><div class="pfgrp">' +
-              d1
-                .map(function (lt) {
-                  return (
-                    '<label class="pf"><span>' +
-                    lt[1] +
-                    (lt[0] === "email" ? b1() : "") +
-                    '</span><input data-pfk="' +
-                    lt[0] +
-                    '" type="' +
-                    lt[2] +
-                    '"' +
-                    (lt[0] === "email" ? ' inputmode="email" autocomplete="email"' : ' autocomplete="off"') +
-                    ' placeholder="' +
-                    lt[3] +
-                    '" value="' +
-                    C(lt[0] === "email" ? (h.emailPending && h.emailPending.e) || k1("email") : k1(lt[0])) +
-                    '">' +
-                    (lt[0] === "email" ? '<small class="emnote" id="em-note">' + Y1() + "</small>" : "") +
-                    "</label>"
-                  );
-                })
-                .join("") +
+              CONTACT_FIELDS.map(function (lt) {
+                return (
+                  '<label class="pf"><span>' +
+                  lt[1] +
+                  (lt[0] === "email" ? emailBadge() : "") +
+                  '</span><input data-pfk="' +
+                  lt[0] +
+                  '" type="' +
+                  lt[2] +
+                  '"' +
+                  (lt[0] === "email" ? ' inputmode="email" autocomplete="email"' : ' autocomplete="off"') +
+                  ' placeholder="' +
+                  lt[3] +
+                  '" value="' +
+                  escapeHtml(
+                    lt[0] === "email"
+                      ? (profile.emailPending && profile.emailPending.e) || contactValue("email")
+                      : contactValue(lt[0]),
+                  ) +
+                  '">' +
+                  (lt[0] === "email"
+                    ? '<small class="emnote" id="em-note">' + emailNote() + "</small>"
+                    : "") +
+                  "</label>"
+                );
+              }).join("") +
               "</div>"),
-              e("ep-user").addEventListener("input", function () {
+              byId("ep-user").addEventListener("input", function () {
                 var lt = this.value.toLowerCase().replace(/[^a-z0-9_]/g, ""),
                   Ot = lt.slice(0, 10),
-                  pe = e("ep-uerr");
+                  pe = byId("ep-uerr");
                 Ot !== this.value && (this.value = Ot),
                   lt.length > 10 &&
                     pe &&
@@ -9044,10 +9305,10 @@ try {
               return !X(lt) && I.indexOf(lt) < 0;
             }
             function Ct() {
-              var lt = e("ep-user").value.trim(),
-                Ot = e("ep-uav");
+              var lt = byId("ep-user").value.trim(),
+                Ot = byId("ep-uav");
               if (Ot) {
-                if (!lt || lt === (h.user || "")) {
+                if (!lt || lt === (profile.user || "")) {
                   (Ot.innerHTML = ""), (Ot.className = "uavail");
                   return;
                 }
@@ -9084,15 +9345,15 @@ try {
                     "</span>");
               }
             }
-            e("ep-user").addEventListener("input", function () {
+            byId("ep-user").addEventListener("input", function () {
               clearTimeout(Ct.t), (Ct.t = setTimeout(Ct, 250));
             }),
-              e("soc-body").addEventListener("click", function (lt) {
+              byId("soc-body").addEventListener("click", function (lt) {
                 var Ot = lt.target.closest("[data-us]");
-                Ot && (lt.preventDefault(), (e("ep-user").value = Ot.dataset.us), Ct());
+                Ot && (lt.preventDefault(), (byId("ep-user").value = Ot.dataset.us), Ct());
               }),
-              e("ep-name").addEventListener("input", function () {
-                var lt = e("ep-nerr");
+              byId("ep-name").addEventListener("input", function () {
+                var lt = byId("ep-nerr");
                 this.value.length > 25 &&
                   ((this.value = this.value.slice(0, 25)),
                   (lt.hidden = !1),
@@ -9101,145 +9362,151 @@ try {
                     lt.hidden = !0;
                   }, 2800)));
               }),
-              e("ep-gender").addEventListener("click", function (lt) {
+              byId("ep-gender").addEventListener("click", function (lt) {
                 var Ot = lt.target.closest("button");
                 Ot &&
-                  ((L1 = L1 === Ot.dataset.val ? "" : Ot.dataset.val),
+                  ((chosenGender = chosenGender === Ot.dataset.val ? "" : Ot.dataset.val),
                   this.querySelectorAll("button").forEach(function (pe) {
-                    pe.setAttribute("aria-pressed", pe.dataset.val === L1 ? "true" : "false");
+                    pe.setAttribute("aria-pressed", pe.dataset.val === chosenGender ? "true" : "false");
                   }));
               }),
-              e("soc-body").addEventListener("click", function (lt) {
+              byId("soc-body").addEventListener("click", function (lt) {
                 if (lt.target.closest("[data-emrs]")) {
                   lt.preventDefault();
-                  var Ot = h.emailPending;
+                  var Ot = profile.emailPending;
                   if (Ot) {
-                    (Ot.t = Date.now()), ot();
-                    var pe = e("em-note");
-                    pe && (pe.innerHTML = Y1()), window.__toast && window.__toast("New link sent");
+                    (Ot.t = Date.now()), saveProfile();
+                    var pe = byId("em-note");
+                    pe && (pe.innerHTML = emailNote()), window.__toast && window.__toast("New link sent");
                   }
                 }
               }),
-              (Ue.hidden = !0),
-              (J1.hidden = !1),
-              (e("scrim").hidden = !1),
-              (J1.scrollTop = 0);
+              (profileSheet.hidden = !0),
+              (socialSheet.hidden = !1),
+              (byId("scrim").hidden = !1),
+              (socialSheet.scrollTop = 0);
           }
-          window.__editProfile = $2;
-          function Z2(_) {
+          window.__editProfile = renderProfileEditor;
+          function saveSocials(_) {
             _ &&
-              ((h.social = h.social || {}),
-              r("#soc-body [data-pfk]").forEach(function (P) {
+              ((profile.social = profile.social || {}),
+              findAll("#soc-body [data-pfk]").forEach(function (P) {
                 var I = P.value.trim();
                 if (P.dataset.pfk === "email") {
-                  if (I && I !== h.email) {
-                    var X = h.emailPending;
+                  if (I && I !== profile.email) {
+                    var X = profile.emailPending;
                     (!X || X.e !== I || Date.now() - X.t > 864e5) &&
-                      ((h.emailPending = { e: I, t: Date.now() }),
+                      ((profile.emailPending = { e: I, t: Date.now() }),
                       window.__toast && window.__toast("Verification link sent"));
-                  } else I || ((h.emailPending = null), (h.email = ""), (h.social.email = ""));
+                  } else
+                    I || ((profile.emailPending = null), (profile.email = ""), (profile.social.email = ""));
                   return;
                 }
-                h.social[P.dataset.pfk] = I;
+                profile.social[P.dataset.pfk] = I;
               }),
-              (h.name = e("ep-name").value.trim()),
-              (h.user = e("ep-user").value.trim()),
-              (h.gender = L1),
-              (h.age = e("ep-age").value),
-              ot(),
+              (profile.name = byId("ep-name").value.trim()),
+              (profile.user = byId("ep-user").value.trim()),
+              (profile.gender = chosenGender),
+              (profile.age = byId("ep-age").value),
+              saveProfile(),
               window.__renderAcct && window.__renderAcct()),
-              (J1.hidden = !0),
-              X2 ? (t1(), (Ue.hidden = !1)) : (e("scrim").hidden = !0);
+              (socialSheet.hidden = !0),
+              profileWasOpen ? (renderProfile(), (profileSheet.hidden = !1)) : (byId("scrim").hidden = !0);
           }
-          e("soc-save").addEventListener("click", function () {
-            var _ = e("ep-user"),
-              P = e("ep-uav");
-            if (_ && P && /\bno\b/.test(P.className) && _.value.trim() !== (h.user || "")) {
+          byId("soc-save").addEventListener("click", function () {
+            var _ = byId("ep-user"),
+              P = byId("ep-uav");
+            if (_ && P && /\bno\b/.test(P.className) && _.value.trim() !== (profile.user || "")) {
               _.focus(), P.scrollIntoView({ block: "center" });
               return;
             }
-            Z2(!0);
+            saveSocials(!0);
           }),
-            e("soc-back").addEventListener("click", function () {
-              Z2(!1);
+            byId("soc-back").addEventListener("click", function () {
+              saveSocials(!1);
             }),
-            J1.addEventListener("click", function (_) {
+            socialSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             });
-          function De() {
-            typeof ut == "function" && ut(!1), t1(), (Ue.hidden = !1), (e("scrim").hidden = !1);
+          function openProfile() {
+            typeof closeSettings == "function" && closeSettings(!1),
+              renderProfile(),
+              (profileSheet.hidden = !1),
+              (byId("scrim").hidden = !1);
           }
-          function S2() {
-            (Ue.hidden = !0), (e("scrim").hidden = !0);
+          function closeProfile() {
+            (profileSheet.hidden = !0), (byId("scrim").hidden = !0);
           }
-          var K1 = e("prof-open");
-          K1 &&
-            K1.addEventListener("click", function (_) {
-              _.stopPropagation(), De();
+          var profileOpenButton = byId("prof-open");
+          profileOpenButton &&
+            profileOpenButton.addEventListener("click", function (_) {
+              _.stopPropagation(), openProfile();
             }),
-            e("prof-close").addEventListener("click", S2),
-            Ue.addEventListener("click", function (_) {
+            byId("prof-close").addEventListener("click", closeProfile),
+            profileSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             }),
-            e("scrim").addEventListener("click", S2),
+            byId("scrim").addEventListener("click", closeProfile),
             document.addEventListener("keydown", function (_) {
-              _.key === "Escape" && S2();
+              _.key === "Escape" && closeProfile();
             }),
             (window.__acctGrid = function () {
-              var _ = le();
+              var _ = readTrips();
               return [
-                ["Level", Be[_.lvl - 1]],
+                ["Level", TRAVELLER_LEVELS[_.lvl - 1]],
                 ["Points", String(_.pts)],
                 ["Trips", String(_.tot.trips)],
                 ["States", String(_.tot.states)],
               ]
                 .map(function (P) {
-                  return "<div><b>" + C(P[1]) + "</b><small>" + P[0] + "</small></div>";
+                  return "<div><b>" + escapeHtml(P[1]) + "</b><small>" + P[0] + "</small></div>";
                 })
                 .join("");
             });
-          var e1 = e("rate-sheet");
-          function _a(_) {
-            var P = q1(),
-              I = le();
+          var rateSheet = byId("rate-sheet");
+          function openRateSheet(_) {
+            var P = pastTripsList(),
+              I = readTrips();
             if (
-              ((e("rate-body").innerHTML =
+              ((byId("rate-body").innerHTML =
                 '<p class="mcpnote rateavg" id="rate-avg">' +
                 (I.avg ? "Average " + I.avg.toFixed(1) + " \u2605 across rated trips" : "No ratings yet") +
                 '</p><div class="prates">' +
                 P.map(function (Lt) {
                   return (
                     '<div class="prate rvcard"><div class="rvtop"><div class="mpt"><b>' +
-                    C(Lt.name) +
+                    escapeHtml(Lt.name) +
                     "</b><small>" +
                     (Lt.d ? Lt.d + " \xB7 " : "") +
                     Lt.days +
                     " days \xB7 " +
                     Lt.places +
                     " places</small></div>" +
-                    X1(Lt.id, h.rating[Lt.id] || 0) +
+                    ratingStarsHtml(Lt.id, profile.rating[Lt.id] || 0) +
                     '</div><textarea class="rvta" data-rvt="' +
-                    C(Lt.id) +
+                    escapeHtml(Lt.id) +
                     '" rows="2" maxlength="400" placeholder="How was it? Highlights, tips for next time\u2026">' +
-                    C(h.review[Lt.id] || "") +
+                    escapeHtml(profile.review[Lt.id] || "") +
                     "</textarea></div>"
                   );
                 }).join("") +
                 "</div>"),
-              A2(e("rate-body"), function () {
-                var Lt = le();
-                (e("rate-avg").textContent = Lt.avg
+              bindRatingStars(byId("rate-body"), function () {
+                var Lt = readTrips();
+                (byId("rate-avg").textContent = Lt.avg
                   ? "Average " + Lt.avg.toFixed(1) + " \u2605 across rated trips"
                   : "No ratings yet"),
-                  Q2();
+                  ratingChanged();
               }),
-              r("#rate-body [data-rvt]").forEach(function (Lt) {
+              findAll("#rate-body [data-rvt]").forEach(function (Lt) {
                 Lt.addEventListener("input", function () {
                   var Ct = Lt.value.trim(),
                     lt = [].some.call(document.querySelectorAll("#rate-body [data-rvt]"), function (Ot) {
                       return Ot.value.trim();
                     });
-                  Ct ? (h.review[Lt.dataset.rvt] = Ct) : delete h.review[Lt.dataset.rvt], ot(), Q2();
+                  Ct ? (profile.review[Lt.dataset.rvt] = Ct) : delete profile.review[Lt.dataset.rvt],
+                    saveProfile(),
+                    ratingChanged();
                 });
               }),
               _)
@@ -9251,13 +9518,13 @@ try {
                 }, 120);
             }
           }
-          h.review = h.review || {};
-          function q1() {
-            var _ = le(),
+          profile.review = profile.review || {};
+          function pastTripsList() {
+            var _ = readTrips(),
               P = { vizag: "2026-12-05" },
               I = [];
             try {
-              I = JSON.parse(o("vizag-trips") || "[]") || [];
+              I = JSON.parse(readStore("vizag-trips") || "[]") || [];
             } catch (X) {}
             return (
               I.forEach(function (X) {
@@ -9282,10 +9549,10 @@ try {
                 })
             );
           }
-          function X1(_, P) {
+          function ratingStarsHtml(_, P) {
             return (
               '<div class="rstars sm" data-rt="' +
-              C(_) +
+              escapeHtml(_) +
               '">' +
               [1, 2, 3, 4, 5]
                 .map(function (I) {
@@ -9305,12 +9572,12 @@ try {
               "</div>"
             );
           }
-          function A2(_, P) {
+          function bindRatingStars(_, P) {
             _.querySelectorAll("[data-rt]").forEach(function (I) {
               I.querySelectorAll("button").forEach(function (X) {
                 X.onclick = function (Lt) {
-                  Lt.stopPropagation(), (h.rating[I.dataset.rt] = +X.dataset.r), ot();
-                  var Ct = h.rating[I.dataset.rt];
+                  Lt.stopPropagation(), (profile.rating[I.dataset.rt] = +X.dataset.r), saveProfile();
+                  var Ct = profile.rating[I.dataset.rt];
                   I.querySelectorAll("button").forEach(function (lt) {
                     lt.classList.toggle("on", +lt.dataset.r <= Ct);
                   }),
@@ -9319,27 +9586,27 @@ try {
               });
             });
           }
-          function _2() {
-            var _ = e("recent-list");
+          function renderRecentTrips() {
+            var _ = byId("recent-list");
             if (_) {
-              var P = q1().filter(function (T) {
+              var P = pastTripsList().filter(function (T) {
                 return window.__pastTrip ? window.__pastTrip(T.id) : !0;
               });
               (_.innerHTML =
                 P.map(function (I) {
-                  var X = h.review[I.id];
+                  var X = profile.review[I.id];
                   return (
                     '<div class="mprow rtrow"><div class="mpt"><b>' +
-                    C(I.name) +
+                    escapeHtml(I.name) +
                     "</b><small>" +
                     (I.d ? I.d + " \xB7 " : "") +
                     I.days +
                     " days</small>" +
-                    (X ? '<small class="rvq">\u201C' + C(X) + "\u201D</small>" : "") +
+                    (X ? '<small class="rvq">\u201C' + escapeHtml(X) + "\u201D</small>" : "") +
                     '</div><div class="rtact">' +
-                    X1(I.id, h.rating[I.id] || 0) +
+                    ratingStarsHtml(I.id, profile.rating[I.id] || 0) +
                     '<button type="button" class="rvbtn" data-rv="' +
-                    C(I.id) +
+                    escapeHtml(I.id) +
                     '">' +
                     (X ? "Edit review" : "Write a review") +
                     "</button></div></div>"
@@ -9350,7 +9617,7 @@ try {
                     Lt.target.closest("button") || window.__recentTrips(P[X].id);
                   };
                 }),
-                A2(_),
+                bindRatingStars(_),
                 _.querySelectorAll("[data-rv]").forEach(function (I) {
                   I.onclick = function (X) {
                     X.stopPropagation(), window.__recentTrips(I.dataset.rv);
@@ -9358,33 +9625,37 @@ try {
                 });
             }
           }
-          window.__drawRecent = _2;
-          var P1 = null;
-          function Q2() {
-            var _ = P1 && JSON.stringify({ r: h.rating, v: h.review }) !== P1;
-            return (e("rate-save").hidden = !_), _;
+          window.__drawRecent = renderRecentTrips;
+          var ratingSnapshot = null;
+          function ratingChanged() {
+            var _ =
+              ratingSnapshot && JSON.stringify({ r: profile.rating, v: profile.review }) !== ratingSnapshot;
+            return (byId("rate-save").hidden = !_), _;
           }
           window.__recentTrips = function (_) {
-            (P1 = JSON.stringify({ r: h.rating || {}, v: h.review || {} })),
-              (e("rate-save").hidden = !0),
-              _a(_),
-              (e1.hidden = !1),
-              (e("scrim").hidden = !1),
-              (e1.scrollTop = 0);
+            (ratingSnapshot = JSON.stringify({ r: profile.rating || {}, v: profile.review || {} })),
+              (byId("rate-save").hidden = !0),
+              openRateSheet(_),
+              (rateSheet.hidden = !1),
+              (byId("scrim").hidden = !1),
+              (rateSheet.scrollTop = 0);
           };
-          function $1() {
-            (e1.hidden = !0), (e("scrim").hidden = !0), (P1 = null), _2();
+          function closeRateSheet() {
+            (rateSheet.hidden = !0),
+              (byId("scrim").hidden = !0),
+              (ratingSnapshot = null),
+              renderRecentTrips();
           }
-          function ta() {
+          function saveRating() {
             document.activeElement && document.activeElement.blur(),
-              ot(),
-              $1(),
+              saveProfile(),
+              closeRateSheet(),
               window.__toast && window.__toast("Saved");
           }
-          function C2() {
-            if (!e1.hidden) {
-              if (!Q2()) {
-                $1();
+          function tryCloseRateSheet() {
+            if (!rateSheet.hidden) {
+              if (!ratingChanged()) {
+                closeRateSheet();
                 return;
               }
               window.__confirm
@@ -9393,40 +9664,41 @@ try {
                     "Your new ratings and reviews will not be saved.",
                     "Discard",
                     function () {
-                      var _ = JSON.parse(P1);
-                      (h.rating = _.r), (h.review = _.v), ot(), $1();
+                      var _ = JSON.parse(ratingSnapshot);
+                      (profile.rating = _.r), (profile.review = _.v), saveProfile(), closeRateSheet();
                     },
                     "trip",
                   )
-                : $1();
+                : closeRateSheet();
             }
           }
-          e("rate-close").addEventListener("click", C2),
-            e("rate-save").addEventListener("click", ta),
-            e1.addEventListener("click", function (_) {
+          byId("rate-close").addEventListener("click", tryCloseRateSheet),
+            byId("rate-save").addEventListener("click", saveRating),
+            rateSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             }),
-            e("scrim").addEventListener("click", function () {
-              e1.hidden || C2();
+            byId("scrim").addEventListener("click", function () {
+              rateSheet.hidden || tryCloseRateSheet();
             }),
             (window.__profName = function () {
-              return { name: (h.name || "").trim(), user: h.user || "", line: w1() };
+              return { name: (profile.name || "").trim(), user: profile.user || "", line: usernameLabel() };
             }),
             (window.__profSummary = function () {
-              var _ = le();
-              return Be[_.lvl - 1] + " \xB7 " + _.pts + " travel points";
+              var _ = readTrips();
+              return TRAVELLER_LEVELS[_.lvl - 1] + " \xB7 " + _.pts + " travel points";
             });
-          var Je = [];
+          var groups = [];
           try {
-            Je = JSON.parse(o("vizag-groups") || "[]") || [];
+            groups = JSON.parse(readStore("vizag-groups") || "[]") || [];
           } catch (_) {}
-          function ea() {
-            l("vizag-groups", JSON.stringify(Je)), window.__drawGroupChips && window.__drawGroupChips();
+          function saveGroups() {
+            writeStore("vizag-groups", JSON.stringify(groups)),
+              window.__drawGroupChips && window.__drawGroupChips();
           }
           window.__groups = function () {
-            return Je.slice();
+            return groups.slice();
           };
-          var ne = [
+          var AGE_RANGES = [
             "",
             "Under 13",
             "13\u201317",
@@ -9437,7 +9709,7 @@ try {
             "55\u201364",
             "65+",
           ];
-          function M1(_) {
+          function groupCounts(_) {
             if (!_.members) return { women: _.women || 0, men: _.men || 0, kids: _.kids || 0 };
             var P = { women: 0, men: 0, kids: 0 },
               I = 0;
@@ -9457,16 +9729,16 @@ try {
               P.women <= P.men ? P.women++ : P.men++;
             return P;
           }
-          (window.__gcounts = M1),
+          (window.__gcounts = groupCounts),
             (window.__gmembers = function (_) {
               return ((_ && _.members) || []).map(function (P) {
-                return { n: Ge(P), t: p2(P).txt };
+                return { n: memberHandle(P), t: ageGroupOf(P).txt };
               });
             });
-          function qe(_) {
+          function groupSummary(_) {
             if (_.members) {
               var P = _.members.length,
-                I = M1(_);
+                I = groupCounts(_);
               return (
                 P +
                 " " +
@@ -9482,39 +9754,41 @@ try {
               X.join(", ") || "Nobody yet"
             );
           }
-          window.__gsum = qe;
-          function s1() {
-            var _ = e("grp-list");
+          window.__gsum = groupSummary;
+          function renderGroups() {
+            var _ = byId("grp-list");
             _ &&
-              ((_.innerHTML = Je.length
-                ? Je.map(function (P, I) {
-                    var X = P.members ? P.members.length : (P.women || 0) + (P.men || 0) + (P.kids || 0);
-                    return (
-                      '<div class="mprow grow" data-gi="' +
-                      I +
-                      '" role="button" tabindex="0">' +
-                      (window.__gstack ? window.__gstack(P, X) : '<span class="gav">' + X + "</span>") +
-                      '<div class="mpt"><b>' +
-                      C(P.name) +
-                      "</b><small>" +
-                      C(qe(P)) +
-                      '</small></div><span class="gedit" aria-hidden="true">' +
-                      z1("edit") +
-                      "</span></div>"
-                    );
-                  }).join("")
+              ((_.innerHTML = groups.length
+                ? groups
+                    .map(function (P, I) {
+                      var X = P.members ? P.members.length : (P.women || 0) + (P.men || 0) + (P.kids || 0);
+                      return (
+                        '<div class="mprow grow" data-gi="' +
+                        I +
+                        '" role="button" tabindex="0">' +
+                        (window.__gstack ? window.__gstack(P, X) : '<span class="gav">' + X + "</span>") +
+                        '<div class="mpt"><b>' +
+                        escapeHtml(P.name) +
+                        "</b><small>" +
+                        escapeHtml(groupSummary(P)) +
+                        '</small></div><span class="gedit" aria-hidden="true">' +
+                        contactIcon("edit") +
+                        "</span></div>"
+                      );
+                    })
+                    .join("")
                 : '<p class="mpempty">Save the people you travel with, then pick the group in one tap when planning.</p>'),
               _.querySelectorAll("[data-gi]").forEach(function (P) {
                 P.onclick = function (I) {
-                  I.stopPropagation(), Q1(+P.dataset.gi);
+                  I.stopPropagation(), openGroupEditor(+P.dataset.gi);
                 };
               }),
               window.__paintUses && window.__paintUses(_));
           }
-          var We = e("grp-sheet"),
-            x1 = -1,
-            fe = [];
-          function f2(_) {
+          var groupSheet = byId("grp-sheet"),
+            editingGroupIndex = -1,
+            groupMembers = [];
+          function contactKind(_) {
             return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(_)
               ? "email"
               : /^@?[a-z0-9._]{3,24}$/.test(_) &&
@@ -9522,27 +9796,27 @@ try {
                 ? "user"
                 : "name";
           }
-          function Ge(_) {
+          function memberHandle(_) {
             return _.kind === "user" ? "@" + _.id.replace(/^@/, "") : _.id;
           }
-          var o1 = [
+          var AGE_GROUPS = [
               ["kid", "Kid", "under 13"],
               ["teen", "Teen", "13\u201317"],
               ["adult", "Adult", "18\u201359"],
               ["senior", "Senior", "60+"],
             ],
-            T2 = [
+            GENDERS = [
               ["woman", "Woman"],
               ["man", "Man"],
               ["nb", "Other"],
             ],
-            E1 = -1;
-          function p2(_) {
+            editingMemberIndex = -1;
+          function ageGroupOf(_) {
             var P = _.age === "Under 13" ? "kid" : _.age,
-              I = o1.filter(function (lt) {
+              I = AGE_GROUPS.filter(function (lt) {
                 return lt[0] === P;
               })[0],
-              X = T2.filter(function (lt) {
+              X = GENDERS.filter(function (lt) {
                 return lt[0] === _.gender;
               })[0],
               Lt = _.me
@@ -9551,15 +9825,15 @@ try {
               Ct = [Lt];
             return I && Ct.push(I[1]), X && Ct.push(X[1]), { txt: Ct.join(" \xB7 "), need: !I || !X };
           }
-          function z2() {
-            var _ = e("grp-members");
-            (e("grp-count").textContent = fe.length ? "\xB7 " + fe.length : ""),
-              (_.innerHTML = fe.length
-                ? fe
+          function renderGroupMembers() {
+            var _ = byId("grp-members");
+            (byId("grp-count").textContent = groupMembers.length ? "\xB7 " + groupMembers.length : ""),
+              (_.innerHTML = groupMembers.length
+                ? groupMembers
                     .map(function (P, I) {
                       var X = P.age === "Under 13" ? "kid" : P.age,
-                        Lt = p2(P),
-                        Ct = I === E1;
+                        Lt = ageGroupOf(P),
+                        Ct = I === editingMemberIndex;
                       return (
                         '<div class="gmc' +
                         (Ct ? " open" : "") +
@@ -9568,38 +9842,36 @@ try {
                         '" role="button" tabindex="0" aria-expanded="' +
                         Ct +
                         '"><span class="gmav">' +
-                        C(Ge(P).replace(/^@/, "").charAt(0).toUpperCase()) +
+                        escapeHtml(memberHandle(P).replace(/^@/, "").charAt(0).toUpperCase()) +
                         '</span><div class="gmt"><b>' +
-                        C(Ge(P)) +
+                        escapeHtml(memberHandle(P)) +
                         "</b><small>" +
-                        C(Lt.txt) +
+                        escapeHtml(Lt.txt) +
                         (Lt.need && !Ct ? " \xB7 <em>Set age & gender</em>" : "") +
                         '</small></div><span class="gmchev">' +
-                        z1("chev") +
+                        contactIcon("chev") +
                         "</span></div>" +
                         (Ct
                           ? '<div class="gmed"><div class="gmrow2"><span>Age</span><div class="segc" data-mi="' +
                             I +
                             '" data-mf="age">' +
-                            o1
-                              .map(function (lt) {
-                                return (
-                                  '<button type="button" data-val="' +
-                                  lt[0] +
-                                  '" aria-pressed="' +
-                                  (X === lt[0] ? "true" : "false") +
-                                  '"><b>' +
-                                  lt[1] +
-                                  "</b><small>" +
-                                  lt[2] +
-                                  "</small></button>"
-                                );
-                              })
-                              .join("") +
+                            AGE_GROUPS.map(function (lt) {
+                              return (
+                                '<button type="button" data-val="' +
+                                lt[0] +
+                                '" aria-pressed="' +
+                                (X === lt[0] ? "true" : "false") +
+                                '"><b>' +
+                                lt[1] +
+                                "</b><small>" +
+                                lt[2] +
+                                "</small></button>"
+                              );
+                            }).join("") +
                             '</div></div><div class="gmrow2"><span>Gender</span><div class="segc" data-mi="' +
                             I +
                             '" data-mf="gender">' +
-                            T2.map(function (lt) {
+                            GENDERS.map(function (lt) {
                               return (
                                 '<button type="button" data-val="' +
                                 lt[0] +
@@ -9624,115 +9896,115 @@ try {
               _.querySelectorAll("[data-mo]").forEach(function (P) {
                 P.onclick = function () {
                   var I = +P.dataset.mo;
-                  (E1 = E1 === I ? -1 : I), z2();
+                  (editingMemberIndex = editingMemberIndex === I ? -1 : I), renderGroupMembers();
                 };
               }),
               _.querySelectorAll(".segc").forEach(function (P) {
                 P.onclick = function (I) {
                   var X = I.target.closest("button");
                   if (X) {
-                    var Lt = fe[+P.dataset.mi],
+                    var Lt = groupMembers[+P.dataset.mi],
                       Ct = P.dataset.mf;
                     (Lt[Ct] = Lt[Ct] === X.dataset.val ? "" : X.dataset.val),
                       P.querySelectorAll("button").forEach(function (Ot) {
                         Ot.setAttribute("aria-pressed", Ot.dataset.val === Lt[Ct] ? "true" : "false");
                       });
                     var lt = P.closest(".gmc").querySelector(".gmt small");
-                    lt && (lt.textContent = p2(Lt).txt);
+                    lt && (lt.textContent = ageGroupOf(Lt).txt);
                   }
                 };
               }),
               _.querySelectorAll("[data-mx]").forEach(function (P) {
                 P.onclick = function () {
-                  fe.splice(+P.dataset.mx, 1), (E1 = -1), z2();
+                  groupMembers.splice(+P.dataset.mx, 1), (editingMemberIndex = -1), renderGroupMembers();
                 };
               }),
               window.__paintUses && window.__paintUses(_);
           }
-          function q2() {
-            var _ = e("grp-who"),
+          function addGroupMember() {
+            var _ = byId("grp-who"),
               P = _.value.trim();
             if (P) {
-              var I = f2(P.toLowerCase());
+              var I = contactKind(P.toLowerCase());
               if (
                 (I !== "name" && (P = P.toLowerCase()),
-                fe.some(function (X) {
+                groupMembers.some(function (X) {
                   return X.id.replace(/^@/, "") === P.replace(/^@/, "");
                 }))
               ) {
                 _.select();
                 return;
               }
-              fe.push({ id: P.replace(/^@/, ""), kind: I, age: "", gender: "" }),
-                (E1 = fe.length - 1),
+              groupMembers.push({ id: P.replace(/^@/, ""), kind: I, age: "", gender: "" }),
+                (editingMemberIndex = groupMembers.length - 1),
                 (_.value = ""),
-                z2(),
+                renderGroupMembers(),
                 _.focus();
             }
           }
-          e("grp-addm").addEventListener("click", q2),
-            e("grp-who").addEventListener("keydown", function (_) {
-              _.key === "Enter" && (_.preventDefault(), q2());
+          byId("grp-addm").addEventListener("click", addGroupMember),
+            byId("grp-who").addEventListener("keydown", function (_) {
+              _.key === "Enter" && (_.preventDefault(), addGroupMember());
             });
-          function Q1(_) {
-            x1 = _;
-            var P = _ >= 0 ? Je[_] : null;
-            (fe = P && P.members ? JSON.parse(JSON.stringify(P.members)) : []),
+          function openGroupEditor(_) {
+            editingGroupIndex = _;
+            var P = _ >= 0 ? groups[_] : null;
+            (groupMembers = P && P.members ? JSON.parse(JSON.stringify(P.members)) : []),
               !P &&
-                h.user &&
-                fe.push({
-                  id: h.user,
+                profile.user &&
+                groupMembers.push({
+                  id: profile.user,
                   kind: "user",
-                  age: h.age ? "adult" : "",
-                  gender: h.gender || "",
+                  age: profile.age ? "adult" : "",
+                  gender: profile.gender || "",
                   me: !0,
                 }),
-              (E1 = -1),
-              (e("grp-name").value = P ? P.name : ""),
-              (e("grp-title").textContent = P ? "Edit group" : "New group"),
-              (e("grp-del").hidden = !P),
-              (e("grp-who").value = ""),
-              z2(),
-              (We.hidden = !1),
-              (e("scrim").hidden = !1),
+              (editingMemberIndex = -1),
+              (byId("grp-name").value = P ? P.name : ""),
+              (byId("grp-title").textContent = P ? "Edit group" : "New group"),
+              (byId("grp-del").hidden = !P),
+              (byId("grp-who").value = ""),
+              renderGroupMembers(),
+              (groupSheet.hidden = !1),
+              (byId("scrim").hidden = !1),
               setTimeout(function () {
-                P || e("grp-name").focus();
+                P || byId("grp-name").focus();
               }, 60);
           }
-          function N1() {
-            (We.hidden = !0), (e("scrim").hidden = !0);
+          function closeGroupSheet() {
+            (groupSheet.hidden = !0), (byId("scrim").hidden = !0);
           }
-          e("grp-new").addEventListener("click", function (_) {
-            _.stopPropagation(), Q1(-1);
+          byId("grp-new").addEventListener("click", function (_) {
+            _.stopPropagation(), openGroupEditor(-1);
           }),
-            e("grp-back").addEventListener("click", N1),
-            e("grp-save").addEventListener("click", function () {
-              var _ = e("grp-name").value.trim();
+            byId("grp-back").addEventListener("click", closeGroupSheet),
+            byId("grp-save").addEventListener("click", function () {
+              var _ = byId("grp-name").value.trim();
               if (!_) {
-                e("grp-name").focus();
+                byId("grp-name").focus();
                 return;
               }
-              if ((e("grp-who").value.trim() && q2(), !fe.length)) {
-                e("grp-who").focus();
+              if ((byId("grp-who").value.trim() && addGroupMember(), !groupMembers.length)) {
+                byId("grp-who").focus();
                 return;
               }
-              var P = { name: _, members: fe },
-                I = M1(P);
+              var P = { name: _, members: groupMembers },
+                I = groupCounts(P);
               (P.women = I.women),
                 (P.men = I.men),
                 (P.kids = I.kids),
-                x1 >= 0 ? (Je[x1] = P) : Je.push(P),
-                ea(),
-                s1(),
-                N1();
+                editingGroupIndex >= 0 ? (groups[editingGroupIndex] = P) : groups.push(P),
+                saveGroups(),
+                renderGroups(),
+                closeGroupSheet();
             }),
-            e("grp-del").addEventListener("click", function () {
-              var _ = x1,
-                P = Je[_];
+            byId("grp-del").addEventListener("click", function () {
+              var _ = editingGroupIndex,
+                P = groups[_];
               if (P) {
-                N1();
+                closeGroupSheet();
                 var I = function () {
-                  Je.splice(_, 1), ea(), s1();
+                  groups.splice(_, 1), saveGroups(), renderGroups();
                 };
                 window.__confirm
                   ? window.__confirm(
@@ -9744,17 +10016,17 @@ try {
                   : I();
               }
             }),
-            We.addEventListener("click", function (_) {
+            groupSheet.addEventListener("click", function (_) {
               _.stopPropagation();
             }),
-            e("scrim").addEventListener("click", N1),
-            s1(),
-            _2(),
+            byId("scrim").addEventListener("click", closeGroupSheet),
+            renderGroups(),
+            renderRecentTrips(),
             window.__renderAcct && window.__renderAcct(),
-            rt();
+            renderMyPlaces();
         })(),
-        Aa ? Yn() : un(),
-        (window.__LOGIN_PREVIEW || location.hash === "#login-preview") && sn();
+        isHostedInClaude ? connectHostedDb() : startSync(),
+        (window.__LOGIN_PREVIEW || location.hash === "#login-preview") && openLoginPreview();
     })(),
     (function () {
       var d = document.documentElement,
@@ -10303,13 +10575,6 @@ try {
             (v.textContent = e[l - 1]), w.classList.remove("flash"), w.offsetWidth, w.classList.add("flash");
           });
       }
-      function b(p) {
-        l = ((l - 1 + p + o) % o) + 1;
-        try {
-          localStorage.setItem(s, l);
-        } catch (w) {}
-        Q();
-      }
       function A(p) {
         if (!(!p || p.__tv)) {
           (p.__tv = 1), r(p);
@@ -10716,11 +10981,6 @@ try {
         );
     })(),
     (function () {
-      function d(p) {
-        for (var w = 2166136261, v = 0; v < p.length; v++)
-          (w ^= p.charCodeAt(v)), (w = Math.imul(w, 16777619));
-        return w >>> 0;
-      }
       var s = /github\.io$/.test(location.hostname)
         ? location.origin + location.pathname.replace(/[^\/]*$/, "")
         : "https://krishnaar21.github.io/vizag/";
@@ -12024,9 +12284,6 @@ try {
           },
           p = "fill:color-mix(in srgb,var(--ink) 10%,var(--bg))",
           e = "url(#esdots)";
-        function r(M) {
-          return '<path d="' + M + '" style="' + p + '"/><path d="' + M + '" fill="' + e + '"/>';
-        }
         var Q = function (M, T, F, R) {
             return (
               '<g class="bird ' +
@@ -12076,117 +12333,6 @@ try {
           '<radialGradient id="bzGlow"><stop offset="0" stop-color="#F3E7B5" stop-opacity=".22"/><stop offset=".15" stop-color="#F3E7B5" stop-opacity=".16"/><stop offset=".3" stop-color="#F3E7B5" stop-opacity=".1"/><stop offset=".45" stop-color="#F3E7B5" stop-opacity=".06"/><stop offset=".6" stop-color="#F3E7B5" stop-opacity=".03"/><stop offset=".78" stop-color="#F3E7B5" stop-opacity=".01"/><stop offset="1" stop-color="#F3E7B5" stop-opacity="0"/></radialGradient><radialGradient id="bzLamp"><stop offset="0" stop-color="#FFD27A" stop-opacity=".9"/><stop offset=".4" stop-color="#FFB84D" stop-opacity=".35"/><stop offset="1" stop-color="#FFB84D" stop-opacity="0"/></radialGradient><clipPath id="bzPalm"><path d="M0 0H240V190H150V240H0z"/></clipPath><clipPath id="bzSky"><rect width="390" height="108"/></clipPath></defs>';
         function u(M, T) {
           return '<path d="' + M + '" style="' + p + '"/><path d="' + M + '" fill="url(#' + T + ')"/>';
-        }
-        function f(M, T, F, R, $, it) {
-          for (
-            var at = (M + F) / 2 + $[0], yt = (T + R) / 2 + $[1], gt = 11, ut = [], V = [], K = 1;
-            K <= gt;
-            K++
-          ) {
-            var Y = K / (gt + 1),
-              wt = (1 - Y) * (1 - Y),
-              W = 2 * (1 - Y) * Y,
-              q = Y * Y,
-              G = wt * M + W * at + q * F,
-              Qt = wt * T + W * yt + q * R,
-              St = 2 * (1 - Y) * (at - M) + 2 * Y * (F - at),
-              vt = 2 * (1 - Y) * (yt - T) + 2 * Y * (R - yt),
-              Rt = Math.hypot(St, vt) || 1,
-              Ut = -vt / Rt,
-              Jt = St / Rt,
-              Bt = it * (1 - Y * 0.75);
-            ut.push([G + Ut * Bt + (St / Rt) * Bt * 0.5, Qt + Jt * Bt + (vt / Rt) * Bt * 0.5], [G, Qt]),
-              V.push([G - Ut * Bt + (St / Rt) * Bt * 0.5, Qt - Jt * Bt + (vt / Rt) * Bt * 0.5], [G, Qt]);
-          }
-          var qt =
-            "M" +
-            M +
-            " " +
-            T +
-            " " +
-            ut
-              .map(function (Xt) {
-                return "L" + Xt[0].toFixed(1) + " " + Xt[1].toFixed(1);
-              })
-              .join(" ") +
-            " L" +
-            F +
-            " " +
-            R +
-            " " +
-            V.reverse()
-              .map(function (Xt) {
-                return "L" + Xt[0].toFixed(1) + " " + Xt[1].toFixed(1);
-              })
-              .join(" ") +
-            "z";
-          return qt;
-        }
-        function y(M, T, F, R, $) {
-          var it = M + R,
-            at = T - F,
-            yt =
-              "M" +
-              (M - 4) +
-              " " +
-              T +
-              " Q" +
-              (M + R * 0.55 - 3.5) +
-              " " +
-              (T - F * 0.55) +
-              " " +
-              (it - 1.8) +
-              " " +
-              at +
-              " L" +
-              (it + 1.8) +
-              " " +
-              at +
-              " Q" +
-              (M + R * 0.55 + 3.5) +
-              " " +
-              (T - F * 0.55) +
-              " " +
-              (M + 4) +
-              " " +
-              T +
-              "z",
-            gt = [
-              [-40, 8, [-6, -14]],
-              [-34, -12, [-4, -10]],
-              [-14, -26, [-6, -6]],
-              [10, -26, [6, -6]],
-              [32, -14, [4, -10]],
-              [40, 8, [6, -14]],
-              [22, 22, [10, -4]],
-              [-22, 22, [-10, -4]],
-            ],
-            ut = "";
-          gt.forEach(function (q) {
-            ut += f(it, at, it + q[0] * $, at + q[1] * $, [q[2][0] * $, q[2][1] * $], 5.2 * $) + " ";
-          });
-          for (var V = "", K = 1; K < 8; K++) {
-            var Y = K / 8,
-              wt = (1 - Y) * (1 - Y) * M + 2 * (1 - Y) * Y * (M + R * 0.55) + Y * Y * it,
-              W = T - F * Y;
-            V += "M" + (wt - 3.4) + " " + W.toFixed(1) + " l6.8 -1.4 ";
-          }
-          return (
-            u(yt, "bzH") +
-            '<path d="' +
-            V +
-            '" style="stroke:var(--bg);stroke-opacity:.7;stroke-width:1"/>' +
-            u(ut, "bzH") +
-            '<circle cx="' +
-            (it - 3) +
-            '" cy="' +
-            (at + 4) +
-            '" r="3" fill="url(#bzR)"/><circle cx="' +
-            (it + 3) +
-            '" cy="' +
-            (at + 5) +
-            '" r="3" fill="url(#bzR)"/>'
-          );
         }
         function m(M, T, F) {
           var R = { k1: 24, k2: 30, k3: 27, k4: 34 }[M] || 26,
@@ -13603,7 +13749,7 @@ try {
         Q();
     })(),
     (function () {
-      var d = [
+      var WORLD_OUTLINES = [
           [
             [-168, 66],
             [-156, 71],
@@ -13848,28 +13994,30 @@ try {
             [43, -22],
           ],
         ],
-        s = Math.PI / 180,
-        o = 70,
-        l = 60,
-        e = 132,
-        r = 38 * s;
-      function Q(H, U, Z) {
-        var tt = (H - Z) * s,
-          st = U * s,
-          ct = Math.sin(r) * Math.sin(st) + Math.cos(r) * Math.cos(st) * Math.cos(tt),
-          dt = o * Math.cos(st) * Math.sin(tt),
-          pt = o * (Math.cos(r) * Math.sin(st) - Math.sin(r) * Math.cos(st) * Math.cos(tt));
+        DEG = Math.PI / 180,
+        GLOBE_RADIUS = 70,
+        GLOBE_CX = 60,
+        GLOBE_CY = 132,
+        GLOBE_TILT = 38 * DEG;
+      function projectPoint(H, U, Z) {
+        var tt = (H - Z) * DEG,
+          st = U * DEG,
+          ct = Math.sin(GLOBE_TILT) * Math.sin(st) + Math.cos(GLOBE_TILT) * Math.cos(st) * Math.cos(tt),
+          dt = GLOBE_RADIUS * Math.cos(st) * Math.sin(tt),
+          pt =
+            GLOBE_RADIUS *
+            (Math.cos(GLOBE_TILT) * Math.sin(st) - Math.sin(GLOBE_TILT) * Math.cos(st) * Math.cos(tt));
         if (ct < 0) {
           var ht = Math.hypot(dt, pt) || 1;
-          (dt = (dt / ht) * o), (pt = (pt / ht) * o);
+          (dt = (dt / ht) * GLOBE_RADIUS), (pt = (pt / ht) * GLOBE_RADIUS);
         }
-        return [l + dt, e - pt, ct >= 0];
+        return [GLOBE_CX + dt, GLOBE_CY - pt, ct >= 0];
       }
-      function b(H, U) {
+      function outlinePath(H, U) {
         var Z = !1,
           tt = "",
           st = H.map(function (ct) {
-            var dt = Q(ct[0], ct[1], U);
+            var dt = projectPoint(ct[0], ct[1], U);
             return dt[2] && (Z = !0), dt;
           });
         return Z
@@ -13879,10 +14027,10 @@ try {
             tt + "Z")
           : "";
       }
-      function A(H) {
+      function gridLines(H) {
         for (var U = "", Z = -180; Z < 180; Z += 30) {
           for (var tt = "", st = -80; st <= 80; st += 10) {
-            var ct = Q(Z, st, H);
+            var ct = projectPoint(Z, st, H);
             ct[2]
               ? (tt += (tt ? "L" : "M") + ct[0].toFixed(1) + " " + ct[1].toFixed(1))
               : tt && ((U += tt), (tt = ""));
@@ -13892,7 +14040,7 @@ try {
         return (
           [-60, -30, 0, 30, 60].forEach(function (dt) {
             for (var pt = "", ht = -180; ht <= 180; ht += 10) {
-              var Tt = Q(ht, dt, H);
+              var Tt = projectPoint(ht, dt, H);
               Tt[2]
                 ? (pt += (pt ? "L" : "M") + Tt[0].toFixed(1) + " " + Tt[1].toFixed(1))
                 : pt && ((U += pt), (pt = ""));
@@ -13905,9 +14053,16 @@ try {
       var x = 0,
         p = 20,
         w = 0,
-        v = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches,
-        u = { th: [5.8, 4.4], sh: [4.4, 3.1], ua: [3.7, 3.1], sl: [5, 4.5], fa: [3.1, 2.5], h: [2.9, 3] },
-        f = {
+        reducedMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches,
+        LIMB_LENGTHS = {
+          th: [5.8, 4.4],
+          sh: [4.4, 3.1],
+          ua: [3.7, 3.1],
+          sl: [5, 4.5],
+          fa: [3.1, 2.5],
+          h: [2.9, 3],
+        },
+        WALK = {
           T: 2400,
           S: 12,
           ST: 0.62,
@@ -13920,10 +14075,10 @@ try {
           F: 8.4,
           PT: [49.2, 4],
         };
-      function y(H) {
+      function groundY(H) {
         return 132 - Math.sqrt(4900 - (H - 60) * (H - 60));
       }
-      function m(H) {
+      function fixed2(H) {
         return H.toFixed(2);
       }
       function k(H, U, Z, tt) {
@@ -13936,33 +14091,33 @@ try {
           Pt = tt / 2;
         return (
           "M" +
-          m(H[0] + pt * Tt) +
+          fixed2(H[0] + pt * Tt) +
           " " +
-          m(H[1] + ht * Tt) +
+          fixed2(H[1] + ht * Tt) +
           "L" +
-          m(Z[0] + pt * Pt) +
+          fixed2(Z[0] + pt * Pt) +
           " " +
-          m(Z[1] + ht * Pt) +
+          fixed2(Z[1] + ht * Pt) +
           "A" +
-          m(Pt) +
+          fixed2(Pt) +
           " " +
-          m(Pt) +
+          fixed2(Pt) +
           " 0 0 0 " +
-          m(Z[0] - pt * Pt) +
+          fixed2(Z[0] - pt * Pt) +
           " " +
-          m(Z[1] - ht * Pt) +
+          fixed2(Z[1] - ht * Pt) +
           "L" +
-          m(H[0] - pt * Tt) +
+          fixed2(H[0] - pt * Tt) +
           " " +
-          m(H[1] - ht * Tt) +
+          fixed2(H[1] - ht * Tt) +
           "A" +
-          m(Tt) +
+          fixed2(Tt) +
           " " +
-          m(Tt) +
+          fixed2(Tt) +
           " 0 0 0 " +
-          m(H[0] + pt * Tt) +
+          fixed2(H[0] + pt * Tt) +
           " " +
-          m(H[1] + ht * Tt) +
+          fixed2(H[1] + ht * Tt) +
           "z"
         );
       }
@@ -13977,12 +14132,12 @@ try {
         var Pt = ht - Math.acos(Tt);
         return [H[0] + Math.cos(Pt) * Z, H[1] + Math.sin(Pt) * Z];
       }
-      function T(H) {
+      function smoothstep(H) {
         return H * H * (3 - 2 * H);
       }
-      function F(H) {
-        var U = f.S,
-          Z = f.ST,
+      function walkPose(H) {
+        var U = WALK.S,
+          Z = WALK.ST,
           tt,
           st = 0,
           ct = 0,
@@ -13992,15 +14147,15 @@ try {
             (tt = U / 2 - U * dt),
             (ct = dt < 0.15 ? -0.05 * (1 - dt / 0.15) : dt > 0.8 ? ((dt - 0.8) / 0.2) * 0.14 : 0);
         else {
-          (dt = (H - Z) / (1 - Z)), (tt = -U / 2 + U * (0.55 * dt + 0.45 * T(dt)));
+          (dt = (H - Z) / (1 - Z)), (tt = -U / 2 + U * (0.55 * dt + 0.45 * smoothstep(dt)));
           var pt = Math.sin(Math.PI * dt);
           (st = 1.5 * pt * pt), (ct = 0.14 * (1 - dt) * (1 - dt) - 0.05 * dt * dt);
         }
-        var ht = f.HX + tt + 4.4,
-          Tt = Math.atan2(y(ht + 1) - y(ht - 6), 7);
-        return { x: ht - 6.6, y: y(ht) - st, a: ct + Tt };
+        var ht = WALK.HX + tt + 4.4,
+          Tt = Math.atan2(groundY(ht + 1) - groundY(ht - 6), 7);
+        return { x: ht - 6.6, y: groundY(ht) - st, a: ct + Tt };
       }
-      function R(H) {
+      function armPose(H) {
         var U = Math.cos(H.a),
           Z = Math.sin(H.a),
           tt = [H.x + 6.6, H.y];
@@ -14026,21 +14181,25 @@ try {
             ct
               .map(function (Pt) {
                 var ae = st(Pt[0], Pt[1]);
-                return m(ae[0]) + " " + m(ae[1]);
+                return fixed2(ae[0]) + " " + fixed2(ae[1]);
               })
               .join("L") +
             "z",
           pt = st(-0.5, -0.7),
           ht = st(7.1, -0.7),
           Tt = st(1.3, -2.6);
-        return { d: dt, sole: "M" + m(pt[0]) + " " + m(pt[1]) + "L" + m(ht[0]) + " " + m(ht[1]), ank: Tt };
+        return {
+          d: dt,
+          sole: "M" + fixed2(pt[0]) + " " + fixed2(pt[1]) + "L" + fixed2(ht[0]) + " " + fixed2(ht[1]),
+          ank: Tt,
+        };
       }
-      function $(H, U) {
+      function animateWalker(H, U) {
         var Z = H.querySelector(".k2");
         if (!Z) return;
-        var tt = (U % f.T) / f.T,
+        var tt = (U % WALK.T) / WALK.T,
           st = -0.2 * Math.cos(tt * 4 * Math.PI) + 0.1,
-          ct = [f.HX, f.HY + st];
+          ct = [WALK.HX, WALK.HY + st];
         function dt(ke, Le) {
           Z.querySelectorAll("." + ke).forEach(function (Te) {
             Te.setAttribute("d", Le);
@@ -14050,32 +14209,32 @@ try {
           ["n", tt],
           ["f", (tt + 0.5) % 1],
         ].forEach(function (ke) {
-          var Le = F(ke[1]),
-            Te = R(Le),
-            Ye = M(ct, Te.ank, f.L1, f.L2),
+          var Le = walkPose(ke[1]),
+            Te = armPose(Le),
+            Ye = M(ct, Te.ank, WALK.L1, WALK.L2),
             He = ke[0],
-            Re = window.__hkWD || u;
+            Re = window.__hkWD || LIMB_LENGTHS;
           dt("k2" + He + "t", k(ct, Re.th[0], Ye, Re.th[1])),
             dt("k2" + He + "s", k(Ye, Re.sh[0], Te.ank, Re.sh[1])),
             dt("k2" + He + "f", Te.d),
             dt("k2" + He + "o", Te.sole);
         });
-        var pt = "translate(0 " + m(st) + ")";
+        var pt = "translate(0 " + fixed2(st) + ")";
         ["k2body", "k2bag", "k2far"].forEach(function (ke) {
           var Le = Z.querySelector("." + ke);
           Le && Le.setAttribute("transform", pt);
         });
         var ht = window.__hkArm === "carry",
           Tt = Math.sin(tt * 2 * Math.PI),
-          Pt = [f.SH[0], f.SH[1] + st],
+          Pt = [WALK.SH[0], WALK.SH[1] + st],
           ae =
             ((ht ? 10 + 1.5 * Math.sin(tt * 4 * Math.PI) : 5 - 11 * Math.cos(2 * Math.PI * (tt - 0.05))) *
               Math.PI) /
             180,
-          Zt = [Pt[0] + Math.sin(ae) * f.U, Pt[1] + Math.cos(ae) * f.U],
+          Zt = [Pt[0] + Math.sin(ae) * WALK.U, Pt[1] + Math.cos(ae) * WALK.U],
           te = ae + ((ht ? 84 : 14 + (6 * (1 + Math.cos(2 * Math.PI * (tt - 0.05)))) / 2) * Math.PI) / 180,
-          $t = [Zt[0] + Math.sin(te) * f.F, Zt[1] + Math.cos(te) * f.F],
-          oe = window.__hkWD || u;
+          $t = [Zt[0] + Math.sin(te) * WALK.F, Zt[1] + Math.cos(te) * WALK.F],
+          oe = window.__hkWD || LIMB_LENGTHS;
         dt("k2nau", k(Pt, oe.ua[0], Zt, oe.ua[1])),
           dt("k2nsl", k(Pt, oe.sl[0], [Pt[0] + Math.sin(ae) * 4.8, Pt[1] + Math.cos(ae) * 4.8], oe.sl[1])),
           dt("k2nfa", k(Zt, oe.fa[0], $t, oe.fa[1]));
@@ -14086,15 +14245,15 @@ try {
           Ie.setAttribute(
             "transform",
             "translate(" +
-              m((Zt[0] + $t[0]) / 2 + 1.6) +
+              fixed2((Zt[0] + $t[0]) / 2 + 1.6) +
               " " +
-              m((Zt[1] + $t[1]) / 2 - 0.9) +
+              fixed2((Zt[1] + $t[1]) / 2 - 0.9) +
               ") scale(1.45)",
           );
         var be = Z.querySelector(".hkhand");
-        be && (be.setAttribute("cx", m(we[0])), be.setAttribute("cy", m(we[1])));
+        be && (be.setAttribute("cx", fixed2(we[0])), be.setAttribute("cy", fixed2(we[1])));
       }
-      var it = {
+      var OUTFITS = {
           m: {
             b: '<path d="M55.6 33.2 L64.4 33.2 Q65.4 36.4 64 39 Q60 40.4 56.2 39.2 Q54.8 37.6 55 35.2z"/><path d="M57.4 20.4 Q60.6 19.4 63.6 20.1 Q66 21.5 66.2 24.6 Q66.4 28.2 65.6 31.4 Q65 33.6 64.8 36.2 L55.4 36.2 Q54.9 32 55.1 28.2 Q55.2 23 57.4 20.4z"/><path d="M57.3 12.4 C57 14.6 57.6 16.4 58.6 17.3 Q58.9 18.9 58.3 21 L63.3 21 Q62.6 19.5 62.9 18.5 Q63.9 18.6 64.6 18.1 Q65.2 17.7 65.1 17.1 Q65.3 16.8 65 16.62 Q65.4 16.3 65.2 15.96 Q65.5 15.75 65.9 15.62 Q66.4 15.4 66.2 14.95 Q65.75 14.1 65.45 13.4 Q65.65 12.4 65.2 11.6 Q63.5 9.2 60.8 9.3 Q57.6 9.6 57.3 12.4z"/><path d="M57.6 12.4 Q55.6 12.9 55.8 14.9 Q56.3 16.4 58 16 Q57.4 14.2 58.4 12.7z"/><path d="M57.1 12.8 Q56.8 8.4 61 8.2 Q64.9 8.2 65.3 11.6 Q65.4 12.2 64.8 12.3 L57.7 12.7 Q57.3 12.9 57.1 12.8z"/><path d="M62.3 10.8 Q66.8 10.2 68.3 11.6 Q66.8 12.7 62.3 12.4z"/><circle class="hkeye" cx="63.7" cy="14" r=".6"/>',
             f: [
@@ -14146,11 +14305,11 @@ try {
           },
         },
         at = "",
-        yt = 0;
-      function gt(H) {
+        lastWeatherCheck = 0;
+      function checkWeather(H) {
         var U = Date.now();
-        if (!(U - yt < 800)) {
-          yt = U;
+        if (!(U - lastWeatherCheck < 800)) {
+          lastWeatherCheck = U;
           var Z = "";
           try {
             Z = JSON.parse(localStorage.getItem("vizag-profile") || "{}").gender || "";
@@ -14164,13 +14323,13 @@ try {
             ct = H.querySelector(".hkart");
           if (
             (ct && ct.setAttribute("data-who", st),
-            St(H, st),
-            (st === "none" || !it[st]) && (st = "m"),
+            sceneOverride(H, st),
+            (st === "none" || !OUTFITS[st]) && (st = "m"),
             st !== at)
           ) {
             var dt = H.querySelector(".k2body"),
               pt = H.querySelectorAll(".k2far > path"),
-              ht = it[st];
+              ht = OUTFITS[st];
             if (!(!dt || pt.length < 4)) {
               dt.innerHTML = ht.b;
               for (var Tt = 0; Tt < 3; Tt++) pt[Tt + 1].setAttribute("d", ht.f[Tt]);
@@ -14200,7 +14359,7 @@ try {
       }
       var ut = null,
         V = !1;
-      function K(H, U) {
+      function weatherKindFromCode(H, U) {
         var Z =
           H === 0 || H === 1
             ? "clear"
@@ -14217,14 +14376,14 @@ try {
                       : "cloudy";
         return Z === "clear" && !U ? "night" : Z;
       }
-      function Y(H, U) {
+      function setSceneWeather(H, U) {
         var Z = H.querySelector(".hkart");
         Z && Z.getAttribute("data-wx") !== U && Z.setAttribute("data-wx", U),
           window.__hkCombo && window.__hkCombo.paint(),
-          wt(H, U),
-          G(H, U);
+          applySceneWeather(H, U),
+          renderWeatherTips(H, U);
       }
-      function wt(H, U) {
+      function applySceneWeather(H, U) {
         H.getAttribute("data-wx") !== U && H.setAttribute("data-wx", U);
         var Z = H.querySelector(":scope > .wxbg"),
           tt = H.querySelector(":scope > .wxfg");
@@ -14325,7 +14484,7 @@ try {
         }
         pt.innerHTML = Pt;
       }
-      var W = {
+      var TIP_ICONS = {
           umb: '<path d="M3 12a9 9 0 0 1 18 0zM12 3v-1M12 12v6.5a2 2 0 0 1-4 0"/>',
           sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
           bolt: '<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/>',
@@ -14334,7 +14493,7 @@ try {
           snow: '<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 2 3-2M9 20l3-2 3 2"/>',
           fog: '<path d="M4 9h16M2 13h20M5 17h14"/>',
         },
-        q = {
+        WEATHER_TIPS = {
           rain: [["umb", "tb", "Carry an umbrella or a raincoat."]],
           storm: [
             ["umb", "tb", "Carry an umbrella or a raincoat."],
@@ -14346,13 +14505,13 @@ try {
           snow: [["snow", "tb", "Wear warm layers and gloves."]],
           fog: [["fog", "tg", "Drive slowly; fog cuts visibility."]],
         };
-      function G(H, U) {
+      function renderWeatherTips(H, U) {
         var Z = H.querySelectorAll(".tipgrid .tip");
         if (!(Z.length < 4)) {
           Z.forEach(function (ct) {
             ct.__o || (ct.__o = ct.innerHTML), (ct.innerHTML = ct.__o), ct.classList.remove("wxtip");
           });
-          var tt = q[U] || [],
+          var tt = WEATHER_TIPS[U] || [],
             st = U === "clear" || U === "night" ? [2] : [0, 2];
           tt.forEach(function (ct, dt) {
             var pt = Z[st[dt]];
@@ -14362,14 +14521,14 @@ try {
                 '<span class="ti ' +
                 ct[1] +
                 '"><svg viewBox="0 0 24 24" aria-hidden="true">' +
-                W[ct[0]] +
+                TIP_ICONS[ct[0]] +
                 '</svg></span><span class="tt">' +
                 ct[2] +
                 "</span>"));
           });
         }
       }
-      function Qt(H) {
+      function setupWeatherAsk(H) {
         var U = document.getElementById("wx-ask");
         if (U) {
           var Z = !1;
@@ -14389,7 +14548,7 @@ try {
                       } catch (ct) {}
                       var st = document.getElementById("on-sheet");
                       st &&
-                        St(
+                        sceneOverride(
                           st,
                           (st.querySelector(".hkart") || {}).getAttribute
                             ? st.querySelector(".hkart").getAttribute("data-who")
@@ -14409,7 +14568,7 @@ try {
               }));
         }
       }
-      function St(H, U) {
+      function sceneOverride(H, U) {
         var Z = "";
         try {
           Z = (localStorage.getItem("vizag-dev-scw") === "1" && localStorage.getItem("vizag-dev-wx")) || "";
@@ -14421,7 +14580,7 @@ try {
             var hz = H.querySelector(".hkart");
             hz && hz.setAttribute("data-tod", window.__todPrev);
           }
-          return Y(H, Z.replace(/-n$/, ""));
+          return setSceneWeather(H, Z.replace(/-n$/, ""));
         }
         if (window.__todPrev && window.__todBy === "wx") {
           window.__todPrev = null;
@@ -14429,7 +14588,7 @@ try {
         }
         window.__wxOffline = !0;
         var _h = new Date().getHours();
-        Y(H, _h >= 19 || _h < 5 ? "night" : "clear");
+        setSceneWeather(H, _h >= 19 || _h < 5 ? "night" : "clear");
         try {
           var tt = JSON.parse(localStorage.getItem("vizag-wxnow") || "null");
           tt && Date.now() - tt.t < 18e5 && tt.c != null
@@ -14437,7 +14596,7 @@ try {
             : (ut = null);
         } catch (dt) {}
         if (
-          (ut && Y(H, ut),
+          (ut && setSceneWeather(H, ut),
           V || (ut && Date.now() - (window.__wxT || 0) < 18e5) || navigator.onLine === !1 || !window.fetch)
         )
           return;
@@ -14455,7 +14614,7 @@ try {
             })
             .then(function (ht) {
               if (((V = !1), !(!ht || !ht.current))) {
-                var Tt = K(ht.current.weather_code, ht.current.is_day === 1);
+                var Tt = weatherKindFromCode(ht.current.weather_code, ht.current.is_day === 1);
                 (ut = Tt), (window.__wxTemp = ht.current.temperature_2m), (window.__wxT = Date.now());
                 try {
                   localStorage.setItem(
@@ -14464,7 +14623,7 @@ try {
                   );
                 } catch (ae) {}
                 var Pt = document.getElementById("on-sheet");
-                Pt && Y(Pt, Tt), window.__hkCombo && window.__hkCombo.paint();
+                Pt && setSceneWeather(Pt, Tt), window.__hkCombo && window.__hkCombo.paint();
               }
             })
             .catch(function () {
@@ -14478,7 +14637,7 @@ try {
         try {
           navigator.permissions && navigator.geolocation
             ? navigator.permissions.query({ name: "geolocation" }).then(function (dt) {
-                Qt(dt.state),
+                setupWeatherAsk(dt.state),
                   dt.state === "granted"
                     ? navigator.geolocation.getCurrentPosition(
                         function (pt) {
@@ -14494,12 +14653,12 @@ try {
           ct();
         }
       }
-      var vt = [
+      var CHARACTERS = [
           ["m", "Man"],
           ["w", "Woman"],
           ["nb", "Non-binary"],
         ],
-        Rt = [
+        SKY_OPTIONS = [
           ["clear", "Clear day"],
           ["night", "Clear night"],
           ["cloudy", "Cloudy day"],
@@ -14513,39 +14672,39 @@ try {
           ["fog", "Fog by day"],
           ["fog-n", "Fog at night"],
         ];
-      function Ut(H) {
+      function readKey(H) {
         try {
           return localStorage.getItem(H);
         } catch (U) {
           return null;
         }
       }
-      function Jt(H, U) {
+      function writeKey(H, U) {
         try {
           U == null ? localStorage.removeItem(H) : localStorage.setItem(H, U);
         } catch (Z) {}
       }
-      function Bt() {
-        var H = Ut("vizag-dev-scp") === "1",
-          U = Ut("vizag-dev-scw") === "1",
+      function devSceneCombos() {
+        var H = readKey("vizag-dev-scp") === "1",
+          U = readKey("vizag-dev-scw") === "1",
           Z = [];
         return (
           (!H && !U) ||
-            (H ? vt : [[null, ""]]).forEach(function (tt) {
-              (U ? Rt : [[null, ""]]).forEach(function (st) {
+            (H ? CHARACTERS : [[null, ""]]).forEach(function (tt) {
+              (U ? SKY_OPTIONS : [[null, ""]]).forEach(function (st) {
                 Z.push([tt[0], st[0], [tt[1], st[1]].filter(Boolean).join(" \xB7 ")]);
               });
             }),
           Z
         );
       }
-      function qt() {
+      function renderComboPicker() {
         var H = document.getElementById("hk-combo");
         if (H) {
           var U = document.querySelector("#on-sheet .hkart"),
             Z = U && U.getAttribute("data-wx"),
-            tt = (Rt.filter(function (ct) {
-              return ct[0] === ((window.__wxPreview && Ut("vizag-dev-wx")) || Z);
+            tt = (SKY_OPTIONS.filter(function (ct) {
+              return ct[0] === ((window.__wxPreview && readKey("vizag-dev-wx")) || Z);
             })[0] || [])[1],
             st = U && U.getAttribute("data-who");
           !window.__wxPreview &&
@@ -14562,19 +14721,19 @@ try {
                 (window.__wxPreview ? " \xB7 preview" : ""));
         }
       }
-      function Xt(H) {
-        var U = Bt();
+      function pickCombo(H) {
+        var U = devSceneCombos();
         if (U.length) {
-          var Z = (((+(Ut("vizag-dev-sci") || 0) + H) % U.length) + U.length) % U.length;
-          Jt("vizag-dev-sci", String(Z));
+          var Z = (((+(readKey("vizag-dev-sci") || 0) + H) % U.length) + U.length) % U.length;
+          writeKey("vizag-dev-sci", String(Z));
           window.__todBy = "wx";
           var tt = U[Z];
-          Jt("vizag-dev-who", tt[0]), Jt("vizag-dev-wx", tt[1]), (yt = 0);
+          writeKey("vizag-dev-who", tt[0]), writeKey("vizag-dev-wx", tt[1]), (lastWeatherCheck = 0);
           var st = document.getElementById("on-sheet");
-          st && gt(st), qt();
+          st && checkWeather(st), renderComboPicker();
         }
       }
-      (window.__hkCombo = { paint: qt, step: Xt }),
+      (window.__hkCombo = { paint: renderComboPicker, step: pickCombo }),
         (function H() {
           var U = document.getElementById("on-sheet"),
             Z = U && U.querySelector(".hkart");
@@ -14592,7 +14751,10 @@ try {
               var Tt = pt - tt,
                 Pt = ht - st;
               (tt = null),
-                Math.abs(Tt) > 36 && Math.abs(Tt) > Math.abs(Pt) * 1.3 && Bt().length && Xt(Tt < 0 ? 1 : -1);
+                Math.abs(Tt) > 36 &&
+                  Math.abs(Tt) > Math.abs(Pt) * 1.3 &&
+                  devSceneCombos().length &&
+                  pickCombo(Tt < 0 ? 1 : -1);
             }
           }
           Z.addEventListener(
@@ -14614,7 +14776,7 @@ try {
               pt.pointerType === "mouse" && dt(pt.clientX, pt.clientY);
             });
         })();
-      function ue(H) {
+      function syncSceneParts(H) {
         var U = H.querySelector(".hkart"),
           Z = H.querySelector(".hkhand"),
           tt = H.querySelector(".hkcollar"),
@@ -14650,30 +14812,31 @@ try {
           );
         }
       }
-      function Ce() {
+      function refreshOnlineScene() {
         var H = document.getElementById("on-sheet");
         if (H) {
-          Ce.__p ||
-            ((Ce.__p = 1),
-            qt(),
+          refreshOnlineScene.__p ||
+            ((refreshOnlineScene.__p = 1),
+            renderComboPicker(),
             setTimeout(function () {
-              Ce.__p = 0;
+              refreshOnlineScene.__p = 0;
             }, 1500)),
-            gt(H),
-            $(H, window.__rigT != null ? window.__rigT : v ? f.T * 0.3 : performance.now()),
-            ue(H);
+            checkWeather(H),
+            animateWalker(
+              H,
+              window.__rigT != null ? window.__rigT : reducedMotion ? WALK.T * 0.3 : performance.now(),
+            ),
+            syncSceneParts(H);
           var U = H.querySelectorAll(".hkland"),
             Z = H.querySelector(".hkgrat");
           if (U.length) {
-            var tt = d
-              .map(function (dt) {
-                return b(dt, p);
-              })
-              .join("");
+            var tt = WORLD_OUTLINES.map(function (dt) {
+              return outlinePath(dt, p);
+            }).join("");
             U.forEach(function (dt) {
               dt.setAttribute("d", tt);
             }),
-              Z && Z.setAttribute("d", A(p));
+              Z && Z.setAttribute("d", gridLines(p));
             var st = document.querySelector(".dkscene");
             if (st) {
               st.querySelectorAll(".hkland").forEach(function (dt) {
@@ -14685,37 +14848,42 @@ try {
           }
         }
       }
-      function $e(H) {
+      function setOnlineScene(H) {
         var U = document.getElementById("on-sheet");
         if (!U || (U.hidden && !document.documentElement.classList.contains("dkon"))) {
           x = 0;
           return;
         }
         if (window.__lowEnd && w && H - w < 30) {
-          x = requestAnimationFrame($e);
+          x = requestAnimationFrame(setOnlineScene);
           return;
         }
-        w && (p -= (H - w) * 0.0119), (w = H), Ce(), (x = requestAnimationFrame($e));
+        w && (p -= (H - w) * 0.0119),
+          (w = H),
+          refreshOnlineScene(),
+          (x = requestAnimationFrame(setOnlineScene));
       }
       (window.__hkLandAt = function (q) {
         return [
-          d
-            .map(function (x) {
-              return b(x, q);
-            })
-            .join(""),
-          A(q),
+          WORLD_OUTLINES.map(function (x) {
+            return outlinePath(x, q);
+          }).join(""),
+          gridLines(q),
         ];
       }),
         (window.__hkP = function () {
           return p;
         }),
         (window.__hkStart = function () {
-          Ce(), !v && !x && ((w = 0), (x = requestAnimationFrame($e)));
+          refreshOnlineScene(),
+            !reducedMotion && !x && ((w = 0), (x = requestAnimationFrame(setOnlineScene)));
         }),
         new MutationObserver(function () {
           var H = document.getElementById("on-sheet");
-          H && !H.hidden && (Ce(), !v && !x && ((w = 0), (x = requestAnimationFrame($e))));
+          H &&
+            !H.hidden &&
+            (refreshOnlineScene(),
+            !reducedMotion && !x && ((w = 0), (x = requestAnimationFrame(setOnlineScene))));
         }).observe(document.body, { attributes: !0, subtree: !0, attributeFilter: ["hidden"] });
     })(),
     (function () {
@@ -14928,15 +15096,6 @@ try {
           warn: '<path d="M12 7.5v5.5M12 16.4v.2"/>',
           err: '<path d="m9 9 6 6M15 9l-6 6"/>',
         };
-      function e(A) {
-        return /(couldn|can.t|failed|error|not sent|didn.t)/i.test(A)
-          ? "err"
-          : /(off|expired|offline|slow|careful|only|sync when)/i.test(A)
-            ? "warn"
-            : /(saved|sent|created|updated|done|showing|copied|added|on$|are on)/i.test(A)
-              ? "ok"
-              : "info";
-      }
       function r(A, x, p, w) {
         var v = document.getElementById("ok-toast");
         if (
@@ -15707,7 +15866,7 @@ try {
         );
     })(),
     (function () {
-      var d = {
+      var FIGURE_PATHS = {
         woman:
           "M-13.29 -10.80Q-13.34 -10.82 -13.44 -10.78Q-13.54 -10.75 -13.56 -10.66Q-13.58 -10.58 -13.66 -10.56Q-13.75 -10.54 -13.75 -10.47Q-13.75 -10.41 -13.66 -10.34Q-13.58 -10.27 -13.60 -10.22Q-13.61 -10.17 -13.53 -10.13Q-13.44 -10.10 -13.37 -10.12Q-13.31 -10.13 -13.27 -10.22Q-13.24 -10.30 -13.12 -10.34Q-13.00 -10.37 -13.00 -10.47Q-13.00 -10.58 -13.07 -10.58Q-13.14 -10.58 -13.19 -10.68Q-13.24 -10.78 -13.29 -10.80zM-7.61 -21.92Q-7.71 -21.87 -7.74 -21.41Q-7.78 -20.95 -7.08 -20.95Q-6.38 -20.95 -6.50 -21.02Q-6.62 -21.08 -6.87 -21.31Q-7.13 -21.53 -7.32 -21.75Q-7.51 -21.97 -7.61 -21.92zM5.95 -22.04Q5.90 -22.04 5.37 -21.46Q4.84 -20.88 4.79 -20.85Q4.74 -20.81 4.67 -20.85Q4.61 -20.88 4.64 -20.76Q4.67 -20.64 4.74 -20.66Q4.81 -20.68 4.91 -20.61Q5.02 -20.54 5.02 -20.45Q5.02 -20.37 4.84 -20.20Q4.67 -20.03 4.67 -18.49Q4.67 -16.96 5.71 -16.96Q6.76 -16.96 7.47 -15.66Q8.19 -14.36 8.31 -14.35Q8.43 -14.33 8.44 -14.67Q8.46 -15.01 8.43 -15.44Q8.39 -15.86 8.29 -16.22Q8.19 -16.58 8.10 -16.77Q8.02 -16.96 7.74 -17.38Q7.47 -17.81 7.16 -18.18Q6.86 -18.56 6.45 -18.97Q6.04 -19.38 5.90 -19.57Q5.77 -19.75 5.42 -20.08Q5.08 -20.40 5.10 -20.50Q5.12 -20.61 5.63 -21.19Q6.14 -21.77 6.11 -21.87Q6.07 -21.97 6.04 -22.01Q6.00 -22.04 5.95 -22.04zM9.93 -24.36Q9.86 -24.36 10.12 -23.95Q10.37 -23.54 10.42 -23.32Q10.47 -23.10 10.47 -22.93Q10.47 -22.76 10.42 -22.42Q10.37 -22.07 10.27 -21.68Q10.17 -21.29 9.89 -20.62Q9.62 -19.96 9.62 -19.87Q9.62 -19.79 9.52 -19.60Q9.42 -19.41 9.31 -19.02Q9.21 -18.63 9.14 -18.20Q9.08 -17.78 9.08 -17.30Q9.08 -16.82 9.14 -16.55Q9.21 -16.27 9.30 -16.12Q9.38 -15.97 9.55 -15.83Q9.72 -15.69 9.95 -15.68Q10.17 -15.66 10.41 -15.78Q10.64 -15.90 10.76 -16.04Q10.88 -16.17 11.02 -16.44Q11.16 -16.72 11.26 -17.08Q11.36 -17.43 11.36 -19.24Q11.36 -21.05 11.19 -21.94Q11.02 -22.82 10.88 -23.23Q10.75 -23.64 10.68 -23.76Q10.61 -23.88 10.46 -24.04Q10.30 -24.19 10.15 -24.27Q10.00 -24.36 9.93 -24.36zM10.73 -21.95Q10.78 -21.97 10.85 -21.72Q10.92 -21.46 11.00 -20.79Q11.09 -20.13 11.05 -18.97Q11.02 -17.81 10.97 -17.66Q10.92 -17.50 10.88 -17.23Q10.85 -16.96 10.75 -16.70Q10.64 -16.44 10.53 -16.31Q10.41 -16.17 10.30 -16.10Q10.20 -16.04 10.10 -16.02Q10.00 -16.00 9.91 -16.04Q9.83 -16.07 9.72 -16.17Q9.62 -16.27 9.57 -16.38Q9.52 -16.48 9.47 -16.77Q9.42 -17.06 9.43 -17.52Q9.45 -17.98 9.62 -18.68Q9.79 -19.38 10.06 -20.03Q10.34 -20.68 10.51 -21.22Q10.68 -21.77 10.68 -21.85Q10.68 -21.94 10.73 -21.95zM-7.63 -25.83Q-8.67 -26.00 -8.63 -25.74Q-8.60 -25.49 -8.61 -25.38Q-8.63 -25.28 -8.58 -25.03Q-8.53 -24.77 -8.38 -24.45Q-8.22 -24.12 -8.21 -24.02Q-8.19 -23.92 -8.05 -23.68Q-7.92 -23.44 -7.81 -23.34Q-7.71 -23.23 -7.59 -23.23Q-7.47 -23.23 -7.45 -23.22Q-7.44 -23.20 -7.49 -23.11Q-7.54 -23.03 -7.01 -22.52Q-6.48 -22.01 -6.26 -21.85Q-6.04 -21.70 -5.80 -21.48Q-5.56 -21.26 -5.32 -21.10Q-5.08 -20.95 -0.27 -20.95Q4.54 -20.95 4.16 -21.37Q3.79 -21.80 3.77 -21.85Q3.75 -21.90 3.63 -21.99Q3.51 -22.07 2.71 -22.93Q1.91 -23.78 1.07 -24.60Q0.24 -25.42 -0.87 -25.40Q-1.98 -25.38 -2.64 -25.40Q-3.31 -25.42 -3.53 -25.45Q-3.75 -25.49 -3.97 -25.47Q-4.20 -25.45 -4.62 -25.50Q-5.05 -25.55 -5.20 -25.54Q-5.36 -25.52 -5.48 -25.55Q-5.60 -25.59 -6.09 -25.62Q-6.58 -25.66 -7.63 -25.83zM7.13 -26.29Q6.65 -26.48 6.29 -26.00Q5.94 -25.52 5.53 -25.13Q5.12 -24.74 5.12 -24.68Q5.12 -24.63 5.22 -24.45Q5.32 -24.26 5.53 -23.71Q5.73 -23.17 6.26 -22.48Q6.79 -21.80 6.91 -21.73Q7.03 -21.66 7.20 -21.68Q7.37 -21.70 7.39 -21.75Q7.40 -21.80 7.37 -21.90Q7.34 -22.01 7.23 -22.14Q7.13 -22.28 7.16 -22.33Q7.20 -22.38 7.32 -22.36Q7.44 -22.35 7.59 -22.16Q7.74 -21.97 7.81 -21.92Q7.88 -21.87 8.00 -21.85Q8.12 -21.84 8.24 -21.94Q8.36 -22.04 8.17 -22.31Q7.98 -22.59 7.98 -22.64Q7.98 -22.69 8.05 -22.76Q8.12 -22.82 8.21 -22.79Q8.29 -22.76 8.38 -22.64Q8.46 -22.52 8.65 -22.36Q8.84 -22.21 8.97 -22.24Q9.11 -22.28 9.19 -22.36Q9.28 -22.45 9.26 -22.52Q9.25 -22.59 9.02 -22.88Q8.80 -23.17 8.80 -23.22Q8.80 -23.27 8.87 -23.34Q8.94 -23.40 9.06 -23.37Q9.18 -23.34 9.45 -23.10Q9.72 -22.86 9.77 -22.88Q9.83 -22.89 9.89 -22.98Q9.96 -23.06 9.98 -23.15Q10.00 -23.23 9.89 -23.47Q9.79 -23.71 9.31 -24.34Q8.84 -24.97 8.84 -25.06Q8.84 -25.14 8.87 -25.18Q8.90 -25.21 8.99 -25.21Q9.08 -25.21 9.18 -25.16Q9.28 -25.11 9.47 -24.94Q9.66 -24.77 9.72 -24.77Q9.79 -24.77 9.83 -24.80Q9.86 -24.84 9.86 -24.91Q9.86 -24.97 9.66 -25.26Q9.45 -25.55 9.35 -25.64Q9.25 -25.72 9.04 -25.79Q8.84 -25.86 8.22 -25.98Q7.61 -26.10 7.13 -26.29zM8.87 -30.28Q8.73 -30.23 8.77 -30.13Q8.80 -30.02 10.08 -28.01Q11.36 -26.00 11.34 -26.66Q11.33 -27.33 10.88 -27.99Q10.44 -28.66 10.01 -29.38Q9.59 -30.09 9.52 -30.14Q9.45 -30.19 9.31 -30.11Q9.18 -30.02 9.09 -30.18Q9.01 -30.33 8.87 -30.28zM9.62 -31.54Q9.59 -31.66 9.52 -31.68Q9.45 -31.70 9.28 -31.64Q9.11 -31.59 8.63 -31.37Q8.15 -31.15 8.10 -31.06Q8.05 -30.98 8.12 -30.88Q8.19 -30.77 8.27 -30.74Q8.36 -30.71 8.65 -30.76Q8.94 -30.81 9.11 -30.89Q9.28 -30.98 9.43 -31.10Q9.59 -31.22 9.62 -31.32Q9.66 -31.42 9.62 -31.54zM4.37 -31.92Q4.03 -31.80 3.68 -31.71Q3.34 -31.63 3.28 -31.49Q3.21 -31.35 3.17 -31.20Q3.14 -31.05 3.65 -30.48Q4.16 -29.92 4.44 -29.68Q4.71 -29.44 5.15 -29.63Q5.60 -29.82 5.61 -29.87Q5.63 -29.92 5.39 -30.38Q5.15 -30.84 4.98 -31.25Q4.81 -31.66 4.76 -31.85Q4.71 -32.04 4.37 -31.92zM-2.59 -32.28Q-2.70 -32.65 -2.73 -32.65Q-2.76 -32.65 -3.24 -32.24Q-3.72 -31.83 -4.44 -31.32Q-5.15 -30.81 -6.69 -29.89Q-8.22 -28.97 -8.34 -28.74Q-8.46 -28.52 -8.48 -28.28Q-8.50 -28.04 -7.18 -28.74Q-5.87 -29.44 -5.32 -29.78Q-4.78 -30.13 -4.01 -30.67Q-3.24 -31.22 -2.87 -31.56Q-2.49 -31.90 -2.59 -32.28zM9.52 -32.39Q9.52 -32.58 9.40 -32.70Q9.28 -32.82 9.19 -32.82Q9.11 -32.82 8.89 -32.65Q8.67 -32.48 8.22 -32.26Q7.78 -32.04 7.71 -31.97Q7.64 -31.90 7.64 -31.80Q7.64 -31.70 7.71 -31.63Q7.78 -31.56 7.86 -31.52Q7.95 -31.49 8.31 -31.59Q8.67 -31.70 8.94 -31.83Q9.21 -31.97 9.37 -32.09Q9.52 -32.21 9.52 -32.39zM9.21 -33.57Q9.18 -33.64 9.01 -33.76Q8.84 -33.88 8.79 -33.86Q8.73 -33.84 8.44 -33.64Q8.15 -33.44 8.10 -33.23Q8.05 -33.03 7.93 -32.91Q7.81 -32.79 7.71 -32.74Q7.61 -32.68 7.35 -32.68Q7.10 -32.68 7.13 -32.58Q7.16 -32.48 7.25 -32.41Q7.34 -32.34 7.44 -32.34Q7.54 -32.34 7.76 -32.43Q7.98 -32.51 8.00 -32.57Q8.02 -32.62 8.07 -32.60Q8.12 -32.58 8.55 -32.79Q8.97 -32.99 9.08 -33.08Q9.18 -33.16 9.21 -33.23Q9.25 -33.30 9.25 -33.40Q9.25 -33.50 9.21 -33.57zM-12.30 -33.91Q-12.35 -33.91 -12.47 -33.61Q-12.59 -33.30 -12.71 -32.84Q-12.83 -32.38 -12.83 -32.21Q-12.83 -32.04 -12.86 -31.99Q-12.90 -31.93 -12.95 -31.66Q-13.00 -31.39 -13.03 -30.91Q-13.07 -30.43 -12.96 -30.02Q-12.86 -29.61 -12.69 -29.39Q-12.52 -29.17 -12.28 -29.03Q-12.04 -28.90 -11.63 -28.80Q-11.22 -28.69 -10.92 -28.69Q-10.61 -28.69 -10.51 -28.73Q-10.41 -28.76 -10.30 -28.85Q-10.20 -28.93 -10.10 -29.15Q-10.00 -29.38 -9.96 -29.61Q-9.93 -29.85 -9.69 -30.86Q-9.45 -31.87 -9.31 -32.31Q-9.18 -32.75 -9.18 -32.84Q-9.18 -32.92 -9.48 -32.94Q-9.79 -32.96 -10.18 -33.03Q-10.58 -33.09 -11.00 -33.26Q-11.43 -33.44 -11.84 -33.67Q-12.25 -33.91 -12.30 -33.91zM6.58 -34.41Q6.41 -34.39 6.11 -34.22Q5.80 -34.05 5.63 -33.84Q5.46 -33.64 5.37 -33.23Q5.29 -32.82 5.29 -32.50Q5.29 -32.17 5.34 -32.00Q5.39 -31.83 5.60 -31.39Q5.80 -30.94 6.06 -30.57Q6.31 -30.19 6.74 -30.16Q7.16 -30.13 7.51 -30.19Q7.85 -30.26 7.93 -30.31Q8.02 -30.36 7.86 -30.50Q7.71 -30.64 7.64 -30.88Q7.57 -31.12 7.42 -31.29Q7.27 -31.46 7.22 -31.71Q7.16 -31.97 7.06 -32.00Q6.96 -32.04 6.89 -31.87Q6.82 -31.70 6.69 -31.54Q6.55 -31.39 6.36 -31.39Q6.18 -31.39 6.18 -31.42Q6.18 -31.46 6.33 -31.61Q6.48 -31.76 6.57 -31.93Q6.65 -32.10 6.65 -32.39Q6.65 -32.68 6.62 -32.79Q6.58 -32.89 6.43 -33.13Q6.28 -33.37 6.28 -33.42Q6.28 -33.47 6.33 -33.52Q6.38 -33.57 6.43 -33.57Q6.48 -33.57 6.70 -33.38Q6.93 -33.20 7.06 -33.13Q7.20 -33.06 7.34 -33.06Q7.47 -33.06 7.57 -33.13Q7.68 -33.20 7.56 -33.50Q7.44 -33.81 7.25 -34.03Q7.06 -34.25 6.91 -34.34Q6.76 -34.42 6.58 -34.41zM8.50 -34.63Q8.36 -34.73 8.21 -34.73Q8.05 -34.73 7.95 -34.70Q7.85 -34.66 7.66 -34.54Q7.47 -34.42 7.49 -34.37Q7.51 -34.32 7.78 -34.03Q8.05 -33.74 8.36 -33.95Q8.67 -34.15 8.65 -34.34Q8.63 -34.53 8.50 -34.63zM4.32 -38.08Q4.20 -38.01 4.35 -37.43Q4.50 -36.85 4.76 -36.49Q5.02 -36.13 5.46 -35.43Q5.90 -34.73 5.97 -34.73Q6.04 -34.73 6.26 -34.82Q6.48 -34.90 6.48 -34.95Q6.48 -35.00 5.51 -36.56Q4.54 -38.11 4.49 -38.13Q4.44 -38.14 4.32 -38.08zM2.85 -39.13Q2.80 -39.17 2.78 -39.08Q2.76 -39.00 2.81 -38.69Q2.87 -38.38 2.83 -37.55Q2.80 -36.71 2.63 -35.99Q2.46 -35.28 2.37 -35.06Q2.29 -34.83 2.18 -34.68Q2.08 -34.53 2.10 -34.17Q2.12 -33.81 2.29 -32.79Q2.46 -31.76 2.51 -31.68Q2.56 -31.59 2.61 -31.61Q2.66 -31.63 2.71 -31.80Q2.76 -31.97 2.90 -32.17Q3.04 -32.38 3.21 -32.55Q3.38 -32.72 3.60 -33.01Q3.82 -33.30 3.94 -33.52Q4.06 -33.74 4.13 -34.02Q4.20 -34.29 4.20 -34.77Q4.20 -35.24 4.16 -35.48Q4.13 -35.72 3.86 -36.76Q3.58 -37.80 3.48 -38.37Q3.38 -38.93 3.34 -38.98Q3.31 -39.03 3.10 -39.06Q2.90 -39.10 2.85 -39.13zM-3.05 -41.01Q-3.24 -40.94 -3.46 -40.80Q-3.68 -40.67 -3.99 -40.33Q-4.30 -39.99 -4.55 -39.59Q-4.81 -39.20 -5.13 -38.55Q-5.46 -37.90 -5.77 -37.00Q-6.07 -36.10 -6.21 -35.45Q-6.35 -34.80 -6.38 -34.75Q-6.41 -34.70 -6.45 -34.44Q-6.48 -34.19 -6.67 -33.54Q-6.86 -32.89 -7.18 -31.97Q-7.51 -31.05 -7.64 -30.81Q-7.78 -30.57 -7.97 -30.13Q-8.15 -29.68 -8.12 -29.67Q-8.09 -29.65 -8.02 -29.68Q-7.95 -29.72 -7.88 -29.78Q-7.81 -29.85 -7.61 -29.96Q-7.40 -30.06 -6.60 -30.57Q-5.80 -31.08 -4.76 -31.87Q-3.72 -32.65 -3.34 -33.01Q-2.97 -33.37 -2.95 -33.45Q-2.93 -33.54 -3.09 -34.03Q-3.24 -34.53 -3.41 -35.55Q-3.58 -36.57 -3.58 -36.68Q-3.58 -36.78 -3.48 -36.86Q-3.38 -36.95 -3.33 -36.95Q-3.28 -36.95 -3.21 -36.90Q-3.14 -36.85 -3.04 -36.63Q-2.93 -36.40 -2.80 -35.79Q-2.66 -35.18 -2.12 -33.26Q-1.57 -31.35 -1.62 -31.34Q-1.67 -31.32 -1.67 -31.08Q-1.67 -30.84 -1.28 -30.83Q-0.89 -30.81 -0.89 -30.28Q-0.89 -29.75 -1.28 -29.73Q-1.67 -29.72 -1.67 -29.68Q-1.67 -29.65 -1.71 -29.65Q-1.74 -29.65 -1.94 -30.19Q-2.15 -30.74 -2.22 -31.03Q-2.29 -31.32 -2.34 -31.32Q-2.39 -31.32 -2.78 -30.98Q-3.17 -30.64 -4.01 -30.06Q-4.84 -29.48 -6.04 -28.78Q-7.23 -28.08 -7.92 -27.72Q-8.60 -27.36 -8.61 -27.06Q-8.63 -26.75 -7.95 -26.59Q-7.27 -26.44 -6.84 -26.41Q-6.41 -26.37 -6.14 -26.30Q-5.87 -26.24 -5.20 -26.19Q-4.54 -26.13 -3.51 -26.10Q-2.49 -26.07 -1.31 -26.07Q-0.14 -26.07 0.29 -26.10Q0.72 -26.13 0.75 -26.19Q0.78 -26.24 0.84 -26.54Q0.89 -26.85 0.85 -26.95Q0.82 -27.06 0.39 -27.38Q-0.03 -27.70 -0.46 -28.10Q-0.89 -28.49 -1.16 -28.51Q-1.43 -28.52 -1.43 -28.80Q-1.43 -29.07 -1.14 -29.09Q-0.85 -29.10 -0.84 -29.22Q-0.82 -29.34 -0.44 -28.98Q-0.07 -28.62 0.63 -28.04Q1.33 -27.46 2.90 -26.27Q4.47 -25.08 4.57 -25.14Q4.67 -25.21 5.12 -25.66Q5.56 -26.10 5.83 -26.46Q6.11 -26.82 6.12 -26.90Q6.14 -26.99 5.37 -27.75Q4.61 -28.52 3.96 -29.22Q3.31 -29.92 2.56 -30.65Q1.81 -31.39 1.81 -31.59Q1.81 -31.80 1.74 -32.26Q1.67 -32.72 1.54 -33.38Q1.40 -34.05 1.30 -34.90Q1.19 -35.76 1.19 -36.32Q1.19 -36.88 1.13 -37.51Q1.06 -38.14 0.89 -38.72Q0.72 -39.30 0.51 -39.63Q0.31 -39.95 0.05 -40.21Q-0.20 -40.46 -0.55 -40.67Q-0.89 -40.87 -1.14 -40.87Q-1.40 -40.87 -1.42 -40.98Q-1.43 -41.08 -1.57 -41.09Q-1.71 -41.11 -2.29 -41.09Q-2.87 -41.08 -3.05 -41.01zM-5.68 -42.07Q-5.90 -42.17 -6.04 -42.20Q-6.18 -42.24 -6.45 -42.24Q-6.72 -42.24 -6.91 -42.02Q-7.10 -41.79 -7.23 -41.57Q-7.37 -41.35 -7.47 -41.11Q-7.57 -40.87 -7.74 -40.62Q-7.92 -40.36 -8.02 -40.11Q-8.12 -39.85 -8.29 -39.56Q-8.46 -39.27 -8.56 -38.96Q-8.67 -38.66 -8.80 -38.42Q-8.94 -38.18 -9.14 -37.67Q-9.35 -37.15 -9.45 -36.76Q-9.55 -36.37 -9.64 -36.23Q-9.72 -36.10 -9.88 -35.62Q-10.03 -35.14 -10.13 -34.92Q-10.24 -34.70 -10.27 -34.51Q-10.30 -34.32 -10.41 -34.08Q-10.51 -33.84 -10.51 -33.74Q-10.51 -33.64 -10.18 -33.55Q-9.86 -33.47 -9.38 -33.42Q-8.90 -33.37 -8.79 -33.26Q-8.67 -33.16 -8.67 -33.08Q-8.67 -32.99 -9.14 -30.93Q-9.62 -28.86 -9.67 -28.76Q-9.72 -28.66 -9.83 -28.56Q-9.93 -28.45 -10.20 -28.32Q-10.47 -28.18 -11.07 -28.22Q-11.67 -28.25 -12.03 -28.37Q-12.38 -28.49 -12.49 -28.57Q-12.59 -28.66 -12.74 -28.71Q-12.90 -28.76 -13.05 -28.95Q-13.20 -29.14 -13.34 -29.39Q-13.48 -29.65 -13.53 -29.97Q-13.58 -30.30 -13.58 -30.64Q-13.58 -30.98 -13.49 -31.58Q-13.41 -32.17 -13.15 -33.11Q-12.90 -34.05 -12.83 -34.19Q-12.76 -34.32 -12.69 -34.39Q-12.62 -34.46 -12.45 -34.46Q-12.28 -34.46 -11.92 -34.24Q-11.57 -34.02 -11.28 -33.91Q-10.99 -33.81 -10.87 -34.27Q-10.75 -34.73 -10.58 -35.16Q-10.41 -35.58 -10.13 -36.44Q-9.86 -37.29 -9.77 -37.41Q-9.69 -37.53 -9.60 -37.80Q-9.52 -38.08 -8.77 -39.66Q-8.02 -41.25 -7.78 -41.64Q-7.54 -42.03 -7.92 -41.86Q-8.29 -41.69 -9.11 -41.15Q-9.93 -40.60 -10.42 -40.33Q-10.92 -40.05 -11.21 -39.97Q-11.50 -39.88 -11.77 -39.90Q-12.04 -39.92 -12.27 -39.53Q-12.49 -39.13 -12.56 -39.06Q-12.62 -39.00 -12.71 -38.98Q-12.79 -38.96 -12.93 -38.86Q-13.07 -38.76 -13.24 -38.69Q-13.41 -38.62 -13.29 -38.60Q-13.17 -38.59 -12.98 -38.66Q-12.79 -38.72 -12.73 -38.71Q-12.66 -38.69 -12.66 -38.64Q-12.66 -38.59 -12.71 -38.55Q-12.76 -38.52 -12.83 -38.38Q-12.90 -38.25 -12.96 -38.02Q-13.03 -37.80 -13.27 -37.31Q-13.51 -36.81 -13.54 -36.63Q-13.58 -36.44 -13.72 -36.08Q-13.85 -35.72 -13.89 -35.52Q-13.92 -35.31 -13.99 -35.19Q-14.06 -35.07 -14.14 -34.63Q-14.23 -34.19 -14.31 -34.00Q-14.40 -33.81 -14.43 -33.38Q-14.47 -32.96 -14.50 -32.91Q-14.53 -32.86 -14.60 -32.31Q-14.67 -31.76 -14.67 -30.86Q-14.67 -29.96 -14.64 -29.84Q-14.60 -29.72 -14.60 -29.55Q-14.60 -29.38 -14.50 -29.00Q-14.40 -28.62 -14.21 -28.20Q-14.02 -27.77 -13.82 -27.50Q-13.61 -27.23 -13.37 -26.99Q-13.14 -26.75 -12.90 -26.63Q-12.66 -26.51 -12.59 -26.44Q-12.52 -26.37 -12.28 -26.24Q-12.04 -26.10 -11.65 -25.96Q-11.26 -25.83 -10.63 -25.81Q-10.00 -25.79 -9.81 -25.84Q-9.62 -25.90 -9.54 -26.01Q-9.45 -26.13 -9.35 -27.14Q-9.25 -28.15 -9.14 -28.52Q-9.04 -28.90 -8.97 -29.34Q-8.90 -29.78 -8.21 -32.31Q-7.51 -34.83 -7.15 -35.82Q-6.79 -36.81 -6.45 -37.61Q-6.11 -38.42 -5.87 -38.89Q-5.63 -39.37 -5.17 -40.12Q-4.71 -40.87 -4.73 -41.01Q-4.74 -41.15 -4.84 -41.33Q-4.95 -41.52 -5.20 -41.74Q-5.46 -41.96 -5.68 -42.07zM-2.88 -42.02Q-3.17 -41.83 -3.29 -41.71Q-3.41 -41.59 -3.39 -41.57Q-3.38 -41.56 -2.87 -41.66Q-2.35 -41.76 -1.64 -41.74Q-0.92 -41.73 -0.90 -41.64Q-0.89 -41.56 -0.43 -41.32Q0.03 -41.08 0.38 -40.77Q0.72 -40.46 0.94 -40.14Q1.16 -39.82 1.36 -39.29Q1.57 -38.76 1.67 -38.23Q1.77 -37.70 1.84 -36.68Q1.91 -35.65 2.06 -36.15Q2.22 -36.64 2.27 -37.05Q2.32 -37.46 2.32 -37.72Q2.32 -37.97 2.27 -38.40Q2.22 -38.83 2.01 -39.49Q1.81 -40.16 1.67 -40.41Q1.54 -40.67 1.26 -41.03Q0.99 -41.38 0.75 -41.61Q0.51 -41.83 0.17 -42.03Q-0.17 -42.24 -0.53 -42.36Q-0.89 -42.48 -1.23 -42.48Q-1.57 -42.48 -1.83 -42.43Q-2.08 -42.37 -2.34 -42.29Q-2.59 -42.20 -2.88 -42.02zM-3.79 -44.18Q-3.79 -44.52 -4.15 -44.64Q-4.50 -44.76 -4.83 -44.83Q-5.15 -44.90 -5.56 -44.95Q-5.97 -45.00 -6.31 -45.00Q-6.65 -45.00 -7.16 -44.92Q-7.68 -44.83 -8.26 -44.59Q-8.84 -44.35 -9.35 -44.03Q-9.86 -43.70 -10.05 -43.53Q-10.24 -43.36 -10.58 -42.97Q-10.92 -42.58 -11.16 -42.24Q-11.40 -41.90 -11.57 -41.57Q-11.74 -41.25 -11.77 -41.15Q-11.80 -41.04 -11.79 -40.84Q-11.77 -40.63 -11.67 -40.58Q-11.57 -40.53 -11.38 -40.55Q-11.19 -40.57 -10.71 -40.84Q-10.24 -41.11 -9.57 -41.56Q-8.90 -42.00 -8.17 -42.34Q-7.44 -42.68 -7.11 -42.75Q-6.79 -42.82 -6.50 -42.82Q-6.21 -42.82 -5.82 -42.73Q-5.42 -42.65 -5.13 -42.48Q-4.84 -42.31 -4.57 -42.02Q-4.30 -41.73 -4.25 -41.73Q-4.20 -41.73 -3.96 -41.95Q-3.72 -42.17 -3.72 -42.20Q-3.72 -42.24 -3.82 -42.25Q-3.92 -42.27 -4.18 -42.41Q-4.44 -42.54 -4.62 -42.75Q-4.81 -42.95 -4.83 -43.11Q-4.84 -43.26 -4.79 -43.30Q-4.74 -43.33 -4.54 -43.35Q-4.33 -43.36 -4.16 -43.45Q-3.99 -43.53 -3.89 -43.69Q-3.79 -43.84 -3.79 -44.18zM-3.77 -48.12Q-3.82 -48.14 -4.09 -48.00Q-4.37 -47.87 -4.06 -47.42Q-3.75 -46.98 -3.62 -47.34Q-3.48 -47.70 -3.60 -47.90Q-3.72 -48.11 -3.77 -48.12zM-0.85 -48.21Q-0.85 -48.58 -1.16 -48.58Q-1.47 -48.58 -1.72 -48.48Q-1.98 -48.38 -2.18 -48.24Q-2.39 -48.11 -2.56 -47.94Q-2.73 -47.76 -2.83 -47.61Q-2.93 -47.46 -3.09 -47.08Q-3.24 -46.71 -3.29 -46.37Q-3.34 -46.02 -3.31 -45.65Q-3.28 -45.27 -3.19 -44.83Q-3.10 -44.39 -3.12 -44.17Q-3.14 -43.94 -3.24 -43.69Q-3.34 -43.43 -3.45 -43.31Q-3.55 -43.19 -3.74 -43.09Q-3.92 -42.99 -3.92 -42.94Q-3.92 -42.89 -3.67 -42.83Q-3.41 -42.78 -3.17 -42.78Q-2.93 -42.78 -2.59 -42.87Q-2.25 -42.95 -1.96 -43.09Q-1.67 -43.23 -1.55 -43.33Q-1.43 -43.43 -1.42 -43.72Q-1.40 -44.01 -1.14 -44.01Q-0.89 -44.01 -0.84 -44.23Q-0.78 -44.46 -0.78 -44.63Q-0.78 -44.80 -0.84 -45.07Q-0.89 -45.34 -1.16 -45.36Q-1.43 -45.38 -1.43 -46.59Q-1.43 -47.80 -1.14 -47.82Q-0.85 -47.83 -0.85 -48.21zM6.87 -48.62Q6.69 -48.89 6.26 -48.57Q5.83 -48.24 5.39 -48.04Q4.95 -47.83 4.33 -47.70Q3.72 -47.56 3.33 -47.56Q2.93 -47.56 2.80 -47.29Q2.66 -47.01 2.42 -46.74Q2.18 -46.47 2.18 -46.42Q2.18 -46.37 2.13 -46.38Q2.08 -46.40 1.93 -46.33Q1.77 -46.26 1.71 -46.28Q1.64 -46.30 1.55 -46.37Q1.47 -46.43 1.30 -46.66Q1.13 -46.88 1.01 -46.95Q0.89 -47.01 0.77 -47.01Q0.65 -47.01 0.51 -46.96Q0.38 -46.91 0.26 -46.74Q0.14 -46.57 0.12 -46.20Q0.10 -45.82 0.15 -45.67Q0.20 -45.51 0.29 -45.38Q0.38 -45.24 0.56 -45.09Q0.75 -44.93 0.90 -44.90Q1.06 -44.86 1.26 -44.92Q1.47 -44.97 1.50 -44.93Q1.54 -44.90 1.52 -44.76Q1.50 -44.63 1.31 -44.51Q1.13 -44.39 1.11 -44.25Q1.09 -44.11 0.99 -43.82Q0.89 -43.53 0.61 -43.07Q0.34 -42.61 0.61 -42.44Q0.89 -42.27 1.19 -41.98Q1.50 -41.69 1.86 -41.20Q2.22 -40.70 2.35 -40.36Q2.49 -40.02 2.56 -39.95Q2.63 -39.88 2.81 -39.78Q3.00 -39.68 3.04 -39.70Q3.07 -39.71 2.95 -39.95Q2.83 -40.19 2.97 -40.22Q3.10 -40.26 3.21 -40.53Q3.31 -40.80 3.48 -41.11Q3.65 -41.42 3.65 -41.47Q3.65 -41.52 3.38 -41.71Q3.10 -41.90 2.71 -42.25Q2.32 -42.61 2.13 -42.90Q1.94 -43.19 1.91 -43.35Q1.88 -43.50 1.93 -43.55Q1.98 -43.60 2.01 -43.60Q2.05 -43.60 2.39 -43.21Q2.73 -42.82 2.99 -42.61Q3.24 -42.41 3.51 -42.24Q3.79 -42.07 3.91 -42.03Q4.03 -42.00 4.11 -42.07Q4.20 -42.14 4.28 -41.98Q4.37 -41.83 4.45 -41.78Q4.54 -41.73 4.79 -41.67Q5.05 -41.62 5.34 -41.62Q5.63 -41.62 5.83 -41.71Q6.04 -41.79 6.23 -41.98Q6.41 -42.17 6.64 -42.48Q6.86 -42.78 7.10 -43.26Q7.34 -43.74 7.47 -44.18Q7.61 -44.63 7.64 -44.83Q7.68 -45.04 7.68 -45.63Q7.68 -46.23 7.59 -46.25Q7.51 -46.26 7.44 -46.08Q7.37 -45.89 7.30 -45.84Q7.23 -45.79 7.15 -45.79Q7.06 -45.79 6.96 -45.89Q6.86 -45.99 6.82 -46.14Q6.79 -46.30 6.82 -46.40Q6.86 -46.50 6.98 -46.59Q7.10 -46.67 7.22 -46.67Q7.34 -46.67 7.51 -46.59Q7.68 -46.50 7.73 -46.71Q7.78 -46.91 7.63 -47.00Q7.47 -47.08 7.15 -47.05Q6.82 -47.01 6.77 -47.07Q6.72 -47.12 6.72 -47.17Q6.72 -47.22 6.84 -47.30Q6.96 -47.39 7.22 -47.41Q7.47 -47.42 7.63 -47.37Q7.78 -47.32 7.80 -47.39Q7.81 -47.46 7.78 -47.56Q7.74 -47.66 7.40 -48.00Q7.06 -48.34 6.87 -48.62zM4.38 -43.76Q4.33 -43.84 4.38 -43.91Q4.44 -43.98 4.59 -44.01Q4.74 -44.05 4.83 -43.94Q4.91 -43.84 5.20 -43.74Q5.49 -43.64 5.78 -43.62Q6.07 -43.60 6.38 -43.65Q6.69 -43.70 6.70 -43.64Q6.72 -43.57 6.64 -43.48Q6.55 -43.40 6.36 -43.33Q6.18 -43.26 5.85 -43.26Q5.53 -43.26 5.22 -43.36Q4.91 -43.47 4.73 -43.59Q4.54 -43.70 4.49 -43.69Q4.44 -43.67 4.38 -43.76zM0.63 -46.45Q0.68 -46.54 0.80 -46.52Q0.92 -46.50 1.06 -46.33Q1.19 -46.16 1.21 -46.04Q1.23 -45.92 1.14 -45.84Q1.06 -45.75 1.01 -45.77Q0.96 -45.79 0.96 -45.91Q0.96 -46.02 0.92 -46.09Q0.89 -46.16 0.82 -46.23Q0.75 -46.30 0.67 -46.33Q0.58 -46.37 0.63 -46.45zM6.24 -46.59Q6.31 -46.67 6.35 -46.67Q6.38 -46.67 6.43 -46.60Q6.48 -46.54 6.52 -46.20Q6.55 -45.85 6.72 -45.51Q6.89 -45.17 6.91 -44.97Q6.93 -44.76 6.89 -44.69Q6.86 -44.63 6.74 -44.52Q6.62 -44.42 6.52 -44.39Q6.41 -44.35 6.28 -44.35Q6.14 -44.35 5.95 -44.40Q5.77 -44.46 5.73 -44.52Q5.70 -44.59 5.77 -44.64Q5.83 -44.69 6.09 -44.68Q6.35 -44.66 6.47 -44.75Q6.58 -44.83 6.58 -44.90Q6.58 -44.97 6.45 -45.26Q6.31 -45.55 6.24 -45.82Q6.18 -46.09 6.18 -46.30Q6.18 -46.50 6.24 -46.59zM3.91 -46.38Q3.79 -46.50 4.11 -46.64Q4.44 -46.78 4.61 -46.79Q4.78 -46.81 4.83 -46.79Q4.88 -46.78 4.98 -46.66Q5.08 -46.54 5.07 -46.31Q5.05 -46.09 4.96 -46.01Q4.88 -45.92 4.74 -45.91Q4.61 -45.89 4.50 -45.97Q4.40 -46.06 4.35 -46.21Q4.30 -46.37 4.16 -46.31Q4.03 -46.26 3.91 -46.38zM3.74 -47.01Q3.65 -47.08 3.74 -47.18Q3.82 -47.29 4.18 -47.41Q4.54 -47.53 4.83 -47.53Q5.12 -47.53 5.25 -47.47Q5.39 -47.42 5.46 -47.34Q5.53 -47.25 5.48 -47.18Q5.42 -47.12 5.25 -47.15Q5.08 -47.18 4.81 -47.18Q4.54 -47.18 4.18 -47.07Q3.82 -46.95 3.74 -47.01zM10.32 -49.32Q10.30 -49.50 10.20 -49.61Q10.10 -49.71 9.89 -49.79Q9.69 -49.88 9.28 -49.88Q8.87 -49.88 8.60 -49.81Q8.32 -49.74 8.10 -49.64Q7.88 -49.54 8.07 -49.25Q8.26 -48.96 8.32 -48.63Q8.39 -48.31 8.43 -48.26Q8.46 -48.21 8.84 -48.28Q9.21 -48.34 9.55 -48.48Q9.89 -48.62 10.06 -48.77Q10.24 -48.92 10.29 -49.03Q10.34 -49.13 10.32 -49.32zM8.07 -50.07Q8.50 -50.22 8.34 -50.26Q8.19 -50.29 7.47 -50.29Q6.76 -50.29 6.26 -50.22Q5.77 -50.15 5.07 -49.91Q4.37 -49.68 3.97 -49.47Q3.58 -49.27 3.26 -49.06Q2.93 -48.86 2.93 -48.82Q2.93 -48.79 3.29 -48.74Q3.65 -48.69 4.11 -48.69Q4.57 -48.69 4.96 -48.75Q5.36 -48.82 5.71 -48.96Q6.07 -49.10 6.86 -49.50Q7.64 -49.91 8.07 -50.07zM6.93 -50.73Q6.93 -50.80 6.62 -51.23Q6.31 -51.65 6.09 -51.88Q5.87 -52.10 5.70 -52.22Q5.53 -52.34 5.29 -52.44Q5.05 -52.54 4.73 -52.61Q4.40 -52.68 3.99 -52.69Q3.58 -52.71 3.10 -52.66Q2.63 -52.61 2.18 -52.47Q1.74 -52.34 1.42 -52.17Q1.09 -52.00 0.80 -51.79Q0.51 -51.59 0.31 -51.40Q0.10 -51.21 -0.12 -50.92Q-0.34 -50.63 -0.44 -50.37Q-0.55 -50.12 -0.61 -49.85Q-0.68 -49.57 -0.70 -49.13Q-0.72 -48.69 -0.67 -48.29Q-0.61 -47.90 -0.55 -47.76Q-0.48 -47.63 -0.38 -47.65Q-0.27 -47.66 0.60 -48.07Q1.47 -48.48 1.79 -48.60Q2.12 -48.72 2.68 -49.13Q3.24 -49.54 3.74 -49.79Q4.23 -50.05 4.81 -50.26Q5.39 -50.46 5.75 -50.53Q6.11 -50.60 6.52 -50.63Q6.93 -50.66 6.93 -50.73z",
         wflag:
@@ -15803,12 +15962,12 @@ try {
           collar: [22.33, -15.8],
         },
       };
-      function s(f) {
-        var y = f === "m" ? d.mflag : d.wflag,
-          m = f === "w" ? d.woman : f === "n" ? d.nb : d.man,
-          k = f === "w" ? d.womL : f === "n" ? d.nbL : d.manL,
-          M = f === "w" ? d.womR : f === "n" ? d.nbR : d.manR,
-          T = d.piv[f],
+      function travellerFigure(f) {
+        var y = f === "m" ? FIGURE_PATHS.mflag : FIGURE_PATHS.wflag,
+          m = f === "w" ? FIGURE_PATHS.woman : f === "n" ? FIGURE_PATHS.nb : FIGURE_PATHS.man,
+          k = f === "w" ? FIGURE_PATHS.womL : f === "n" ? FIGURE_PATHS.nbL : FIGURE_PATHS.manL,
+          M = f === "w" ? FIGURE_PATHS.womR : f === "n" ? FIGURE_PATHS.nbR : FIGURE_PATHS.manR,
+          T = FIGURE_PATHS.piv[f],
           F = f === "m" ? -6.4 : -6.8,
           R = f === "n" ? ' transform="translate(1.34 .9)"' : "";
         function $(it, at, yt) {
@@ -15862,17 +16021,17 @@ try {
           "</g>" +
           (f === "w"
             ? '<g class="twdog"><g class="twdogb">' +
-              $("twdl", d.dogL, d.piv.dl) +
-              $("twdr", d.dogR, d.piv.dr) +
+              $("twdl", FIGURE_PATHS.dogL, FIGURE_PATHS.piv.dl) +
+              $("twdr", FIGURE_PATHS.dogR, FIGURE_PATHS.piv.dr) +
               '<path fill-rule="evenodd" d="' +
-              d.dog +
+              FIGURE_PATHS.dog +
               '"/></g></g>'
             : "") +
           "</g>"
         );
       }
-      function o() {
-        var f = d.d4;
+      function sceneFourFriends() {
+        var f = FIGURE_PATHS.d4;
         function y(m, k, M) {
           return (
             '<g class="' +
@@ -15912,8 +16071,8 @@ try {
           '"/></g></g></g>'
         );
       }
-      function l() {
-        var f = d.d5;
+      function sceneFiveFriends() {
+        var f = FIGURE_PATHS.d5;
         function y(m, k, M) {
           return (
             '<g class="' +
@@ -15936,8 +16095,8 @@ try {
           '"/></g></g></g>'
         );
       }
-      function e() {
-        var f = d.d7;
+      function sceneSevenFriends() {
+        var f = FIGURE_PATHS.d7;
         function y(m, k, M) {
           return (
             '<g class="' +
@@ -15968,56 +16127,56 @@ try {
           "</g></g></g>"
         );
       }
-      window.__twFig = s;
-      var r =
+      window.__twFig = travellerFigure;
+      var HALFTONE_DEFS =
         '<defs><pattern id="twht" width=".62" height=".62" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width=".62" height=".62" style="fill:color-mix(in srgb,var(--ink) 34%,var(--bg))"/><circle cx=".31" cy=".31" r=".25" style="fill:color-mix(in srgb,var(--ink) 88%,var(--bg))"/></pattern><linearGradient id="twtri" gradientUnits="userSpaceOnUse" x1="-17.8" y1="-53.8" x2="-13.2" y2="-45.2"><stop offset="0" stop-color="#E3B48A"/><stop offset=".34" stop-color="#E3B48A"/><stop offset=".34" stop-color="#F1EEE8"/><stop offset=".66" stop-color="#F1EEE8"/><stop offset=".66" stop-color="#93AE90"/><stop offset="1" stop-color="#93AE90"/></linearGradient><linearGradient id="twtri4" gradientUnits="userSpaceOnUse" x1="-17.4" y1="-50.07" x2="-12.83" y2="-42.43"><stop offset="0" stop-color="#E3B48A"/><stop offset=".34" stop-color="#E3B48A"/><stop offset=".34" stop-color="#F1EEE8"/><stop offset=".66" stop-color="#F1EEE8"/><stop offset=".66" stop-color="#93AE90"/><stop offset="1" stop-color="#93AE90"/></linearGradient></defs>';
-      function Q() {
+      function orbitScene() {
         return (
           '<g class="orb ob1"><g class="osc">' +
-          s("w") +
+          travellerFigure("w") +
           '</g></g><g class="orb ob2"><g class="osc">' +
-          e() +
+          sceneSevenFriends() +
           '</g></g><g class="orb ob3"><g class="osc">' +
-          s("n") +
+          travellerFigure("n") +
           '</g></g><g class="orb ob4"><g class="osc">' +
-          o() +
+          sceneFourFriends() +
           '</g></g><g class="orb ob5"><g class="osc">' +
-          l() +
+          sceneFiveFriends() +
           "</g></g>"
         );
       }
-      function b() {
+      function drawOnlineArt() {
         var f = document.querySelector("#on-sheet .hkart");
         if (!f) {
-          setTimeout(b, 500);
+          setTimeout(drawOnlineArt, 500);
           return;
         }
         if (!f.querySelector(".twwrap")) {
           var y = f.querySelector(".k2");
           if (!y) {
-            setTimeout(b, 500);
+            setTimeout(drawOnlineArt, 500);
             return;
           }
           var m = y.closest("g[transform]") || y,
             k = document.createElementNS("http://www.w3.org/2000/svg", "g");
           k.setAttribute("class", "twwrap"),
             k.setAttribute("transform", "translate(62 61.7) scale(1.13)"),
-            (k.innerHTML = Q()),
-            f.querySelector("#twht") || f.insertAdjacentHTML("afterbegin", r),
+            (k.innerHTML = orbitScene()),
+            f.querySelector("#twht") || f.insertAdjacentHTML("afterbegin", HALFTONE_DEFS),
             f.appendChild(k),
             setTimeout(function () {
               k.nextSibling && f.appendChild(k);
             }, 1500);
         }
       }
-      b();
-      var A =
+      drawOnlineArt();
+      var CLOUD_PATH =
           "M9.5 34.5C9.2 30.6 12.6 28.4 16.2 29.7 17.4 24.6 24.6 22.8 27.9 27.3 30.6 25.4 35.2 26.9 35.4 30.6 37.6 31.2 38.6 33 38.4 34.5",
-        x = "";
-      function p() {
+        cloudsHtml = "";
+      function drawOfflineArt() {
         var f = document.querySelector("#on-sheet .hkart");
         if (!f) {
-          setTimeout(p, 500);
+          setTimeout(drawOfflineArt, 500);
           return;
         }
         if (!f.__rough) {
@@ -16031,11 +16190,11 @@ try {
                 }
                 var $ = (F.getAttribute("style") || "").match(/fill:([^;]+)/);
                 ($ = $ ? $[1] : "var(--muted)"),
-                  F.setAttribute("d", A),
+                  F.setAttribute("d", CLOUD_PATH),
                   F.classList.add("wxcl"),
                   F.style.setProperty("--clc", $.indexOf("var(") === 0 ? "var(--muted)" : $);
                 var it = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                it.setAttribute("d", x),
+                it.setAttribute("d", cloudsHtml),
                   it.setAttribute(
                     "class",
                     (F.getAttribute("class") || "").replace("wxcl", "").replace(/wxdrift\d/g, "") + " wxcl2",
@@ -16103,30 +16262,34 @@ try {
           }
         }
       }
-      p();
-      var w = document.createElement("div");
-      (w.className = "dkhold"),
-        w.setAttribute("role", "region"),
-        w.setAttribute("aria-label", "Desktop notice"),
-        (w.innerHTML =
+      drawOfflineArt();
+      var desktopNote = document.createElement("div");
+      (desktopNote.className = "dkhold"),
+        desktopNote.setAttribute("role", "region"),
+        desktopNote.setAttribute("aria-label", "Desktop notice"),
+        (desktopNote.innerHTML =
           '<div class="dkin"><svg class="dkart" viewBox="-78 -64 156 70" aria-hidden="true">' +
-          r.replace('id="twht"', 'id="twhtd"') +
+          HALFTONE_DEFS.replace('id="twht"', 'id="twhtd"') +
           '<path class="dkground" d="M-76 1.2H76"/><g class="dkslot ds1"><g class="osc">' +
-          s("w") +
+          travellerFigure("w") +
           '</g></g><g class="dkslot ds2"><g class="osc">' +
-          s("m") +
+          travellerFigure("m") +
           '</g></g><g class="dkslot ds3"><g class="osc">' +
-          s("n") +
+          travellerFigure("n") +
           '</g></g></svg><h1>A Travel Planner App</h1><p>Plan trips across India day by day, with routes, stays, budgets and live weather in one place.</p><span class="dkpill">Coming soon</span><div class="dkdiv"></div><p class="dknote">Try it on mobile!</p></div>'),
-        document.body.appendChild(w);
-      var v = window.matchMedia && matchMedia("(min-width:900px) and (hover:hover) and (pointer:fine)");
-      function u() {
+        document.body.appendChild(desktopNote);
+      var desktopQuery =
+        window.matchMedia && matchMedia("(min-width:900px) and (hover:hover) and (pointer:fine)");
+      function updateDesktopMode() {
         document.documentElement.classList.toggle(
           "dkon",
-          !!(v && v.matches) || /[?&]desktop\b/.test(location.search),
+          !!(desktopQuery && desktopQuery.matches) || /[?&]desktop\b/.test(location.search),
         );
       }
-      u(), v && v.addEventListener && v.addEventListener("change", u);
+      updateDesktopMode(),
+        desktopQuery &&
+          desktopQuery.addEventListener &&
+          desktopQuery.addEventListener("change", updateDesktopMode);
     })(),
     (function () {
       function d() {
@@ -16139,23 +16302,6 @@ try {
         var o = "http://www.w3.org/2000/svg",
           l = document.createElementNS(o, "g");
         l.setAttribute("class", "sky2");
-        function e(T, F, R, $, it, at) {
-          return $.map(function (yt) {
-            var gt = (yt * Math.PI) / 180,
-              ut = Math.cos(gt),
-              V = Math.sin(gt);
-            return (
-              "M" +
-              (T + ut * (R + it)).toFixed(2) +
-              " " +
-              (F + V * (R + it)).toFixed(2) +
-              "L" +
-              (T + ut * (R + at)).toFixed(2) +
-              " " +
-              (F + V * (R + at)).toFixed(2)
-            );
-          }).join("");
-        }
         var r = "M0 0C2.6-3.4 6.4-3.6 9-.8 10.6.9 13.4 1.3 15.6-.6",
           Q = ((Date.now() - Date.UTC(2e3, 0, 6, 18, 14)) / 864e5 / 29.530588853) % 1;
         Q < 0 && (Q += 1);
@@ -17551,32 +17697,6 @@ try {
         o = "stroke:var(--ink);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round",
         l = "fill:url(#obht)",
         e = "fill:var(--surface);stroke:var(--line);stroke-width:1.5";
-      function r(y, m, k) {
-        return (
-          '<g transform="translate(' +
-          y +
-          " " +
-          m +
-          ") scale(" +
-          (k || 1) +
-          ')"><path d="M0 0C-9-12-12-17-12-23a12 12 0 0 1 24 0c0 6-3 11-12 23z" style="' +
-          l +
-          '"/><circle cy="-23" r="4.5" style="fill:var(--bg)"/></g>'
-        );
-      }
-      function Q(y, m, k, M) {
-        return (
-          '<circle cx="' +
-          y +
-          '" cy="' +
-          m +
-          '" r="' +
-          k +
-          '" style="' +
-          M +
-          ';stroke:var(--surface);stroke-width:3"/>'
-        );
-      }
       var b = function (y, m, k, M, T) {
           return (
             '<rect x="' +
@@ -17692,11 +17812,6 @@ try {
             0)
           )
             var K;
-        }
-        function yt() {
-          y.querySelectorAll("[data-og]").forEach(function (V) {
-            V.setAttribute("aria-pressed", V.dataset.og === R ? "true" : "false");
-          });
         }
         function gt(V) {
           if (V)

@@ -1350,10 +1350,6 @@ try {
       })[0];
       return o ? o[1] : "";
     }
-    function summary() {
-      return colName(cur.color) + " · " + optName("pattern", cur.pattern) + " · " + optName("road", cur.road);
-    }
-
     /* home-screen icon + favicon follow the chosen icon (dark variant when the app theme is dark) */
     function applyIcon() {
       var url = "data:image/svg+xml," + encodeURIComponent(svgFor(cur, appTheme()));
