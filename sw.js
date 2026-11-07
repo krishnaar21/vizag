@@ -1,7 +1,7 @@
 /* Offline + low-network support for the Vizag trip planner (GitHub Pages).
    Page files open instantly from the phone's cache and refresh in the background;
    fonts and login scripts are cached after first use. */
-const CACHE = 'vizag-trip-v527';
+const CACHE = 'vizag-trip-v528';
 const CORE = ['./', './index.html', './sync-config.js', './manifest.webmanifest', './vizag-trip-planner.pdf'];
 const EXTERNAL = [
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
@@ -20,8 +20,9 @@ self.addEventListener('install', e => {
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())
-    /* Force every open copy onto the new version */
-    .then(() => self.clients.matchAll({ type: 'window' })).then(cs => cs.forEach(c => { try { c.navigate(c.url); } catch (_) {} })));
+    /* No forced reload: open copies show an "update ready" toast and the
+       next launch opens the new build straight from the cache. */
+    );
 });
 
 async function notifyUpdate() {
