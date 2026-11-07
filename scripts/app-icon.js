@@ -11,8 +11,8 @@
    ========================================================================== */
 try {
   (function () {
-    var P = "#FBF9F5",
-      K = "#121212";
+    var PAPER = "#FBF9F5",
+      INK = "#121212";
     /* backgrounds: [id, name, light top, light bottom, dark top, dark bottom]; every tile is a soft vertical gradient */
     var BGS = [
       ["white", "White", "#FFFFFF", "#ECEEF1", "#1E1E20", "#000000"],
@@ -470,7 +470,7 @@ try {
         });
         if (!any) return "";
         pts.forEach(function (r, i) {
-          out += (i ? "L" : "M") + f(r[0]) + " " + f(r[1]);
+          out += (i ? "L" : "M") + round2(r[0]) + " " + round2(r[1]);
         });
         return out + "Z";
       }).join("");
@@ -485,7 +485,7 @@ try {
         seg = "";
         for (lat = -80; lat <= 80; lat += 10) {
           r = proj(lon, lat, c);
-          if (r[2]) seg += (seg ? "L" : "M") + f(r[0]) + " " + f(r[1]);
+          if (r[2]) seg += (seg ? "L" : "M") + round2(r[0]) + " " + round2(r[1]);
           else if (seg) {
             u += seg;
             seg = "";
@@ -497,7 +497,7 @@ try {
         seg = "";
         for (lon = -180; lon <= 180; lon += 10) {
           r = proj(lon, la, c);
-          if (r[2]) seg += (seg ? "L" : "M") + f(r[0]) + " " + f(r[1]);
+          if (r[2]) seg += (seg ? "L" : "M") + round2(r[0]) + " " + round2(r[1]);
           else if (seg) {
             u += seg;
             seg = "";
@@ -539,32 +539,32 @@ try {
       star: { sil: "M50 6l12 28 30 2-23 20 8 30-27-16-27 16 8-30-23-20 30-2z", mx: 50, my: 46, r: 7.5 },
     };
 
-    function f(n) {
+    function round2(n) {
       return Math.round(n * 100) / 100;
     }
     function lens(x, t, b, w) {
       var m = (t + b) / 2;
       return (
         "M" +
-        f(x) +
+        round2(x) +
         " " +
-        f(t) +
+        round2(t) +
         "Q" +
-        f(x + w) +
+        round2(x + w) +
         " " +
-        f(m) +
+        round2(m) +
         " " +
-        f(x) +
+        round2(x) +
         " " +
-        f(b) +
+        round2(b) +
         "Q" +
-        f(x - w) +
+        round2(x - w) +
         " " +
-        f(m) +
+        round2(m) +
         " " +
-        f(x) +
+        round2(x) +
         " " +
-        f(t) +
+        round2(t) +
         "Z"
       );
     }
@@ -724,7 +724,7 @@ try {
               "M" +
               X +
               " " +
-              f(Y - R) +
+              round2(Y - R) +
               "a" +
               R +
               " " +
@@ -734,23 +734,23 @@ try {
               " " +
               R +
               "C" +
-              f(X + R) +
+              round2(X + R) +
               " " +
-              f(Y + 0.8 * R) +
-              " " +
-              X +
-              " " +
-              f(Y + 1.9 * R) +
+              round2(Y + 0.8 * R) +
               " " +
               X +
               " " +
-              f(Y + 1.9 * R) +
+              round2(Y + 1.9 * R) +
+              " " +
+              X +
+              " " +
+              round2(Y + 1.9 * R) +
               "S" +
-              f(X - R) +
+              round2(X - R) +
               " " +
-              f(Y + 0.8 * R) +
+              round2(Y + 0.8 * R) +
               " " +
-              f(X - R) +
+              round2(X - R) +
               " " +
               Y +
               "a" +
@@ -764,14 +764,14 @@ try {
               "z",
             dx: X,
             dy: Y,
-            dr: f(R * 0.38),
-            road: IC.rs + X + " " + f(Y + 1.9 * R),
+            dr: round2(R * 0.38),
+            road: IC.rs + X + " " + round2(Y + 1.9 * R),
           };
         else if (mk === "circle")
           M = {
             hole:
               "M" +
-              f(X - R) +
+              round2(X - R) +
               " " +
               Y +
               "a" +
@@ -789,8 +789,8 @@ try {
               " 0z",
             dx: X,
             dy: Y,
-            dr: f(R * 0.45),
-            road: IC.rs + X + " " + f(Y + R),
+            dr: round2(R * 0.45),
+            road: IC.rs + X + " " + round2(Y + R),
           };
         else M = { hole: "", dx: X, dy: Y, dr: 0, road: IC.rs + X + " " + Y };
       }
@@ -810,8 +810,8 @@ try {
           var t = (i / 64) * 2 * Math.PI,
             ex = e.rx * Math.cos(t),
             ey = e.ry * Math.sin(t);
-          var px = f(e.x + ex * Math.cos(r) - ey * Math.sin(r)),
-            py = f(e.y + ex * Math.sin(r) + ey * Math.cos(r));
+          var px = round2(e.x + ex * Math.cos(r) - ey * Math.sin(r)),
+            py = round2(e.y + ex * Math.sin(r) + ey * Math.cos(r));
           if (i <= 32) fr += (i ? "L" : "M") + px + " " + py;
           if (i >= 32) bk += (i > 32 ? "L" : "M") + px + " " + py;
         }
@@ -822,8 +822,8 @@ try {
             var ex = e.rx * Math.cos(t),
               ey = e.ry * Math.sin(t);
             return [
-              f(e.x + ex * Math.cos(r) - ey * Math.sin(r)),
-              f(e.y + ex * Math.sin(r) + ey * Math.cos(r)),
+              round2(e.x + ex * Math.cos(r) - ey * Math.sin(r)),
+              round2(e.y + ex * Math.sin(r) + ey * Math.cos(r)),
             ];
           },
         };
@@ -951,7 +951,7 @@ try {
             '" cy="' +
             dy +
             '" r="' +
-            f(i * 3.2) +
+            round2(i * 3.2) +
             '" fill="none" stroke="' +
             a +
             '" stroke-width="1.6"/>';
@@ -972,9 +972,9 @@ try {
         for (var sy = 3; sy < 100; sy += 3.6)
           fillInner +=
             '<rect x="0" y="' +
-            f(sy) +
+            round2(sy) +
             '" width="100" height="' +
-            f(0.45 + (2.3 * sy) / 100) +
+            round2(0.45 + (2.3 * sy) / 100) +
             '" fill="' +
             a +
             '"/>';
@@ -1108,7 +1108,7 @@ try {
                     '" stroke="' +
                     acc +
                     '" stroke-linecap="round" stroke-width="' +
-                    f(g.w + (g.taper - g.w) * Math.pow(Math.sin((t0 + t1) / 2), 1.6)) +
+                    round2(g.w + (g.taper - g.w) * Math.pow(Math.sin((t0 + t1) / 2), 1.6)) +
                     '"/>';
                 }
               } else
@@ -1163,7 +1163,7 @@ try {
           '" cy="' +
           dy +
           '" r="' +
-          f(dr * 1.42) +
+          round2(dr * 1.42) +
           '" fill="' +
           acc +
           '"/>'; /* filled marker: solid dot inside the cut-out */
@@ -1301,10 +1301,10 @@ try {
     }
     var cur = norm(PRESETS[0]);
     try {
-      var sv = JSON.parse(localStorage.getItem(STORE) || "null");
-      if (sv && typeof sv === "object")
+      var saved = JSON.parse(localStorage.getItem(STORE) || "null");
+      if (saved && typeof saved === "object")
         KEYS.forEach(function (k) {
-          if (valid(k, sv[k])) cur[k] = sv[k];
+          if (valid(k, saved[k])) cur[k] = saved[k];
         });
     } catch (e) {}
     cur.map = "off";
@@ -1384,7 +1384,7 @@ try {
     box.innerHTML =
       '<div class="kz-now"><span class="kz-pv" id="kz-pv"></span><button type="button" class="kz-btn" id="kz-open">Customise</button></div><div class="thcap kz-pcap"><span>Presets</span></div><div class="kz-row" id="kz-presets" role="group" aria-label="Icon presets"></div>';
     sec.replaceChild(box, grid);
-    var pr = document.getElementById("kz-presets");
+    var presetRow = document.getElementById("kz-presets");
     PRESETS.forEach(function (p) {
       var b = document.createElement("button");
       b.type = "button";
@@ -1398,7 +1398,7 @@ try {
         save();
         noMatch();
       };
-      pr.appendChild(b);
+      presetRow.appendChild(b);
     });
     /* picking an icon by hand turns off 'Match app icon to theme' */
     function noMatch() {
@@ -1439,16 +1439,16 @@ try {
     };
 
     /* custom sheet */
-    var ks = document.createElement("div");
-    ks.className = "sheet lsheet psheet";
-    ks.id = "kz-sheet";
-    ks.hidden = true;
-    ks.setAttribute("role", "dialog");
-    ks.setAttribute("aria-label", "Custom app icon");
-    ks.innerHTML =
+    var customSheet = document.createElement("div");
+    customSheet.className = "sheet lsheet psheet";
+    customSheet.id = "kz-sheet";
+    customSheet.hidden = true;
+    customSheet.setAttribute("role", "dialog");
+    customSheet.setAttribute("aria-label", "Custom app icon");
+    customSheet.innerHTML =
       '<div class="kz-head"><span class="kz-ttl">Custom icon</span><button type="button" class="kz-reset" id="kz-reset" aria-label="Reset to the default icon" title="Reset to default"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg>Reset</button><button type="button" class="kz-apply" id="kz-apply">Apply</button><button type="button" class="kz-x" id="kz-close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="kz-hero" style="margin-top:14px"><div class="kz-stage" id="kz-stage"></div><div class="kz-bar" id="kz-bar"></div></div><div id="kz-ctl"></div>';
-    document.body.appendChild(ks);
-    ks.addEventListener("click", function (e) {
+    document.body.appendChild(customSheet);
+    customSheet.addEventListener("click", function (e) {
       e.stopPropagation();
     });
     var scrim = document.getElementById("scrim");
@@ -1459,12 +1459,12 @@ try {
         draft[k] = cur[k];
       });
       sheet.hidden = true;
-      ks.hidden = false;
+      customSheet.hidden = false;
       if (scrim) scrim.hidden = false;
       paintAll();
     }
     function closeKs() {
-      ks.hidden = true;
+      customSheet.hidden = true;
       sheet.hidden = false;
       draft = null;
       paintAll();
@@ -1505,17 +1505,17 @@ try {
     };
     if (scrim)
       scrim.addEventListener("click", function () {
-        if (!ks.hidden) {
-          ks.hidden = true;
+        if (!customSheet.hidden) {
+          customSheet.hidden = true;
           scrim.hidden = true;
           draft = null;
         }
       });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !ks.hidden) closeKs();
+      if (e.key === "Escape" && !customSheet.hidden) closeKs();
     });
 
-    var PN = "M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z";
+    var PIN_PATH = "M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z";
     function hole(r) {
       return (
         "M" +
@@ -1541,9 +1541,9 @@ try {
         B = "M22.5 10.4A10.5 3.2 0 0 0 1.5 10.4";
       var pe =
         pin === "outline"
-          ? '<path d="' + PN + '" stroke-width="1.4" stroke-opacity=".45" mask="url(#gA)"/>'
+          ? '<path d="' + PIN_PATH + '" stroke-width="1.4" stroke-opacity=".45" mask="url(#gA)"/>'
           : '<path d="' +
-            PN +
+            PIN_PATH +
             '" fill="currentColor" stroke="none"' +
             (pin === "faint" ? ' fill-opacity=".3"' : "") +
             ' mask="url(#gA)"/>';
@@ -1553,7 +1553,7 @@ try {
         '" fill="none" stroke="#000" stroke-width="3.6"' +
         T +
         '/></mask><mask id="gB"><rect x="-2" y="-2" width="28" height="28" fill="#fff"/><path d="' +
-        PN +
+        PIN_PATH +
         '" fill="#000"/></mask></defs>' +
         pe +
         '<path d="' +
@@ -1567,20 +1567,20 @@ try {
         ' stroke-width="1.9" mask="url(#gB)"/>'
       );
     }
-    var I = {
-      cut: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="' + PN + hole(2.7) + '"/>',
+    var MARKERS = {
+      cut: '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="' + PIN_PATH + hole(2.7) + '"/>',
       fdot:
         '<path fill="currentColor" stroke="none" fill-rule="evenodd" d="' +
-        PN +
+        PIN_PATH +
         hole(3.4) +
         '"/><circle cx="12" cy="10" r="1.9" fill="currentColor" stroke="none"/>',
-      plain: '<path fill="currentColor" stroke="none" d="' + PN + '"/>',
+      plain: '<path fill="currentColor" stroke="none" d="' + PIN_PATH + '"/>',
       up: ringG(-18, "faint"),
       down: ringG(18, "faint"),
       orbit: ringG(-16, "outline"),
       whole: ringG(-16, "solid"),
     };
-    var QG = [
+    var QUICK_GROUPS = [
       {
         key: "mk",
         label: "Marker",
@@ -1617,7 +1617,7 @@ try {
       return g.opts[(i + 1) % g.opts.length];
     }
 
-    QG.forEach(function (g) {
+    QUICK_GROUPS.forEach(function (g) {
       var b = document.createElement("button");
       b.type = "button";
       b.className = "kz-qb";
@@ -1635,9 +1635,9 @@ try {
       ctl.appendChild(d);
       return d;
     }
-    var cw = document.createElement("div");
-    cw.className = "kz-sw";
-    grp("color", "Colour").appendChild(cw);
+    var colourSwatches = document.createElement("div");
+    colourSwatches.className = "kz-sw";
+    grp("color", "Colour").appendChild(colourSwatches);
     COLORS.forEach(function (c) {
       var b = document.createElement("button");
       b.type = "button";
@@ -1648,11 +1648,11 @@ try {
       b.onclick = function () {
         edit("color", c.id);
       };
-      cw.appendChild(b);
+      colourSwatches.appendChild(b);
     });
-    var bw = document.createElement("div");
-    bw.className = "kz-sw kz-bgw";
-    grp("bg", "Background").appendChild(bw);
+    var backgroundSwatches = document.createElement("div");
+    backgroundSwatches.className = "kz-sw kz-bgw";
+    grp("bg", "Background").appendChild(backgroundSwatches);
     BGS.forEach(function (x) {
       var b = document.createElement("button");
       b.type = "button";
@@ -1663,7 +1663,7 @@ try {
       b.onclick = function () {
         edit("bg", x[0]);
       };
-      bw.appendChild(b);
+      backgroundSwatches.appendChild(b);
     });
     function tiles(key, label) {
       var r = document.createElement("div");
@@ -1692,10 +1692,10 @@ try {
         nm = m ? m.name : "Custom";
       document.getElementById("kz-pv").innerHTML = svgFor(cur, "light") + svgFor(cur, "dark");
       if (selEl) selEl.textContent = nm;
-      pr.querySelectorAll(".kz-t").forEach(function (b) {
+      presetRow.querySelectorAll(".kz-t").forEach(function (b) {
         b.setAttribute("aria-pressed", String(!!m && m.id === b.dataset.p));
       });
-      if (ks.hidden || !draft) return;
+      if (customSheet.hidden || !draft) return;
       var D = draft,
         ap = document.getElementById("kz-apply"),
         same = sameAsCur();
@@ -1706,7 +1706,7 @@ try {
         : "Apply";
       document.getElementById("kz-stage").innerHTML = svgFor(D, "light") + svgFor(D, "dark");
       var glb = D.map === "on";
-      QG.forEach(function (g) {
+      QUICK_GROUPS.forEach(function (g) {
         var b = document.getElementById("kz-q-" + g.key),
           off = g.key === "mk" && glb;
         var o = off
@@ -1722,7 +1722,7 @@ try {
         );
         b.innerHTML =
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-          I[o[2]]
+          MARKERS[o[2]]
             .replace(/id="(\w+)"/g, 'id="$1' + g.key + '"')
             .replace(/url\(#(\w+)\)/g, "url(#$1" + g.key + ")") +
           '</svg><span class="qt"><span class="qc">' +
@@ -1737,7 +1737,7 @@ try {
             .join("") +
           "</span>";
       });
-      bw.querySelectorAll(".kz-s").forEach(function (b) {
+      backgroundSwatches.querySelectorAll(".kz-s").forEach(function (b) {
         var c =
           COLORS.filter(function (x) {
             return x.id === D.color;
@@ -1746,7 +1746,7 @@ try {
         b.innerHTML = bgSwatch(b.dataset.v, c);
         b.setAttribute("aria-pressed", String(D.bg === b.dataset.v));
       });
-      cw.querySelectorAll(".kz-s").forEach(function (b) {
+      colourSwatches.querySelectorAll(".kz-s").forEach(function (b) {
         var c = COLORS.filter(function (x) {
           return x.id === b.dataset.v;
         })[0];

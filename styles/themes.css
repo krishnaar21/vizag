@@ -105,61 +105,50 @@
   --on-ctl: #ffffff !important;
 }
 :root[data-pal="ocean"][data-skin="graphite"] {
-  --bg: #080b14 !important;
-  --surface: #131a29 !important;
-  --soft: #1a2336 !important;
-  --line: #263042 !important;
-  --band: #161d2e !important;
-  --brand: #6ea8ff !important;
-  --link: #6ea8ff !important;
-  --brand-soft: #1c2a43 !important;
-  --muted: #97a2bb !important;
-  --faint: #767f93 !important;
-  --ink: #edf0f6 !important;
-  --head: #d8dee9 !important;
-  --tile: #171e30 !important;
-  --accent: #6ea8ff !important;
-  --on-accent: #080b14 !important;
-  --ctl: #6ea8ff !important;
-  --on-ctl: #080b14 !important;
+  --bg: #080b14;
+  --surface: #131a29;
+  --soft: #1a2336;
+  --line: #263042;
+  --band: #161d2e;
+  --brand: #6ea8ff;
+  --link: #6ea8ff;
+  --brand-soft: #1c2a43;
+  --muted: #97a2bb;
+  --faint: #767f93;
+  --ink: #edf0f6;
+  --head: #d8dee9;
+  --tile: #171e30;
+  --accent: #6ea8ff;
+  --on-accent: #080b14;
+  --ctl: #6ea8ff;
+  --on-ctl: #080b14;
 }
 :root[data-pal="sage"][data-skin="light"] {
-  --bg: #ebefe8 !important;
-  --surface: #fbfbfa !important;
-  --soft: #f4f6f2 !important;
-  --line: #dde5db !important;
-  --band: #f7f9f6 !important;
-  --brand: #3d7747 !important;
-  --link: #3d7747 !important;
-  --brand-soft: #e8efe9 !important;
-  --muted: #576359 !important;
-  --faint: #899492 !important;
-  --ink: #171c1a !important;
-  --head: #2c3331 !important;
-  --tile: #f3f5f1 !important;
-  --accent: #3d7747 !important;
-  --on-accent: #ffffff !important;
-  --ctl: #3d7747 !important;
-  --on-ctl: #ffffff !important;
+  --muted: #576359;
+  --faint: #899492;
+  --ink: #171c1a;
+  --head: #2c3331;
+  --on-accent: #ffffff;
+  --on-ctl: #ffffff;
 }
 :root[data-pal="sage"][data-skin="graphite"] {
-  --bg: #0b0e0a !important;
-  --surface: #1a2117 !important;
-  --soft: #232c1f !important;
-  --line: #30392b !important;
-  --band: #1d251a !important;
-  --brand: #93d1a0 !important;
-  --link: #93d1a0 !important;
-  --brand-soft: #263528 !important;
-  --muted: #9eaba8 !important;
-  --faint: #7b8584 !important;
-  --ink: #eff2f1 !important;
-  --head: #dce2e0 !important;
-  --tile: #1e271b !important;
-  --accent: #93d1a0 !important;
-  --on-accent: #0b0e0a !important;
-  --ctl: #93d1a0 !important;
-  --on-ctl: #0b0e0a !important;
+  --bg: #0b0e0a;
+  --surface: #1a2117;
+  --soft: #232c1f;
+  --line: #30392b;
+  --band: #1d251a;
+  --brand: #93d1a0;
+  --link: #93d1a0;
+  --brand-soft: #263528;
+  --muted: #9eaba8;
+  --faint: #7b8584;
+  --ink: #eff2f1;
+  --head: #dce2e0;
+  --tile: #1e271b;
+  --accent: #93d1a0;
+  --on-accent: #0b0e0a;
+  --ctl: #93d1a0;
+  --on-ctl: #0b0e0a;
 }
 :root[data-pal="lilac"][data-skin="light"] {
   --bg: #f0ecf6 !important;
@@ -229,14 +218,14 @@ html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip * {
   fill: color-mix(in srgb, var(--accent) 16%, var(--bg)) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvc {
-  fill: color-mix(in srgb, var(--accent) 45%, var(--muted)) !important;
+  fill: color-mix(in srgb, var(--accent) 45%, var(--muted));
 }
 :root:root .ntoast:not(.in) {
   transform: translateY(16px) !important;
 }
-:root:root .ntoast {
-  top: auto !important;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 86px) !important;
+.ntoast {
+  top: auto;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 86px);
 }
 :root:root:root:root[data-pal]:not([data-pal="classic"])[data-skin="light"] :is(.oktoast, .ntoast) {
   background: color-mix(in srgb, var(--accent) 7%, #f4f4f5) !important;
@@ -252,20 +241,20 @@ html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip * {
 :root:root:root .oktoast button {
   font-size: 0.92rem !important;
 }
-:root:root:root .ntoast .ntt b {
-  font-size: 0.83rem !important;
+.ntoast .ntt b {
+  font-size: 0.83rem;
 }
-:root:root:root .ntoast .ntt small {
-  font-size: 0.76rem !important;
+.ntoast .ntt small {
+  font-size: 0.76rem;
 }
-:root:root:root .ntoast .ntact {
-  font-size: 0.76rem !important;
+.ntoast .ntact {
+  font-size: 0.76rem;
 }
-:root:root[data-pal][data-skin="light"] .nav button:not([aria-current="page"]):not(.on) {
-  color: #8e8e94 !important;
+:root[data-pal][data-skin="light"] .nav button:not([aria-current="page"]):not(.on) {
+  color: #8e8e94;
 }
-:root:root[data-pal][data-skin="graphite"] .nav button:not([aria-current="page"]):not(.on) {
-  color: #7e7e85 !important;
+:root[data-pal][data-skin="graphite"] .nav button:not([aria-current="page"]):not(.on) {
+  color: #7e7e85;
 }
 html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip {
   border-radius: 14px !important;
@@ -305,7 +294,7 @@ html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip {
 }
 html.sh-open,
 html.sh-open body {
-  overflow: hidden !important;
+  overflow: hidden;
 }
 #ps-body .mprow,
 #place-sheet .mprow {
@@ -336,24 +325,24 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   padding-top: 4px !important;
 }
 :root[data-pal]:not([data-pal="classic"]) body {
-  background: var(--bg) !important;
+  background: var(--bg);
 }
 :root[data-pal]:not([data-pal="classic"]) .sheet:not(.inpage) > .shtitle,
 :root[data-pal]:not([data-pal="classic"]) .lshead,
 :root[data-pal]:not([data-pal="classic"]) #theme-sheet .shtitle {
-  background: var(--bg) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  background: var(--bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 :root[data-pal]:not([data-pal="classic"])
   :is(.btn, .obtn, .abtn, .hgo, #pl-go, #pl-next):is(:disabled, .locked) {
-  opacity: 1 !important;
-  background: color-mix(in srgb, var(--accent) 30%, var(--soft)) !important;
-  color: color-mix(in srgb, var(--on-accent) 85%, transparent) !important;
+  opacity: 1;
+  background: color-mix(in srgb, var(--accent) 30%, var(--soft));
+  color: color-mix(in srgb, var(--on-accent) 85%, transparent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur:after {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur b {
   background: var(--accent) !important;
@@ -377,8 +366,8 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vtog button[aria-pressed="true"] {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
   .vtog
@@ -396,14 +385,14 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
   .seg-days.dstrip
   > .chip[aria-pressed="true"] {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
   .seg-days.dstrip
   > .chip[aria-pressed="true"]
   :not(svg):not(svg *) {
-  color: inherit !important;
+  color: inherit;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatav {
   background: var(--accent) !important;
@@ -438,15 +427,15 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pchk {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pchk :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qfill {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qfill :not(svg):not(svg *) {
   color: inherit !important;
@@ -456,8 +445,8 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: var(--on-accent) !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qtrack i.on {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qtrack i.on :not(svg):not(svg *) {
   color: inherit !important;
@@ -537,8 +526,8 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pbadge2,
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pcard.on .pimg .pbadge2 {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pbadge2 :not(svg):not(svg *),
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
@@ -557,8 +546,8 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #logout .loav {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #logout .loav :not(svg):not(svg *) {
   color: inherit !important;
@@ -584,15 +573,15 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpbar i {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpbar i :not(svg):not(svg *) {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpleg i.a {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpleg i.a :not(svg):not(svg *) {
   color: inherit !important;
@@ -658,8 +647,8 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .onbdots button[aria-current="true"] {
-  background: var(--accent) !important;
-  color: var(--on-accent) !important;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 :root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
   .onbdots
@@ -685,28 +674,28 @@ html.sky-night:not(.darkbg) .setbeach .bstar {
   color: inherit !important;
 }
 :root[data-pal]:not([data-pal="classic"]) :is(.pbadge.ai, .airec) {
-  color: var(--on-accent) !important;
+  color: var(--on-accent);
 }
 .pshd,
 .sheet:not(.inpage) > .shtitle,
 .lshead {
-  background: var(--bg) !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
+  background: var(--bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 html:not(.pv-card) .pcards .pimg {
-  outline: 0 !important;
+  outline: 0;
 }
 #v-days .pghead,
 #v-route .pghead,
 #v-plan .pghead {
-  position: relative !important;
-  top: auto !important;
+  position: relative;
+  top: auto;
 }
 #v-days .vz > .chips,
 #v-route .vz > .chips,
 #v-plan .vz > .chips {
-  z-index: 21 !important;
+  z-index: 21;
 }
 .nnote > svg,
 .csnote > svg,
@@ -748,10 +737,10 @@ html:not(.pv-card) .pcards .pimg {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
 }
-:root:root:root[data-pal]:not([data-pal="classic"]) :is(.oktoast, .ntoast) :is(button, .ntact) {
-  background: transparent !important;
-  color: inherit !important;
-  box-shadow: inset 0 0 0 1px currentColor !important;
+:root[data-pal]:not([data-pal="classic"]) :is(.oktoast, .ntoast) :is(button, .ntact) {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 1px currentColor;
   opacity: 0.85;
 }
 .dsart .ds-w,
@@ -772,17 +761,17 @@ html body #off-sheet .dsart {
   display: block;
 }
 html body #offsteps-sheet > .lohead {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  text-align: left !important;
-  gap: 4px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 4px;
 }
 #off-sheet .wgbox.dsbox {
   --sand: color-mix(in srgb, var(--accent) 20%, color-mix(in srgb, var(--ink) 16%, var(--bg)));
-  width: min(85%, 653px, 34.8dvh) !important;
-  max-width: none !important;
-  margin: -22px auto 0 !important;
+  width: min(85%, 653px, 34.8dvh);
+  max-width: none;
+  margin: -22px auto 0;
   -webkit-mask: linear-gradient(180deg, #000 0, #000 72%, transparent 100%);
   mask: linear-gradient(180deg, #000 0, #000 72%, transparent 100%);
 }
@@ -844,14 +833,14 @@ html body #offsteps-sheet > .lohead {
   fill: url(#grgr_ds);
 }
 #off-sheet .dsbox .dsglobe {
-  display: block !important;
+  display: block;
   position: absolute;
   left: 8.55%;
-  width: 82.9% !important;
-  max-width: none !important;
+  width: 82.9%;
+  max-width: none;
   height: auto;
   top: 18.6%;
-  margin: 0 !important;
+  margin: 0;
   z-index: 1;
   overflow: visible;
   pointer-events: none;
@@ -915,9 +904,9 @@ html body #offline.offline {
 html body #offline.offline .t {
   color: var(--ink) !important;
 }
-:root:root:root .pghead:not(.pgfix),
-:root:root:root .hometop {
-  top: var(--obh, 0px) !important;
+.pghead:not(.pgfix),
+.hometop {
+  top: var(--obh, 0px);
 }
 :root:root:root .pghead.pgfix {
   top: max(env(safe-area-inset-top, 0px), var(--obh, 0px)) !important;
@@ -969,13 +958,9 @@ html body #theme-sheet .swrow.pl-hide {
 }
 .pl-row {
   display: grid;
-  grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 6px;
-  justify-items: center;
   padding: 3px 0;
 }
 .pl-s {
-  width: min(34px, 100%);
   aspect-ratio: 1;
   border-radius: 50%;
   border: 0;

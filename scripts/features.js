@@ -54,7 +54,7 @@
    ========================================================================== */
 try {
   (function () {
-    var ST = [
+    var NAV_STYLES = [
       ["dot", "Dot"],
       ["rot3d", "3D"],
       ["glow", "Shadow"],
@@ -64,23 +64,23 @@ try {
     }
     function name() {
       var c = cur();
-      return (ST.filter(function (x) {
+      return (NAV_STYLES.filter(function (x) {
         return x[0] === c;
-      })[0] || ST[0])[1];
+      })[0] || NAV_STYLES[0])[1];
     }
-    var sh = null;
+    var navSheet = null;
     function build() {
-      if (sh) return sh;
+      if (navSheet) return navSheet;
       var ic = document.querySelector(".nav button svg");
-      sh = document.createElement("div");
-      sh.className = "sheet lsheet psheet";
-      sh.id = "nv-sheet";
-      sh.hidden = !0;
-      sh.setAttribute("role", "dialog");
-      sh.setAttribute("aria-label", "Selected tab");
-      sh.innerHTML =
+      navSheet = document.createElement("div");
+      navSheet.className = "sheet lsheet psheet";
+      navSheet.id = "nv-sheet";
+      navSheet.hidden = !0;
+      navSheet.setAttribute("role", "dialog");
+      navSheet.setAttribute("aria-label", "Selected tab");
+      navSheet.innerHTML =
         '<div class="shtitle"><span>Selected tab</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="nvgrid">' +
-        ST.map(function (x) {
+        NAV_STYLES.map(function (x) {
           return (
             '<button type="button" class="nvt" data-s="' +
             x[0] +
@@ -92,8 +92,8 @@ try {
           );
         }).join("") +
         "</div>";
-      document.body.appendChild(sh);
-      sh.addEventListener("click", function (e) {
+      document.body.appendChild(navSheet);
+      navSheet.addEventListener("click", function (e) {
         e.stopPropagation();
         var t = e.target.closest(".nvt");
         if (t) {
@@ -113,20 +113,20 @@ try {
       var sc = document.getElementById("scrim");
       sc &&
         sc.addEventListener("click", function () {
-          sh && !sh.hidden && close();
+          navSheet && !navSheet.hidden && close();
         });
-      return sh;
+      return navSheet;
     }
     function close() {
-      sh.hidden = !0;
+      navSheet.hidden = !0;
       var sc = document.getElementById("scrim");
       sc && (sc.hidden = !0);
     }
     function paint() {
       var o = document.getElementById("nv-open");
       o && (o.textContent = name());
-      sh &&
-        sh.querySelectorAll(".nvt").forEach(function (t) {
+      navSheet &&
+        navSheet.querySelectorAll(".nvt").forEach(function (t) {
           t.setAttribute("aria-pressed", t.dataset.s === cur() ? "true" : "false");
         });
     }
@@ -138,7 +138,7 @@ try {
         e.stopPropagation();
         build();
         paint();
-        sh.hidden = !1;
+        navSheet.hidden = !1;
         var sc = document.getElementById("scrim");
         sc && (sc.hidden = !1);
       },
@@ -237,19 +237,19 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var C = document.getElementById("chat");
-    if (!C) return;
-    var box = C.querySelector(".chatbox"),
-      log = C.querySelector(".chatlog"),
-      y0 = null,
-      dy = 0,
-      t0 = 0,
-      on = 0,
+    var chatPage = document.getElementById("chat");
+    if (!chatPage) return;
+    var box = chatPage.querySelector(".chatbox"),
+      log = chatPage.querySelector(".chatlog"),
+      dragStartY = null,
+      dragDistance = 0,
+      dragStartTime = 0,
+      dragging = 0,
       fromHead = 0;
     function sheet() {
       return document.documentElement.classList.contains("chsheet");
     }
-    C.addEventListener(
+    chatPage.addEventListener(
       "touchstart",
       function (e) {
         if (document.documentElement.classList.contains("kbd") || e.touches.length > 1) return;
@@ -257,73 +257,75 @@ try {
         fromHead = !!t.closest(".chathead");
         if (!fromHead && !(t.closest(".chatlog") && log.scrollTop <= 0)) return;
         if (t.closest("button,input,.csug,.chatsugg")) return;
-        y0 = e.touches[0].clientY;
-        t0 = Date.now();
-        dy = 0;
-        on = 0;
+        dragStartY = e.touches[0].clientY;
+        dragStartTime = Date.now();
+        dragDistance = 0;
+        dragging = 0;
       },
       { passive: !0 },
     );
-    C.addEventListener(
+    chatPage.addEventListener(
       "touchmove",
       function (e) {
-        if (y0 == null) return;
-        var d = e.touches[0].clientY - y0;
-        if (!on) {
+        if (dragStartY == null) return;
+        var d = e.touches[0].clientY - dragStartY;
+        if (!dragging) {
           if (Math.abs(d) < 6) return;
           if (
             d < 0 &&
-            !(sheet() && fromHead && !C.classList.contains("chtall")) &&
-            !(sheet() && log.scrollTop <= 0 && !C.classList.contains("chtall"))
+            !(sheet() && fromHead && !chatPage.classList.contains("chtall")) &&
+            !(sheet() && log.scrollTop <= 0 && !chatPage.classList.contains("chtall"))
           ) {
-            y0 = null;
+            dragStartY = null;
             return;
           }
           if (d > 0 && !fromHead && log.scrollTop > 0) {
-            y0 = null;
+            dragStartY = null;
             return;
           }
-          on = 1;
+          dragging = 1;
           box.style.transition = "none";
         }
-        dy = d;
+        dragDistance = d;
         if (e.cancelable) e.preventDefault();
         box.style.transform = "translateY(" + (d > 0 ? d : d * 0.35) + "px)";
       },
       { passive: !1 },
     );
     function end() {
-      if (y0 == null) {
+      if (dragStartY == null) {
         return;
       }
-      y0 = null;
-      if (!on) return;
-      on = 0;
-      var v = dy / Math.max(1, Date.now() - t0);
+      dragStartY = null;
+      if (!dragging) return;
+      dragging = 0;
+      var v = dragDistance / Math.max(1, Date.now() - dragStartTime);
       box.style.transition = "";
-      var tl = C.classList.contains("chtall");
-      if (tl ? dy > 220 : dy > 110 || (dy > 40 && v > 0.5)) {
+      var tl = chatPage.classList.contains("chtall");
+      if (tl ? dragDistance > 220 : dragDistance > 110 || (dragDistance > 40 && v > 0.5)) {
         box.style.transform = "translateY(105%)";
         setTimeout(function () {
-          var b = C.querySelector("[data-chatclose].shclose") || C.querySelector("[data-chatclose]");
+          var b =
+            chatPage.querySelector("[data-chatclose].shclose") || chatPage.querySelector("[data-chatclose]");
           b && b.click();
           setTimeout(function () {
             box.style.transform = "";
-            C.classList.remove("chtall");
+            chatPage.classList.remove("chtall");
           }, 400);
         }, 260);
       } else {
-        if (dy < -50 && sheet()) C.classList.add("chtall");
-        else if (dy > 50 && C.classList.contains("chtall")) C.classList.remove("chtall");
+        if (dragDistance < -50 && sheet()) chatPage.classList.add("chtall");
+        else if (dragDistance > 50 && chatPage.classList.contains("chtall"))
+          chatPage.classList.remove("chtall");
         box.style.transform = "";
       }
-      dy = 0;
+      dragDistance = 0;
     }
-    C.addEventListener("touchend", end, { passive: !0 });
-    C.addEventListener("touchcancel", end, { passive: !0 });
+    chatPage.addEventListener("touchend", end, { passive: !0 });
+    chatPage.addEventListener("touchcancel", end, { passive: !0 });
     new MutationObserver(function () {
-      C.hidden && (C.classList.remove("chtall"), (box.style.transform = ""));
-    }).observe(C, { attributes: !0, attributeFilter: ["hidden"] });
+      chatPage.hidden && (chatPage.classList.remove("chtall"), (box.style.transform = ""));
+    }).observe(chatPage, { attributes: !0, attributeFilter: ["hidden"] });
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Atlas chat sheet: drag down to close.", err);
@@ -334,24 +336,24 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      R = D.documentElement;
-    function q(x, r) {
-      return (r || D).querySelector(x);
+    var doc = document,
+      rootEl = doc.documentElement;
+    function qs(x, r) {
+      return (r || doc).querySelector(x);
     }
-    function qa(x, r) {
-      return [].slice.call((r || D).querySelectorAll(x));
+    function qsa(x, r) {
+      return [].slice.call((r || doc).querySelectorAll(x));
     }
-    function ls(k, v) {
+    function store(k, v) {
       try {
         if (v === undefined) return localStorage.getItem(k);
         v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
       } catch (e) {}
     }
     var CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>';
-    var X = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    var CLOSE_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
     /* ---------- toggles (on/off segs become switches) ---------- */
-    var T = {
+    var TOGGLE_VALUES = {
       tf: ["24", "12"],
       now: ["on", "off"],
       cmode: ["bubble", "off"],
@@ -359,7 +361,7 @@ try {
       homeone: ["one", "sep"],
     };
     function pair(k) {
-      if (T[k]) return T[k];
+      if (TOGGLE_VALUES[k]) return TOGGLE_VALUES[k];
       return ["on", "off"];
     }
     function kebab(k) {
@@ -368,12 +370,12 @@ try {
       });
     }
     function btn(k, v) {
-      return qa("[data-" + kebab(k) + '="' + v + '"]').filter(function (b) {
+      return qsa("[data-" + kebab(k) + '="' + v + '"]').filter(function (b) {
         return !b.classList.contains("tgl");
       })[0];
     }
     function mkT(k) {
-      var b = D.createElement("button");
+      var b = doc.createElement("button");
       b.type = "button";
       b.className = "tgl";
       b.setAttribute("role", "switch");
@@ -383,9 +385,9 @@ try {
       return b;
     }
     function convert() {
-      qa(".setrow .seg").forEach(function (sg) {
+      qsa(".setrow .seg").forEach(function (sg) {
         if (sg.__t || sg.classList.contains("vphide")) return;
-        var bs = qa("button", sg);
+        var bs = qsa("button", sg);
         if (bs.length !== 2) return;
         var k = Object.keys(bs[0].dataset)[0];
         if (!k) return;
@@ -396,7 +398,7 @@ try {
           .sort()
           .join(",");
         var p = pair(k);
-        if (!(T[k] || vals === "off,on")) return;
+        if (!(TOGGLE_VALUES[k] || vals === "off,on")) return;
         sg.__t = 1;
         sg.classList.add("tghide");
         var t = mkT(k);
@@ -406,33 +408,33 @@ try {
       paintT();
     }
     function devT() {
-      var x = q(".devexp");
-      if (!x || q('.tgl[data-k="devx"]')) return;
+      var x = qs(".devexp");
+      if (!x || qs('.tgl[data-k="devx"]')) return;
       var t = mkT("devx");
       t.setAttribute("aria-label", "Developer options");
       x.after(t);
       x.classList.add("tghide");
     }
     function paintT() {
-      var dx = q(".devexp"),
-        dt = q('.tgl[data-k="devx"]');
+      var dx = qs(".devexp"),
+        dt = qs('.tgl[data-k="devx"]');
       dx &&
         dt &&
         dt.setAttribute("aria-checked", dx.getAttribute("aria-expanded") === "true" ? "true" : "false");
-      qa('.tgl:not([data-k="devx"]):not(.ntg)').forEach(function (t) {
+      qsa('.tgl:not([data-k="devx"]):not(.ntg)').forEach(function (t) {
         var on = btn(t.dataset.k, pair(t.dataset.k)[0]),
           v = on && on.getAttribute("aria-pressed") === "true" ? "true" : "false";
         t.getAttribute("aria-checked") !== v && t.setAttribute("aria-checked", v);
       });
     }
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest(".tgl");
         if (!t || t.classList.contains("ntg")) return;
         e.stopPropagation();
         if (t.dataset.k === "devx") {
-          var dx = q(".devexp");
+          var dx = qs(".devexp");
           dx && dx.click();
           setTimeout(paintT, 0);
           return;
@@ -448,21 +450,21 @@ try {
     );
     /* ---------- labels, hidden rows ---------- */
     function relabel(row, t, sm) {
-      var l = q(".setl", row);
+      var l = qs(".setl", row);
       if (!l) return;
       var tn = l.firstChild;
       if (tn && tn.nodeType === 3) {
         if (tn.nodeValue !== t) tn.nodeValue = t;
       }
-      var s = q("small", l);
+      var s = qs("small", l);
       if (s && sm != null && s.textContent !== sm) s.textContent = sm;
     }
     function nb0() {
-      var t = q("#nv-open span") || q("#nv-open");
+      var t = qs("#nv-open span") || qs("#nv-open");
       return t ? t.textContent.trim() : "";
     }
     function rowOf(x) {
-      var e = typeof x === "string" ? q(x) : x;
+      var e = typeof x === "string" ? qs(x) : x;
       return e && e.closest(".setrow");
     }
     function rows() {
@@ -476,10 +478,10 @@ try {
       }
       if ((r = rowOf("#nv-open"))) {
         relabel(r, "Nav bar", "Edge style and selected tab");
-        var ns = q("#nv-sheet .nvsel");
+        var ns = qs("#nv-sheet .nvsel");
         ns && ns.textContent !== nb0() && (ns.textContent = nb0());
-        var nb = q("#nv-open");
-        if (!q("svg", nb)) {
+        var nb = qs("#nv-open");
+        if (!qs("svg", nb)) {
           var nt = nb.textContent.trim();
           nb.className = "vpill";
           nb.innerHTML = "<span>" + nt + "</span>" + CHEV;
@@ -489,14 +491,14 @@ try {
       if ((r = rowOf("#dev-refresh"))) r.classList.add("rowhide");
       homeRow();
 
-      var pr = q("#pull-row");
+      var pr = qs("#pull-row");
       pr && (pr.hidden = !0);
       thName();
     }
     /* ---------- pull down: refresh or chat ---------- */
     function pullRow(after) {
-      if (q("#pull-row")) return;
-      var r = D.createElement("div");
+      if (qs("#pull-row")) return;
+      var r = doc.createElement("div");
       r.className = "setrow hcsub";
       r.id = "pull-row";
       r.innerHTML =
@@ -508,65 +510,66 @@ try {
       return "refresh";
     }
     function paintPull() {
-      var ch = ls("vizag-pullto") === "chat",
-        ps = q(".pullsm"),
+      var ch = store("vizag-pullto") === "chat",
+        ps = qs(".pullsm"),
         pt = ch ? "Opens Atlas" : "Refreshes the page";
       ps && ps.textContent !== pt && (ps.textContent = pt);
-      var pb = q("#pd-open"),
+      var pb = qs("#pd-open"),
         ph = "<span>" + (ch ? "Chat" : "Refresh") + "</span>" + CHEV;
       pb && pb.__h !== ph && ((pb.innerHTML = ph), (pb.__h = ph));
-      qa("#pd-sheet .pdopt").forEach(function (o) {
+      qsa("#pd-sheet .pdopt").forEach(function (o) {
         o.classList.toggle("on", o.dataset.v === (ch ? "chat" : "refresh"));
       });
-      var h = q(".sethint");
+      var h = qs(".sethint");
       if (h) {
         var ht =
-          ls("vizag-chatmode") === "off"
+          store("vizag-chatmode") === "off"
             ? "Pull down on any page to refresh. Turn on Atlas to ask about your trip."
             : "Tap the star on Home to open Atlas. Pull down on any page to refresh.";
         h.textContent !== ht && (h.textContent = ht);
       }
-      qa("[data-pullto]").forEach(function (b) {
-        var v = b.dataset.pullto === (ls("vizag-pullto") === "chat" ? "chat" : "refresh") ? "true" : "false";
+      qsa("[data-pullto]").forEach(function (b) {
+        var v =
+          b.dataset.pullto === (store("vizag-pullto") === "chat" ? "chat" : "refresh") ? "true" : "false";
         b.getAttribute("aria-pressed") !== v && b.setAttribute("aria-pressed", v);
       });
     }
-    var pd = null;
+    var pullSheet = null;
     function pdClose() {
-      pd.hidden = !0;
-      var sc = q("#scrim");
+      pullSheet.hidden = !0;
+      var sc = qs("#scrim");
       sc && (sc.hidden = !0);
     }
     function pdBuild() {
-      if (pd) return;
-      pd = D.createElement("div");
-      pd.className = "sheet lsheet psheet";
-      pd.id = "pd-sheet";
-      pd.hidden = !0;
-      pd.setAttribute("role", "dialog");
-      pd.setAttribute("aria-label", "Pull down");
-      pd.innerHTML =
+      if (pullSheet) return;
+      pullSheet = doc.createElement("div");
+      pullSheet.className = "sheet lsheet psheet";
+      pullSheet.id = "pd-sheet";
+      pullSheet.hidden = !0;
+      pullSheet.setAttribute("role", "dialog");
+      pullSheet.setAttribute("aria-label", "Pull down");
+      pullSheet.innerHTML =
         '<div class="shtitle"><span>Pull down</span><button type="button" class="shclose" aria-label="Close">' +
-        X +
+        CLOSE_SVG +
         '</button></div><p class="pdlead">Choose what happens when you pull down from the top of any page.</p><button type="button" class="pdopt" data-v="refresh"><span class="pdi"><svg class="ph"><use href="#i-hugeicons-repeat"/></svg></span><span class="pdt"><b>Refresh</b><small>Reloads the page with your latest trip details and any app update.</small></span><i class="pdck"></i></button><button type="button" class="pdopt" data-v="chat"><span class="pdi"><svg class="ph"><use href="#i-hugeicons-chat"/></svg></span><span class="pdt"><b>Chat</b><small>Opens Atlas about the page you’re on. To refresh, close and reopen the app.</small></span><i class="pdck"></i></button>';
-      D.body.appendChild(pd);
-      pd.addEventListener("click", function (e) {
+      doc.body.appendChild(pullSheet);
+      pullSheet.addEventListener("click", function (e) {
         e.stopPropagation();
         if (e.target.closest(".shclose")) return pdClose();
         var o = e.target.closest(".pdopt");
         if (o) {
-          ls("vizag-pullto", o.dataset.v);
+          store("vizag-pullto", o.dataset.v);
           paintPull();
           setTimeout(pdClose, 320);
         }
       });
-      var sc = q("#scrim");
+      var sc = qs("#scrim");
       sc &&
         sc.addEventListener("click", function () {
-          pd.hidden || pdClose();
+          pullSheet.hidden || pdClose();
         });
     }
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var b = e.target.closest && e.target.closest("#pd-open");
@@ -574,84 +577,84 @@ try {
         e.stopPropagation();
         pdBuild();
         paintPull();
-        pd.hidden = !1;
-        var sc = q("#scrim");
+        pullSheet.hidden = !1;
+        var sc = qs("#scrim");
         sc && (sc.hidden = !1);
       },
       !0,
     );
     window.__pullGo = function () {
-      var v = R.dataset.view || "home";
+      var v = rootEl.dataset.view || "home";
       if (pullMode() === "chat" && window.__chat) window.__chat(v);
       else location.reload();
     };
     /* chat turned on: hint once per turn-on */
-    D.addEventListener("click", function (e) {
+    doc.addEventListener("click", function (e) {
       var t = e.target.closest && e.target.closest('.tgl[data-k="cmode"]');
       if (!t) return;
       setTimeout(function () {
-        if (ls("vizag-chatmode") !== "off") {
+        if (store("vizag-chatmode") !== "off") {
           window.__toast && window.__toast("Tap the star on Home to open Atlas");
         }
         rows();
       }, 60);
     });
     /* double-tap a page title opens chat */
-    var lt = 0,
-      lx = null;
+    var lastTitleTap = 0,
+      lastTitleEl = null;
     function dbl(h) {
       return;
       var v = h.closest(".view");
-      window.__chat(v && v.id ? v.id.replace(/^v-/, "") : R.dataset.view || "home");
+      window.__chat(v && v.id ? v.id.replace(/^v-/, "") : rootEl.dataset.view || "home");
     }
-    D.addEventListener(
+    doc.addEventListener(
       "touchend",
       function (e) {
         var h = e.target.closest && e.target.closest(".view h1");
         if (!h) {
-          lt = 0;
+          lastTitleTap = 0;
           return;
         }
         var n = Date.now();
-        if (n - lt < 320 && lx === h) {
-          lt = 0;
+        if (n - lastTitleTap < 320 && lastTitleEl === h) {
+          lastTitleTap = 0;
           e.preventDefault();
           dbl(h);
         } else {
-          lt = n;
-          lx = h;
+          lastTitleTap = n;
+          lastTitleEl = h;
         }
       },
       { passive: !1 },
     );
-    D.addEventListener("dblclick", function (e) {
+    doc.addEventListener("dblclick", function (e) {
       var h = e.target.closest && e.target.closest(".view h1");
       h && dbl(h);
     });
     /* ---------- theme pill shows palette name ---------- */
     function thName() {
-      var p = q("#th-pill");
+      var p = qs("#th-pill");
       if (!p) return;
-      var pal = R.getAttribute("data-pal"),
+      var pal = rootEl.getAttribute("data-pal"),
         n = pal
           ? pal.charAt(0).toUpperCase() + pal.slice(1)
-          : (q("#skin-name") && q("#skin-name").textContent) || "Classic";
+          : (qs("#skin-name") && qs("#skin-name").textContent) || "Classic";
       var h = "<span>" + n + "</span>" + CHEV;
       p.__h !== h && ((p.innerHTML = h), (p.__h = h));
     }
-    new MutationObserver(thName).observe(R, { attributes: !0, attributeFilter: ["data-pal"] });
+    new MutationObserver(thName).observe(rootEl, { attributes: !0, attributeFilter: ["data-pal"] });
     /* ---------- Home cards sheet ---------- */
-    var hs = null;
+    var homeCardsSheet = null;
     function homeRow() {
-      var sg = q('.seg[aria-label="Home cards"]');
+      var sg = qs('.seg[aria-label="Home cards"]');
       if (!sg) return;
       var r = sg.closest(".setrow");
-      if (!r || q("#hl-open")) return paintHome();
+      if (!r || qs("#hl-open")) return paintHome();
       ["Home cards", "Trip card", "Day details"].forEach(function (n) {
-        var x = q('.seg[aria-label="' + n + '"]');
+        var x = qs('.seg[aria-label="' + n + '"]');
         x && x.closest(".setrow").classList.add("rowhide");
       });
-      var nr = D.createElement("div");
+      var nr = doc.createElement("div");
       nr.className = "setrow";
       nr.id = "hl-row";
       nr.innerHTML =
@@ -660,49 +663,49 @@ try {
       paintHome();
     }
     function cur(n) {
-      var x = q('.seg[aria-label="' + n + '"] [aria-pressed="true"]');
+      var x = qs('.seg[aria-label="' + n + '"] [aria-pressed="true"]');
       return x ? x.textContent.trim() : "";
     }
     function paintHome() {
-      var b = q("#hl-open");
+      var b = qs("#hl-open");
       if (!b) return;
       var m = cur("Home cards") === "Merged",
         h = "<span>" + (m ? "Merged" : cur("Trip card") || "Split") + "</span>" + CHEV;
       b.__h !== h && ((b.innerHTML = h), (b.__h = h));
-      if (hs) {
-        hs.classList.toggle("merged", m);
-        qa(".vpopt", hs).forEach(function (o) {
+      if (homeCardsSheet) {
+        homeCardsSheet.classList.toggle("merged", m);
+        qsa(".vpopt", homeCardsSheet).forEach(function (o) {
           var on = cur(o.dataset.seg) === o.dataset.v;
           o.classList.toggle("on", on);
         });
-        var sm = q(".hlsm", hs),
+        var sm = qs(".hlsm", homeCardsSheet),
           st = m
             ? "One card for your trip and the chosen day, with the trip on top and that day right below it."
             : "Two separate cards. Pick how the trip card and the day look below.";
         sm && sm.textContent !== st && (sm.textContent = st);
-        qa(".hlsel", hs).forEach(function (x) {
+        qsa(".hlsel", homeCardsSheet).forEach(function (x) {
           var v = cur(x.dataset.seg);
           x.textContent !== v && (x.textContent = v);
         });
-        if (hs.__m === !1 && m && !hs.hidden)
+        if (homeCardsSheet.__m === !1 && m && !homeCardsSheet.hidden)
           setTimeout(function () {
-            hs.hidden || closeHome();
+            homeCardsSheet.hidden || closeHome();
           }, 380);
-        hs.__m = m;
+        homeCardsSheet.__m = m;
       }
     }
     function buildHome() {
-      if (hs) return hs;
+      if (homeCardsSheet) return homeCardsSheet;
       var Dd = window.__vpD || {},
         Ss = window.__vpS || {};
-      hs = D.createElement("div");
-      hs.className = "sheet lsheet psheet vpsheet";
-      hs.id = "hl-sheet";
-      hs.hidden = !0;
-      hs.setAttribute("role", "dialog");
-      hs.setAttribute("aria-label", "Home cards");
+      homeCardsSheet = doc.createElement("div");
+      homeCardsSheet.className = "sheet lsheet psheet vpsheet";
+      homeCardsSheet.id = "hl-sheet";
+      homeCardsSheet.hidden = !0;
+      homeCardsSheet.setAttribute("role", "dialog");
+      homeCardsSheet.setAttribute("aria-label", "Home cards");
       function sec(n) {
-        var bs = qa('.seg[aria-label="' + n + '"] button');
+        var bs = qsa('.seg[aria-label="' + n + '"] button');
         return (
           '<div class="hlsec"><div class="hlcap"><span>' +
           n +
@@ -730,39 +733,39 @@ try {
           "</div></div>"
         );
       }
-      hs.innerHTML =
+      homeCardsSheet.innerHTML =
         '<div class="shtitle"><span>Home cards</span><button type="button" class="shclose" aria-label="Close">' +
-        X +
+        CLOSE_SVG +
         '</button></div><div class="shcard"><div class="setrow hlm"><span class="setl">Merge trip &amp; day<small class="hlsm"></small></span></div></div>' +
         sec("Trip card") +
         sec("Day details");
-      q(".hlm", hs).appendChild(mkT("homeone"));
-      D.body.appendChild(hs);
-      hs.addEventListener("click", function (e) {
+      qs(".hlm", homeCardsSheet).appendChild(mkT("homeone"));
+      doc.body.appendChild(homeCardsSheet);
+      homeCardsSheet.addEventListener("click", function (e) {
         e.stopPropagation();
         if (e.target.closest(".shclose")) return closeHome();
         var o = e.target.closest(".vpopt");
         if (o) {
-          var b = qa('.seg[aria-label="' + o.dataset.seg + '"] button').filter(function (x) {
+          var b = qsa('.seg[aria-label="' + o.dataset.seg + '"] button').filter(function (x) {
             return x.textContent.trim() === o.dataset.v;
           })[0];
           b && b.getAttribute("aria-pressed") !== "true" && b.click();
           setTimeout(paintHome, 0);
         }
       });
-      var sc = q("#scrim");
+      var sc = qs("#scrim");
       sc &&
         sc.addEventListener("click", function () {
-          hs.hidden || closeHome();
+          homeCardsSheet.hidden || closeHome();
         });
-      return hs;
+      return homeCardsSheet;
     }
     function closeHome() {
-      hs.hidden = !0;
-      var sc = q("#scrim");
+      homeCardsSheet.hidden = !0;
+      var sc = qs("#scrim");
       sc && (sc.hidden = !0);
     }
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var b = e.target.closest && e.target.closest("#hl-open");
@@ -771,29 +774,29 @@ try {
         buildHome();
         paintHome();
         paintT();
-        hs.hidden = !1;
-        var sc = q("#scrim");
+        homeCardsSheet.hidden = !1;
+        var sc = qs("#scrim");
         sc && (sc.hidden = !1);
       },
       !0,
     );
     /* ---------- Nav bar sheet: add edge switch ---------- */
     function navSheet() {
-      var s = q("#nv-sheet");
+      var s = qs("#nv-sheet");
       if (!s || s.__e) return;
       s.__e = 1;
-      var t = q(".shtitle span", s);
+      var t = qs(".shtitle span", s);
       t && (t.textContent = "Nav bar");
       s.setAttribute("aria-label", "Nav bar");
-      var r = D.createElement("div");
+      var r = doc.createElement("div");
       r.className = "setrow hlm";
       r.innerHTML = '<span class="setl">Wave edge<small>Curved top edge on the bar</small></span>';
       r.appendChild(mkT("navedge"));
-      var c = D.createElement("div");
+      var c = doc.createElement("div");
       c.className = "hlcap";
       c.innerHTML = '<span>Selected tab</span><b class="nvsel"></b>';
-      var g = q(".nvgrid", s),
-        cd = D.createElement("div");
+      var g = qs(".nvgrid", s),
+        cd = doc.createElement("div");
       cd.className = "shcard";
       cd.appendChild(r);
       g.before(cd);
@@ -802,11 +805,11 @@ try {
     }
     /* ---------- Profile card: collapsed by default ---------- */
     function acct() {
-      var a = q("#acct"),
-        ed = q("#acct-edit");
+      var a = qs("#acct"),
+        ed = qs("#acct-edit");
       if (!a || !ed) return;
-      if (!q(".acchev", a)) {
-        var b = D.createElement("button");
+      if (!qs(".acchev", a)) {
+        var b = doc.createElement("button");
         b.type = "button";
         b.className = "aico2 acchev";
         b.setAttribute("aria-label", "Show profile details");
@@ -823,11 +826,11 @@ try {
       }
     }
     function planTag() {
-      var h = q("#v-profile .pghead");
+      var h = qs("#v-profile .pghead");
       if (!h) return;
-      if (!q("#plan-tag", h)) {
+      if (!qs("#plan-tag", h)) {
         h.classList.add("pgflat", "yrhost");
-        var b = D.createElement("button");
+        var b = doc.createElement("button");
         b.type = "button";
         b.className = "yrpill plantag";
         b.id = "plan-tag";
@@ -840,34 +843,34 @@ try {
       }
       var pl = {};
       try {
-        pl = JSON.parse(ls("vizag-plan") || "{}") || {};
+        pl = JSON.parse(store("vizag-plan") || "{}") || {};
       } catch (e) {}
       var t = pl.plan === "pro" ? "Atlas" : pl.plan === "plus" ? "Pass" : "Free",
-        b2 = q("#plan-tag");
+        b2 = qs("#plan-tag");
       b2.textContent !== t && (b2.textContent = t);
       b2.classList.toggle("pro", t === "Atlas");
-      var bd = q("#acct .acplan");
+      var bd = qs("#acct .acplan");
       bd && bd.remove();
-      var pt = q(".plantop");
+      var pt = qs(".plantop");
       pt && pt.classList.add("rowhide");
     }
     function devOrder() {
-      var o = q(".devopts"),
-        r = q("#dev-off");
+      var o = qs(".devopts"),
+        r = qs("#dev-off");
       r = r && r.closest(".setrow");
       o && r && o.firstElementChild !== r && o.insertBefore(r, o.firstElementChild);
-      var t = q("[data-devthv2]");
+      var t = qs("[data-devthv2]");
       t && (t = t.closest(".setrow")) && t.classList.add("rowhide");
       tags();
     }
-    var TG = [
+    var PAID_ROWS = [
       ["#pdf-row", "plus"],
       [".setrow:has([data-now])", "pro"],
       ['.setrow:has(.tgl[data-k="cmode"])', "pro"],
     ];
     function tag(el, k) {
-      if (!el || q(".ptag", el)) return;
-      var i = D.createElement("i");
+      if (!el || qs(".ptag", el)) return;
+      var i = doc.createElement("i");
       i.className = "ptag " + k;
       (i.innerHTML =
         k === "pro"
@@ -879,11 +882,11 @@ try {
       el.appendChild(i);
     }
     function tags() {
-      TG.forEach(function (x) {
-        var r = q(x[0]),
-          l = r && q(".setl", r);
-        if (l && r.querySelector(":scope>.seti") && !q(".ptag", r.querySelector(":scope>.seti"))) {
-          var i = D.createElement("i");
+      PAID_ROWS.forEach(function (x) {
+        var r = qs(x[0]),
+          l = r && qs(".setl", r);
+        if (l && r.querySelector(":scope>.seti") && !qs(".ptag", r.querySelector(":scope>.seti"))) {
+          var i = doc.createElement("i");
           i.className = "ptag " + x[1];
           (i.innerHTML =
             x[1] === "pro"
@@ -893,31 +896,32 @@ try {
             i.setAttribute("aria-label", x[1] === "pro" ? "Atlas" : "Pass"),
             (i.title = x[1] === "pro" ? "Atlas" : "Pass");
           var st = r.querySelector(":scope>.seti");
-          st && !q(".ptag", st) && st.appendChild(i);
+          st && !qs(".ptag", st) && st.appendChild(i);
         }
       });
-      qa("#nv-sheet .nvt").forEach(function (t) {
+      qsa("#nv-sheet .nvt").forEach(function (t) {
         var s = t.dataset.s;
         s === "dot" || tag(t, /^(rot3d|draw|flip)$/.test(s) ? "plus" : "pro");
       });
-      qa("#hl-sheet .vpopt").forEach(function (o) {
+      qsa("#hl-sheet .vpopt").forEach(function (o) {
         tag(o, "plus");
       });
     }
     function collapse() {
-      var a = q("#acct");
+      var a = qs("#acct");
       a &&
-        (a.classList.add("accol"), q(".acchev", a) && q(".acchev", a).setAttribute("aria-expanded", "false"));
+        (a.classList.add("accol"),
+        qs(".acchev", a) && qs(".acchev", a).setAttribute("aria-expanded", "false"));
     }
-    var lv = R.dataset.view;
+    var lastView = rootEl.dataset.view;
     new MutationObserver(function () {
-      var v = R.dataset.view;
-      if (v !== lv) {
-        lv = v;
+      var v = rootEl.dataset.view;
+      if (v !== lastView) {
+        lastView = v;
         collapse();
       }
-    }).observe(R, { attributes: !0, attributeFilter: ["data-view"] });
-    D.addEventListener(
+    }).observe(rootEl, { attributes: !0, attributeFilter: ["data-view"] });
+    doc.addEventListener(
       "click",
       function (e) {
         var n = e.target.closest && e.target.closest(".nav button");
@@ -926,7 +930,7 @@ try {
       !0,
     );
     /* ---------- icons (Hugeicons sprite) ---------- */
-    var M = [
+    var ROW_ICONS = [
       ["24-hour", "clock"],
       ["Time format", "clock"],
       ["Open at now", "now"],
@@ -968,13 +972,13 @@ try {
     function ico(t) {
       var k = null,
         b = -1;
-      M.forEach(function (m) {
+      ROW_ICONS.forEach(function (m) {
         t.indexOf(m[0]) === 0 && m[0].length > b && ((k = m[1]), (b = m[0].length));
       });
       return k;
     }
     function icons() {
-      qa(".setrow>.setl").forEach(function (l) {
+      qsa(".setrow>.setl").forEach(function (l) {
         var r = l.parentNode,
           tn = l.firstChild,
           t = (tn && tn.nodeType === 3 ? tn.nodeValue : l.textContent).trim(),
@@ -986,7 +990,7 @@ try {
         }
         if (s && s.dataset.k === k) return;
         s ||
-          ((s = D.createElement("span")),
+          ((s = doc.createElement("span")),
           (s.className = "seti"),
           s.setAttribute("aria-hidden", "true"),
           r.insertBefore(s, l));
@@ -1008,18 +1012,18 @@ try {
       paintPull();
     }
     all();
-    var qq = 0;
+    var rowFrame = 0;
     new MutationObserver(function () {
-      qq ||
-        (qq = requestAnimationFrame(function () {
-          qq = 0;
+      rowFrame ||
+        (rowFrame = requestAnimationFrame(function () {
+          rowFrame = 0;
           all();
         }));
-    }).observe(D.body, { childList: !0, subtree: !0 });
+    }).observe(doc.body, { childList: !0, subtree: !0 });
     new MutationObserver(function () {
       paintT();
       paintHome();
-    }).observe(D.body, { attributes: !0, subtree: !0, attributeFilter: ["aria-pressed", "aria-expanded"] });
+    }).observe(doc.body, { attributes: !0, subtree: !0, attributeFilter: ["aria-pressed", "aria-expanded"] });
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Settings polish: on/off rows become switches, labels and hid", err);
@@ -1030,18 +1034,18 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function home() {
-      return D.querySelector('.nav button[data-v="home"]');
+      return doc.querySelector('.nav button[data-v="home"]');
     }
-    var tm = 0,
+    var pressTimer = 0,
       fired = !1,
-      sx = 0,
-      sy = 0,
+      pressX = 0,
+      pressY = 0,
       btn = null;
     function open() {
       btn && btn.classList.remove("lp");
-      if (D.documentElement.dataset.view !== "home") {
+      if (doc.documentElement.dataset.view !== "home") {
         var hh = home();
         hh && hh.click();
       }
@@ -1051,39 +1055,39 @@ try {
       try {
         on = localStorage.getItem("vizag-chatmode") === "bubble";
       } catch (e) {}
-      var cb = D.querySelector('[data-cmode="bubble"]');
+      var cb = doc.querySelector('[data-cmode="bubble"]');
       cb && cb.click();
       window.__toast && window.__toast(on ? "AI star is back on Home" : "AI star is on. Tap it to chat");
     }
-    D.addEventListener(
+    doc.addEventListener(
       "pointerdown",
       function (e) {
         var b = e.target.closest && e.target.closest('.nav button[data-v="home"]');
         if (!b) return;
         btn = b;
         fired = !1;
-        sx = e.clientX;
-        sy = e.clientY;
+        pressX = e.clientX;
+        pressY = e.clientY;
         b.classList.add("lp");
-        clearTimeout(tm);
-        tm = setTimeout(open, 360);
+        clearTimeout(pressTimer);
+        pressTimer = setTimeout(open, 360);
       },
       !0,
     );
     function cancel() {
-      clearTimeout(tm);
+      clearTimeout(pressTimer);
       btn && btn.classList.remove("lp");
     }
-    D.addEventListener(
+    doc.addEventListener(
       "pointermove",
       function (e) {
-        btn && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 10 && cancel();
+        btn && Math.abs(e.clientX - pressX) + Math.abs(e.clientY - pressY) > 10 && cancel();
       },
       !0,
     );
-    D.addEventListener("pointerup", cancel, !0);
-    D.addEventListener("pointercancel", cancel, !0);
-    D.addEventListener(
+    doc.addEventListener("pointerup", cancel, !0);
+    doc.addEventListener("pointercancel", cancel, !0);
+    doc.addEventListener(
       "click",
       function (e) {
         if (fired && e.target.closest && e.target.closest('.nav button[data-v="home"]')) {
@@ -1094,16 +1098,17 @@ try {
       },
       !0,
     );
-    D.addEventListener(
+    doc.addEventListener(
       "contextmenu",
       function (e) {
         e.target.closest && e.target.closest('.nav button[data-v="home"]') && e.preventDefault();
       },
       !0,
     );
-    var h = home();
-    h &&
-      ((h.style.webkitTouchCallout = "none"), h.setAttribute("aria-description", "Long-press to open Atlas"));
+    var homeTab = home();
+    homeTab &&
+      ((homeTab.style.webkitTouchCallout = "none"),
+      homeTab.setAttribute("aria-description", "Long-press to open Atlas"));
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Long-press the Home tab to turn the Atlas star on or off.", err);
@@ -1114,37 +1119,37 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      R = D.documentElement;
-    function ls(k) {
+    var doc = document,
+      rootEl = doc.documentElement;
+    function readKey(k) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
         return null;
       }
     }
-    function ss(k, v) {
+    function writeKey(k, v) {
       try {
         v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
       } catch (e) {}
     }
     /* ---------- sounds ---------- */
-    var AC = null;
-    function ac() {
-      if (!AC) {
+    var audioCtx = null;
+    function getAudio() {
+      if (!audioCtx) {
         var C = window.AudioContext || window.webkitAudioContext;
         if (!C) return null;
         try {
-          AC = new C();
+          audioCtx = new C();
         } catch (e) {
           return null;
         }
       }
-      AC.state !== "running" && AC.resume && AC.resume().catch(function () {});
-      return AC;
+      audioCtx.state !== "running" && audioCtx.resume && audioCtx.resume().catch(function () {});
+      return audioCtx;
     }
     function tone(f, t0, d, g, type, f2) {
-      var a = ac();
+      var a = getAudio();
       if (!a) return;
       var o = a.createOscillator(),
         v = a.createGain(),
@@ -1160,7 +1165,7 @@ try {
       o.start(t);
       o.stop(t + d + 0.02);
     }
-    var ST = {
+    var SOUND_STYLES = {
       soft: {
         tap: function () {
           tone(1250, 0, 0.045, 0.035, "triangle", 900);
@@ -1215,18 +1220,18 @@ try {
     function sty() {
       return "wood";
     }
-    var S = {
+    var SOUNDS = {
       tap: function () {
-        ST[sty()].tap();
+        SOUND_STYLES[sty()].tap();
       },
       on: function () {
-        ST[sty()].on();
+        SOUND_STYLES[sty()].on();
       },
       off: function () {
-        ST[sty()].off();
+        SOUND_STYLES[sty()].off();
       },
       pull: function () {
-        ST[sty()].pull();
+        SOUND_STYLES[sty()].pull();
       },
       win: function () {
         [1047, 1319, 1568, 2093].forEach(function (f, i) {
@@ -1238,17 +1243,17 @@ try {
         tone(1175, 0.1, 0.24, 0.05);
       },
     };
-    function on() {
-      return ls("vizag-snd") !== "off";
+    function soundsOn() {
+      return readKey("vizag-snd") !== "off";
     }
     window.__snd = function (k) {
-      if (!on() || !S[k]) return;
+      if (!soundsOn() || !SOUNDS[k]) return;
       try {
-        S[k]();
+        SOUNDS[k]();
       } catch (e) {}
     };
     function unl() {
-      var a = ac();
+      var a = getAudio();
       if (!a) return;
       try {
         var b = a.createBuffer(1, 1, 22050),
@@ -1258,14 +1263,18 @@ try {
         s.start(0);
       } catch (e) {}
       a.state === "running" &&
-        (D.removeEventListener("touchend", unl, !0), D.removeEventListener("click", unl, !0));
+        (doc.removeEventListener("touchend", unl, !0), doc.removeEventListener("click", unl, !0));
     }
-    D.addEventListener("touchend", unl, !0);
-    D.addEventListener("click", unl, !0);
-    D.addEventListener("visibilitychange", function () {
-      D.hidden || (AC && AC.state !== "running" && AC.resume && AC.resume().catch(function () {}));
+    doc.addEventListener("touchend", unl, !0);
+    doc.addEventListener("click", unl, !0);
+    doc.addEventListener("visibilitychange", function () {
+      doc.hidden ||
+        (audioCtx &&
+          audioCtx.state !== "running" &&
+          audioCtx.resume &&
+          audioCtx.resume().catch(function () {}));
     });
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest(".nav button");
@@ -1273,7 +1282,7 @@ try {
       },
       !0,
     );
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest(".tgl");
@@ -1282,30 +1291,30 @@ try {
       },
       !0,
     );
-    var pg = window.__pullGo;
-    pg &&
+    var origPullGo = window.__pullGo;
+    origPullGo &&
       (window.__pullGo = function () {
         window.__snd("pull");
-        setTimeout(pg, 170);
+        setTimeout(origPullGo, 170);
       });
-    var tt = window.__toast;
-    tt &&
+    var origToast = window.__toast;
+    origToast &&
       (window.__toast = function (m) {
         /Developer options are on/.test(m || "") && window.__snd("dev");
-        return tt.apply(this, arguments);
+        return origToast.apply(this, arguments);
       });
     /* sounds row in Customisation */
     function sndRow() {
-      if (D.getElementById("snd-row")) return;
-      var g = D.querySelector(".setgrp.hcgrp");
+      if (doc.getElementById("snd-row")) return;
+      var g = doc.querySelector(".setgrp.hcgrp");
       if (!g) return;
-      var r = D.createElement("div");
+      var r = doc.createElement("div");
       r.className = "setrow";
       r.id = "snd-row";
       r.innerHTML =
         '<span class="setl">Sounds<small>Soft clicks for taps, switches and refresh</small></span><div class="seg" role="group" aria-label="Sounds"><button type="button" data-snd="off">Off</button><button type="button" data-snd="on">On</button></div>';
       g.appendChild(r);
-      var r2 = D.createElement("div");
+      var r2 = doc.createElement("div");
       r2.className = "setrow sndsub";
       r2.id = "snd-style";
       r2.innerHTML =
@@ -1314,7 +1323,7 @@ try {
       r2.querySelectorAll("[data-sndst]").forEach(function (b) {
         b.addEventListener("click", function (e) {
           e.stopPropagation();
-          ss("vizag-sndst", b.dataset.sndst);
+          writeKey("vizag-sndst", b.dataset.sndst);
           paintS();
           window.__snd("on");
         });
@@ -1322,26 +1331,26 @@ try {
       r.querySelectorAll("[data-snd]").forEach(function (b) {
         b.addEventListener("click", function (e) {
           e.stopPropagation();
-          ss("vizag-snd", b.dataset.snd === "off" ? "off" : null);
+          writeKey("vizag-snd", b.dataset.snd === "off" ? "off" : null);
           paintS();
         });
       });
       paintS();
     }
     function paintS() {
-      var v = on() ? "on" : "off";
-      D.querySelectorAll("[data-snd]").forEach(function (b) {
+      var v = soundsOn() ? "on" : "off";
+      doc.querySelectorAll("[data-snd]").forEach(function (b) {
         b.setAttribute("aria-pressed", b.dataset.snd === v ? "true" : "false");
       });
       var st = sty();
-      D.querySelectorAll("[data-sndst]").forEach(function (b) {
+      doc.querySelectorAll("[data-sndst]").forEach(function (b) {
         b.setAttribute("aria-pressed", b.dataset.sndst === st ? "true" : "false");
       });
-      var r2 = D.getElementById("snd-style");
+      var r2 = doc.getElementById("snd-style");
       r2 && (r2.hidden = v === "off");
     }
     /* ---------- AI reply glow ---------- */
-    var log = D.getElementById("chat-log");
+    var log = doc.getElementById("chat-log");
     log &&
       new MutationObserver(function (ms) {
         ms.forEach(function (m) {
@@ -1363,17 +1372,17 @@ try {
     /* ---------- AI chat needs an assistant ---------- */
     function aiSrc() {
       try {
-        return (JSON.parse(ls("vizag-ai2") || "{}") || {}).src || "off";
+        return (JSON.parse(readKey("vizag-ai2") || "{}") || {}).src || "off";
       } catch (e) {
         return "off";
       }
     }
     var need = !1;
     function openAI() {
-      var b = D.getElementById("ai-open");
+      var b = doc.getElementById("ai-open");
       b && b.click();
     }
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest('.tgl[data-k="cmode"]');
@@ -1381,7 +1390,7 @@ try {
         if (aiSrc() === "off") {
           need = !0;
           setTimeout(function () {
-            var i = D.querySelector("#ai-sheet .aiintro");
+            var i = doc.querySelector("#ai-sheet .aiintro");
             i &&
               (i.__o || (i.__o = i.textContent),
               (i.textContent = "Atlas needs an AI assistant. Pick one to finish turning it on."));
@@ -1391,71 +1400,71 @@ try {
       },
       !0,
     );
-    var as = D.getElementById("ai-sheet");
-    as &&
+    var aiSheet = doc.getElementById("ai-sheet");
+    aiSheet &&
       new MutationObserver(function () {
-        if (!as.hidden || !need) return;
+        if (!aiSheet.hidden || !need) return;
         need = !1;
-        var i = D.querySelector("#ai-sheet .aiintro");
+        var i = doc.querySelector("#ai-sheet .aiintro");
         i && i.__o && (i.textContent = i.__o);
-        if (aiSrc() === "off" && ls("vizag-chatmode") !== "off") {
-          var b = D.querySelector('[data-cmode="off"]');
+        if (aiSrc() === "off" && readKey("vizag-chatmode") !== "off") {
+          var b = doc.querySelector('[data-cmode="off"]');
           b && b.click();
           setTimeout(function () {
-            D.querySelectorAll('.tgl[data-k="cmode"]').forEach(function (t) {
+            doc.querySelectorAll('.tgl[data-k="cmode"]').forEach(function (t) {
               t.setAttribute("aria-checked", "false");
             });
           }, 30);
           window.__toast && window.__toast("Atlas stays off until you pick an AI assistant");
         }
-      }).observe(as, { attributes: !0, attributeFilter: ["hidden"] });
-    D.addEventListener("click", function (e) {
+      }).observe(aiSheet, { attributes: !0, attributeFilter: ["hidden"] });
+    doc.addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest(".caiset");
       if (!b) return;
       setTimeout(function () {
-        var p = D.querySelector('.nav button[data-v="profile"]');
+        var p = doc.querySelector('.nav button[data-v="profile"]');
         p && p.click();
         setTimeout(openAI, 250);
       }, 260);
     });
     /* ---------- Pass & Atlas features sheet ---------- */
-    var PF = [
+    var PAID_FEATURES = [
       {
         k: "pass",
         f: function () {
-          var b = D.getElementById("pdf-row");
+          var b = doc.getElementById("pdf-row");
           return b && (b.closest(".setrow") || b);
         },
       },
       {
         k: "pass",
         f: function () {
-          var b = D.querySelector("[data-now]");
+          var b = doc.querySelector("[data-now]");
           return b && b.closest(".setrow");
         },
       },
       {
         k: "atlas",
         f: function () {
-          var b = D.getElementById("ai-open");
+          var b = doc.getElementById("ai-open");
           return b && b.closest(".setrow");
         },
       },
       {
         k: "atlas",
         f: function () {
-          var b = D.querySelector('.tgl[data-k="cmode"],[data-cmode]');
+          var b = doc.querySelector('.tgl[data-k="cmode"],[data-cmode]');
           return b && b.closest(".setrow");
         },
       },
     ];
-    var sh = null,
+    var featuresSheet = null,
       grp = null,
       ent = null,
-      sc = D.getElementById("scrim");
+      scrim = doc.getElementById("scrim");
     function plan() {
       try {
-        return (JSON.parse(ls("vizag-plan") || "{}") || {}).plan || "free";
+        return (JSON.parse(readKey("vizag-plan") || "{}") || {}).plan || "free";
       } catch (e) {
         return "free";
       }
@@ -1467,66 +1476,66 @@ try {
       return p === "pro" || (k === "pass" && p === "plus");
     }
     function close() {
-      sh.hidden = !0;
-      sc && !D.querySelector(".sheet:not(.inpage):not([hidden])") && (sc.hidden = !0);
+      featuresSheet.hidden = !0;
+      scrim && !doc.querySelector(".sheet:not(.inpage):not([hidden])") && (scrim.hidden = !0);
     }
     function build() {
-      if (sh) return;
-      sh = D.createElement("div");
-      sh.className = "sheet lsheet psheet";
-      sh.id = "pf-sheet";
-      sh.hidden = !0;
-      sh.setAttribute("role", "dialog");
-      sh.setAttribute("aria-label", "Paid features");
-      sh.innerHTML =
+      if (featuresSheet) return;
+      featuresSheet = doc.createElement("div");
+      featuresSheet.className = "sheet lsheet psheet";
+      featuresSheet.id = "pf-sheet";
+      featuresSheet.hidden = !0;
+      featuresSheet.setAttribute("role", "dialog");
+      featuresSheet.setAttribute("aria-label", "Paid features");
+      featuresSheet.innerHTML =
         '<div class="shtitle"><span>Pass &amp; Atlas</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><p class="pfintro">Try these here. Once you upgrade, they move into your main settings.</p><div class="setgrp" id="pf-grp"></div><button type="button" class="btn full" id="pf-plans">See plans</button>';
-      D.body.appendChild(sh);
-      grp = sh.querySelector("#pf-grp");
-      sh.addEventListener("click", function (e) {
+      doc.body.appendChild(featuresSheet);
+      grp = featuresSheet.querySelector("#pf-grp");
+      featuresSheet.addEventListener("click", function (e) {
         e.stopPropagation();
       });
-      sh.querySelector(".shclose").onclick = close;
-      sh.querySelector("#pf-plans").onclick = function () {
+      featuresSheet.querySelector(".shclose").onclick = close;
+      featuresSheet.querySelector("#pf-plans").onclick = function () {
         close();
         window.__openPlans && window.__openPlans();
       };
-      sc &&
-        sc.addEventListener("click", function () {
-          sh.hidden || close();
+      scrim &&
+        scrim.addEventListener("click", function () {
+          featuresSheet.hidden || close();
         });
     }
     function entry() {
-      if (ent && D.body.contains(ent)) return;
-      var cap = D.querySelector("#settings-profile>.setcap");
+      if (ent && doc.body.contains(ent)) return;
+      var cap = doc.querySelector("#settings-profile>.setcap");
       if (!cap) return;
-      ent = D.createElement("div");
+      ent = doc.createElement("div");
       ent.className = "setgrp pfent";
       ent.innerHTML =
         '<div class="setrow" id="pf-row"><span class="seti pfcrown" data-x="1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.5l4.6 3.6L12 5.5l3.9 6.6 4.6-3.6-1.8 9.7H5.3z"/></svg></span><span class="setl">Pass &amp; Atlas features<small id="pf-sub">Trip PDF, Jump to now, Atlas</small></span><button type="button" class="vpill" id="pf-open"><span id="pf-n"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg></button></div>';
       cap.before(ent);
-      function op(e) {
+      function openFeatures(e) {
         e.stopPropagation();
         build();
-        D.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (x) {
+        doc.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (x) {
           x.hidden = !0;
         });
-        sh.hidden = !1;
-        sc && (sc.hidden = !1);
+        featuresSheet.hidden = !1;
+        scrim && (scrim.hidden = !1);
       }
-      ent.querySelector("#pf-row").addEventListener("click", op);
+      ent.querySelector("#pf-row").addEventListener("click", openFeatures);
     }
     function sync() {
       build();
       entry();
       var p = plan();
-      R.classList.toggle("pl-plus", p === "plus");
-      R.classList.toggle("pl-pro", p === "pro");
+      rootEl.classList.toggle("pl-plus", p === "plus");
+      rootEl.classList.toggle("pl-pro", p === "pro");
       var n = 0;
-      PF.forEach(function (x) {
+      PAID_FEATURES.forEach(function (x) {
         var r = x.f();
         if (!r) return;
         if (!r.__ph) {
-          r.__ph = D.createComment("pf");
+          r.__ph = doc.createComment("pf");
           r.before(r.__ph);
         }
         var inS = grp.contains(r);
@@ -1539,7 +1548,7 @@ try {
           inS || grp.appendChild(r);
         }
       });
-      D.querySelectorAll("#settings-profile>.setgrp").forEach(function (g) {
+      doc.querySelectorAll("#settings-profile>.setgrp").forEach(function (g) {
         if (g === ent) return;
         var vis = [].some.call(g.children, function (c) {
           return c.classList.contains("setrow") && !c.hidden && !c.classList.contains("rowhide");
@@ -1553,19 +1562,19 @@ try {
           (cap.style.display = vis ? "" : "none");
       });
       ent && (ent.style.display = n ? "" : "none");
-      var pn = D.getElementById("pf-n");
+      var pn = doc.getElementById("pf-n");
       pn && pn.textContent !== String(n) && (pn.textContent = String(n));
-      if (!n && sh && !sh.hidden) close();
+      if (!n && featuresSheet && !featuresSheet.hidden) close();
     }
-    var lt = 0;
+    var repaintTimer = 0;
     function kick() {
-      clearTimeout(lt);
-      lt = setTimeout(function () {
+      clearTimeout(repaintTimer);
+      repaintTimer = setTimeout(function () {
         sndRow();
         sync();
       }, 60);
     }
-    new MutationObserver(kick).observe(D.getElementById("settings-profile") || D.body, {
+    new MutationObserver(kick).observe(doc.getElementById("settings-profile") || doc.body, {
       childList: !0,
       subtree: !0,
     });
@@ -1575,25 +1584,30 @@ try {
     };
     var ret = null;
     new MutationObserver(function (ms) {
-      if (!sh) return;
+      if (!featuresSheet) return;
       ms.forEach(function (m) {
         var t = m.target;
-        if (t === sh || !t.classList || !t.classList.contains("sheet") || t.classList.contains("inpage"))
+        if (
+          t === featuresSheet ||
+          !t.classList ||
+          !t.classList.contains("sheet") ||
+          t.classList.contains("inpage")
+        )
           return;
-        if (!t.hidden && !sh.hidden) {
-          sh.hidden = !0;
+        if (!t.hidden && !featuresSheet.hidden) {
+          featuresSheet.hidden = !0;
           ret = t;
         } else if (t.hidden && ret === t) {
           ret = null;
-          t.id === "ai-sheet" && ((sh.hidden = !1), sc && (sc.hidden = !1));
+          t.id === "ai-sheet" && ((featuresSheet.hidden = !1), scrim && (scrim.hidden = !1));
         }
       });
-    }).observe(D.body, { attributes: !0, attributeFilter: ["hidden"], subtree: !0 });
-    var lp = plan();
+    }).observe(doc.body, { attributes: !0, attributeFilter: ["hidden"], subtree: !0 });
+    var lastPlan = plan();
     setInterval(function () {
       var p = plan();
-      (p !== lp || !ent || !D.body.contains(ent) || !D.getElementById("snd-row")) &&
-        ((lp = p), sndRow(), sync());
+      (p !== lastPlan || !ent || !doc.body.contains(ent) || !doc.getElementById("snd-row")) &&
+        ((lastPlan = p), sndRow(), sync());
     }, 1000);
     kick();
     setTimeout(kick, 600);
@@ -1608,26 +1622,26 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      A = D.getElementById("plans-sheet");
-    if (!A) return;
-    D.body.insertAdjacentHTML(
+    var doc = document,
+      plansSheet = doc.getElementById("plans-sheet");
+    if (!plansSheet) return;
+    doc.body.insertAdjacentHTML(
       "afterbegin",
       '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="plg-t" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7bd88f"/><stop offset="1" stop-color="#1f9d61"/></linearGradient><linearGradient id="plg-r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fc8ff"/><stop offset="1" stop-color="#2f62f5"/></linearGradient><linearGradient id="plg-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8941a"/></linearGradient></defs></svg>',
     );
-    function ls(k) {
+    function readKey(k) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
         return null;
       }
     }
-    function ss(k, v) {
+    function writeKey(k, v) {
       try {
         v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
       } catch (e) {}
     }
-    var IC = {
+    var PLAN_ICONS = {
       trail:
         '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="23.5" cy="8" r="3.2" fill="url(#plg-t)" opacity=".55"/><path d="M2.5 27 12 12.5l5.2 7.4 4.2-5.4L29.5 27z" fill="url(#plg-t)"/><path d="M12 12.5l-2.7 4.1 2.7-1.3 2.3 1.6z" fill="#fff" opacity=".8"/></svg>',
       route:
@@ -1635,19 +1649,19 @@ try {
       atlas:
         '<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="15" cy="17.5" r="10" fill="url(#plg-a)"/><path d="M5 17.5h20M15 7.5c3.2 3 3.2 17 0 20M15 7.5c-3.2 3-3.2 17 0 20" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.3"/><ellipse cx="15" cy="17.5" rx="14.2" ry="4.4" transform="rotate(-20 15 17.5)" fill="none" stroke="url(#plg-a)" stroke-width="1.5"/><path d="M26.5 1.5c.5 3 1.8 4.3 4.8 4.8-3 .5-4.3 1.8-4.8 4.8-.5-3-1.8-4.3-4.8-4.8 3-.5 4.3-1.8 4.8-4.8z" fill="url(#plg-a)"/></svg>',
     };
-    function ic(k) {
+    function iconSvg(k) {
       return '<svg class="ph" aria-hidden="true"><use href="#i-hugeicons-' + k + '"/></svg>';
     }
     var sel = null,
       bill = "yr",
       goingPay = !1,
-      body = A.querySelector(".pp-body"),
-      chip = A.querySelector("#pp-chip"),
-      up = A.querySelector("#pl-upgrade"),
-      line = A.querySelector(".pp-line"),
-      orig = up && up.onclick;
+      body = plansSheet.querySelector(".pp-body"),
+      chip = plansSheet.querySelector("#pp-chip"),
+      upgradeButton = plansSheet.querySelector("#pl-upgrade"),
+      line = plansSheet.querySelector(".pp-line"),
+      orig = upgradeButton && upgradeButton.onclick;
     function offerLeft() {
-      var u = +ls("vizag-offer-until") || 0;
+      var u = +readKey("vizag-offer-until") || 0;
       return Math.max(0, u - Date.now());
     }
     function rup(n) {
@@ -1660,21 +1674,21 @@ try {
         x = t % 60;
       return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0");
     }
-    IC.free = IC.trail;
-    IC.pass = IC.route;
-    IC.yearly =
+    PLAN_ICONS.free = PLAN_ICONS.trail;
+    PLAN_ICONS.pass = PLAN_ICONS.route;
+    PLAN_ICONS.yearly =
       '<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="plg-y" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9a8ff"/><stop offset="1" stop-color="#6c4cf5"/></linearGradient></defs><path d="M16 4.5a11.5 11.5 0 1 1-10.6 7" fill="none" stroke="url(#plg-y)" stroke-width="3" stroke-linecap="round"/><path d="M3.2 6.8l2.4 4.9 5-2.2" fill="none" stroke="url(#plg-y)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 10.5c.6 3.2 1.9 4.6 5 5.2-3.1.6-4.4 2-5 5.2-.6-3.2-1.9-4.6-5-5.2 3.1-.6 4.4-2 5-5.2z" fill="url(#plg-y)"/></svg>';
-    IC.free =
+    PLAN_ICONS.free =
       '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29.5c-.8 0-1.4-.6-1.4-1.4v-9.3C8.2 18.6 4 14.4 4 8.6V5.4C4 4.6 4.6 4 5.4 4h1.5c5.4 0 9.1 3.6 9.1 9.1 0-5.5 3.7-9.1 9.1-9.1h1.5c.8 0 1.4.6 1.4 1.4v3.2c0 5.8-4.2 10-10.6 10.2v9.3c0 .8-.6 1.4-1.4 1.4z" fill="url(#plg-t)"/><path d="M8.5 8.5c2.6.6 4.6 2.6 5.3 5.6" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.6" stroke-linecap="round"/></svg>';
-    IC.pass =
+    PLAN_ICONS.pass =
       '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 6.5h22a2.5 2.5 0 0 1 2.5 2.5v3.6a3.4 3.4 0 0 0 0 6.8V23a2.5 2.5 0 0 1-2.5 2.5H5A2.5 2.5 0 0 1 2.5 23v-3.6a3.4 3.4 0 0 0 0-6.8V9A2.5 2.5 0 0 1 5 6.5z" fill="url(#plg-r)"/><path d="M21 9.5v13" stroke="#fff" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round" stroke-dasharray=".1 3.2"/><path d="M8 13h8.5M8 17.5h5.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
-    IC.atlas =
+    PLAN_ICONS.atlas =
       '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 3.5c.9 5.6 3.4 8.1 9 9-5.6.9-8.1 3.4-9 9-.9-5.6-3.4-8.1-9-9 5.6-.9 8.1-3.4 9-9z" fill="url(#plg-a)"/><path d="M25 18.5c.5 3 1.9 4.4 4.9 4.9-3 .5-4.4 1.9-4.9 4.9-.5-3-1.9-4.4-4.9-4.9 3-.5 4.4-1.9 4.9-4.9z" fill="url(#plg-a)" opacity=".75"/><circle cx="7" cy="24.5" r="2.4" fill="url(#plg-a)" opacity=".55"/></svg>';
-    IC.yearly =
+    PLAN_ICONS.yearly =
       '<svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="plg-y2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9a8ff"/><stop offset="1" stop-color="#6c4cf5"/></linearGradient></defs><rect x="9" y="2.5" width="3" height="6" rx="1.5" fill="url(#plg-y2)"/><rect x="20" y="2.5" width="3" height="6" rx="1.5" fill="url(#plg-y2)"/><path d="M7 6h18a4 4 0 0 1 4 4v14.5a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4z" fill="url(#plg-y2)"/><path d="M3 12.5h26" stroke="#fff" stroke-opacity=".35" stroke-width="1.4"/><path d="M16 15.2l1.6 3.3 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z" fill="#fff"/></svg>';
-    IC.trail = IC.free;
-    IC.route = IC.pass;
-    var P = {
+    PLAN_ICONS.trail = PLAN_ICONS.free;
+    PLAN_ICONS.route = PLAN_ICONS.pass;
+    var PLANS = {
       free: {
         n: "Free",
         d: "Try Kosway on your first two trips",
@@ -1725,7 +1739,7 @@ try {
       atlas: ["Monthly", "Cancel any time"],
       yearly: ["Best value", "Renews yearly"],
     };
-    var KS = ["free", "pass", "atlas", "yearly"],
+    var PLAN_KEYS = ["free", "pass", "atlas", "yearly"],
       BASE = { pass: 199, atlas: 99, yearly: 999, custom: 99 },
       PER = { pass: "for 30 days", atlas: "a month", yearly: "a year", custom: "one time" };
     function today() {
@@ -1734,25 +1748,25 @@ try {
     function ent() {
       var e = {};
       try {
-        e = JSON.parse(ls("vizag-ent") || "{}") || {};
+        e = JSON.parse(readKey("vizag-ent") || "{}") || {};
       } catch (x) {}
       return e;
     }
-    function on(k) {
+    function owns(k) {
       var e = ent();
-      if (k === "custom") return !!e.custom || on("yearly");
+      if (k === "custom") return !!e.custom || owns("yearly");
       return !!(e[k] && e[k] >= today());
     }
     function mirror() {
       var e = ent(),
         v = null;
-      if (on("yearly") || on("atlas")) v = { plan: "pro", renew: on("yearly") ? e.yearly : e.atlas };
-      else if (on("pass")) v = { plan: "plus", renew: e.pass };
-      ss("vizag-plan", v ? JSON.stringify(v) : null);
+      if (owns("yearly") || owns("atlas")) v = { plan: "pro", renew: owns("yearly") ? e.yearly : e.atlas };
+      else if (owns("pass")) v = { plan: "plus", renew: e.pass };
+      writeKey("vizag-plan", v ? JSON.stringify(v) : null);
     }
-    window.__ent = { on: on, get: ent, mirror: mirror };
+    window.__ent = { on: owns, get: ent, mirror: mirror };
     function cur() {
-      return on("yearly") ? "yearly" : on("pass") ? "pass" : on("atlas") ? "atlas" : "free";
+      return owns("yearly") ? "yearly" : owns("pass") ? "pass" : owns("atlas") ? "atlas" : "free";
     }
     function price(k) {
       var o = offerLeft() > 0,
@@ -1764,9 +1778,9 @@ try {
       var c = cur();
       sel || (sel = c === "free" ? "pass" : c);
       var k = sel,
-        pl = P[k],
+        pl = PLANS[k],
         pr = price(k),
-        own = k !== "free" && on(k),
+        own = k !== "free" && owns(k),
         ol = offerLeft();
       var CK =
           '<svg class="p2ck" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
@@ -1780,7 +1794,7 @@ try {
           ["Customisation", "₹99", "₹99", "₹99", 1],
           ["Price", "Free", "₹199", "₹99/mo", "₹999/yr"],
         ],
-        ci = KS.indexOf(k);
+        ci = PLAN_KEYS.indexOf(k);
       function cell(v) {
         return v === 1 ? CK : v === 0 ? NO : "<span>" + v + "</span>";
       }
@@ -1803,27 +1817,27 @@ try {
                 " a month. Atlas alone is " +
                 rup(BASE.atlas * 12) +
                 " a year.";
-      var ad = on("custom")
+      var ad = owns("custom")
         ? '<div class="p2add own"><span class="p2ai">' +
-          ic("palette") +
+          iconSvg("palette") +
           '</span><span class="p2at"><b>Customisation</b><small>' +
-          (on("yearly") ? "Included with Yearly" : "Yours forever") +
+          (owns("yearly") ? "Included with Yearly" : "Yours forever") +
           '</small></span><i class="p2tag">Owned</i></div>'
         : '<button type="button" class="p2add" data-addon="custom"><span class="p2ai">' +
-          ic("palette") +
+          iconSvg("palette") +
           '</span><span class="p2at"><b>Customisation add-on</b><small>All themes, nav styles, home cards and app icons. Yours forever.</small></span><span class="p2ap"><b>' +
           rup(price("custom").now) +
           "</b><small>one time</small></span></button>";
       body.innerHTML =
         '<div class="p2seg p2seg4" role="tablist" aria-label="Plans">' +
-        KS.map(function (x) {
+        PLAN_KEYS.map(function (x) {
           return (
             '<button type="button" role="tab" data-pk="' +
             x +
             '" aria-selected="' +
             (x === k) +
             '">' +
-            (x === "pass" ? "Pass" : P[x].n) +
+            (x === "pass" ? "Pass" : PLANS[x].n) +
             (x === c && x !== "free" ? '<i class="p2dot" aria-label="active"></i>' : "") +
             "</button>"
           );
@@ -1838,7 +1852,7 @@ try {
         "</b><small>" +
         pl.d +
         '</small></span><span class="ptile">' +
-        IC[k] +
+        PLAN_ICONS[k] +
         "</span></div>" +
         (ol > 0 && k !== "free"
           ? '<div class="p2ofl"><span>10% off, just for you</span><span>Ends in <time class="ofcd">' +
@@ -1865,7 +1879,7 @@ try {
         '<ul class="p2inc">' +
         pl.rows
           .map(function (r) {
-            return "<li>" + ic(r[0]) + "<span>" + r[1] + "</span><em>" + r[2] + "</em></li>";
+            return "<li>" + iconSvg(r[0]) + "<span>" + r[1] + "</span><em>" + r[2] + "</em></li>";
           })
           .join("") +
         "</ul></div>" +
@@ -1874,8 +1888,8 @@ try {
         '<div class="p2cap">Compare</div><div class="p2cmp p2cmp4" style="--ci:' +
         ci +
         '"><div class="p2r p2h"><span></span>' +
-        KS.map(function (x, i) {
-          return '<b class="' + (i === ci ? "on" : "") + '">' + (x === "pass" ? "Pass" : P[x].n) + "</b>";
+        PLAN_KEYS.map(function (x, i) {
+          return '<b class="' + (i === ci ? "on" : "") + '">' + (x === "pass" ? "Pass" : PLANS[x].n) + "</b>";
         }).join("") +
         "</div>" +
         CMP.map(function (r) {
@@ -1908,11 +1922,11 @@ try {
           buy = "custom";
           goingPay = !0;
           fill();
-          orig && orig.call(up, e);
+          orig && orig.call(upgradeButton, e);
         });
       chip.innerHTML =
         '<span class="ptile">' +
-        IC[k] +
+        PLAN_ICONS[k] +
         '</span><span class="cn"><b>' +
         pl.n +
         "</b><small>" +
@@ -1929,10 +1943,10 @@ try {
         t = pl.n + " is active";
         dis = !0;
         ln = "Active until " + fmt(ent()[k]);
-      } else if (k === "pass" && on("yearly")) {
+      } else if (k === "pass" && owns("yearly")) {
         t = "Yearly already includes this";
         dis = !0;
-      } else if (k === "atlas" && on("yearly")) {
+      } else if (k === "atlas" && owns("yearly")) {
         t = "Yearly already includes Atlas";
         dis = !0;
       } else {
@@ -1944,8 +1958,8 @@ try {
               ? rup(pr.now) + " a month. Cancel any time."
               : rup(pr.now) + " a year. Cancel any time.";
       }
-      up.textContent = t;
-      up.disabled = dis;
+      upgradeButton.textContent = t;
+      upgradeButton.disabled = dis;
       line.textContent = ln;
     }
     function fmt(d) {
@@ -1960,18 +1974,18 @@ try {
       }
     }
     function made() {
-      return +ls("vizag-trips-made") || 0;
+      return +readKey("vizag-trips-made") || 0;
     }
     function tripsLeft() {
       return Math.max(0, 2 - made());
     }
     window.__tripGate = function () {
-      if (on("pass") || on("yearly")) {
-        ss("vizag-trips-made", String(made() + 1));
+      if (owns("pass") || owns("yearly")) {
+        writeKey("vizag-trips-made", String(made() + 1));
         return !0;
       }
       if (made() < 2) {
-        ss("vizag-trips-made", String(made() + 1));
+        writeKey("vizag-trips-made", String(made() + 1));
         return !0;
       }
       sel = "pass";
@@ -1983,23 +1997,23 @@ try {
     };
     /* picker */
     var buy = null;
-    var pk = D.createElement("div");
-    pk.className = "sheet lsheet psheet";
-    pk.id = "pl-pick";
-    pk.hidden = !0;
-    pk.setAttribute("role", "dialog");
-    pk.setAttribute("aria-label", "Choose a plan");
-    D.body.appendChild(pk);
-    pk.addEventListener("click", function (e) {
+    var planPicker = doc.createElement("div");
+    planPicker.className = "sheet lsheet psheet";
+    planPicker.id = "pl-pick";
+    planPicker.hidden = !0;
+    planPicker.setAttribute("role", "dialog");
+    planPicker.setAttribute("aria-label", "Choose a plan");
+    doc.body.appendChild(planPicker);
+    planPicker.addEventListener("click", function (e) {
       e.stopPropagation();
     });
     function pick() {
       var c = cur();
-      pk.innerHTML =
+      planPicker.innerHTML =
         '<div class="shtitle"><span>Choose a plan</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="pkc">' +
-        KS.map(function (k) {
+        PLAN_KEYS.map(function (k) {
           var pr = price(k),
-            pl = P[k];
+            pl = PLANS[k];
           return (
             '<button type="button" class="pk' +
             (k === sel ? " sel" : "") +
@@ -2010,7 +2024,7 @@ try {
             '">' +
             (k === "yearly" ? '<span class="kbest">Best value</span>' : "") +
             '<span class="ptile">' +
-            IC[k] +
+            PLAN_ICONS[k] +
             '</span><span class="kn"><b>' +
             pl.n +
             (k === c && k !== "free" ? ' <i class="plcur2">Active</i>' : "") +
@@ -2024,31 +2038,31 @@ try {
           );
         }).join("") +
         "</div>";
-      pk.querySelector(".shclose").onclick = function () {
-        pk.hidden = !0;
+      planPicker.querySelector(".shclose").onclick = function () {
+        planPicker.hidden = !0;
       };
-      pk.querySelectorAll(".pk").forEach(function (b) {
+      planPicker.querySelectorAll(".pk").forEach(function (b) {
         b.onclick = function () {
           sel = b.dataset.k;
           window.__snd && window.__snd("tap");
-          pk.querySelectorAll(".pk").forEach(function (x) {
+          planPicker.querySelectorAll(".pk").forEach(function (x) {
             x.classList.toggle("sel", x === b);
           });
           setTimeout(function () {
-            pk.hidden = !0;
+            planPicker.hidden = !0;
             render();
           }, 160);
         };
       });
-      pk.hidden = !1;
+      planPicker.hidden = !1;
     }
     chip.addEventListener("click", function (e) {
       e.stopPropagation();
       pick();
     });
     /* checkout */
-    var NM = { pass: "Trip pass", atlas: "Atlas", yearly: "Yearly", custom: "Customisation" },
-      BL = {
+    var PLAN_NAMES = { pass: "Trip pass", atlas: "Atlas", yearly: "Yearly", custom: "Customisation" },
+      PLAN_BULLETS = {
         pass: ["30 days of unlimited trips", "Trip PDF and Jump to now", "Nothing renews"],
         atlas: ["300 Atlas replies a month", "Cancel any time in Settings"],
         yearly: [
@@ -2059,23 +2073,23 @@ try {
         custom: ["All themes, nav styles and home cards", "App icon colours", "Pay once, yours forever"],
       };
     function fill() {
-      var co = D.getElementById("checkout-sheet");
+      var co = doc.getElementById("checkout-sheet");
       if (!co) return;
       var k = buy || sel,
         pr = price(k),
         ti = co.querySelector(".shtitle span");
-      ti && (ti.textContent = "Get " + NM[k]);
+      ti && (ti.textContent = "Get " + PLAN_NAMES[k]);
       var cd = co.querySelector(".plcard");
       cd &&
         (cd.innerHTML =
           '<div class="plh"><b>' +
-          NM[k] +
+          PLAN_NAMES[k] +
           "</b><span>" +
           rup(pr.now) +
           " " +
           pr.per +
           "</span></div><ul>" +
-          BL[k]
+          PLAN_BULLETS[k]
             .map(function (x) {
               return "<li>" + x + "</li>";
             })
@@ -2106,50 +2120,50 @@ try {
             }
             e[k] = G.toISOString().slice(0, 10);
           }
-          ss("vizag-ent", JSON.stringify(e));
+          writeKey("vizag-ent", JSON.stringify(e));
           mirror();
           buy = null;
-          ss("vizag-offer-until", null);
+          writeKey("vizag-offer-until", null);
           var x = co.querySelector(".shclose");
           x && x.click();
           window.__paintPlan && window.__paintPlan();
           window.__pfsync && window.__pfsync();
           window.__snd && window.__snd("win");
           window.__toast &&
-            window.__toast(NM[k] + (k === "custom" ? " is yours. Enjoy!" : " is active. Enjoy!"));
-          A.hidden || render();
+            window.__toast(PLAN_NAMES[k] + (k === "custom" ? " is yours. Enjoy!" : " is active. Enjoy!"));
+          plansSheet.hidden || render();
         }, 1200);
       };
     }
-    up &&
-      (up.onclick = function (e) {
-        if (up.disabled) return;
+    upgradeButton &&
+      (upgradeButton.onclick = function (e) {
+        if (upgradeButton.disabled) return;
         buy = null;
         goingPay = !0;
         fill();
         orig && orig.call(this, e);
       });
-    var op = window.__openPlans;
+    var origOpenPlans = window.__openPlans;
     window.__openPlans = function () {
       var keep = sel;
       sel = null;
       goingPay = !1;
       render();
-      if (keep && keep !== sel && KS.indexOf(keep) >= 0 && cur() === "free") {
+      if (keep && keep !== sel && PLAN_KEYS.indexOf(keep) >= 0 && cur() === "free") {
         sel = keep;
         render();
       }
-      op && op();
+      origOpenPlans && origOpenPlans();
     };
     render();
 
     /* countdown tick */
     setInterval(function () {
       var l = offerLeft(),
-        t = D.querySelectorAll(".ofcd");
+        t = doc.querySelectorAll(".ofcd");
       if (!t.length) return;
       if (l <= 0) {
-        A.hidden || render();
+        plansSheet.hidden || render();
         return;
       }
       t.forEach(function (x) {
@@ -2157,64 +2171,64 @@ try {
       });
     }, 1000);
     /* first-close offer */
-    var of = null;
+    var offerSheet = null;
     function offer() {
-      if (of) of.remove();
-      of = D.createElement("div");
-      of.className = "sheet lsheet";
-      of.id = "offer-sheet";
-      of.setAttribute("role", "dialog");
-      of.setAttribute("aria-label", "Special offer");
-      of.innerHTML =
+      if (offerSheet) offerSheet.remove();
+      offerSheet = doc.createElement("div");
+      offerSheet.className = "sheet lsheet";
+      offerSheet.id = "offer-sheet";
+      offerSheet.setAttribute("role", "dialog");
+      offerSheet.setAttribute("aria-label", "Special offer");
+      offerSheet.innerHTML =
         '<div class="lohead locent"><span class="ofic">%</span><div class="t">10% off, just for you</div><div class="s">Get a pass, Atlas or Yearly for less. This offer ends in</div><div class="ofclock ofcd">' +
         hms(offerLeft()) +
         '</div></div><button type="button" class="btn full" id="of-go">See offer</button><button type="button" class="btn ghost full" id="of-skip">Not now</button>';
-      D.body.appendChild(of);
-      var sc = D.getElementById("scrim");
+      doc.body.appendChild(offerSheet);
+      var sc = doc.getElementById("scrim");
       sc && (sc.hidden = !1);
-      function cl() {
-        of.remove();
-        of = null;
-        sc && !D.querySelector(".sheet:not(.inpage):not([hidden])") && (sc.hidden = !0);
+      function closeOffer() {
+        offerSheet.remove();
+        offerSheet = null;
+        sc && !doc.querySelector(".sheet:not(.inpage):not([hidden])") && (sc.hidden = !0);
       }
-      of.addEventListener("click", function (e) {
+      offerSheet.addEventListener("click", function (e) {
         e.stopPropagation();
       });
-      of.querySelector("#of-skip").onclick = cl;
-      of.querySelector("#of-go").onclick = function () {
-        cl();
+      offerSheet.querySelector("#of-skip").onclick = closeOffer;
+      offerSheet.querySelector("#of-go").onclick = function () {
+        closeOffer();
         window.__openPlans && window.__openPlans();
       };
       sc &&
         sc.addEventListener("click", function f() {
-          of && cl();
+          offerSheet && closeOffer();
           sc.removeEventListener("click", f);
         });
     }
     new MutationObserver(function () {
-      if (!A.hidden) {
+      if (!plansSheet.hidden) {
         return;
       }
-      pk.hidden = !0;
+      planPicker.hidden = !0;
       if (goingPay) return;
-      if (cur() !== "free" || ls("vizag-offer-seen")) return;
-      ss("vizag-offer-seen", "1");
-      ss("vizag-offer-until", String(Date.now() + 864e5));
+      if (cur() !== "free" || readKey("vizag-offer-seen")) return;
+      writeKey("vizag-offer-seen", "1");
+      writeKey("vizag-offer-until", String(Date.now() + 864e5));
       setTimeout(offer, 280);
-    }).observe(A, { attributes: !0, attributeFilter: ["hidden"] });
+    }).observe(plansSheet, { attributes: !0, attributeFilter: ["hidden"] });
     /* dev: reset offer */
     function dev() {
-      var o = D.querySelector(".devopts");
-      if (!o || D.getElementById("dev-offer")) return;
-      var r = D.createElement("div");
+      var o = doc.querySelector(".devopts");
+      if (!o || doc.getElementById("dev-offer")) return;
+      var r = doc.createElement("div");
       r.className = "setrow";
       r.id = "dev-offer";
       r.innerHTML =
         '<span class="setl">Reset 10% offer<small>Shows again next time Plans closes</small></span><button type="button" class="setbtn">Reset</button>';
       r.querySelector("button").onclick = function (e) {
         e.stopPropagation();
-        ss("vizag-offer-seen", null);
-        ss("vizag-offer-until", null);
+        writeKey("vizag-offer-seen", null);
+        writeKey("vizag-offer-until", null);
         window.__toast && window.__toast("Offer reset");
       };
       o.appendChild(r);
@@ -2224,12 +2238,12 @@ try {
     /* profile: name or photo opens edit profile */
 
     /* AI sheet: show intro only when needed */
-    var as = D.getElementById("ai-sheet");
-    as &&
+    var aiSheet = doc.getElementById("ai-sheet");
+    aiSheet &&
       new MutationObserver(function () {
-        var i = as.querySelector(".aiintro");
-        as.classList.toggle("need", !!(i && i.__o && i.textContent !== i.__o));
-      }).observe(as, { attributes: !0, attributeFilter: ["hidden"], subtree: !1 });
+        var i = aiSheet.querySelector(".aiintro");
+        aiSheet.classList.toggle("need", !!(i && i.__o && i.textContent !== i.__o));
+      }).observe(aiSheet, { attributes: !0, attributeFilter: ["hidden"], subtree: !1 });
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Plans sheet: builds the plan cards, tabs, compare table and ", err);
@@ -2240,9 +2254,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     var COL = ["#ffd6a5", "#caffbf", "#bdb2ff", "#ffc6ff", "#9bf6ff", "#fdffb6", "#ffadad", "#a0e7e5"];
-    function hc(t) {
+    function hashColour(t) {
       var h = 0;
       for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
       return COL[h % COL.length];
@@ -2271,14 +2285,14 @@ try {
       var h = m
         .slice(0, 3)
         .map(function (x) {
-          return '<i style="background:' + hc(x) + '">' + esc(ini(x)) + "</i>";
+          return '<i style="background:' + hashColour(x) + '">' + esc(ini(x)) + "</i>";
         })
         .join("");
       m.length > 3 && (h += '<i class="more">+' + (m.length - 3) + "</i>");
       return '<span class="gstack">' + (h || '<i class="more">0</i>') + "</span>";
     };
     function deco() {
-      var e = D.getElementById("grp-list");
+      var e = doc.getElementById("grp-list");
       if (!e || !window.__groups) return;
       var G = window.__groups();
       e.querySelectorAll("[data-gi]").forEach(function (r) {
@@ -2296,10 +2310,10 @@ try {
         }
       });
     }
-    var gle = D.getElementById("grp-list");
+    var gle = doc.getElementById("grp-list");
     gle && (new MutationObserver(deco).observe(gle, { childList: !0 }), deco());
     /* leaderboard data (sample until public profiles exist) */
-    var LB = [
+    var SAMPLE_BOARD = [
       ["Ananya Rao", "ananya", 2840, 14, 9, 46, "Kerala"],
       ["Kabir Mehta", "kabirm", 2615, 12, 8, 41, "Ladakh"],
       ["Meera Iyer", "meera.i", 2480, 11, 10, 38, "Goa"],
@@ -2328,14 +2342,20 @@ try {
       var t = TIER[u];
       return t ? ' <i class="lbtier ' + t + '">' + (t === "pro" ? "Atlas" : "Pass") + "</i>" : "";
     }
-    function av(n, sz, pent) {
+    function avatarHtml(n, sz, pent) {
       return (
-        '<i class="lav ' + sz + '" style="background:' + hc(n) + ';border-radius:50%">' + esc(ini(n)) + "</i>"
+        '<i class="lav ' +
+        sz +
+        '" style="background:' +
+        hashColour(n) +
+        ';border-radius:50%">' +
+        esc(ini(n)) +
+        "</i>"
       );
     }
     var CROWN =
       '<svg class="crown" viewBox="0 0 34 24" aria-hidden="true"><defs><linearGradient id="lbcr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#e8941a"/></linearGradient></defs><path d="M3 7l7.5 6L17 2l6.5 11L31 7l-3 15H6z" fill="url(#lbcr)" stroke="#c97a00" stroke-width="1" stroke-linejoin="round"/><circle cx="17" cy="15" r="2" fill="#fff" opacity=".85"/></svg>';
-    function me() {
+    function myEntry() {
       var n = (window.__profName && window.__profName()) || {},
         pts = 0;
       try {
@@ -2345,16 +2365,16 @@ try {
       } catch (e) {}
       return { n: n.name || n.user || "You", pts: pts };
     }
-    var sc = D.getElementById("scrim");
+    var scrim = doc.getElementById("scrim");
     function sheet(id, cls) {
-      var x = D.getElementById(id);
+      var x = doc.getElementById(id);
       if (x) return x;
-      x = D.createElement("div");
+      x = doc.createElement("div");
       x.className = "sheet lsheet psheet" + (cls ? " " + cls : "");
       x.id = id;
       x.hidden = !0;
       x.setAttribute("role", "dialog");
-      D.body.appendChild(x);
+      doc.body.appendChild(x);
       x.addEventListener("click", function (e) {
         e.stopPropagation();
       });
@@ -2362,7 +2382,7 @@ try {
     }
     function shut(x) {
       x.hidden = !0;
-      sc && !D.querySelector(".sheet:not(.inpage):not([hidden])") && (sc.hidden = !0);
+      scrim && !doc.querySelector(".sheet:not(.inpage):not([hidden])") && (scrim.hidden = !0);
     }
     function openSoon() {
       var x = sheet("lb-sheet");
@@ -2381,7 +2401,7 @@ try {
             function (i) {
               return "";
             };
-          function P(r, a) {
+          function podiumHtml(r, a) {
             return (
               '<div class="lbp p' +
               r +
@@ -2398,9 +2418,9 @@ try {
           }
           return (
             '<div class="lbsz" aria-hidden="true"><i class="lbsp s1"></i><i class="lbsp s2"></i><i class="lbsp s3"></i>' +
-            P(2, "kav3") +
-            P(1, "kav1") +
-            P(3, "kav6") +
+            podiumHtml(2, "kav3") +
+            podiumHtml(1, "kav1") +
+            podiumHtml(3, "kav6") +
             "</div>"
           );
         })() +
@@ -2416,29 +2436,35 @@ try {
       x.querySelector(".shclose").onclick = function () {
         shut(x);
       };
-      D.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (o) {
+      doc.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (o) {
         o.hidden = !0;
       });
       x.hidden = !1;
       x.scrollTop = 0;
-      sc && (sc.hidden = !1);
+      scrim && (scrim.hidden = !1);
     }
     function openLB() {
       var RL = window.__lbData;
       if (RL && RL.length >= 20) {
-        LB = RL;
+        SAMPLE_BOARD = RL;
       } else {
         return openSoon();
       }
       var x = sheet("lb-sheet");
       x.setAttribute("aria-label", "Top travellers");
-      var m = me(),
-        top = LB.slice(0, 3),
-        need = Math.max(0, LB[14][2] - m.pts + 1);
-      var mx = LB[0][2];
-      function ra(n, c) {
+      var m = myEntry(),
+        top = SAMPLE_BOARD.slice(0, 3),
+        need = Math.max(0, SAMPLE_BOARD[14][2] - m.pts + 1);
+      var mx = SAMPLE_BOARD[0][2];
+      function rankAvatar(n, c) {
         return (
-          '<i class="lra' + (c ? " " + c : "") + '" style="background:' + hc(n) + '">' + esc(ini(n)) + "</i>"
+          '<i class="lra' +
+          (c ? " " + c : "") +
+          '" style="background:' +
+          hashColour(n) +
+          '">' +
+          esc(ini(n)) +
+          "</i>"
         );
       }
       function row(n, u, sub, pts, rk, you) {
@@ -2448,7 +2474,7 @@ try {
           '"><span class="lrk">' +
           rk +
           "</span>" +
-          ra(n) +
+          rankAvatar(n) +
           '<span class="lnm"><b>' +
           esc(n) +
           (u ? tier(u) : "") +
@@ -2474,7 +2500,7 @@ try {
             ", rank " +
             (k + 1) +
             '"><span class="lpa">' +
-            ra(p[0]) +
+            rankAvatar(p[0]) +
             '<b class="lpr">' +
             (k + 1) +
             '</b></span><span class="pn">' +
@@ -2489,7 +2515,7 @@ try {
         '<div class="shtitle"><span>Top travellers</span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><p class="lbsub2">This month · public profiles</p><div class="lbpod">' +
         pod +
         '</div><div class="lbcap">Rankings</div><div class="lbl2">' +
-        LB.slice(3)
+        SAMPLE_BOARD.slice(3)
           .map(function (p, i) {
             return row(p[0], p[1], "@" + esc(p[1]) + " · " + p[4] + " states", p[2], i + 4);
           })
@@ -2502,7 +2528,7 @@ try {
           m.pts,
           (function () {
             var r = 1;
-            LB.forEach(function (p) {
+            SAMPLE_BOARD.forEach(function (p) {
               p[2] > m.pts && r++;
             });
             return r > 15 ? "16+" : String(r);
@@ -2511,8 +2537,8 @@ try {
         ) +
         '</div><p class="lbnote">Only public profiles appear here. Sample travellers for now.</p>';
       x.querySelector(".shclose").onclick = function () {
-        var t = D.getElementById("tp-sheet"),
-          b = D.getElementById("tp-blur");
+        var t = doc.getElementById("tp-sheet"),
+          b = doc.getElementById("tp-blur");
         t && (t.hidden = !0);
         b && (b.hidden = !0);
         shut(x);
@@ -2522,20 +2548,20 @@ try {
           openTP(+b.dataset.i);
         };
       });
-      D.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (o) {
+      doc.querySelectorAll(".sheet:not(.inpage):not([hidden])").forEach(function (o) {
         o.hidden = !0;
       });
       x.hidden = !1;
       x.scrollTop = 0;
-      sc && (sc.hidden = !1);
+      scrim && (scrim.hidden = !1);
     }
     function openTP(i) {
-      var p = LB[i],
+      var p = SAMPLE_BOARD[i],
         x = sheet("tp-sheet");
       x.setAttribute("aria-label", p[0]);
       x.innerHTML =
         '<div class="shtitle"><span></span><button type="button" class="shclose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div class="tph">' +
-        av(p[0], "xl", !0) +
+        avatarHtml(p[0], "xl", !0) +
         "<b>" +
         esc(p[0]) +
         tier(p[1]) +
@@ -2554,23 +2580,23 @@ try {
         '</b><small>Days</small></div></div><div class="tpfav"><span>Loves ' +
         esc(p[6]) +
         '</span><span>Explorer level</span></div><button type="button" class="btn full tpok">Close</button>';
-      var bl = D.getElementById("tp-blur");
+      var bl = doc.getElementById("tp-blur");
       if (!bl) {
-        bl = D.createElement("div");
+        bl = doc.createElement("div");
         bl.id = "tp-blur";
         bl.hidden = !0;
-        D.body.appendChild(bl);
+        doc.body.appendChild(bl);
       }
-      function c() {
+      function closeBoard() {
         x.hidden = !0;
         bl.hidden = !0;
       }
       bl.onclick = function (e) {
         e.stopPropagation();
-        c();
+        closeBoard();
       };
-      x.querySelector(".shclose").onclick = c;
-      x.querySelector(".tpok").onclick = c;
+      x.querySelector(".shclose").onclick = closeBoard;
+      x.querySelector(".tpok").onclick = closeBoard;
       x.parentNode.insertBefore(bl, x);
       bl.hidden = !1;
       x.hidden = !1;
@@ -2578,17 +2604,17 @@ try {
     window.__openLeaderboard = openLB;
     /* entry in Profile */
     function ent() {
-      var a = D.getElementById("acct");
-      if (!a || D.getElementById("lb-ent")) return;
-      var b = D.createElement("button");
+      var a = doc.getElementById("acct");
+      if (!a || doc.getElementById("lb-ent")) return;
+      var b = doc.createElement("button");
       b.type = "button";
       b.className = "lbent";
       b.id = "lb-ent";
       b.innerHTML =
         '<span class="lbs">' +
-        LB.slice(0, 3)
+        SAMPLE_BOARD.slice(0, 3)
           .map(function (p) {
-            return av(p[0], "s", !0);
+            return avatarHtml(p[0], "s", !0);
           })
           .join("") +
         '</span><span class="lbt"><b>Top travellers</b><small>See who’s explored the most this month</small></span><span class="lbgo"><svg viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></svg></span>';
@@ -2596,7 +2622,7 @@ try {
         e.stopPropagation();
         openLB();
       };
-      var host = D.getElementById("acct-empty");
+      var host = doc.getElementById("acct-empty");
       (a.hidden && host && !host.hidden ? host : a).after(b);
     }
     setTimeout(ent, 500);
@@ -2611,13 +2637,13 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
+    var doc = document,
       last = "";
     function png(svg, sz, cb) {
       var i = new Image();
       i.onload = function () {
         try {
-          var c = D.createElement("canvas");
+          var c = doc.createElement("canvas");
           c.width = c.height = sz;
           var x = c.getContext("2d");
           x.drawImage(i, 0, 0, sz, sz);
@@ -2627,12 +2653,12 @@ try {
       i.src = svg;
     }
     function link(rel, href, sizes) {
-      var l = D.querySelector('link[rel="' + rel + '"]' + (sizes ? '[sizes="' + sizes + '"]' : ""));
+      var l = doc.querySelector('link[rel="' + rel + '"]' + (sizes ? '[sizes="' + sizes + '"]' : ""));
       if (!l) {
-        l = D.createElement("link");
+        l = doc.createElement("link");
         l.rel = rel;
         sizes && l.setAttribute("sizes", sizes);
-        D.head.appendChild(l);
+        doc.head.appendChild(l);
       }
       l.href = href;
     }
@@ -2662,14 +2688,14 @@ try {
                 { src: u512, sizes: "512x512", type: "image/png", purpose: "any" },
               ],
             };
-            var ml = D.querySelector('link[rel="manifest"]');
+            var ml = doc.querySelector('link[rel="manifest"]');
             ml && (ml.href = "data:application/manifest+json," + encodeURIComponent(JSON.stringify(m)));
           } catch (e) {}
         });
       });
     };
-    var ic = D.querySelector('link[rel="icon"]');
-    ic && /^data:image\/svg/.test(ic.href) && window.__iconPng(ic.href);
+    var iconLink = doc.querySelector('link[rel="icon"]');
+    iconLink && /^data:image\/svg/.test(iconLink.href) && window.__iconPng(iconLink.href);
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Turns the custom app icon into PNG images for the home scree", err);
@@ -2680,31 +2706,31 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      R = D.documentElement;
-    function ls(k) {
+    var doc = document,
+      rootEl = doc.documentElement;
+    function readKey(k) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
         return null;
       }
     }
-    function ss(k, v) {
+    function writeKey(k, v) {
       try {
         v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
       } catch (e) {}
     }
     /* coloured hand-drawn strike from the theme accent */
-    var la = "";
+    var lastAccent = "";
     function strike() {
-      var a = getComputedStyle(R).getPropertyValue("--accent").trim();
-      if (!a || a === la) return;
-      la = a;
+      var a = getComputedStyle(rootEl).getPropertyValue("--accent").trim();
+      if (!a || a === lastAccent) return;
+      lastAccent = a;
       var svg =
         "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M1 7.2C12 4.6 22 8.8 36 6.4S62 4.2 78 6.9 94 5.8 99 4.8' fill='none' stroke='" +
         a +
         "' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/></svg>";
-      R.style.setProperty(
+      rootEl.style.setProperty(
         "--strike",
         'url("data:image/svg+xml,' + encodeURIComponent(svg).replace(/'/g, "%27") + '")',
       );
@@ -2712,65 +2738,66 @@ try {
     strike();
     setInterval(strike, 1200);
     /* bottom blur sits on top of the nav */
-    var bb = D.createElement("div");
-    bb.className = "bblur";
-    bb.setAttribute("aria-hidden", "true");
-    D.body.appendChild(bb);
+    var bottomBlur = doc.createElement("div");
+    bottomBlur.className = "bblur";
+    bottomBlur.setAttribute("aria-hidden", "true");
+    doc.body.appendChild(bottomBlur);
     function bpos() {
-      var n = D.querySelector(".nav");
+      var n = doc.querySelector(".nav");
       if (!n) return;
       var r = n.getBoundingClientRect();
       if (!r.height || r.top < innerHeight * 0.5) {
-        bb.style.display = "none";
+        bottomBlur.style.display = "none";
         return;
       }
-      bb.style.display = "";
-      R.style.setProperty("--bbot", Math.max(0, Math.round(innerHeight - r.top - 1)) + "px");
+      bottomBlur.style.display = "";
+      rootEl.style.setProperty("--bbot", Math.max(0, Math.round(innerHeight - r.top - 1)) + "px");
     }
     bpos();
     addEventListener("resize", bpos);
     setInterval(bpos, 1000);
     /* login: track the visible area above the keyboard */
-    var vv = window.visualViewport;
+    var viewport = window.visualViewport;
     function vset() {
-      if (!vv) return;
-      R.style.setProperty("--vvh", Math.round(vv.height) + "px");
-      R.style.setProperty("--vvt", Math.round(vv.offsetTop) + "px");
+      if (!viewport) return;
+      rootEl.style.setProperty("--vvh", Math.round(viewport.height) + "px");
+      rootEl.style.setProperty("--vvt", Math.round(viewport.offsetTop) + "px");
     }
-    vv && (vv.addEventListener("resize", vset), vv.addEventListener("scroll", vset), vset());
+    viewport &&
+      (viewport.addEventListener("resize", vset), viewport.addEventListener("scroll", vset), vset());
     /* long-press Home: stop the iOS loupe, keep short taps working */
-    var hs = null,
-      hx = 0,
-      hy = 0,
-      ht = 0;
-    D.addEventListener(
+    var holdStart = null,
+      holdX = 0,
+      holdY = 0,
+      holdTimer = 0;
+    doc.addEventListener(
       "touchstart",
       function (e) {
         var b = e.target.closest && e.target.closest('.nav button[data-v="home"]');
         if (!b) return;
-        hs = b;
-        ht = Date.now();
-        hx = e.touches[0].clientX;
-        hy = e.touches[0].clientY;
+        holdStart = b;
+        holdTimer = Date.now();
+        holdX = e.touches[0].clientX;
+        holdY = e.touches[0].clientY;
         e.preventDefault();
       },
       { passive: !1, capture: !0 },
     );
-    D.addEventListener(
+    doc.addEventListener(
       "touchend",
       function (e) {
-        if (!hs) return;
-        var b = hs;
-        hs = null;
+        if (!holdStart) return;
+        var b = holdStart;
+        holdStart = null;
         var t = e.changedTouches[0],
-          mv = Math.abs(t.clientX - hx) + Math.abs(t.clientY - hy);
-        if (mv < 12 && Date.now() - ht < 350) b.click();
+          mv = Math.abs(t.clientX - holdX) + Math.abs(t.clientY - holdY);
+        if (mv < 12 && Date.now() - holdTimer < 350) b.click();
       },
       !0,
     );
     /* Trip section (24-hour time) goes below Customisation */
     function moveTrip() {
-      var sp = D.getElementById("settings-profile");
+      var sp = doc.getElementById("settings-profile");
       if (!sp || sp.__tm) return;
       var caps = [].slice.call(sp.querySelectorAll(":scope>.setcap")),
         tc = null,
@@ -2790,40 +2817,40 @@ try {
     }
     /* combined profile card: Top travellers + Pass & Atlas */
     var COL = ["#ffd6a5", "#caffbf", "#bdb2ff", "#ffc6ff", "#9bf6ff", "#fdffb6", "#ffadad", "#a0e7e5"];
-    function hc(t) {
+    function hashColour(t) {
       var h = 0;
       for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
       return COL[h % COL.length];
     }
-    var ax = null;
+    var accountCard = null;
     function acx() {
-      var a = D.getElementById("acct"),
-        em = D.getElementById("acct-empty");
+      var a = doc.getElementById("acct"),
+        em = doc.getElementById("acct-empty");
       if (!a) return;
-      if (!ax) {
-        ax = D.createElement("div");
-        ax.className = "acx";
-        ax.innerHTML =
+      if (!accountCard) {
+        accountCard = doc.createElement("div");
+        accountCard.className = "acx";
+        accountCard.innerHTML =
           '<button type="button" id="acx-lb"><span class="xc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/></svg></span><span class="xt"><b>Top travellers</b><small>Coming soon</small></span></button><button type="button" id="acx-pf"><span class="xc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.5l4.6 3.6L12 5.5l3.9 6.6 4.6-3.6-1.8 9.7H5.3z"/></svg></span><span class="xt"><b>Pass &amp; Atlas</b><small id="acx-n">Features</small></span></button>';
-        ax.querySelector("#acx-lb").onclick = function (e) {
+        accountCard.querySelector("#acx-lb").onclick = function (e) {
           e.stopPropagation();
           window.__openLeaderboard && window.__openLeaderboard();
         };
-        ax.querySelector("#acx-pf").onclick = function (e) {
+        accountCard.querySelector("#acx-pf").onclick = function (e) {
           e.stopPropagation();
-          var r = D.getElementById("pf-row");
+          var r = doc.getElementById("pf-row");
           r && r.click();
         };
       }
       var host = a.hidden && em && !em.hidden ? em : a;
-      ax.parentNode !== host && host.appendChild(ax);
-      var pe = D.querySelector(".pfent"),
-        n = (D.getElementById("pf-n") || {}).textContent || "",
-        pb = ax.querySelector("#acx-pf"),
+      accountCard.parentNode !== host && host.appendChild(accountCard);
+      var pe = doc.querySelector(".pfent"),
+        n = (doc.getElementById("pf-n") || {}).textContent || "",
+        pb = accountCard.querySelector("#acx-pf"),
         off = !pe || pe.style.display === "none";
       pb.hidden = off;
-      ax.style.gridTemplateColumns = off ? "1fr" : "";
-      var sm = ax.querySelector("#acx-n"),
+      accountCard.style.gridTemplateColumns = off ? "1fr" : "";
+      var sm = accountCard.querySelector("#acx-n"),
         t = n ? n + " to unlock" : "Features";
       sm.textContent !== t && (sm.textContent = t);
       moveTrip();
@@ -2832,12 +2859,12 @@ try {
     setInterval(acx, 1200);
     /* new group sheet: live preview banner */
     function gprev() {
-      var g = D.getElementById("grp-sheet");
+      var g = doc.getElementById("grp-sheet");
       if (!g || g.__gp) return;
       var host = g.querySelector(".pfgrp");
       if (!host) return;
       g.__gp = 1;
-      var pv = D.createElement("div");
+      var pv = doc.createElement("div");
       pv.className = "gprev";
       pv.setAttribute("aria-hidden", "true");
       host.before(pv);
@@ -2861,13 +2888,13 @@ try {
         g.querySelectorAll(".gmh").forEach(function (h) {
           var v = h.querySelector(".gmav"),
             b = h.querySelector(".gmt b");
-          v && b && (v.style.background = hc(b.textContent));
+          v && b && (v.style.background = hashColour(b.textContent));
         });
         var st =
           ms
             .slice(0, 4)
             .map(function (m) {
-              return '<i style="background:' + hc(m) + '">' + esc(ini(m)) + "</i>";
+              return '<i style="background:' + hashColour(m) + '">' + esc(ini(m)) + "</i>";
             })
             .join("") +
           (ms.length > 4
@@ -2895,9 +2922,9 @@ try {
     setInterval(gprev, 2000);
     /* dev: test plan switch */
     function dev() {
-      var o = D.querySelector(".devopts");
-      if (!o || D.getElementById("dev-plan")) return;
-      var r = D.createElement("div");
+      var o = doc.querySelector(".devopts");
+      if (!o || doc.getElementById("dev-plan")) return;
+      var r = doc.createElement("div");
       r.className = "setrow";
       r.id = "dev-plan";
       r.innerHTML =
@@ -2905,7 +2932,7 @@ try {
       function cur() {
         var p = {};
         try {
-          p = JSON.parse(ls("vizag-plan") || "{}") || {};
+          p = JSON.parse(readKey("vizag-plan") || "{}") || {};
         } catch (e) {}
         return p.plan === "pro" ? "pro" : p.plan === "plus" ? "plus" : "free";
       }
@@ -2926,7 +2953,7 @@ try {
             G.setFullYear(G.getFullYear() + 1);
             v = { plan: "pro", renew: G.toISOString().slice(0, 10), trial: !1, bill: "yr" };
           }
-          ss("vizag-plan", v ? JSON.stringify(v) : null);
+          writeKey("vizag-plan", v ? JSON.stringify(v) : null);
           paint();
           window.__paintPlan && window.__paintPlan();
           window.__pfsync && window.__pfsync();
@@ -2949,9 +2976,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      R = D.documentElement;
-    function ls(k) {
+    var doc = document,
+      rootEl = doc.documentElement;
+    function readKey(k) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
@@ -2959,14 +2986,14 @@ try {
       }
     }
     /* 1. hairline + soft blur under whichever top bar is stuck */
-    var tq = 0,
-      tv = "";
+    var stuckFrame = 0,
+      stuckView = "";
     function tpos(full) {
-      tq = 0;
+      stuckFrame = 0;
       var best = null,
         y = -1;
       if (window.scrollY > 4) {
-        D.querySelectorAll(".hometop,.pghead,.chips").forEach(function (e) {
+        doc.querySelectorAll(".hometop,.pghead,.chips").forEach(function (e) {
           var r = e.getBoundingClientRect();
           if (r.width < 200 || !r.height || r.bottom <= 0 || r.top > 220) return;
           if (e.closest("[hidden],.sheet")) return;
@@ -2981,20 +3008,20 @@ try {
           }
         });
       }
-      if (best !== tv) {
-        tv && tv.classList.remove("tstk");
+      if (best !== stuckView) {
+        stuckView && stuckView.classList.remove("tstk");
         best && best.classList.add("tstk");
-        tv = best;
+        stuckView = best;
       }
     }
-    function tk() {
-      tq || (tq = requestAnimationFrame(tpos));
+    function queueStuckCheck() {
+      stuckFrame || (stuckFrame = requestAnimationFrame(tpos));
     }
-    addEventListener("scroll", tk, { passive: !0 });
+    addEventListener("scroll", queueStuckCheck, { passive: !0 });
     addEventListener("resize", function () {
       tpos(!0);
     });
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function () {
         setTimeout(function () {
@@ -3008,21 +3035,24 @@ try {
     }, 1500);
     /* 9. icon customiser right in the App icon section */
     var kzi = null;
-    function kz() {
+    function renderIconCustomiser() {
       var A = window.__kzApi,
-        pv = D.getElementById("kz-pv");
+        pv = doc.getElementById("kz-pv");
       if (!A || !pv) return;
       var box = pv.closest(".kz-now");
-      R.classList.add("kzinl");
-      var m = ls("vizag-icon-match") === "1";
-      R.classList.toggle("kzmatch", m);
+      rootEl.classList.add("kzinl");
+      var m = readKey("vizag-icon-match") === "1";
+      rootEl.classList.toggle("kzmatch", m);
       if (!kzi) {
-        kzi = D.createElement("div");
+        kzi = doc.createElement("div");
         kzi.className = "kzi";
         box.appendChild(kzi);
       }
       var c = A.get(),
-        th = R.getAttribute("data-skin") === "light" || !R.getAttribute("data-skin") ? "light" : "dark",
+        th =
+          rootEl.getAttribute("data-skin") === "light" || !rootEl.getAttribute("data-skin")
+            ? "light"
+            : "dark",
         key = JSON.stringify(c) + th;
       if (kzi.__k === key) return;
       kzi.__k = key;
@@ -3103,13 +3133,13 @@ try {
           o[b.dataset.k] = b.dataset.v;
           A.set(o);
           window.__snd && window.__snd("tap");
-          kz();
+          renderIconCustomiser();
         };
       });
     }
-    setTimeout(kz, 800);
-    setInterval(kz, 700);
-    D.addEventListener("kz-match", kz);
+    setTimeout(renderIconCustomiser, 800);
+    setInterval(renderIconCustomiser, 700);
+    doc.addEventListener("kz-match", renderIconCustomiser);
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Hairline and soft blur under whichever top bar is stuck, and", err);
@@ -3120,8 +3150,8 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    var CH = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
+    var doc = document;
+    var CHEVRON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
       COL = ["#ffd6a5", "#caffbf", "#bdb2ff", "#ffc6ff", "#9bf6ff", "#fdffb6", "#ffadad", "#a0e7e5"];
     function fix() {
       /* sound: wood only */
@@ -3129,7 +3159,7 @@ try {
         localStorage.getItem("vizag-sndst") !== "wood" && localStorage.setItem("vizag-sndst", "wood");
       } catch (e) {}
       /* nav: retired styles fall back to dot */
-      var R = D.documentElement,
+      var R = doc.documentElement,
         n = R.getAttribute("data-navind");
       if (n && !/^(rot3d|dot|glow)$/.test(n)) {
         R.setAttribute("data-navind", "dot");
@@ -3138,10 +3168,10 @@ try {
         } catch (e) {}
       }
       /* profile footer rows */
-      var lb = D.getElementById("acx-lb"),
-        pf = D.getElementById("acx-pf");
+      var lb = doc.getElementById("acx-lb"),
+        pf = doc.getElementById("acx-pf");
       if (lb && !lb.querySelector(".xr")) {
-        var r = D.createElement("span");
+        var r = doc.createElement("span");
         r.className = "xr";
         r.innerHTML =
           '<span class="xav kxav" aria-hidden="true">' +
@@ -3151,17 +3181,17 @@ try {
             })
             .join("") +
           "</span>" +
-          CH;
+          CHEVRON_SVG;
         lb.appendChild(r);
       }
       if (pf && !pf.querySelector(".xr")) {
-        var r2 = D.createElement("span");
+        var r2 = doc.createElement("span");
         r2.className = "xr";
-        r2.innerHTML = CH;
+        r2.innerHTML = CHEVRON_SVG;
         pf.appendChild(r2);
       }
       /* settings: one Others group */
-      var sp = D.getElementById("settings-profile");
+      var sp = doc.getElementById("settings-profile");
       if (sp) {
         var rows = [].slice.call(sp.querySelectorAll(".setrow")),
           nt = null,
@@ -3177,17 +3207,17 @@ try {
           if (clk && clk.parentNode !== g) {
             nt.after(clk);
           }
-          var sm = D.getElementById("secmode-row");
+          var sm = doc.getElementById("secmode-row");
           sm && sm.parentNode !== g && clk && clk.after(sm);
           var c = g.previousElementSibling;
           c && c.classList.contains("setcap") && c.textContent !== "Others" && (c.textContent = "Others");
         }
       }
       /* theme sheet: match toggle becomes the App icon header */
-      var kn = D.querySelector("#theme-sheet .kz-now"),
-        pm = D.querySelector("#theme-sheet .pl-match");
+      var kn = doc.querySelector("#theme-sheet .kz-now"),
+        pm = doc.querySelector("#theme-sheet .pl-match");
       if (kn && pm) {
-        var pv = D.getElementById("kz-pv");
+        var pv = doc.getElementById("kz-pv");
         pm.parentNode !== kn && pv && pv.after(pm);
         var on = pm.getAttribute("aria-checked") === "true",
           b = pm.querySelector("b"),
@@ -3195,15 +3225,15 @@ try {
         b && b.textContent !== "App icon" && (b.textContent = "App icon");
         var st = on ? "Matches your theme" : "Your colour and background";
         sm2 && sm2.textContent !== st && (sm2.textContent = st);
-        D.querySelectorAll("#theme-sheet .pl-match").length > 1 &&
-          [].slice.call(D.querySelectorAll("#theme-sheet .pl-match")).forEach(function (x) {
+        doc.querySelectorAll("#theme-sheet .pl-match").length > 1 &&
+          [].slice.call(doc.querySelectorAll("#theme-sheet .pl-match")).forEach(function (x) {
             x.parentNode !== kn && x.remove();
           });
       }
     }
     fix();
     setInterval(fix, 600);
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function () {
         setTimeout(fix, 60);
@@ -3220,11 +3250,11 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
+    var doc = document,
       cur = null;
     var tabT = 0,
       backT = 0;
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target;
@@ -3236,7 +3266,7 @@ try {
     );
     function vis() {
       var v = null;
-      D.querySelectorAll("main .view").forEach(function (x) {
+      doc.querySelectorAll("main .view").forEach(function (x) {
         !x.hidden && x.offsetParent !== null && (v = x);
       });
       return v;
@@ -3261,14 +3291,14 @@ try {
         v.classList.remove(c);
       }, 520);
     }
-    var q = 0;
+    var frame = 0;
     new MutationObserver(function () {
-      q ||
-        (q = requestAnimationFrame(function () {
-          q = 0;
+      frame ||
+        (frame = requestAnimationFrame(function () {
+          frame = 0;
           run();
         }));
-    }).observe(D.querySelector("main") || D.body, {
+    }).observe(doc.querySelector("main") || doc.body, {
       attributes: !0,
       subtree: !0,
       attributeFilter: ["hidden", "class"],
@@ -3284,9 +3314,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function hook() {
-      var t = D.querySelector(".ptr");
+      var t = doc.querySelector(".ptr");
       if (!t) {
         setTimeout(hook, 500);
         return;
@@ -3306,7 +3336,7 @@ try {
         var r = t.getBoundingClientRect(),
           x = r.left + r.width / 2,
           y = r.top + r.height / 2,
-          fx = D.createElement("div");
+          fx = doc.createElement("div");
         fx.className = "ptrfx";
         fx.setAttribute("aria-hidden", "true");
         fx.innerHTML = "";
@@ -3314,7 +3344,7 @@ try {
           i.style.left = x + "px";
           i.style.top = y + "px";
         });
-        D.body.appendChild(fx);
+        doc.body.appendChild(fx);
         setTimeout(function () {
           fx.remove();
         }, 1000);
@@ -3331,11 +3361,11 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    function go() {
-      var t = D.querySelector(".ptr");
+    var doc = document;
+    function setupGlobe() {
+      var t = doc.querySelector(".ptr");
       if (!t) {
-        setTimeout(go, 500);
+        setTimeout(setupGlobe, 500);
         return;
       }
       if (t.querySelector(".kgl")) return;
@@ -3412,7 +3442,7 @@ try {
       }).observe(t, { attributes: !0, attributeFilter: ["class", "style"] });
       draw();
     }
-    go();
+    setupGlobe();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Pull-to-refresh: the spinning Kosway globe.", err);
@@ -3423,23 +3453,23 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    var gf = D.createElement("link");
-    gf.rel = "stylesheet";
-    gf.href =
+    var doc = document;
+    var fontLink = doc.createElement("link");
+    fontLink.rel = "stylesheet";
+    fontLink.href =
       "https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap&text=" +
       encodeURIComponent("Krishna AR");
-    D.head.appendChild(gf);
-    var vd = window.__vpD,
-      vs = window.__vpS;
-    if (vd && !vd.Both) {
-      vd.Both =
+    doc.head.appendChild(fontLink);
+    var viewIcons = window.__vpD,
+      viewIconsSmall = window.__vpS;
+    if (viewIcons && !viewIcons.Both) {
+      viewIcons.Both =
         '<i class="vb s4 spn"><i class="vrow"><i class="vl w2 sm"></i><i class="vl w2 sm"></i></i><i class="vrow mid"><i class="vv"></i><i class="vgrad"></i><i class="vv"></i></i><i class="vsep"></i><i class="vl w3 sm"></i><i class="vl w6"></i></i>';
-      vs && (vs.Both = "The day bar with what it costs");
+      viewIconsSmall && (viewIconsSmall.Both = "The day bar with what it costs");
     }
-    var ob = null;
+    var sigObserver = null;
     function sig() {
-      var b = D.querySelector(".setbeach");
+      var b = doc.querySelector(".setbeach");
       if (!b) return;
       var sv = b.querySelector(":scope>svg");
       if (sv) {
@@ -3454,13 +3484,13 @@ try {
       }
       if (b.__sig) return;
       b.__sig = 1;
-      var g = D.createElement("div");
+      var g = doc.createElement("div");
       g.className = "sig";
       g.setAttribute("aria-label", "Made by Krishna AR");
       g.innerHTML =
         '<small>made by</small><svg viewBox="0 0 170 46" aria-hidden="true"><text x="85" y="36" text-anchor="middle">Krishna AR</text></svg>';
       b.appendChild(g);
-      ob = new IntersectionObserver(
+      sigObserver = new IntersectionObserver(
         function (es) {
           es.forEach(function (e) {
             if (e.isIntersecting) {
@@ -3472,20 +3502,20 @@ try {
         },
         { threshold: 0.6 },
       );
-      ob.observe(g);
+      sigObserver.observe(g);
     }
     function lab() {
-      D.querySelectorAll("#theme-sheet .pl-s, #theme-sheet .kzr button").forEach(function (b) {
+      doc.querySelectorAll("#theme-sheet .pl-s, #theme-sheet .kzr button").forEach(function (b) {
         if (b.querySelector(".pln")) return;
         var t = (b.getAttribute("aria-label") || "").replace("Match colour", "Match");
-        var e = D.createElement("em");
+        var e = doc.createElement("em");
         e.className = "pln";
         e.textContent = t;
         b.appendChild(e);
       });
     }
-    function tg() {
-      var pm = D.querySelector("#theme-sheet .pl-match");
+    function setupMatchSwitch() {
+      var pm = doc.querySelector("#theme-sheet .pl-match");
       if (!pm) return;
       var on = String(localStorage.getItem("vizag-icon-match") === "1");
       pm.getAttribute("aria-checked") !== on && pm.setAttribute("aria-checked", on);
@@ -3497,12 +3527,12 @@ try {
       try {
         sig();
         lab();
-        tg();
+        setupMatchSwitch();
       } catch (e) {}
     }
     all();
     setInterval(all, 500);
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function () {
         setTimeout(all, 30);
@@ -3521,7 +3551,7 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function blades(ph, R) {
       var h = "";
       for (var k = 0; k < 18; k++) {
@@ -3555,8 +3585,8 @@ try {
       return h;
     }
     function roll() {
-      if ((D.documentElement.dataset.view || "home") !== "home") return;
-      var tg = D.querySelector("#v-home .offtag"),
+      if ((doc.documentElement.dataset.view || "home") !== "home") return;
+      var tg = doc.querySelector("#v-home .offtag"),
         tx = tg && tg.querySelector(".otx");
       if (!tg || !tx || tg.classList.contains("rfx")) return;
       tx.textContent = "Refreshing…";
@@ -3564,7 +3594,7 @@ try {
       tg.hidden = !1;
       tg.classList.add("rfx");
       var w = tx.getBoundingClientRect().width || 80;
-      var sv = D.createElementNS("http://www.w3.org/2000/svg", "svg");
+      var sv = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
       sv.setAttribute("viewBox", "0 0 100 100");
       sv.setAttribute("class", "kgs");
       sv.setAttribute("aria-hidden", "true");
@@ -3575,19 +3605,19 @@ try {
         gr = tg.getBoundingClientRect();
       sv.style.top = tr.top - gr.top + tr.height / 2 + "px";
       var t0 = 0;
-      function f(ts) {
+      function frame(ts) {
         t0 || (t0 = ts);
         var e = ts - t0;
         sv.innerHTML =
           window.__globeStyle && window.__globeStyle() !== "blades"
             ? window.__globe(e * 0.7, 40, "currentColor")
             : blades(e * 0.7, 40);
-        e < 1000 ? requestAnimationFrame(f) : sv.remove();
+        e < 1000 ? requestAnimationFrame(frame) : sv.remove();
       }
-      requestAnimationFrame(f);
+      requestAnimationFrame(frame);
     }
     function hook() {
-      var t = D.querySelector(".ptr");
+      var t = doc.querySelector(".ptr");
       if (!t) {
         setTimeout(hook, 500);
         return;
@@ -3608,23 +3638,23 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    var F = [
+    var doc = document;
+    var SIGNATURE_FONTS = [
       ["A", "Caveat", "Caveat:wght@400;600", 600, 40, "", 700],
       ["L", "Nanum Pen Script", "Nanum+Pen+Script", 400, 46, "", 800],
     ];
-    var N = "Krishna AR";
-    var gf = D.createElement("link");
-    gf.rel = "stylesheet";
-    gf.href =
+    var SIGNATURE_NAME = "Krishna AR";
+    var fontLink = doc.createElement("link");
+    fontLink.rel = "stylesheet";
+    fontLink.href =
       "https://fonts.googleapis.com/css2?" +
-      F.map(function (f) {
+      SIGNATURE_FONTS.map(function (f) {
         return "family=" + f[2];
       }).join("&") +
       "&display=swap&text=" +
-      encodeURIComponent(N + N.toLowerCase());
-    D.head.appendChild(gf);
-    var H = F.map(function (f) {
+      encodeURIComponent(SIGNATURE_NAME + SIGNATURE_NAME.toLowerCase());
+    doc.head.appendChild(fontLink);
+    var SIGNATURE_OPTIONS = SIGNATURE_FONTS.map(function (f) {
       return (
         '<div class="sgo' +
         (f[5] ? " " + f[5] + " wide" : "") +
@@ -3643,7 +3673,7 @@ try {
         "',cursive;font-weight:" +
         f[3] +
         '">' +
-        (f[0] === "A" ? N : N.toLowerCase()) +
+        (f[0] === "A" ? SIGNATURE_NAME : SIGNATURE_NAME.toLowerCase()) +
         '</text></svg><i class="sgf">' +
         f[1] +
         "</i></div>"
@@ -3655,11 +3685,11 @@ try {
       t.classList.add("go");
     }
     function mount() {
-      var sp = D.getElementById("settings-profile");
+      var sp = doc.getElementById("settings-profile");
       if (!sp || sp.querySelector(".sigpick")) return;
-      var w = D.createElement("div");
+      var w = doc.createElement("div");
       w.className = "sigpick";
-      w.innerHTML = H;
+      w.innerHTML = SIGNATURE_OPTIONS;
       sp.appendChild(w);
       var io = new IntersectionObserver(
         function (es) {
@@ -3693,12 +3723,12 @@ try {
   (function () {
     var beta = /\/beta\//.test(location.pathname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname),
       own = 0,
-      t = null,
+      tapTimer = null,
       last = 0;
-    function go() {
+    function setupTitleTap() {
       var T = document.querySelector("#v-home .htitle");
       if (!T) {
-        setTimeout(go, 400);
+        setTimeout(setupTitleTap, 400);
         return;
       }
       function sheet() {
@@ -3735,23 +3765,23 @@ try {
             return;
           }
           var now = Date.now();
-          if (t && now - last < 320) {
-            clearTimeout(t);
-            t = null;
+          if (tapTimer && now - last < 320) {
+            clearTimeout(tapTimer);
+            tapTimer = null;
             last = 0;
             refresh();
             return;
           }
           last = now;
-          t = setTimeout(function () {
-            t = null;
+          tapTimer = setTimeout(function () {
+            tapTimer = null;
             sheet();
           }, 300);
         },
         !0,
       );
     }
-    go();
+    setupTitleTap();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Home title: tap opens the online sheet, double-tap refreshes", err);
@@ -3762,10 +3792,10 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     /* profile level progress bar */
     function bar() {
-      var pb = D.getElementById("prof-body");
+      var pb = doc.getElementById("prof-body");
       if (!pb) return;
       var lv = pb.querySelector(".plevel");
       if (!lv || lv.querySelector(".plbar")) return;
@@ -3775,7 +3805,7 @@ try {
         m = ((s && s.textContent) || "").match(/(\d[\d,]*)\s+to\s/),
         nx = m ? parseInt(m[1].replace(/,/g, ""), 10) : 0;
       var w = nx ? Math.max(3, Math.min(100, (pts / (pts + nx)) * 100)) : 100;
-      var e = D.createElement("i");
+      var e = doc.createElement("i");
       e.className = "plbar";
       e.innerHTML = '<i style="width:0"></i>';
       lv.appendChild(e);
@@ -3786,7 +3816,7 @@ try {
       });
     }
     function pwatch() {
-      var pb = D.getElementById("prof-body");
+      var pb = doc.getElementById("prof-body");
       if (!pb) {
         setTimeout(pwatch, 600);
         return;
@@ -3797,17 +3827,17 @@ try {
     pwatch();
     /* login: onboarding art carousel */
     function lob() {
-      var la = D.querySelector(".lart"),
-        lc = D.querySelector(".lcopy");
+      var la = doc.querySelector(".lart"),
+        lc = doc.querySelector(".lcopy");
       if (!la || !lc || la.querySelector(".lob")) return;
       var A = window.__obArt,
         W = window.__obCopy;
       if (!A || !W) return;
       var src = W.map(function (_, i) {
-        var o = D.querySelectorAll("#onb .onbart")[i];
+        var o = doc.querySelectorAll("#onb .onbart")[i];
         return (o ? o.innerHTML : A[i]).replace(/id="o/g, 'id="lo').replace(/url\(#o/g, "url(#lo");
       });
-      var b = D.createElement("div");
+      var b = doc.createElement("div");
       b.className = "lob";
       b.innerHTML = src
         .map(function (x, i) {
@@ -3815,7 +3845,7 @@ try {
         })
         .join("");
       la.appendChild(b);
-      var c = D.createElement("div");
+      var c = doc.createElement("div");
       c.className = "lobc";
       c.innerHTML =
         '<div class="lobw">' +
@@ -3832,7 +3862,7 @@ try {
         S2 = c.querySelectorAll(".lobs"),
         Dt = c.querySelectorAll(".lobd i"),
         k = 0;
-      function sw(L, a, n) {
+      function swapSlide(L, a, n) {
         L[a].classList.remove("on");
         L[a].classList.add("out");
         var o = L[a];
@@ -3841,30 +3871,30 @@ try {
         }, 560);
         L[n].classList.add("on");
       }
-      function go(n) {
+      function goToSlide(n) {
         n = (n + S1.length) % S1.length;
         if (n === k) return;
-        sw(S1, k, n);
-        sw(S2, k, n);
+        swapSlide(S1, k, n);
+        swapSlide(S2, k, n);
         k = n;
         Dt.forEach(function (d, i) {
           d.classList.toggle("on", i === k);
         });
       }
-      var lp = la.closest(".lpage") || D.body;
+      var lp = la.closest(".lpage") || doc.body;
       var lt0 = Date.now(),
         hold = 0;
-      function hd(e) {
+      function holdDown(e) {
         hold = 1;
       }
-      function hu() {
+      function holdUp() {
         hold = 0;
         lt0 = Date.now();
       }
       [la, c].forEach(function (z) {
-        z.addEventListener("pointerdown", hd, !0);
-        z.addEventListener("pointerup", hu, !0);
-        z.addEventListener("pointercancel", hu, !0);
+        z.addEventListener("pointerdown", holdDown, !0);
+        z.addEventListener("pointerup", holdUp, !0);
+        z.addEventListener("pointercancel", holdUp, !0);
         z.addEventListener("contextmenu", function (e) {
           e.preventDefault();
         });
@@ -3872,7 +3902,7 @@ try {
       setInterval(function () {
         if (hold || lp.classList.contains("kb") || !la.offsetParent || Date.now() - lt0 < 3400) return;
         lt0 = Date.now();
-        go(k + 1);
+        goToSlide(k + 1);
       }, 250);
       var x0 = null;
       la.addEventListener(
@@ -3888,7 +3918,7 @@ try {
           if (x0 === null) return;
           var dx = e.clientX - x0;
           x0 = null;
-          Math.abs(dx) > 30 && go(k + (dx < 0 ? 1 : -1));
+          Math.abs(dx) > 30 && goToSlide(k + (dx < 0 ? 1 : -1));
         },
         !0,
       );
@@ -3898,7 +3928,7 @@ try {
     /* login: double tap title = hard refresh (beta) */
     var beta = /\/beta\//.test(location.pathname) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
     function hard() {
-      var t = D.getElementById("login-title");
+      var t = doc.getElementById("login-title");
       t && (t.textContent = "Refreshing…");
       var N = [];
       try {
@@ -3932,10 +3962,10 @@ try {
           }, 600);
         });
     }
-    function lt() {
-      var t = D.getElementById("login-title");
+    function setupLoginTitle() {
+      var t = doc.getElementById("login-title");
       if (!t) {
-        setTimeout(lt, 800);
+        setTimeout(setupLoginTitle, 800);
         return;
       }
       if (!beta) return;
@@ -3953,7 +3983,7 @@ try {
         c = n;
       });
     }
-    lt();
+    setupLoginTitle();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Profile level progress bar, onboarding art carousel on the s", err);
@@ -3964,15 +3994,15 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    D.addEventListener(
+    var doc = document;
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target;
         if (t && t.closest && t.closest("#acct-av, #acct-name")) {
           e.stopImmediatePropagation();
           e.preventDefault();
-          var c = D.getElementById("prof-open");
+          var c = doc.getElementById("prof-open");
           c && c.click();
         }
       },
@@ -3988,19 +4018,19 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      K = "vizag-globe",
-      ST = ["blades", "dots", "wire", "orbit"],
-      NM = { blades: "Blades", dots: "Halftone", wire: "Wireframe", orbit: "Orbit" };
+    var doc = document,
+      STORE_KEY = "vizag-globe",
+      GLOBE_STYLES = ["blades", "dots", "wire", "orbit"],
+      GLOBE_NAMES = { blades: "Blades", dots: "Halftone", wire: "Wireframe", orbit: "Orbit" };
     function get() {
       try {
-        var v = localStorage.getItem(K);
-        return ST.indexOf(v) < 0 ? "blades" : v;
+        var v = localStorage.getItem(STORE_KEY);
+        return GLOBE_STYLES.indexOf(v) < 0 ? "blades" : v;
       } catch (e) {
         return "blades";
       }
     }
-    function bl(ph, R, f) {
+    function bladesSvg(ph, R, f) {
       var h = "";
       for (var k = 0; k < 18; k++) {
         var th = ((ph + k * 20) * Math.PI) / 180,
@@ -4113,7 +4143,7 @@ try {
         rot = -20,
         c = Math.cos(rot * r),
         sn = Math.sin(rot * r);
-      function pt(a) {
+      function orbitPoint(a) {
         var x = ex * Math.cos(a),
           y = ey * Math.sin(a);
         return [50 + x * c - y * sn, 50 + x * sn + y * c];
@@ -4122,7 +4152,7 @@ try {
         var h = "",
           n = 24;
         for (var i = 0; i <= n; i++) {
-          var p = pt(a0 + ((a1 - a0) * i) / n);
+          var p = orbitPoint(a0 + ((a1 - a0) * i) / n);
           h += (i ? "L" : "M") + p[0].toFixed(2) + " " + p[1].toFixed(2);
         }
         return h;
@@ -4148,9 +4178,9 @@ try {
           '" stroke-width="' +
           sw +
           '" stroke-linecap="round"/>',
-        gl = bl(ph * 0.5, R * 0.72, f),
+        gl = bladesSvg(ph * 0.5, R * 0.72, f),
         a = ph * 1.6 * r,
-        p = pt(a),
+        p = orbitPoint(a),
         inFront = Math.sin(a) > 0,
         dot =
           '<circle cx="' +
@@ -4164,31 +4194,31 @@ try {
           '"/>';
       return back + (inFront ? "" : dot) + gl + front + (inFront ? dot : "");
     }
-    var FN = { blades: bl, dots: dots, wire: wire, orbit: orbit };
+    var GLOBE_DRAW = { blades: bladesSvg, dots: dots, wire: wire, orbit: orbit };
     window.__globeStyle = get;
     window.__globe = function (ph, R, f, st) {
-      return FN[st || get()](ph, R, f || "currentColor");
+      return GLOBE_DRAW[st || get()](ph, R, f || "currentColor");
     };
     function mount() {
-      var sp = D.getElementById("settings-profile");
+      var sp = doc.getElementById("settings-profile");
       if (!sp || sp.querySelector(".gpick")) return;
       var cap = [].find.call(sp.querySelectorAll(".setcap"), function (c) {
         return /custom/i.test(c.textContent);
       });
       var g = cap && cap.nextElementSibling;
       if (!g || !g.classList.contains("setgrp")) return;
-      var w = D.createElement("div");
+      var w = doc.createElement("div");
       w.className = "gpick";
       w.innerHTML =
         '<div class="gph"><span class="setl">Refresh animation<small>The globe you see when you pull to refresh</small></span></div><div class="gpr" role="group" aria-label="Refresh animation">' +
-        ST.map(function (s) {
+        GLOBE_STYLES.map(function (s) {
           return (
             '<button type="button" data-g="' +
             s +
             '" aria-pressed="' +
             (get() === s) +
             '"><svg viewBox="0 0 100 100" aria-hidden="true"></svg>' +
-            NM[s] +
+            GLOBE_NAMES[s] +
             "</button>"
           );
         }).join("") +
@@ -4202,19 +4232,19 @@ try {
         draw(b, 30);
         b.addEventListener("click", function () {
           try {
-            localStorage.setItem(K, b.dataset.g);
+            localStorage.setItem(STORE_KEY, b.dataset.g);
           } catch (e) {}
           bs.forEach(function (x) {
             x.setAttribute("aria-pressed", String(x === b));
           });
           var t0 = 0;
-          function f(ts) {
+          function frame(ts) {
             t0 || (t0 = ts);
             var e = ts - t0;
             draw(b, 30 + e * 0.25);
-            e < 1200 && requestAnimationFrame(f);
+            e < 1200 && requestAnimationFrame(frame);
           }
-          requestAnimationFrame(f);
+          requestAnimationFrame(frame);
         });
       });
     }
@@ -4230,16 +4260,16 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function fix() {
-      var t = D.getElementById("theme-sheet");
+      var t = doc.getElementById("theme-sheet");
       if (!t || t.dataset.lbl) return;
       var c = t.querySelectorAll(".thcap>span");
       if (c.length < 2) return;
       t.dataset.lbl = 1;
       c[0].textContent = "App theme";
       c[1].textContent = "Home screen icon";
-      var h = D.createElement("p");
+      var h = doc.createElement("p");
       h.className = "thhint";
       h.textContent =
         "Colours and backgrounds here change only the app icon on your home screen, not the app theme.";
@@ -4271,18 +4301,18 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function move() {
-      var va = D.getElementById("v-alerts"),
-        vp = D.getElementById("v-plan");
+      var va = doc.getElementById("v-alerts"),
+        vp = doc.getElementById("v-plan");
       if (!va || !vp) return setTimeout(move, 500);
       if (vp.querySelector(".subp.alw")) return;
       var avz = va.querySelector(":scope>.vz"),
-        ct = D.getElementById("ct-alerts"),
+        ct = doc.getElementById("ct-alerts"),
         seg = vp.querySelector(".seg-days"),
         pvz = vp.querySelector(":scope>.vz") || vp.querySelector(".vz");
       if (!avz || !seg || !pvz) return setTimeout(move, 500);
-      var w = D.createElement("div");
+      var w = doc.createElement("div");
       w.className = "subp alw";
       w.dataset.sub = "alerts";
       w.hidden = !0;
@@ -4320,11 +4350,11 @@ try {
             w.hidden = !0;
           });
       });
-      var ua = D.getElementById("ut-a");
+      var ua = doc.getElementById("ut-a");
       function cnt() {
         var t = ua ? ua.textContent.trim() : "";
-        D.getElementById("pl-alc").textContent = t;
-        D.getElementById("pl-alc").hidden = !t;
+        doc.getElementById("pl-alc").textContent = t;
+        doc.getElementById("pl-alc").hidden = !t;
       }
       cnt();
       ua && new MutationObserver(cnt).observe(ua, { childList: !0, characterData: !0, subtree: !0 });
@@ -4332,20 +4362,20 @@ try {
         localStorage.getItem("vizag-sub-plan") === "alerts" && sel();
       } catch (e) {}
       window.__openAlerts = function () {
-        var nb = D.querySelectorAll(".nav button")[2];
+        var nb = doc.querySelectorAll(".nav button")[2];
         nb && nb.click();
         setTimeout(sel, 60);
       };
       /* updates page -> notifications only */
       var h = va.querySelector(".pghead h2");
       h && (h.textContent = "Notifications");
-      function nt() {
+      function updateAlertCount() {
         if (va.hidden) return;
         var n = va.querySelector('[data-ut="n"]');
         n && n.getAttribute("aria-selected") !== "true" && n.click();
         var nb = va.querySelector(".nbar");
         if (nb && !nb.querySelector(".ncount")) {
-          var s = D.createElement("span");
+          var s = doc.createElement("span");
           s.className = "ncount";
           nb.insertBefore(s, nb.firstChild);
         }
@@ -4353,10 +4383,10 @@ try {
         s = va.querySelector(".ncount");
         s && (s.textContent = (u ? u.textContent : "0") + " unread");
       }
-      new MutationObserver(nt).observe(va, { attributes: !0, attributeFilter: ["hidden"] });
-      nt();
+      new MutationObserver(updateAlertCount).observe(va, { attributes: !0, attributeFilter: ["hidden"] });
+      updateAlertCount();
       setInterval(function () {
-        va.hidden || nt();
+        va.hidden || updateAlertCount();
       }, 1500);
     }
     move();
@@ -4370,10 +4400,10 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     /* More tab */
     function more() {
-      var nb = D.querySelector('.nav button[data-v="profile"]');
+      var nb = doc.querySelector('.nav button[data-v="profile"]');
       if (!nb) return setTimeout(more, 500);
       if (nb.dataset.more) return;
       nb.dataset.more = 1;
@@ -4385,19 +4415,19 @@ try {
         n.nodeType === 3 && n.textContent.trim() && (n.textContent = "More");
       });
       nb.setAttribute("aria-label", "More");
-      var h = D.querySelector("#v-profile .pghead h2");
+      var h = doc.querySelector("#v-profile .pghead h2");
       h && (h.textContent = "More");
     }
     more();
     function cap() {
-      var sp = D.getElementById("settings-profile");
+      var sp = doc.getElementById("settings-profile");
       if (!sp) return;
       if (sp.querySelector(".procap")) return;
-      var a = D.getElementById("acct"),
-        e = D.getElementById("acct-empty"),
+      var a = doc.getElementById("acct"),
+        e = doc.getElementById("acct-empty"),
         f = a && a.parentNode === sp ? a : e;
       if (!f) return;
-      var c = D.createElement("div");
+      var c = doc.createElement("div");
       c.className = "setcap procap";
       c.textContent = "Profile";
       var first = a && e ? (a.compareDocumentPosition(e) & 4 ? a : e) : f;
@@ -4407,8 +4437,8 @@ try {
     setInterval(cap, 1500);
     /* login: swipe on text */
     function lsw() {
-      var lc = D.querySelector(".lcopy .lobc"),
-        la = D.querySelector(".lart");
+      var lc = doc.querySelector(".lcopy .lobc"),
+        la = doc.querySelector(".lart");
       if (!lc || !la || lc.dataset.sw) return;
       lc.dataset.sw = 1;
       var x0 = null;
@@ -4432,7 +4462,7 @@ try {
     setInterval(lsw, 1500);
     /* onboarding: swipe on text too */
     function osw() {
-      var o = D.getElementById("onb");
+      var o = doc.getElementById("onb");
       if (!o || o.dataset.sw) return;
       o.dataset.sw = 1;
       var x0 = null,
@@ -4469,11 +4499,11 @@ try {
     setInterval(osw, 1500);
     /* pull to refresh drags the page */
     function ptr() {
-      var t = D.querySelector(".ptr");
+      var t = doc.querySelector(".ptr");
       if (!t) return setTimeout(ptr, 500);
       var cur = null;
       new MutationObserver(function () {
-        var v = D.getElementById("v-" + (D.documentElement.dataset.view || "home"));
+        var v = doc.getElementById("v-" + (doc.documentElement.dataset.view || "home"));
         if (!v) return;
         var m = /translate\(-50%,\s*([\d.]+)px\)/.exec(t.style.transform || ""),
           d = m ? parseFloat(m[1]) : 0,
@@ -4507,7 +4537,7 @@ try {
     ptr();
     /* notifications grouped by day */
     function grp() {
-      var l = D.querySelector("#v-alerts .nlist");
+      var l = doc.querySelector("#v-alerts .nlist");
       if (!l) return setTimeout(grp, 600);
       var busy = 0;
       function run() {
@@ -4536,16 +4566,16 @@ try {
           map[k].push(c);
         });
         if (groups.length) {
-          var h = D.createElement("div");
+          var h = doc.createElement("div");
           h.className = "ngrp";
           h.textContent = groups[0];
           main.before(h);
           var prev = main;
           groups.slice(1).forEach(function (k) {
-            var hh = D.createElement("div");
+            var hh = doc.createElement("div");
             hh.className = "ngrp";
             hh.textContent = k;
-            var box = D.createElement("div");
+            var box = doc.createElement("div");
             box.className = "ncards ngx";
             map[k].forEach(function (c) {
               box.appendChild(c);
@@ -4575,9 +4605,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    function mv() {
-      var sh = D.getElementById("plans-sheet");
+    var doc = document;
+    function moveOffer() {
+      var sh = doc.getElementById("plans-sheet");
       if (!sh || sh.hidden) return;
       var c = sh.querySelector(".p2card"),
         o = c && c.querySelector(":scope>.p2off"),
@@ -4593,20 +4623,20 @@ try {
         return;
       }
       if (!ex) {
-        ex = D.createElement("div");
+        ex = doc.createElement("div");
         ex.className = "p2offx";
       }
       var at = sh.querySelector(".p2seg") || c;
       if (ex.nextElementSibling !== at) at.before(ex);
       if (ex.innerHTML !== H) ex.innerHTML = H;
     }
-    setInterval(mv, 250);
-    var mo = 0;
+    setInterval(moveOffer, 250);
+    var offerObserver = 0;
     (function w() {
-      var sh = D.getElementById("plans-sheet");
+      var sh = doc.getElementById("plans-sheet");
       if (!sh) return setTimeout(w, 800);
       new MutationObserver(function () {
-        mo || ((mo = 1), mv(), (mo = 0));
+        offerObserver || ((offerObserver = 1), moveOffer(), (offerObserver = 0));
       }).observe(sh, { childList: !0, subtree: !0 });
     })();
   })();
@@ -4619,17 +4649,17 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    function ic() {
-      var nb = D.querySelector('.nav button[data-v="profile"]');
-      if (!nb) return setTimeout(ic, 500);
+    var doc = document;
+    function setMoreIcon() {
+      var nb = doc.querySelector('.nav button[data-v="profile"]');
+      if (!nb) return setTimeout(setMoreIcon, 500);
       var u = nb.querySelector("use");
       u &&
         (u.setAttribute("href", "#i-hugeicons-" + (window.__moreIc || "more-a")),
         u.setAttribute("data-p", window.__moreIc || "more-a"));
     }
-    ic();
-    setTimeout(ic, 1500);
+    setMoreIcon();
+    setTimeout(setMoreIcon, 1500);
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Keeps the More tab icon correct.", err);
@@ -4640,24 +4670,24 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      R = D.documentElement;
-    function fx() {
-      if (!R.classList.contains("homeone")) return;
-      D.querySelectorAll(".hday .summary>.dspan,.ctday2 .summary>.dspan").forEach(function (x) {
+    var doc = document,
+      rootEl = doc.documentElement;
+    function fixMergedHome() {
+      if (!rootEl.classList.contains("homeone")) return;
+      doc.querySelectorAll(".hday .summary>.dspan,.ctday2 .summary>.dspan").forEach(function (x) {
         var sp = x.parentNode.querySelector(":scope>.dspend");
         sp && x.previousElementSibling !== sp && sp.after(x);
       });
     }
-    var q = 0;
+    var frame = 0;
     new MutationObserver(function () {
-      q ||
-        (q = requestAnimationFrame(function () {
-          q = 0;
-          fx();
+      frame ||
+        (frame = requestAnimationFrame(function () {
+          frame = 0;
+          fixMergedHome();
         }));
-    }).observe(D.body, { childList: !0, subtree: !0 });
-    fx();
+    }).observe(doc.body, { childList: !0, subtree: !0 });
+    fixMergedHome();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Home card: tidies the Span block in merged cards.", err);
@@ -4668,14 +4698,14 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    function cv() {
-      D.querySelectorAll(".sigpick .sgo").forEach(function (o) {
+    var doc = document;
+    function setupSignatures() {
+      doc.querySelectorAll(".sigpick .sgo").forEach(function (o) {
         if (o.querySelector(".sgw")) return;
         var sv = o.querySelector("svg"),
           t = sv && sv.querySelector("text");
         if (!t) return;
-        var w = D.createElement("span");
+        var w = doc.createElement("span");
         w.className = "sgw";
         w.setAttribute("aria-label", t.textContent);
         w.style.fontFamily = t.style.fontFamily;
@@ -4697,8 +4727,8 @@ try {
         }
       });
     }
-    cv();
-    setInterval(cv, 700);
+    setupSignatures();
+    setInterval(setupSignatures, 700);
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Signature: prepares the letter-by-letter writing animation.", err);
@@ -4709,37 +4739,37 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      K = "vizag-nstyle",
-      N = [
+    var doc = document,
+      STORE_KEY = "vizag-nstyle",
+      NOTIF_STYLES = [
         ["1", "Grouped"],
         ["2", "Cards"],
         ["3", "Plain"],
         ["4", "Compact"],
         ["5", "Timeline"],
       ];
-    function g() {
+    function currentStyle() {
       try {
-        var v = localStorage.getItem(K);
+        var v = localStorage.getItem(STORE_KEY);
         return /^[1-5]$/.test(v) ? v : "1";
       } catch (e) {
         return "1";
       }
     }
     function mount() {
-      var va = D.getElementById("v-alerts"),
+      var va = doc.getElementById("v-alerts"),
         nl = va && va.querySelector(".nlist");
       if (!nl) return;
-      var v = g();
+      var v = currentStyle();
       va.dataset.nst !== "2" && (va.dataset.nst = "2");
       var ox = va.querySelector(".nstyles");
       ox && ox.remove();
       return;
-      var w = D.createElement("div");
+      var w = doc.createElement("div");
       w.className = "nstyles";
       w.setAttribute("role", "group");
       w.setAttribute("aria-label", "Notification style");
-      w.innerHTML = N.map(function (n) {
+      w.innerHTML = NOTIF_STYLES.map(function (n) {
         return (
           '<button type="button" data-nst="' +
           n[0] +
@@ -4756,7 +4786,7 @@ try {
         if (!b) return;
         e.stopPropagation();
         try {
-          localStorage.setItem(K, b.dataset.nst);
+          localStorage.setItem(STORE_KEY, b.dataset.nst);
         } catch (x) {}
         va.dataset.nst = b.dataset.nst;
         w.querySelectorAll("button").forEach(function (x) {
@@ -4777,15 +4807,15 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
-    D.addEventListener(
+    var doc = document;
+    doc.addEventListener(
       "animationend",
       function (e) {
         e.animationName === "sgwr" && e.target.classList.add("sgdn");
       },
       !0,
     );
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var o = e.target.closest && e.target.closest(".sgo");
@@ -4806,82 +4836,82 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      x0 = null,
-      y0 = 0,
-      lk = 0,
-      dx = 0,
-      lt = 0,
-      lx = 0,
-      v = 0,
+    var doc = document,
+      swipeStartX = null,
+      swipeStartY = 0,
+      swipeLocked = 0,
+      swipeDX = 0,
+      lastMoveTime = 0,
+      lastMoveX = 0,
+      swipeSpeed = 0,
       busy = 0;
-    var EZ = "cubic-bezier(.32,.72,0,1)";
+    var IOS_EASE = "cubic-bezier(.32,.72,0,1)";
     function card() {
-      var sh = D.getElementById("plans-sheet");
+      var sh = doc.getElementById("plans-sheet");
       return sh && sh.querySelector(".p2card");
     }
     function tabs() {
-      var sh = D.getElementById("plans-sheet");
+      var sh = doc.getElementById("plans-sheet");
       return sh ? [].slice.call(sh.querySelectorAll("[data-pk]")) : [];
     }
     function cur(t) {
       for (var i = 0; i < t.length; i++) if (t[i].getAttribute("aria-selected") === "true") return i;
       return -1;
     }
-    D.addEventListener(
+    doc.addEventListener(
       "touchstart",
       function (e) {
         var sh = e.target.closest && e.target.closest("#plans-sheet");
         if (busy || !sh || e.touches.length > 1 || e.target.closest("input,textarea,.p2seg")) {
-          x0 = null;
+          swipeStartX = null;
           return;
         }
-        x0 = e.touches[0].clientX;
-        y0 = e.touches[0].clientY;
-        lk = 0;
-        dx = 0;
-        v = 0;
-        lt = e.timeStamp;
-        lx = x0;
+        swipeStartX = e.touches[0].clientX;
+        swipeStartY = e.touches[0].clientY;
+        swipeLocked = 0;
+        swipeDX = 0;
+        swipeSpeed = 0;
+        lastMoveTime = e.timeStamp;
+        lastMoveX = swipeStartX;
       },
       { passive: !0 },
     );
-    D.addEventListener(
+    doc.addEventListener(
       "touchmove",
       function (e) {
-        if (x0 == null) return;
+        if (swipeStartX == null) return;
         var t = e.touches[0],
-          mx = t.clientX - x0,
-          my = t.clientY - y0;
-        if (!lk) {
+          mx = t.clientX - swipeStartX,
+          my = t.clientY - swipeStartY;
+        if (!swipeLocked) {
           if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
-          lk = Math.abs(mx) > Math.abs(my) * 1.2 ? 1 : -1;
-          if (lk === 1) window.__hsw = 1;
+          swipeLocked = Math.abs(mx) > Math.abs(my) * 1.2 ? 1 : -1;
+          if (swipeLocked === 1) window.__hsw = 1;
         }
-        if (lk !== 1) return;
+        if (swipeLocked !== 1) return;
         e.cancelable && e.preventDefault();
-        var dt = Math.max(1, e.timeStamp - lt);
-        v = 0.7 * ((t.clientX - lx) / dt) + 0.3 * v;
-        lt = e.timeStamp;
-        lx = t.clientX;
+        var dt = Math.max(1, e.timeStamp - lastMoveTime);
+        swipeSpeed = 0.7 * ((t.clientX - lastMoveX) / dt) + 0.3 * swipeSpeed;
+        lastMoveTime = e.timeStamp;
+        lastMoveX = t.clientX;
         var T = tabs(),
           i = cur(T),
           edge = (mx > 0 && i <= 0) || (mx < 0 && i >= T.length - 1);
-        dx = edge ? mx * 0.3 : mx;
+        swipeDX = edge ? mx * 0.3 : mx;
         var c = card();
         if (c) {
           c.style.transition = "none";
-          c.style.transform = "translate3d(" + dx + "px,0,0)";
-          c.style.opacity = String(1 - Math.min(0.35, Math.abs(dx) / 900));
+          c.style.transform = "translate3d(" + swipeDX + "px,0,0)";
+          c.style.opacity = String(1 - Math.min(0.35, Math.abs(swipeDX) / 900));
         }
       },
       { passive: !1 },
     );
     function end() {
-      if (x0 == null) return;
-      x0 = null;
-      var was = lk === 1;
-      lk = 0;
+      if (swipeStartX == null) return;
+      swipeStartX = null;
+      var was = swipeLocked === 1;
+      swipeLocked = 0;
       setTimeout(function () {
         window.__hsw = 0;
       }, 0);
@@ -4890,15 +4920,16 @@ try {
       if (!c) return;
       var T = tabs(),
         i = cur(T),
-        dir = dx < 0 ? 1 : -1,
+        dir = swipeDX < 0 ? 1 : -1,
         j = i + dir,
         W = c.offsetWidth || 360,
         go =
           j >= 0 &&
           j < T.length &&
-          (Math.abs(dx) > W * 0.22 || (Math.abs(v) > 0.35 && Math.abs(dx) > 24 && (v < 0 ? 1 : -1) === dir));
+          (Math.abs(swipeDX) > W * 0.22 ||
+            (Math.abs(swipeSpeed) > 0.35 && Math.abs(swipeDX) > 24 && (swipeSpeed < 0 ? 1 : -1) === dir));
       if (!go) {
-        c.style.transition = "transform .45s " + EZ + ",opacity .3s ease";
+        c.style.transition = "transform .45s " + IOS_EASE + ",opacity .3s ease";
         c.style.transform = "";
         c.style.opacity = "";
         setTimeout(function () {
@@ -4925,7 +4956,7 @@ try {
         n.style.transform = "translate3d(" + dir * W * 0.5 + "px,0,0)";
         n.style.opacity = "0";
         void n.offsetWidth;
-        n.style.transition = "transform .42s " + EZ + ",opacity .3s ease,height .42s " + EZ;
+        n.style.transition = "transform .42s " + IOS_EASE + ",opacity .3s ease,height .42s " + IOS_EASE;
         n.style.transform = "";
         n.style.opacity = "";
         n.style.height = h1 + "px";
@@ -4937,8 +4968,8 @@ try {
         }, 440);
       }, 190);
     }
-    D.addEventListener("touchend", end, { passive: !0 });
-    D.addEventListener("touchcancel", end, { passive: !0 });
+    doc.addEventListener("touchend", end, { passive: !0 });
+    doc.addEventListener("touchcancel", end, { passive: !0 });
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Plans sheet: swipe the plan card left or right to switch pla", err);
@@ -4949,9 +4980,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document;
+    var doc = document;
     function hint() {
-      var th = D.getElementById("theme-sheet");
+      var th = doc.getElementById("theme-sheet");
       if (!th) return;
       var h = [].slice.call(th.querySelectorAll(".thhint")).filter(function (p) {
         return /home screen, not the app theme/.test(p.textContent);
@@ -4959,8 +4990,8 @@ try {
       if (h && !/Re-add/.test(h.textContent))
         h.textContent = h.textContent.trim() + " Re-add to Home Screen to see the new icon.";
     }
-    function nt() {
-      var s = D.getElementById("notif-sheet");
+    function setupNotifSheet() {
+      var s = doc.getElementById("notif-sheet");
       if (!s) return;
       s.querySelectorAll(".setrow>.seg").forEach(function (g) {
         var b0 = g.querySelector('[data-v="0"]'),
@@ -4969,7 +5000,7 @@ try {
         g.classList.add("ntseg");
         var t = g.nextElementSibling;
         if (!t || !t.classList.contains("tgl")) {
-          t = D.createElement("button");
+          t = doc.createElement("button");
           t.type = "button";
           t.className = "tgl ntg";
           t.setAttribute("role", "switch");
@@ -4980,7 +5011,7 @@ try {
             e.stopPropagation();
             var on = t.getAttribute("aria-checked") === "true";
             (on ? b0 : b1).click();
-            setTimeout(nt, 0);
+            setTimeout(setupNotifSheet, 0);
           });
         }
         var on = b1.getAttribute("aria-pressed") === "true" || b1.classList.contains("on");
@@ -4989,11 +5020,11 @@ try {
     }
     function all() {
       hint();
-      nt();
+      setupNotifSheet();
     }
     all();
     setInterval(all, 1500);
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function () {
         setTimeout(all, 60);
@@ -5010,9 +5041,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      EZ = "cubic-bezier(.32,.72,0,1)",
-      st = null;
+    var doc = document,
+      IOS_EASE = "cubic-bezier(.32,.72,0,1)",
+      swipe = null;
     function hsc(e, stop) {
       for (var n = e; n && n !== stop; n = n.parentElement) {
         if (n.nodeType !== 1) continue;
@@ -5026,10 +5057,10 @@ try {
         return !e.classList.contains("chips") && !e.hidden && e.offsetHeight > 0;
       })[0];
     }
-    D.addEventListener(
+    doc.addEventListener(
       "touchstart",
       function (e) {
-        st = null;
+        swipe = null;
         if (e.touches.length > 1) return;
         var t = e.target;
         if (!t.closest) return;
@@ -5051,7 +5082,7 @@ try {
           return b.getAttribute("aria-pressed") === "true";
         });
         if (i < 0 || bs.length < 2) return;
-        st = {
+        swipe = {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY,
           lk: 0,
@@ -5067,38 +5098,38 @@ try {
       },
       { passive: !0 },
     );
-    D.addEventListener(
+    doc.addEventListener(
       "touchmove",
       function (e) {
-        if (!st) return;
+        if (!swipe) return;
         var t = e.touches[0],
-          mx = t.clientX - st.x,
-          my = t.clientY - st.y;
-        if (!st.lk) {
+          mx = t.clientX - swipe.x,
+          my = t.clientY - swipe.y;
+        if (!swipe.lk) {
           if (Math.abs(mx) < 10 && Math.abs(my) < 10) return;
-          st.lk = Math.abs(mx) > Math.abs(my) * 1.3 ? 1 : -1;
-          if (st.lk === 1) {
-            st.pn = panel(st.vz);
+          swipe.lk = Math.abs(mx) > Math.abs(my) * 1.3 ? 1 : -1;
+          if (swipe.lk === 1) {
+            swipe.pn = panel(swipe.vz);
             window.__hsw = 1;
           }
         }
-        if (st.lk !== 1 || !st.pn) return;
+        if (swipe.lk !== 1 || !swipe.pn) return;
         e.cancelable && e.preventDefault();
-        var dt = Math.max(1, e.timeStamp - st.lt);
-        st.v = 0.7 * ((t.clientX - st.lx) / dt) + 0.3 * st.v;
-        st.lt = e.timeStamp;
-        st.lx = t.clientX;
-        var edge = (mx > 0 && st.i === 0) || (mx < 0 && st.i === st.bs.length - 1);
-        st.dx = edge ? mx * 0.25 : mx;
-        st.pn.style.transition = "none";
-        st.pn.style.transform = "translate3d(" + st.dx + "px,0,0)";
-        st.pn.style.opacity = String(1 - Math.min(0.4, Math.abs(st.dx) / 800));
+        var dt = Math.max(1, e.timeStamp - swipe.lt);
+        swipe.v = 0.7 * ((t.clientX - swipe.lx) / dt) + 0.3 * swipe.v;
+        swipe.lt = e.timeStamp;
+        swipe.lx = t.clientX;
+        var edge = (mx > 0 && swipe.i === 0) || (mx < 0 && swipe.i === swipe.bs.length - 1);
+        swipe.dx = edge ? mx * 0.25 : mx;
+        swipe.pn.style.transition = "none";
+        swipe.pn.style.transform = "translate3d(" + swipe.dx + "px,0,0)";
+        swipe.pn.style.opacity = String(1 - Math.min(0.4, Math.abs(swipe.dx) / 800));
       },
       { passive: !1 },
     );
     function end() {
-      var S = st;
-      st = null;
+      var S = swipe;
+      swipe = null;
       setTimeout(function () {
         window.__hsw = 0;
       }, 0);
@@ -5113,7 +5144,7 @@ try {
           (Math.abs(S.dx) > W * 0.25 ||
             (Math.abs(S.v) > 0.35 && Math.abs(S.dx) > 30 && (S.v < 0 ? 1 : -1) === dir));
       if (!go) {
-        pn.style.transition = "transform .45s " + EZ + ",opacity .3s ease";
+        pn.style.transition = "transform .45s " + IOS_EASE + ",opacity .3s ease";
         pn.style.transform = "";
         pn.style.opacity = "";
         setTimeout(function () {
@@ -5139,7 +5170,7 @@ try {
         n.style.transform = "translate3d(" + dir * W * 0.4 + "px,0,0)";
         n.style.opacity = "0";
         void n.offsetWidth;
-        n.style.transition = "transform .4s " + EZ + ",opacity .28s ease";
+        n.style.transition = "transform .4s " + IOS_EASE + ",opacity .28s ease";
         n.style.transform = "";
         n.style.opacity = "";
         setTimeout(function () {
@@ -5147,8 +5178,8 @@ try {
         }, 420);
       }, 170);
     }
-    D.addEventListener("touchend", end, { passive: !0 });
-    D.addEventListener("touchcancel", end, { passive: !0 });
+    doc.addEventListener("touchend", end, { passive: !0 });
+    doc.addEventListener("touchcancel", end, { passive: !0 });
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Swipe sideways between sub-tabs on Days, Plan and Explore.", err);
@@ -5159,7 +5190,7 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var A =
+    var SIGNATURE_SVG =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 238" fill="currentColor" role="img" aria-label="Beach, trek, road trip and camping, drawn as one landscape"><svg x="0" y="0" width="260" height="236" viewBox="40 0 260 236" overflow="hidden"><path d="M129.5 334.2l.3.6.6.7.9.7 1.2.7 1.5.7 1.7.6 1.9.4 2.1.2 2.3 0 2-.2 1.6-.2 1.3-.4.9-.5 1.3-.4 1.7-.2 1.9-.1 2.3 0 2.4.3 2.5.8 2.6 1.1 2.7 1.5 2.3 1.1 1.9.8 1.4.4 1.1 0 .9 0 .6.1.4.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.5 3-.9 3.1-1.2 3.2-1.5 2.9-1.1 2.6-.8 2.3-.3 2.1 0 2.4.3 2.6.8 2.9 1.1 3.2 1.5 3.1 1.1 3 .8 2.9.4 2.8 0 2.1-.1 1.5-.1.9-.2.2-.3.2-.2.4-.1.5 0 .6 0 .6-.2.8-.2.9-.4 1-.5 1-.6 1.1-.8 1.2-.9 1.2-1 1.1-.8 1-.6 1-.5.8-.3.7-.4.4-.3.2-.4-.1-.3-.4-.3-.9-.2-1.1-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.1.3-1 .4-.9.5-.7.4-1.1.4-1.5.3-1.9.1-2.3 0-2.5-.4-2.6-.7-2.8-1.1-2.9-1.6-3-1.1-3.1-.7-3.3-.4-3.3 0-3.2.4-3.1.7-3.1 1.1-2.9 1.6-2.8 1.1-2.6.9-2.5.6-2.3.2-1.8.2-1.2 0-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.3-.4-1.8-.7-2.2-1.1-2.7-1.6-2.2-1.1-1.7-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.6-.2-1-.1-1.4-.1-1.8 0-1.4.1-1 .1-.6.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.1-.2.2-.2.2-.3.2-.4.1-.4.1-.6 0-.7.1-.7.3-.9.4-.9.4-1.4.4-1.7.1-2.2 0-2.7-.2-1.9 0-1.1.3zM85.5 307.2l.3.6.3.5.3.3.3.2.3 0 .7.3 1 .8 1.3 1.1 1.7 1.5 1.4 1.1 1.1.8.9.4.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2 .3 1.8.6 1.8.9 1.7 1.3 1.7 1 1.6.7 1.6.5 1.6.3 1.2.2.8.3.6.2.2.3.6.2 1 .1 1.4.1 1.8 0 1.4-.1 1-.1.6-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.5 2-.9 2.6-1.3 3.2-1.7 3.1-1.3 3-.9 2.9-.4 2.8 0 2.9.4 3 .9 3.1 1.3 3.2 1.7 2.6 1.3 2 .9 1.4.5.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1-.2 1.1-.4 1.4-.6 1.4-.7 1.3-.7 1-.6.7-.6.4-.5.5-.4.5-.2.5-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.2-.4 1.4-.2 1.6-.1 1.8 0 1.4 0 1 .1.6.2.2.3.4.2.8.3 1 .2 1.3.3 1.1.3.9.4.7.4.4.5.7.6 1 .6 1.2.7 1.5.7 1.3.6 1.2.4 1 .2.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.4 2-.8 2.6-1.1 3.2-1.5 2.8-1.1 2.5-.8 2.2-.3 1.8 0 1.7.1 1.7.4 1.6.6 1.4.7 1.3.7 1 .6.7.6.4.5.6.4.7.4.9.3 1.1.3 1.2 0 1.3-.3 1.4-.5 1.4-.7 1.7-1 1.8-1.3 1.9-1.6 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.1-.2-.2-.2-.3-.1-.4-.1-.3 0-.3.1-.2.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.2.3-.9.2-.5.3-.2.2-.6.2-.8.1-1.2.1-1.6 0-1.4-.1-1.1-.3-.9-.4-.7-.4-.6-.4-.7-.3-.5-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.2-.4-1.5-.3-1.8-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.2.3-1.5.6-1.8 1-2.2 1.2-2 1-1.9.8-1.7.5-1.6.2-1.2.3-.9.2-.5.3-.2.2-.4.2-.6.1-.9.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.3-.8-.2-1.2-.3-1.6-.2-1.4-.4-1.3-.5-1.1-.6-.9-.8-1.1-.7-1.4-.6-1.6-.6-1.8-.4-1.4-.5-1-.4-.6-.3-.2-.2-.9-.2-1.5-.1-2.1-.1-2.8 0-3.1.4-3.2.9-3.5 1.3-3.7 1.8-3.5 1.3-3.4.9-3.2.4-3.1 0-2.9-.4-2.9-.7-2.8-1.1-2.7-1.6-2.6-1.2-2.7-1-2.5-.8-2.6-.4-2-.4-1.3-.1-.8.1-.2.2-.5.2-.7.1-1.1.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.3.2-.4.1-.4.1-.6 0-1.1.4-1.6.7-2.2 1.1-2.7 1.6-2.7 1.1-2.7.7-2.8.4-2.8 0-2.9-.4-2.8-.9-3-1.3-2.9-1.8-2.8-1.3-2.8-.9-2.6-.4-2.6 0-2 .1-1.3.1-.8.2-.2.2-.5.2-.7.1-1.1.1-1.3 0-1-.1-.8-.1-.4-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1 .2-.5.3zM64 288.5l1.3 1.3 1.2 1.1 1.2.9 1.1.7 1 .5 1.2.4 1.4.2 1.6.2 1.8 0 1.8-.3 1.9-.5 1.9-.8 1.9-1 1.6-.7 1.3-.5.9-.2.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2.4.4 2.8.9 3.1 1.3 3.4 1.7 3.4 1.4 3.4 1 3.3.6 3.3.3 2.6.1 1.7 0 1-.1.2-.3.5-.2.9-.3 1.2-.2 1.6-.3 1.9-.5 2.2-.9 2.6-1.2 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.7-1.1 2.6-.8 2.6-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.8-.8 2.3-1.1 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.8.4 3.1.9 3.4 1.3 3.7 1.7 3.6 1.3 3.5.9 3.4.5 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.9-.8 1.9-1.2 2-1.5 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.5-.2-1-.2-1.4-.1-1.8-.1-2.2.3-2.4.7-2.7 1.1-2.9 1.6-2.7 1.1-2.3.7-2.1.4-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.6-.3-1-.4-1.4-.5-1.8-.4-1.5-.6-1.1-.4-.8-.6-.4-.4-.5-.4-.5-.3-.5-.1-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.6.4-2.2.9-3 1.3-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.9-1.3-2.2-.9-1.7-.4-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.8-.2-1.4 0-1.9.2-2.6.2-2.8.6-3 1-3.2 1.4-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.8-.2-1-.4-1.3-.5-1.5-.8-1.2-.7-1-.6-.7-.6-.4-.4-.8-.5-1-.4-1.2-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.9-.2-1.5 0-2.1.2-2.8.2-3.1.6-3.2 1-3.5 1.4-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.5-.3-.7-.2-1.1-.3-1.3-.2-1.1-.3-.9-.4-.6-.5-.4-.4-.6-.6-.7-.4-.9-.6-1-.4-1.1-.5-1.3-.4-1.4-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.3-1.6.6-2 1-2.4 1.2-2.3 1-2.1.6-2 .3-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8.1-.5.2-.3.3-.1.3.3.6.6.9zM38 258.7l0 .3.2.4.4.5.5.6.8.7.5.6.4.5.2.4 0 .3.3.5.5.7.8.9 1.1 1.1 1 .8.9.5.9.3.8 0 .6 0 .5.1.4.2.2.3.3.2.5.1.7.1.8 0 .6 0 .5.1.4.2.2.3.2.2.4.1.5.1.6 0 .6.1.8.2.8.4.9.5 1.1.4 1.1.2 1.2.2 1.3 0 1.1 0 .7.1.5.2.2.3.2.1.4 0 .4-.1.5-.3.8-.2 1-.1 1.3 0 1.6 0 1.2-.1.8-.1.6-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.2-1.1 1.8-.8 1.3-.3.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.6 3.2-1 3.3-1.4 3.4-1.7 3.3-1.3 3.3-.9 3.1-.4 3.1 0 3.2.4 3.2.9 3.4 1.3 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 3.5-.5 3.5-.9 3.5-1.3 3.4-1.7 2.8-1.3 2.1-.9 1.5-.4.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.7.1 1.2 0 1.8-.1 2.3-.3 1.8-.2 1.3-.3.7-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.6-.6 1.4-.6 1.1-.7.9-.7 1.1-.7 1.3-.4 1.4-.4 1.6-.3 1.2-.2.8-.3.6-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.6.6 2.9 1 3.2 1.4 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 2.7-.1 1.9-.1 1-.2.2-.3.2-.2.4-.1.5 0 .6 0 .7-.2.8-.4 1.1-.6 1.2-.7 1-.6.9-.4.7-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.1-.4 1.1-.2 1.2-.1 1.3 0 1.1 0 .7.1.5.2.2.3.5.2.9.3 1.2.2 1.6.3 1.6-.4 1.7-.9 1.7-1.4 1.8-2.1 1.4-1.6.8-1.3.5-.8-.1-.3-1.1-.3-2-.2-3.1-.1-4.1 0-3.1.1-2.1.1-1.1.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.6.7-2.5.4-2.3 0-1.8-.1-1.2-.1-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.4-.4-1.9-.7-2.4-1.1-2.9-1.6-2.4-1.1-1.9-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.5.4-2.1.9-2.8 1.3-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-.8.1-.8.3-.7.4-.7.4-.6.4-.7.3-.5.1-.6 0-.5.1-.5.3-.5.4-.4.4-.8.6-1.2.4-1.4.6-1.8.4-1.4.5-1 .4-.6.3-.2.2-.8.2-1.4.1-1.9.1-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.4-1.8.7-2.2 1.1-2.7 1.6-2.2 1.1-1.7.7-1.3.4-.8 0-.7.1-.5.1-.3.2-.2.2-.9.2-1.5.1-2.1.1-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.8.7-2.6.4-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1.1.1-.7.2zM182.8 172.2l-.6-.1-.6.1-.5.2-.5.4-.4.4-.5.5-.6.3-.5.2-.7.1-.3.2 0 .2.3.3.7.3.7 0 .8-.3 1-.6 1.1-.8.6-.7.2-.5zM114.8 165.2l-.6-.1-.7.1-.6.4-.7.5-.7.8-.7.4-.9.1-.9-.2-1-.4-.9-.4-.8-.2-.7 0-.7.1-.3.1 0 .1.3.1.7.1.6.2.7.4.6.6.7.7.6.6.5.4.4.2.3 0 .6-.3.8-.6 1.1-.8 1.3-1.2.8-.8.4-.6zM198.8 88.6l1.9.1 1.5-.1 1-.1.7-.1.2-.3.4-.2.5-.2.7-.1.8-.2.2-.1-.4-.1-1 0-1.6-.1-1.3 0-.9.1-.6.2-.3.2-.4.2-.7.2-.8.2-1.1.1-.3.1.4.1zM37.6 130.4l.3.2.6-.3.8-.5 1-.9 1.2-1.3.9-.9.8-.6.5-.3.3 0 .5-.2.7-.4.8-.6 1-.7.8-.5.5-.3.4-.1.1.2-.1.4-.3.6-.5.7-.8.9-.5.8-.3.7-.1.5.1.4.5-.2.9-.7 1.3-1.2 1.7-1.7 1.4-1.3 1-.9.6-.4.3 0 .3 0 .2.1.2.1.1.2-.1.4-.3.6-.5.7-.8.9-.4.8-.2.5.1.3.3.2.5 0 .4-.1.5-.2.6-.3.5-.4.3-.4.2-.4.2-.4.3-.4.4-.3.7-.3.8-.3.8-.3.7-.6.7-.6.7-.7.6-.5.6-.3.5-.1.4.2.1.5-.4.6-.9 1-1.2 1.2-.9 1-.6.7-.3.6.1.4.6-.1 1.1-.6 1.7-1 2.3-1.5 1.8-1.1 1.3-.6.9-.3.4.2.1.3-.3.5-.6.5-1 .7-.7.6-.5.6-.2.4.1.4.3.1.5 0 .8-.3 1.1-.5.9-.5.8-.5.6-.5.4-.5.6-.5.9-.5 1-.5 1.3-.5 1-.3.7 0 .5.3.3.5.8.5 1.5.4 2.1.4 2.7.4 2 .3 1.2.3.6.2-.1.2-.6.2-1.1.2-1.6.3-2.1.2-1.5.3-1.2.2-.6.3-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.6.5-1.9.8-2.2 1-2.5 1.2-2.2 1.2-1.8 1.1-1.5 1.1-1.2 1-1 .7-.7.6-.6.2-.3 0-.5.3-.9.7-1 1-1.3 1.3-1 1-.5.9-.1.5.2.3.1.3-.1.2-.3.2-.4.1-.4.3-.4.3-.3.5-.3.7-.5.6-.5.7-.6.6-.8.7-.6.7-.5.6-.4.5-.2.5-.2.5 0 .5.2.6.2.6.1.5-.1.5-.4.5-.4.4-.5.7-.4 1-.3 1.2-.2 1.5-.3 1.2-.2.9-.3.5-.2.3-.2.3-.1.5 0 .5.1.6.4-.2.8-1.1 1.1-1.9 1.5-2.7 1.2-2.1 1-1.3.7-.6.4.2.3.1.1.3-.1.2-.2.3-.2.6 0 .8 0 1.1.1 1.3.2.7.2.1.3-.5.3-1.2.5-1.3.7-1.5.9-1.7 1.2-1.8.9-1.3.6-.8.4-.1.2.4.1.4 0 .4-.2.3-.2.2-.3.6-.2.9-.2 1.2-.2 1.6 0 1.1.1.6.2.2.4-.3.4-.7.5-1 .6-1.3.6-1.7.5-1.3.4-.7.3-.4.2.2.2.3.1.4 0 .7 0 .8 0 .6.1.4.2.2.2 0 .2-.3.4-.4.4-.8.5-1 .4-.9.2-.8.2-.6 0-.6.2-.8.4-.9.7-1.2.8-1.4.7-1 .6-.6.3-.2.2.2 0 .4-.1.6-.4.8-.4 1-.4 1-.2 1-.1 1.1.1 1.1.1.7.2.3.3.1.4-.3.6-.9.7-1.3.9-2 1.2-2.4.9-1.8.6-1.1.4-.6.2.2.1.2 0 .3-.2.4-.2.5-.2.6 0 .7 0 .8.1.8.3.3.6-.5.7-1.1.9-1.7.8-1.2.6-.4.5.1.3.7.4.3.4-.2.5-.6.6-1.2.8-1.1.9-1.3 1.2-1.3 1.4-1.4 1.1-1 .7-.6.5-.2.2.2 0 .3-.3.5-.5.5-.8.7-.6.7-.5.6-.3.7-.2.6.3 0 .8-.5 1.3-1.2 1.7-1.7 1.4-1.3 1.1-.8.8-.4.4.2-.2 1.1-.9 2.2-1.6 3.2-2.2 4.3-1.7 3.3-1.1 2.4-.6 1.5 0 .6-.3 1-.6 1.5-1 2-1.2 2.4-1 2-.6 1.6-.3 1.3 0 .8-.2 1.1-.6 1.4-.7 1.6-1 1.9-.8 1.9-.6 1.9-.5 1.9-.2 1.8-.3 1.4-.2 1-.3.6-.2.2-.3.5-.2.9-.3 1.2-.2 1.6-.3 1.4-.4 1.2-.5 1.1-.4.9-.4 1-.3 1-.1 1 0 1.1-.1.9-.1.6-.2.4-.2.2-.2.4-.1.6-.1.8 0 1.1-.1.9-.1.6-.2.4-.2.2-.2.4-.1.8-.1 1 0 1.3-.1 1.1-.1.7-.2.5-.2.2-.2.4-.1.6-.1.8 0 1.1-.1.9-.1.6-.2.4-.2.2-.2.6-.1 1-.1 1.4 0 1.8-.1 1.4-.1 1-.2.6-.2.2-.2.4-.1.6-.1.8 0 1.1-.1.9-.1.6-.2.4-.2.2-.2.9-.1 1.8-.1 2.5 0 3.3-.1 2.6-.1 1.7-.2 1-.2.2-.2.4-.1.6-.1.8 0 1.1 0 .8-.1.6-.2.4-.2.1-.2-.1-.3-.2-.3-.5-.4-.7-.6-.9-.8-1-1.1-1.1-1.3-1.3-1.2-1.1-1.1-.8-.9-.5-.8-.2-.3.3.1.9.7 1.5 1.2 2.1.9 1.6.6 1.4.3.9 0 .6 0 .4-.1.4-.2.2-.2.1-.3-.1-.6-.3-.8-.5-.9-.8-1-.5-1.1-.4-1.3-.2-1.3 0-.9.1-.5.2-.2.4.3.4.3.4.5.4.6.4.7.4.5.3.3.4.2.3 0 .3-.2.4-.3.3-.4.4-.7.3-.6.3-.6.2-.5.1-.6 0-.6.1-.6.3-.7.4-.7.4-.6.4-.7.3-.5.1-.6 0-.4.1-.3.2-.2.4 0 .4 3.6.3 7.2.2 10.7.2 14.3 0 10.8-.1 7.3-.1 3.7-.2.2-.3 9.9-.2 19.6-.1 29.3 0 39.1 0 29.3 0 19.7.1 9.9.2.2.3.9.2 1.8.1 2.5.1 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3 1.8-.2 3.5-.1 5.2 0 6.8 0 5.1 0 3.5.1 1.9.2.2.3 2 .1 3.7.1 5.6.1 7.4-.1 5.5-.1 3.7-.3 1.8-.3-.1-.3-.4-.4-.9-.3-1.1-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-.9-.4-.9-.3-.8-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.3-1-.2-1.4-.3-1.8-.2-1.5-.3-1.1-.3-.7-.4-.4-.3-.2-.5-.1-.5 0-.5.2-.7.1-.4-.1-.3-.2-.2-.3 0-.3.1-.4.3-.4.4-.4.4-.7.4-.9.3-1.1.1-1.3 0-1.1-.1-1-.2-.8-.3-.6-.3-.5-.5-.3-.6-.1-.7 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.6-.1-.8 0-1.2 0-1.6-.1-1.2-.1-.9-.2-.5-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.6-.1-.8 0-1.2 0-1.6-.1-1.2-.1-.9-.2-.5-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.5-.1-.7 0-1.1 0-1.3-.1-1-.1-.8-.2-.4-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.1-.8-.1-.6-.2-.4-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.3-.9-.4-1.5-.4-2.1-.5-2.8-.5-2.4-.5-1.9-.5-1.4-.5-.9-.4-1-.2-1-.1-1 0-1.1-.2-.9-.2-.7-.4-.6-.5-.4-.4-.6-.2-.8-.1-.9 0-1.1-.2-.9-.2-.9-.4-.8-.5-.7-.4-.9-.4-1.1-.3-1.3-.3-1.6-.3-1.4-.4-1.1-.4-.9-.5-.7-.6-1.2-.6-1.7-.7-2.3-.7-2.8-.8-2.4-.7-2-.8-1.6-.7-1.2-.7-1.4-.6-1.7-.6-1.8-.5-2.1-.3-1.5-.2-1.1 0-.6.2-.2.5.3.8.6 1.1 1 1.3 1.4 1.1 1.1.7.9.4.6.1.4 0 .2.1-.1.1-.2.2-.4 0-.4-.1-.2-.1-.2-.3-.1-.2-.1-.1-.2 0-.3 0-.4 0-.3.1-.3.1-.1.2-.2.4.4.6 1 .7 1.5.9 2 .8 1.2.5.4.3-.3.2-1.2.1-.8.2-.7.1-.3.2-.2.3.4.4.7.5 1.3.7 1.7.6 1.3.5.9.6.6.4.2.4.2.3.4.1.5 0 .6.1.5.1.6.3.5.3.6.2.1.3-.4.1-.9.2-1.4.1-1.1.2-.7.1-.4.2-.2.3.2.4.5.5.8.7 1.2.5 1.2.5 1.2.4 1.3.3 1.4.3 1 .4.7.3.3.4-.1.3-.4.2-.7.1-1 0-1.3 0-1 .1-.7.1-.4.2-.2.3.5.5 1.1.5 1.6.7 2.3.6 1.6.6 1 .4.3.4-.3.2-.4.1-.4-.1-.4-.3-.6-.1-.5 0-.6 0-.6.2-.7.3-.4.2-.2.4.1.3.4.3.4.2.4.1.5 0 .5.1.6.3.6.4.7.4.7.4.7.3.7.1.6 0 .6.1.5.1.6.3.5.3.6.2.1.3-.4.1-.9.2-1.4.1-1.1.2-.7.1-.4.2-.2.4.5.6 1.1.7 1.6.9 2.3.8 1.3.5.5.3-.5.2-1.4 0-1.1-.1-.7-.1-.5-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.4-1.3-.6-1.6-.9-1.9-1.3-2.2-.9-1.8-.6-1.4-.3-.9 0-.6-.4-.8-.6-.9-1-1.1-1.3-1.3-1.3-1.1-1.2-.9-1.1-.8-1.1-.4-.9-.6-.9-.6-.8-.7-.7-.8-.7-.6-.7-.5-.8-.4-.8-.2-.9-.4-.8-.5-1-.6-.9-.8-.8-.5-.8-.4-.6-.2-.6 0-.5-.1-.3-.1-.2-.2-.2-.2 0-.3.1-.2.1-.2.3-.2 0-.2-.1-.4-.3-.4-.5-.5-.3-.4-.2-.3 0-.2.2-.2.7.2 1.1.4 1.5.7 2 1 1.5.7 1 .4.6 0 .1-.3-.2-.5-.3-.5-.6-.6-.7-.8-.5-.6-.3-.5-.1-.3.2-.2.5.2.8.5 1.2.9 1.4 1.3 1.3 1 1.1.7 1 .5.8.3.5 0 .4-.2 0-.4-.2-.6-.2-.5-.4-.4-.4-.3-.5-.2-.3-.3-.2-.3 0-.4.2-.4.5 0 .6.4 1 .8 1.2 1.3 1 1 .9.7.7.5.6.3.3-.1.2-.3 0-.6-.2-.8-.2-.8-.4-.7-.4-.5-.5-.4-.4-.4-.2-.4-.1-.4 0-.3 0-.2.1-.3.1-.1.2-.2.5.3.9.7 1.2 1.1 1.4 1.5 1.2 1 .8.6.4.1.1-.4-.1-.4-.2-.6-.4-.6-.5-.7-.3-.5-.2-.5 0-.3.2-.2.6.4 1.1.9 1.5 1.5 1.9 2 1.5 1.2.9.6.4-.1-.2-.8-.2-.7-.3-.7-.4-.5-.5-.6-.3-.4-.2-.3-.1-.3.2-.2.2 0 .3 0 .5.1.6.3.8.6 1.1 1 1.4 1.4 1.7 1.7 1.3 1.2.9.7.5.2.2-.4-.1-.4-.2-.4-.3-.4-.5-.4-.4-.6-.4-.6-.3-.7-.3-.8-.5-1-.8-1-1-1.2-1.3-1.3-1.2-1.1-1.1-.8-.9-.5-.8-.2-.7-.3-.7-.4-.5-.5-.4-.4-.5-.5-.4-.3-.5-.2-.4-.1-.2-.2 0-.1.3-.2.5-.2.4 0 .3 0 .1.1.1.3.2.2.4.3.4.2.7.3.4.1.2-.1-.1-.3-.2-.4-.7-.6-1.1-.7-1.6-.9-2-1-1.9-.7-1.8-.4-1.6 0-1.6.2-1.2.1-.7-.1-.4-.4.1-.4-.3-.4-.6-.3-1-.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.5.2-.7.1-1.1.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.2.3-1.2.4-1 .5-1 .4-.9.6-.7.4-.6.6-.4.4-.4.3-.3 0-.3-.2-.2-.4.6-.8 1.4-1.2 2.2-1.6 3-1.9 2-1.5 1-1-.1-.6-1.2-.1-.9 0-.8 0-.7.2-.5.2-.4.1-.2 0-.2-.2 0-.3.6-.4 1-.6 1.6-.7 2.2-.8 1-.7-.2-.6-1.2-.5-2.4-.3-1.8-.5-1.2-.4-.6-.5 0-.6.2-.3.4 0 .6.2.7.5.7.3.4.1.4 0 .3-.3.3-.2.4-.1.5 0 .6 0 .5-.2.5-.2.5-.4.6-.5.5-.3.5-.2.5 0 .6.2.3.1.2-.1-.1-.3-.3-.3-.4-.3-.4-.2-.5-.1-.6 0-.4-.1-.3-.1-.2-.3 0-.3.4-.3.8-.3 1.2-.2 1.6-.3 1.2-.2.9-.3.6-.2.2-.3.6-.2.9-.1 1.2 0 1.4 0 1.2-.1.7-.1.4-.1 0-.2-.4-.2-.9-.1-1.2-.2-1.7-.1-1.3-.2-.8-.2-.4-.3 0-.3.1-.4.3-.4.5-.6.6-.6.7-.5.6-.2.7-.1.7.2.5.1.3.2.1.1-.1.2-.2.2-.3.1-.5 0-.6 0-.5 0-.3.1-.2.2 0 .2.2.1.3.1.4.1.6 0 .4-.1.4-.1.2-.2.1-.3.6-.2 1-.1 1.4 0 1.9 0 1.4-.1.9-.1.5-.1 0-.2-.2-.2-.4-.1-.5 0-.8 0-.6-.1-.5-.1-.4-.2-.2-.2-.7-.2-1.2-.1-1.6-.1-2.1 0-1.5-.1-1.2-.1-.6-.2-.2-.2-.4-.1-.6.1-.8.4-1 .4-.9.4-.8.1-.6-.1-.6-.2-.4-.1-.2 0 0 .3.2.3.1.4-.1.4-.3.4-.3.3-.4.2-.3-.1-.3-.3-.2-.4-.3-.4-.3-.3-.3-.1-.3 0-.6.4-.9.7-1.1 1.1-1.4 1.6-1.2 1-.9.6-.6.2-.3-.2-.4-.1-.4.2-.5.3-.6.6-.4.6-.4.7-.4.8-.2.8-.3.7-.4.6-.5.6-.4.4-.4.5-.3.7-.1.7 0 .8-.1.9-.2.9-.4 1.1-.4 1.1-.5.1-.7-1.1-.8-2.1-.8-3.2-.8-2.4-.6-1.8-.4-1-.3-.3-.3-.2-.4 0-.3.1-.3.2-.3.1-.4 0-.3-.3-.4-.3-.3-.5-.3-.6-.3-.7-.3-.8-.4-.9-.7-.9-.8-1-1.1-1.1-.9-.8-.9-.5-.6-.3-.6 0-.5-.1-.4-.3-.2-.4-.2-.4-.4-.5-.6-.4-.9-.3-1.1-.2-.8-.3-.6-.2-.4-.3-.2-.2-.2-.1-.1.1 0 .4 0 .4-.3.4-.5.1-.8-.1-1.1-.2-.9-.1-.8.2-.7.3-.6.6-.3.5-.2.4.1.3.2.3.2.2 0 .2 0 .2-.1.2-.3.2-.5.1-.7.2-.9.1-.6.2-.2.2 0 .3.3.3.6.2.9.2 1.3.1 1.6 0 1.2 0 .9.1.6.2.2.3.3.2.4.1.4.1.6 0 .3 0 .3.2.1.2 0 .3-.3.3-.5.1-.8.1-1.1 0-.9.1-.8.2-.7.3-.6.3.3.4 1 .3 1.8.4 2.7.3 2 .3 1.5.4 1 .3.3.4.2.4.1.3-.2.4-.3.4-.4.3-.4.2-.6.1-.6.1-.5 0-.4-.1-.3-.2-.2-.2-.3-.2-.4 0-.5 0-.7.1 0 .2.6.3 1.1.4 1.8.6.9.4.2.3-.7.2-1.4.1-1.1.2-.7.2-.4.4-.1.3.3.4.6.3 1.1.4 1.3.3 1.1.3.7.3.3.3 0 .3-.2.3-.3.2-.4.2-.7.1 0 .4.6.8 1.2 1 1.8 1.3 1.5 1 1 .6.7.4.3 0 .4.1.5.4.5.5.7.7.4.5.2.4 0 .3-.2.1-.2 0-.3-.2-.4-.4-.4-.4-.7-.6-1-.6-1.3-.7-1.4-.8-1.5-.6-1.4-.5-1.4-.4-1.3-.2-1-.3-.8-.2-.4-.3-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2-.1-.9-.1-.5-.2-.2-.2-.8-.2-1.4 0-1.9.2-2.6.2-2.1.3-1.6.4-1.2.5-.7.4-.7.5-.9.4-1 .3-1.1.2-.9.4-.8.4-.7.4-.6.6-.3.5-.2.4.1.4.2.3 0 .5-.3.6-.6.7-.9.9-.7.6-.6.5-.5.2-.3 0-.6.5-.9.9-1.3 1.3-1.6 1.8-1.2 1.5-.9 1.2-.6.8-.2.5-.2.5-.1.6 0 .6.1.6.1.3.2 0 .3-.3.4-.6.7-.9 1.2-1.1 1.5-1.4 1.8-1.6 1.5-1.2 1-.7.6-.3.2.2 0 .3-.1.5-.4.5-.4.7-.4.6-.2.6-.1.4.1.4.5-.2 1.1-.8 1.5-1.4 2.1-2 1.6-1.5 1.1-.9.6-.4.1.2 0 .3-.2.3-.4.4-.4.4-.6.6-.4.7-.6.9-.4 1-.3.7-.1.6.2.3.3.2.9-.5 1.2-1.1 1.8-1.6 2.2-2.3 1.7-1.6 1.1-.9.7-.2.2.4 0 .5-.3.6-.5.6-.8.7-.6.8-.6.9-.6 1-.4 1.2.3.4 1-.3 1.8-1.1 2.5-1.7 1.9-1.3 1.4-.8.7-.3.2.2 0 .3-.3.3-.5.4-.8.4-.6.5-.6.7-.6.8-.4.8-.1.6.2.3.5.1.8-.3.7-.3.6-.4.6-.4.4-.5.7-.6 1-.6 1.2-.7 1.5-.7 1.2-.5.8-.3.5-.1.2.2 0 .3-.3.2-.4.4-.7.3-.7.5-.6.5-.5.6-.5.7-.1.5.3.2.6 0 1.1-.3.9-.2.6-.3.4-.2.2-.3.5-.2.9-.1 1.2 0 1.6 0 1.1 0 .8.2.4.2 0 .3-.5.4-.9.4-1.3.5-1.8.4-1.9.8-1.9 1-2 1.3-2.1 1.6-1.6 1.3-1.2 1-.7.8-.2.5-.2.5 0 .5.2.6.2.6 0 .6-.4.8-.7.8-1 .9-.7 1-.6.8-.2.9 0 .8-.1.6-.1.5-.2.4-.2.2-.2.2-.1.4-.1.5 0 .6.1.4.1.4.2.3.2.2.2.2 0 .4-.2.4-.2.5-.2 1.1-.1 1.8-.1 2.4 0 3.1.1 2.2.2 1.3.4.4.4-.6.3-.7.2-.9.2-1.1 0-1.3 0-1 .1-.8.2-.4.3-.2.2-.4.1-.5.1-.6 0-.8 0-.7.2-.6.3-.5.4-.4.3-.2.3-.2.2 0 .2.2.2.4.1.7 0 1 0 1.3 0 1 .1.7.2.3.2 0 .1-.3.1-.4.1-.8 0-1 0-.8.1-.6.2-.5.3-.2.2-.5.1-.6.1-.9 0-1.1 0-.9.1-.8.2-.6.3-.5.2-.4.3-.2.3-.2.3 0 .3.5.2 1 .2 1.4.1 1.8.2 1.3.2.7.3 0 .3-.6.2-.8.2-1 .1-1.3 0-1.6 0-1.3.1-1 .2-.8.3-.5.2-.4.3-.2.3-.2.3 0 .3.4.2.7.2 1 .1 1.4.2.9.2.6.3.1.3-.3.2-.6.2-.8.1-1.1 0-1.3 0-1.1.1-.9.2-.7.3-.5.2-.4.3-.2.3-.2.3 0 .3.3.2.6.2.8.1 1.2.2.3.4-.3.4-1.2.6-1.8.5-1.4.4-1 .4-.5.3 0 .3.3.2.4.2.7.1.8.2.6.4.1.4-.2.6-.6.4-.5.3-.4.2-.4 0-.3.3-.6.7-.8 1.1-1.1 1.4-1.4 1.2-1 .7-.6.5-.2.1.2-.1.5-.5.6-.7 1-1 1.2-.7 1-.6.9-.2.7 0 .6-.1.5-.3.7-.4.6-.4.7-.4.8-.3.9-.1.9 0 1.1-.1.9-.1.6-.2.4-.2.2-.2.4-.1.6-.1.8 0 1.1.1.8.1.6.2.4.2.1.2.4.1.6.1.9 0 1.1.1 1 .3.9.4.8.4.7.4.7.3.8.1.8 0 .8.1.7.2.7.3.6.3.6.3 0 .3-.7.1-1.3.1-1.8-.1-1.5-.1-1-.1-.6-.3-.2-.2-.3-.1-.4 0-.4 0-.6 0-.4.2-.3.2-.2.3 0 .3.2.1.3.1.4 0 .6.1.5.2.6.3.5.3.6.4.3.3 0 .4-.3.3-.6.2-.8 0-1.2-.1-1.5-.3-1.8-.1-1.4 0-1 0-.5.2-.2.2.1.1.1.2.3.1.4.2.4.1.2.2.1.2 0 .1-.3.1-.7.1-1 0-1.3 0-1 .1-.8.2-.4.3-.2.2-.3.2-.5.1-.5.2-.7.1-.5.3-.2.3-.1.4.2.3-.2.2-.7.1-1.1 0-1.6 0-1.2.1-.9.1-.4.2-.2.4.3.5.8.7 1.2.9 1.6.6 1.4.5 1.1.2.8 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.6.3.8.4.8.4.9.4 1 .3.8.1.9 0 .8.1.8.3.9.4.9.4.9.4 1 .3 1 .1 1 0 1.1.1 1 .3.9.4.7.4.7.4.9.3 1 .1 1.1 0 1.3.1 1.1.1.7.2.5.2.2.2.5.1.9.1 1.2 0 1.6-.7 1.8-1.5 2.3-2.1 2.5-2.9 2.9-2.2 2.1-1.6 1.5-1 .7-.3 0-.6.4-1 .7-1.4 1.1-1.7 1.6-1.4 1.1-1.3.9-1 .6-.8.2-.9.5-1 .6-1.1.8-1.2 1-1.4 1-1.6 1-1.8 1-2 1-1.7.4-1.3-.2-1-.8-.7-1.3-.7-1.2-.6-.9-.5-.7-.5-.6-.3-.4-.2-.3 0-.3.2-.2.3 0 .3 0 .4.1.6.3.4.1.4-.1.4-.2.3-.4.1-.3 0-.4-.1-.3-.3-.3-.4-.3-.5-.2-.6-.2-.7-.1-.5-.3-.2-.5 0-.6.3-.8-.1-.8-.4-.9-.7-.8-1.1-.8-1-.6-.9-.4-.9-.2-.8 0-.7.1-.7.3-.5.4-.4.4-.6.4-.6.3-.7.1-.8 0-.8-.1-.6-.1-.6-.2-.5-.2-.5-.1-.4 0-.3.3-.3.3 0 .6.3.6.7.8 1 .9.7.8.4.6 0 .4-.2.3-.2.5-.1.8-.1 1 0 1.3.2 1.1.4.9.5.7.8.6.4.4.2.5-.1.4-.3.3-.5.3-.6.2-.7.1-.8 0-1.1.5-1.2 1-1.5 1.5-1.7 2-1.4 1.6-1.1 1.1-.7.7-.6.2-.5.2-.7.1-.7.1-.8 0-.7.1-.5.1-.3.2-.2.2-.6.1-1-.1-1.4-.4-1.8-.4-1.4-.5-1-.4-.6-.3-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.9-.2-.8-.4-1-.5-.9-.8-1-.5-1.1-.2-1.3 0-1.3.2-1 0-.7-.2-.4-.4-.2-.7-.2-.6-.5-.6-.6-.5-.7-.4-.6-.5-.4-.5-.1-.5 0-.6.1-.7.2-.8.4-.8.5-1 .2-.9-.2-.8-.5-.7-.8-.6-.7-.4-.5-.3-.5-.1-.3 0-.4.1-.4.3-.5.4-.6.6-.4.7-.3.8-.1.9 0 1.1.1.9.3.8.4.6.4.4.4.5.1.7-.1.7-.2.8-.4.8-.6.9-.7.8-.9.9-.8.6-.7.5-.6.2-.6 0-.8-.4-1-.9-1.2-1.3-1.4-1.8-1.3-1.4-1.2-1-.9-.6-.8-.2-.7-.3-.6-.3-.5-.4-.4-.3-.3-.4-.2-.3 0-.4 0-.3.1-.3.2-.2.4-.2.5-.2.4-.3.2-.4.2-.4 0-.6 0-.5.1-.4.2-.2.3-.2.1-.5 0-.7-.1-1.1-.3-1.3 0-1.1.1-.9.3-.6.5-.4.4-.4.2-.4.2-.4 0-.3-.3-.2-.4 0-.7 0-.8.2-.9 0-.7-.1-.8-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-1 .2-.9.4-.9.6-.8.8-.7.8-.5.7-.4.6-.2.6-.2.4 0 .4.2.3.2.2.3.4.2.6.3.8.2 1.1.3.9.4.8.5.6.4.6.3.5-.1.7-.3.8-.7.9-.7.7-.8.6-1 .4-1.1.2-.8.4-.7.4-.5.5-.3.7-.4.5-.3.3-.5.3-.4.1-.7-.1-1-.3-1.2-.5-1.5-.8-1.2-.7-1-.6-.7-.6-.4-.4-.6-.5-.6-.4-.7-.3-.8-.2-.7-.3-.7-.4-.5-.5-.4-.4-.7-.6-.9-.4-1.1-.6-1.3-.4-1.3-.7-1.2-.7-1.2-.9-1.2-1-1.1-.8-1-.6-.9-.5-.8-.2-1.2-.8-1.5-1.2-1.8-1.8-2.2-2.2-1.8-1.8-1.5-1.3-1-.9-.7-.3-.6-.5-.5-.5-.4-.5-.3-.7-.4-.5-.5-.5-.6-.5-.7-.3-.5-.8-.4-1.1-.1-1.4 0-1.8.1-1.6.2-1.4.4-1.2.5-.9.4-.9.2-.9.2-.8 0-.8.1-.8.2-.8.4-.7.5-.7.4-.7.2-.7.2-.8 0-.8 0-.7.1-.5.2-.3.3-.2.2-.3.1-.4.1-.4 0-.6.1-.7.2-.7.4-.9.5-.9.4-.9.2-.9.2-.8 0-.8.4-1.6 1-2.4 1.6-3.3 2-4 1.5-3 1.2-2.2.8-1.3.4-.4.3-.3.4-.2.3 0 .3 0 .6.4.9.9 1.3 1.3 1.4 1.7 1.2 1.2.8.6.4 0 .1-.6-.1-.5-.2-.5-.4-.5-.5-.6-.3-.4-.2-.5 0-.5.2-.4.3-.2.4.1.5.4.7.6.6.7.5.8.6 1 .4 1 .4.8.3.8.1.7 0 .6.1.5.1.4.3.4.3.3.2-.1.3-.6.1-.9.2-1.4 0-1.1-.1-.8-.1-.5-.3-.3-.1-.2 0-.2 0-.1.2-.2.3.2.4.3.5.7.7.8.5 1.1.4 1.4.4 1.6.2 1.8.3 1.4.3 1.1.3.7.3.3.2-.3.3-.7.1-1.4.2-1.8.1-1.5.2-1 .1-.5.2-.2.3.3.2.7.4 1 .3 1.4.4 1.2.3.8.3.5.2.2.2.5.2.7.1 1.1.1 1.4.1.8.2.3.3-.4.4-.8.3-.9.2-1 .1-.9 0-1-.1-.8-.1-.6-.2-.4-.3-.2-.1-.3 0-.3 0-.4.2-.4.3-.2.2.1.4.4.3.6.4 1.1.3 1.6.3 2.1.2 2.6.3 1.9.2 1.3.2.6.2 0 .2-.4.3-.7.3-1.1.4-1.4.4-.9.4-.2.4.3.4.8.4 1.1.2 1.2.2 1.5.1 1.6.1.9.2.1.3-.6.4-1.4.3-1 .4-.7.3-.4.3 0 .3.8.4 1.4.3 2.2.3 2.8.3 2 .4 1 .3.1.4-.8.3-1.2.2-1.5.1-2 0-2.3-.1-1.8-.1-1.2-.2-.7-.3-.2-.2-.3-.1-.4 0-.4 0-.6-.2-.7-.2-.8-.4-.8-.5-1-.3-.8-.2-.6 0-.3.2-.2.3.1.3.2.4.3.4.5.4.3.2.2.2.1.2-.2-.1-.3-.2-.6-.3-.7-.5-1-.5-.9-.5-.7-.5-.6-.5-.4-.4-.4-.2-.4-.1-.4 0-.3-.2-.4-.4-.5-.6-.6-.7-.7-.6-.5-.3-.5-.1-.3.2-.2.1 0 .2 0 .1.1.2.3.2.1.2.1.2 0 .2-.2-.3-.4-.7-.9-1.1-1.2-1.6-1.6-1.9-1.4-2.2-1.4-2.6-1.3-2.9-1.2-2-.9-1-.6 0-.4.9-.2 1.2.1 1.5.3 1.7.6 2 .7 1.3.4.7 0 0-.5-.7-.8-.5-.6-.2-.5-.1-.4.2-.2.5.2.8.5 1.2.9 1.4 1.3 1.1.9.9.6.6.4.3 0 .2-.2-.1-.3-.3-.4-.4-.6-.3-.4-.1-.4-.1-.3.2-.2.1-.1.3-.1.2 0 .3 0 .4.1.4.2.4.4.4.5.4.4.4.2.4.1.4-.1.1-.3-.2-.5-.5-.8-.7-1-.5-.8-.3-.6-.1-.4.2-.2.7.4 1.2.9 1.8 1.5 2.2 2 1.7 1.4 1.2.8.6.2.1-.4-.1-.5-.2-.7-.4-.8-.5-1-.5-.9-.5-.7-.5-.6-.5-.4-.3-.4-.2-.3 0-.3.2-.2.7.5 1.2 1 1.7 1.6 2.2 2.3 1.7 1.7 1.2 1.1.8.6.3 0 0-.5-.3-.9-.6-1.4-.9-1.8-.7-1.4-.4-1-.1-.6.2-.2.6.3.9.7 1.2 1.2 1.7 1.6 1.2 1.3.8 1 .4.6 0 .3.1.4.3.4.4.5.6.6.4.2.2-.1.1-.6-.2-.8-.2-.9-.3-.7-.4-.8-.5-.7-.3-.5-.2-.5-.1-.3.2-.2.2 0 .3 0 .5.1.6.3.5.3.4.5.5.6.3.7.7.8.9 1 1.2 1.1 1.4 1.2.9.5.3-.3-.2-1-.7-1.8-1.1-1.9-1.6-2-1.8-2.1-2.3-2.2-1.6-1.7-1-1.3-.4-.8.3-.3-.1-.4-.4-.6-.7-.7-1.1-.8-.9-.6-.9-.4-.6-.2-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.5.2-.7.1-1.1.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.1.3-1 .4-.9.5-.7.4-.5.4-.5.2-.3 0-.2-.1.2-.3.4-.6.8-.7 1.2-.9 1.2-1 1.4-.8 1.5-.9 1.6-.8.9-.6.3-.5-.4-.3-1.2-.1-1.1 0-1 .2-1 .4-1 .4-.8.4-.6.1-.3 0-.2-.2 0-.2.2-.3.2-.3.4-.4.4-.3.5-.2.5 0 .6 0 .7-.2 1-.4 1.3-.6 1.4-.7 1.4-.6 1.2-.4 1.2-.2 1.2-.1.8-.1.5-.3.3-.3-.1-.3-.7-.3-1.3-.2-1.9-.1-2.6 0-2 0-1.3-.1-.7-.2-.2-.2 0-.2.2-.3.2-.3.4-.4.5-.3.6-.2.7 0 .8 0 .6-.1.5-.1.4-.2.2-.3.7-.2 1.2-.1 1.8 0 2.3 0 1.8-.1 1.1-.1.6-.1 0-.2-.1-.2-.3-.1-.3 0-.6 0-.4-.1-.4-.1-.3-.2-.2-.2-.5-.2-.8-.1-1.1-.1-1.3 0-1 0-.7-.1-.4-.2-.2-.2.1-.2.3-.3.5-.3.7-.4.7-.3.9-.2.9 0 1 0 .8-.1.6-.1.4-.2.2-.3.4-.2.8-.1 1 0 1.3 0 1-.1.7-.1.3-.1 0-.2-.1-.2-.3-.1-.3 0-.6 0-.4-.1-.5-.2-.5-.4-.4-.4-.1-.4.3-.2.6-.2.9-.2.7-.1.6-.2.4-.2.2-.3.5-.2.9-.1 1.2 0 1.6 0 1.1-.1.8-.1.4-.1 0-.2-.1-.2-.3-.1-.3 0-.6 0-.4-.1-.4-.1-.3-.2-.2-.2-.9-.2-1.4-.1-1.9-.1-2.6 0-2 .1-1.3.1-.8.2-.2.2-.4.2-.5.1-.6.1-.8 0-.7.1-.5.1-.4.2-.3.2-.1.3-.1.4-.1.5.1.4-.1.4-.3.2-.5 0-.7-.1-.4-.3-.2-.5.2-.7.4-.9 0-.5-.4-.2-.9.2-1.3.4-1.2.7-1.1.7-1.1.9-.9 1-.8.7-.6.4-.5 0-.3-.2-.5.1-.9.5-1 1-1.3 1.3-1 1-.7.9-.3.5 0 .3-.1.4-.3.4-.4.4-.4.4-.6.6-.4.7-.6.9-.4 1-.5 1.1-.5 1.4-.4 1.5-.3 1.7-.5.7-.5-.1-.6-1-.7-1.9-.7-1.5-.6-.9-.5-.5-.5.1-.3-.1-.1-.2 0-.4.3-.6.1-.4-.1-.2-.2 0-.4.2-.4-.1-.3-.4-.4-.6-.4-.9-.7-1.1-.9-1.1-1.3-1.2-1.6-1.3-1.2-.9-.9-.4-.7.1-.3.4-.5.2-.8-.3-.9-.6-1.2-1-1-.7-.8-.5-.6-.2-.3.1-.3.1 0 .1.1.2.2.3.2.2 0 .2 0 .2-.1.2-.4 0-.5-.1-.8-.4-1-.4-1.1-.4-1.3-.3-1.4-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.3.2-.4.1-.4.1-.6 0-.3.1 0 .2.2.4.5.4.7.3.9.2 1.1.2 1.3 0 1.2 0 .9.2.8.3.7.4.4.3.3.3 0 .2-.1.2-.3.2-.5.1-.6 0-.8 0-.6 0-.4.1-.3.2 0 .2.6.2 1.2.4 1.7.4 2.3.5 1.9.5 1.3.4.9.4.3.4.3.3.1.3 0 .2-.1.2-.4.1-.6 0-.8-.2-1.1-.2-1-.1-.9 0-.9.3-.8.3 0 .4.8.3 1.6.4 2.3.3 1.9.3 1.4.4.9.3.3.4.3.3.1.3 0 .2-.1.2-.5.2-.9.1-1.2.2-1.7.1-.7.2.1.4 1 .4 1.9.6 1.5.5 1.1.5.8.4.3.4.3.3.1.3 0 .2-.1.2-.2.1-.2 0-.2-.2-.2-.2-.5-.2-.7 0-.9 0-1.1.1-.6.2-.2.2.4.3.9.3 1 .6 1.3.9 1.4 1.1 1.7 1.4 1.1 1.2.8.7.2.5-.2.1-.3-.1-.6-.3-.8-.5-.9-.8-.8-.5-.8-.4-.6-.2-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.6-.6-2.2-.4-2.9-.6-3.6-.4-2.8-.3-2.2 0-1.4.3-.7.4-.7.4-.9.3-1 .1-1.1 0-.9.1-.9.3-.8.4-.7.4-.7.5-.9.4-1 .3-1.1.2-.8.3-.7.3-.5.4-.3.3-.2.3-.1.3.1.1.2.1.1-.1.2-.1 0-.1.1-.3.1-.1.2 0 .2 0 .2.2.1.3 0 .2-.3.4-.3.3-.5.3-.4 0-.5-.1-.6-.2-.4-.1-.2 0 0 .3.2.3 0 .4-.3.4-.4.4-.7.3-1.1 1-1.5 1.4-1.9 2-2.3 2.6-1.7 2-.9 1.3zM161 208.7l0 .3-.1.3-.2.2-.4.2-.4.1-.6.4-.8.7-1 1-1.2 1.2-1 .9-.8.6-.7.2-.4-.1-.1-.3.3-.4.6-.6 1-.8.8-.6.5-.5.3-.5 0-.3.1-.4.3-.4.5-.6.6-.6.6-.5.5-.2.5-.1.4.2.4.1.2.3zM250 180.1l0 .6.1.4.1.4.2.3.2.2.2.4.1.8.1 1 0 1.3.1 1.1.1.7.2.5.2.2.2.4.1.6.1.8 0 1.1.1.9.1.6.2.4.2.2.3.9.2 1.8.3 2.5.2 3.3.3 2.6.2 1.7.3 1 .2.2.2 1.6 0 3.1 0 4.5-.1 5.9-.2 4.4-.3 2.8-.4 1.3-.6-.2-.6-.2-.8-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-3.5-.2-6.6-.2-10-.2-13.2-.1-9.6-.3-6.2-.4-2.6-.5.8-.7 1.1-.7 1.4-.7 1.6-.8 1.8-.7 1.5-.8 1.3-.7.9-.8.7-.7.6-.6.5-.4.4-.1.3 0 .4-.2.5-.4.6-.6.7-.7.6-.6.5-.4.4-.1.3 0 1.4-1.2 2.4-2.3 3.5-3.4 4.6-4.6 3.4-3.5 2.3-2.4 1.2-1.4 0-.3.1-.4.4-.5.6-.6.7-.7.6-.6.4-.5.2-.4 0-.3.9-1.1 1.8-2 2.7-2.8 3.6-3.6 2.8-2.7 1.9-1.7 1-.9.2.2.2.2.1.3zM79.4 178.1l.4-.2 2.5 2.1 4.4 4.3 6.5 6.6 8.4 8.7 6.4 6.6 4.4 4.4 2.3 2.2.3 0 .4.1.5.4.6.6.7.7.6.6.5.4.4.2.3 0 .5.2.6.5.8.7.9 1 .8.8.6.5.5.3.3 0 .4.1.4.2.4.4.4.5.5.4.7.4.7.3.8.3.8.3.9.5.8.6.9.7.4.5 0 .4-.5.3-.9.1-.8.2-.6.2-.3.2-.2.2-.7.2-1.3.1-1.8.1-2.3 0-1.8.1-1.2.1-.7.2-.2.2-.9.3-1.7.2-2.3.3-3.1.2-2.3.3-1.6.2-.9.3-.2.2-.4.2-.6.1-.8.1-1 0-.8.1-.6.1-.5.2-.2.2-.3.1-.4-.2-.4-.4-.4-.7-.3-.6-.3-.6-.1-.6-.1-.7-1.4-.4-2.7-.3-4-.2-5.3 0-4 .3-2.7.7-1.3 1.1-.1 1.3 0 1.1.1.8.2.5.2.2.2.2.1.4.1.5 0 .6-.1.5-.2.4-.4.5-.4.3-.4.1-.2-.3-.2-.6-.2-.9-.1-.8-.2-.6-.2-.3-.3-.2-.2-1.8-.1-3.4 0-4.9 0-6.6 0-5 .1-3.3.2-1.8.3-.2.2-1.2.3-2.1.2-3.1.3-4.1.2-3.1.3-2.1.2-1.1.3-.2.2-.7.3-1.3.2-1.8.3-2.3.3-1.7.3-1.3zM246.5 125.1l1.2-.2 1 0 .7.1.5.1.2.3.3.2.4.1.4.1.6 0 .4 0 .3.1.2.2.1.3-.1.2-.4.1-.7.1-.9.1-1-.1-1.1-.1-1-.4-1.2-.4-.5-.4 0-.2zM243.5 99.9l.2.2.1.1 0 .3-.1.3-.2.4 0 .3.1.3.3.1.4.2.3.2.2.4 0 .6-.1.7-.2.5-.2.3-.3.2-.3 0-.3-.2-.4-.3-.3-.4-.4-.7-.2-.6 0-.7.2-.6.4-.7.3-.5.3-.3zM71.2 92.1l.9-.2.8.1.6.1.6.3.3.4.1.4-.1.3-.4.2-.7.1-.7 0-.6-.2-.7-.3-.6-.4-.2-.4.1-.2z"/></svg><svg x="260" y="0" width="260" height="236" viewBox="40 0 260 236" overflow="hidden"><clipPath id="kac5"><path clip-rule="evenodd" d="M40 0H300V236H40Z M40 185H66V236H40Z M294 185H300V236H294Z"/></clipPath><g clip-path="url(#kac5)"><path d="M196 58.4l-.2.2-.7.2-1.1.1-1.6.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.5.5-1.6.6-1.9.8-2 1-2 1.3-2.2 1.5-2.2 1.8-2.3 2.1-1.8 1.6-1.1 1.2-.6.7 0 .3-.2.4-.4.5-.5.6-.8.7-.8 1-.9 1.4-.9 1.6-1 2-.7 1.7-.6 1.3-.2.9 0 .6-.1.6-.3.8-.4.8-.4.9-.4 1.3-.3 1.5-.1 1.7 0 2.1-.1 1.6-.1 1.2-.2.7-.2.2-.2.3 0 .2.2.2.2.2.2.6.1 1.2.1 1.5 0 2.1.1 1.6.1 1.1.2.7.2.2.3.4.2.8.3 1 .2 1.3.5 1.5.6 1.7.8 1.8 1 2 1.3 2.1 1.5 2.1 1.8 2.3 2.1 2.3 1.6 1.7 1.2 1.2.7.6.3 0 .4.1.5.4.6.6.7.7 1 .8 1.4.9 1.6.9 2 1 1.7.8 1.3.5.9.3.6 0 .6.1.8.2.8.4.9.5 1.3.4 1.5.2 1.7.2 2.1 0 1.6 0 1.2.1.7.2.2.3.3.1.2 0 .2-.1.2-.3.6-.2 1.2-.1 1.5 0 2.1 0 1.6-.1 1.1-.1.7-.2.2-.3.4-.2.8-.3 1-.2 1.3-.3 1.5-.4 1.7-.6 1.8-.9 2-1 2.1-1.2 2.1-1.5 2.3-1.8 2.3-2.1 1.7-1.6 1.2-1.2.6-.8 0-.3.1-.4.4-.5.6-.6.7-.7.8-1 .9-1.3.9-1.7 1-2 .8-1.6.5-1.3.3-.9 0-.6.1-.7.2-.7.4-.9.5-.9.4-1.2.2-1.5.2-1.8 0-2.1 0-1.6.1-1.1.2-.7.3-.3.1-.2 0-.2-.1-.2-.3-.2-.2-.7-.1-1.1 0-1.6 0-2.1-.1-1.5-.1-1.2-.2-.6-.3-.2-.2-.5-.3-.7-.2-1.1-.3-1.3-.4-1.5-.6-1.6-.9-1.9-1-2-1.2-2-1.5-2.2-1.8-2.2-2.1-2.3-1.6-1.8-1.2-1.1-.8-.6-.3 0-.4-.2-.5-.4-.6-.5-.7-.8-1-.8-1.3-.9-1.7-.9-2-1-1.6-.7-1.3-.6-.9-.2-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.2-.4-1.5-.3-1.8-.1-2.1 0-1.6-.1-1.1-.1-.7-.2-.3-.2-.2-.2-.2 0z" transform="translate(16 -14)"/><path d="M129.4 337.8l.2 1.1.5.9.6.9.9.6 1.1.6 1 .4 1.1.3 1 .2 1.1 0 .9-.1.6-.1.4-.2.2-.3 6.2-.2 12.2-.1 18.3 0 24.3 0 18.3 0 12.3.1 6.2.2.2.3.4.2.6.1.8.1 1.1 0 .9-.1.6-.1.4-.2.2-.3.2-.2.4-.1.5 0 .6 0 .5-.3.6-.4.5-.6.6-.8.4-.9.1-.9 0-1-.3-1.1-.4-.9-.7-.8-.8-.7-1.1-.6-1.2-.4-1.4-.3-1.6-.1-1.8 0-1.4-.1-1-.1-.7-.2-.3-.2-.2-.1-.2 0-.1.3-.1.3-.2.3-.2.3-.4.2-.4.1-.4 0-.3-.2-.3-.4-.3-.4-.3-.3-.3 0-.4.3-.4.4-.4.4-.4.3-.4.1-.3 0-.3-.1-.4-.3-.5-.4-.5-.4-.4-.3-.3.1-.1.3-.1.7-.2.5-.2.3-.4.3-.4.1-.4 0-.4-.1-.4-.3-.4-.3-.3-.5-.2-.5-.2-.5-.2-.7-.2-.2-.2 0-.4.4-.4.8-.4.4-.4.1-.3-.2-.2-.4-.4-.4-.4-.3-.4-.1-.6 0-.5.1-.4.3-.2.4-.2.4-.2.3-.2 0-.3-.3-.2-.4-.3-.3-.4 0-.4.3-.6.4-.4.3-.6 0-.4-.3-.6-.4-.4-.3-.4 0-.4.3-.3.4-.3.3-.3 0-.2-.3-.3-.4-.3-.3-.4 0-.4.3-.5.4-.5.3-.6 0-.7-.3-.7-.4-.6-.4-.5-.1-.4.1-.3.2-.3.1-.2-.1-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.3.4-.3.3-.3.1-.3 0-.3-.2-.2-.4-.2-.5-.2-.8-.2-.4-.2-.1-.3.2-.2.4-.4.4-.4.3-.4.1-.6 0-.5.1-.4.1-.3.2-.3.2-.2.4-.2.5-.2.6-.2.8-.2.5-.2.3-.2.1-.2-.1-.1-.3-.1-.5-.1-.7-.1-.9-.1-.6-.2-.3-.2 0-.2.2-.3.2-.2 0-.3-.2-.2-.2-.3-.2-.4 0-.4.2-.6.2-.4.2-.4 0-.3-.2-.2-.2-.3-.2-.3 0-.3.2-.3.2-.3.1-.3-.1-.2-.4-.3-.4-.2-.2-.3.1-.2.4-.3.8-.2.3-.3 0-.2-.3-.3-.8-.2-.4-.2-.1-.2.2-.2.4-.3.4-.4.1-.4-.1-.6-.2-.7-.1-.8.1-.8.4-1 .4-.9.3-.7.1-.5-.2-.4-.3-.3-.5-.2-.5-.2-.5-.2-.7-.2-.1-.4.3-.6.8-.7 1.2-.7.8-.9.4-.9-.1-1-.4-.9-.3-.8 0-.6.3-.6.4-.5.2-.4-.1-.2-.4-.2-.8-.2-.3-.3 0-.3.3-.3.8-.3.3-.2 0-.2-.3-.2-.8-.2-.4-.3-.1-.3.2-.3.4-.3.3-.2 0-.2-.3-.2-.4-.2-.4-.3-.1-.3.1-.3.2-.3.1-.2-.1-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.4.4-.4.1-.4-.1-.6-.2-.5-.1-.4.1-.2.4-.2.4-.3.3-.3 0-.4-.3-.6-.4-.4-.4-.4-.1-.4.1-.3.2-.3.1-.4-.1-.5-.4-.5-.4-.4-.3-.3.1-.1.3-.1.7-.1.5-.1.3-.2.3-.2.1-.2 0-.2-.2-.2-.4-.3-.4-.2-.2-.3.1-.2.4-.3.8-.2.4-.2.1-.2-.2-.2-.4-.4-.4-.5-.1-.6.1-.8.2-.7 0-.7-.2-.5-.5-.4-.8-.4-.4-.4-.1-.3.2-.2.4-.3.3-.3 0-.3-.3-.3-.4-.3-.3-.2 0-.2.3-.2.4-.4.4-.5.3-.6.1-.8 0-1 .3-1 .5-1.2.8-1.3 1.1-1 1-.5 1.1zM85.4 312.8l.2 1.1.5.9.6.9.9.6 1.1.6 12.6.4 24.4.3 35.9.2 47.6 0 35.7-.1 23.9-.1 12-.2.2-.3.2-.2.4-.1.5 0 .6 0 .5-.3.6-.4.5-.6.6-.8.4-.7.3-.7.2-.6 0-.6-.2-.6-.3-.7-.4-.8-.6-.8-.5-.6-.6-.4-.5-.2-.6 0-.5-.1-.4-.1-.2-.2-.2-.2-.5-.2-.7-.1-1-.1-1.2 0-1-.1-.8-.1-.5-.2-.2-.2-.3-.1-.3.1-.3.4-.3.4-.3.3-.4 0-.5-.3-.5-.4-.4-.3-.4 0-.2.3-.2.4-.3.4-.5.3-.6.1-.8 0-.6.1-.5.1-.5.2-.3.2-.3 0-.2-.2-.2-.5-.2-.8-.3-.4-.3-.1-.4.2-.6.4-.4.4-.3.2-.3 0-.2-.1-.1-.3-.1-.3-.1-.5-.1-.7-.1-.3-.2-.1-.2.3-.2.4-.4.4-.4.1-.4-.1-.6-.2-.5-.1-.4.1-.2.4-.2.4-.3.4-.4.3-.4.1-.6 0-.5-.1-.4-.3-.2-.4-.2-.4-.3-.4-.4-.1-.4.1-.6.2-.5.1-.5-.1-.5-.4-.4-.4-.5-.4-.4-.2-.4-.1-.3.1-.4.2-.2.4-.2.5-.1.7-.3.3-.4 0-.6-.4-.8-.8-.7-.4-.6-.1-.5.2-.6.4-.4.4-.4.1-.3-.1-.2-.2-.3-.2-.3 0-.3.2-.3.2-.3.1-.3-.1-.2-.4-.3-.4-.2-.2-.2.1-.2.4-.2.8-.2.4-.2.1-.3-.2-.2-.4-.3-.3-.2 0-.3.3-.2.4-.3.3-.2 0-.3-.3-.2-.4-.5-.3-.6 0-.8.3-1 .4-.8.3-.6 0-.5-.3-.2-.4-.3-.4-.3-.1-.3.1-.3.2-.3.2-.3 0-.2-.2-.3-.2-.3 0-.3.4-.4.7-.4 1-.4.6-.4.1-.3-.3-.2-.8-.4-.3-.5 0-.7.3-.8.8-.7.3-.5-.1-.3-.6-.2-1-.2-.6-.3-.1-.3.3-.3.8-.3.4-.4.1-.4-.2-.4-.4-.5-.5-.4-.3-.5-.2-.4-.1-.3-.2-.3-.3-.1-.3-.1-.3-.1-.2-.3-.1-.3.2-.3.3-.4.4-.2.5-.2.6-.1.7-.2.4-.2.1-.2-.3-.2-.4-.4-.3-.4 0-.4.3-.6.4-.5.2-.5-.1-.5-.4-.4-.8-.5-.5-.5-.2-.4 0-.6.2-.4.2-.4 0-.3-.2-.2-.2-.3-.2-.3 0-.3.2-.3.2-.3.1-.2-.1-.2-.4-.2-.4-.2-.2-.2.1-.3.4-.2.8-.3.5-.2.2-.3 0-.2-.2-.4-.2-.4 0-.4.2-.6.2-.6.1-.7-.1-.7-.4-.7-.4-.6-.2-.5.1-.3.4-.2.8-.2.4-.2.1-.3-.2-.2-.4-.4-.4-.5-.1-.7.1-.8.2-.7.1-.5-.1-.3-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.4.4-.5.1-.7-.1-.8-.2-.8-.1-.6.1-.6.4-.5.4-.5.2-.6-.3-.7-.6-.7-1-.5-.6-.5-.1-.4.3-.2.8-.3.4-.2.1-.3-.2-.2-.4-.3-.4-.3-.1-.3.1-.3.2-.3.1-.4-.1-.5-.4-.5-.4-.4-.3-.4 0-.3.3-.3.4-.2.3-.3 0-.2-.3-.3-.4-.3-.2-.3.1-.4.4-.4.8-.4.4-.4.1-.4-.2-.3-.4-.3-.4-.3-.1-.2.1-.3.2-.3.2-.4.1-.4.1-.5 0-.4.1-.4.3-.2.4-.2.4-.3.3-.3 0-.4-.3-.6-.4-.4-.4-.4-.3-.4-.1-.3 0-.3.1-.2.3-.2.4-.2.4-.3.3-.4 0-.4-.3-.6-.4-.5-.2-.4.1-.2.4-.2.8-.2.4-.2.1-.3-.2-.2-.4-.4-.4-.5-.3-.7-.1-.8 0-.7-.1-.7-.3-.5-.4-.4-.4-.5-.4-.5-.1-.4.1-.6.2-.5.2-.5 0-.5-.2-.6-.2-.5-.1-.4.1-.2.4-.2.4-.3.4-.4.3-.4.1-.6 0-.5-.1-.4-.1-.3-.2-.3-.2-.3-.1-.4.1-.4.4-.5.4-.5.1-.5-.4-.4-.8-.4-1.2-.5-.7-.5-.1-.4.4-.6 1-.4.7-.3.4-.3.1-.2-.2-.2-.1-.3 0-.3.1-.4.2-.3 0-.3-.1-.2-.4-.2-.4-.3-.3-.3 0-.4.3-.6.4-.4.4-.4.3-.4.1-.3 0-.3-.1-.4-.3-.4-.4-.4-.4-.6-.4-.6-.1-.7.1-.8.2-.7.1-.5-.1-.4-.4-.3-.4-.2-.3-.1.1-.1.3-.1.7-.1.5-.1.3-.2.3-.2.1-.2 0-.2 0-.2-.2-.3-.2-.3-.1-.3.1-.4.4-.4.4-.5.4-.4.2-.5 0-.4-.1-.3-.3-.3-.5-.1-.7-.1-.9-.1-.5-.2-.2-.2.2-.2.4-.3.3-.3 0-.3-.3-.3-.4-.3-.2-.2.1-.2.4-.2.8-.3.4-.3.1-.4-.2-.6-.4-.5-.3-.5 0-.5.3-.6.4-.6.2-.5-.1-.5-.4-.5-.8-.5-.3-.5 0-.4.3-.4.8-.4.5-.4.4-.4.2-.3 0-.2-.1-.3-.2-.1-.4-.2-.4-.1-.3-.3-.3-.3-.1-.4-.1-.3.2-.3.5-.2.7-.2 1-.2.7-.2.5-.2.1-.2-.1-.1-.4-.1-.6-.1-.9-.1-1.1-.2-.7-.3-.3-.3.1-.6.4-.4.3-.4 0-.3-.3-.2-.4-.3-.4-.3-.1-.3.1-.3.2-.3.2-.4 0-.5-.2-.5-.2-.5-.1-.5 0-.6.2-.6.3-.4.3-.4.4-.2.4-.1.4-.2.3-.1.2-.2-.1-.2-.2-.2-.1-.3 0-.3.1-.4.2-.3 0-.3-.1-.2-.4-.2-.4-.2-.4-.3-.3-.3-.1-.3 0-.3.1-.3.3-.2.4-.3.4-.2.3-.2 0-.2-.3-.2-.4-.3-.4-.4-.1-.4.1-.6.2-.5.1-.4-.1-.3-.4-.3-.4-.2-.3-.2 0-.1.2-.2.4-.4.6-.8.8-1.1.9-1.4 1.2-1.1 1.1-.6 1.1zM62.4 288.8l.2 1.1.5.9.6.9.9.6 1.1.6 15.6.4 30.2.3 44.7.2 59.3 0 44.6-.1 29.7-.1 15-.2.2-.3.2-.2.4-.1.5 0 .6 0 .5-.3.6-.4.5-.6.6-.8.4-.9.1-.9 0-1-.3-1.1-.2-.8-.3-.7-.3-.5-.3-.3-.4-.3-.4-.1-.5-.1-.6 0-.5-.1-.5-.3-.5-.4-.4-.4-.4-.4-.4-.1-.3.1-.2.2-.4.2-.5.1-.6.1-.8 0-.6-.1-.5-.1-.5-.2-.3-.2-.2-.1-.2 0-.1.3-.1.3-.2.3-.2.3-.4.2-.4.1-.4 0-.5 0-.5-.2-.5-.2-.4-.3-.4-.4-.3-.5-.3-.4-.2-.2-.2.1-.2.4-.2.8-.4.4-.5.1-.6-.2-.8-.4-.7-.2-.5.1-.4.4-.3.8-.2.3-.2 0-.2-.3-.2-.8-.2-.5-.3-.2-.3 0-.3.2-.3.2-.2 0-.2-.2-.2-.2-.2-.2-.2 0-.3.2-.2.2-.3.2-.3 0-.3-.2-.3-.2-.3-.1-.3.1-.2.4-.3.4-.2.3-.2-.1-.1-.4-.2-.7-.1-.5-.3-.4-.3-.2-.4-.1-.3.1-.2.3-.1.4-.1.7-.2.5-.4.5-.4.5-.7.3-.5.2-.4-.1-.4-.3-.2-.4-.3-.4-.3-.3-.3-.1-.3 0-.3.1-.2.3-.2.4-.2.4-.2.3-.2 0-.3-.3-.2-.4-.3-.4-.3-.3-.3-.1-.3 0-.3.1-.3.3-.2.4-.3.4-.2.2-.2-.1-.2-.4-.2-.8-.2-.4-.2 0-.2.3-.2.7-.2.5-.3.4-.3.2-.4.1-.3-.2-.3-.5-.3-.7-.3-1-.3-.6-.3-.1-.4.3-.4.8-.5.4-.4.2-.4-.2-.3-.4-.4-.1-.2.1-.2.4-.1.7-.2.4-.3.1-.4-.3-.6-.4-.5-.4-.5-.1-.5.1-.6.2-.5.1-.4-.1-.3-.4-.3-.4-.2-.2-.1.2-.1.5-.1.9-.1.7-.1.5-.2.3-.2.1-.2-.3-.3-.7-.4-1-.4-1.6-.4-1-.4-.6-.4-.2-.3.2-.3.4-.2.5-.2.6-.2.8-.2.3-.2 0-.3-.3-.2-.8-.3-.4-.2-.1-.3.2-.2.4-.3.3-.3 0-.3-.3-.3-.4-.2-.3-.2.1-.1.3-.1.7-.1.5-.1.3-.2.3-.2.1-.2 0-.2-.2-.2-.4-.3-.4-.2-.2-.2.1-.2.4-.2.8-.3.5-.2.2-.4-.1-.3-.3-.4-.4-.2-.5-.2-.6-.1-.7-.2-.3-.2 0-.2.4-.2.8-.3.5-.3.4-.3.2-.3 0-.3-.1-.2-.3-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.3.3-.2 0-.3-.3-.2-.4-.3-.4-.3-.1-.3.1-.3.2-.3.2-.3 0-.2-.2-.3-.2-.3-.1-.3.1-.4.4-.4.4-.4.4-.4.1-.4-.1-.3-.2-.3-.1-.2.1-.2.4-.2.4-.3.2-.3-.1-.4-.4-.6-.8-.4-.5-.4-.2-.3 0-.2.2-.3.2-.2 0-.3-.2-.2-.2-.4-.2-.5-.1-.7-.1-.8 0-.7.1-.5.1-.4.2-.3.2-.3.1-.3-.1-.4-.4-.4-.4-.4-.2-.4.1-.3.4-.2.8-.3.5-.2.2-.3 0-.2-.2-.4-.2-.4 0-.4.2-.6.2-.5.1-.5-.1-.5-.4-.4-.4-.5-.3-.5 0-.4.3-.6.4-.4.4-.4.1-.3-.1-.2-.2-.3-.2-.4 0-.4.2-.6.2-.4.2-.4 0-.3-.2-.2-.2-.5-.2-.6 0-.9.2-1.1.2-.8.1-.6-.1-.4-.4-.2-.4-.3-.4-.3-.1-.4.1-.6.2-.5.2-.5 0-.5-.2-.6-.2-.5-.1-.4.1-.2.4-.2.4-.3.4-.3.1-.4-.1-.6-.2-.4-.2-.4 0-.4.2-.3.2-.3.1-.2-.1-.2-.4-.2-.4-.3-.4-.4-.3-.4-.1-.6 0-.5.1-.4.3-.2.4-.2.4-.2.4-.3.1-.3-.1-.3-.2-.3-.2-.4 0-.5.2-.5.2-.4.1-.4-.1-.2-.4-.2-.4-.3-.4-.3-.3-.4-.1-.6 0-.4-.1-.4-.1-.3-.2-.2-.2-.3 0-.2.2-.3.5-.2.8-.4.5-.5.4-.7.2-.8 0-.7-.2-.5-.4-.4-.5-.3-.8-.2-.4-.2-.1-.2.2-.2.4-.3.4-.2.1-.4 0-.3-.2-.4.1-.2.2-.2.5-.1.7-.2.3-.2 0-.2-.4-.2-.8-.3-.4-.2-.1-.3.2-.2.4-.3.4-.3.1-.3-.1-.3-.2-.3-.2-.2 0-.2.2-.2.2-.2.2-.2 0-.3-.2-.2-.2-.3-.2-.4 0-.4.2-.6.2-.4.2-.4 0-.3-.2-.2-.2-.4-.2-.4 0-.4.2-.6.2-.5.1-.4-.1-.2-.4-.2-.4-.2-.4-.3-.1-.3.1-.3.2-.5.2-.6 0-.8-.2-1-.2-1-.1-.8.1-.8.4-.7.4-.6.4-.5.3-.4.1-.3 0-.3-.1-.2-.3-.2-.4-.2-.4-.3-.3-.5 0-.6.3-.8.4-.7.3-.6 0-.5-.3-.6-.4-.4-.4-.4-.1-.3.1-.2.2-.3.2-.3 0-.3-.2-.3-.2-.3-.1-.3.1-.2.4-.3.4-.2.3-.2 0-.2-.3-.2-.4-.4-.4-.5-.1-.6.1-.8.2-.7.1-.5-.1-.4-.4-.3-.4-.3-.2-.3.1-.4.4-.4.8-.4.4-.4.1-.3-.2-.2-.4-.3-.3-.3 0-.3.3-.3.4-.3.2-.4-.1-.5-.4-.5-.8-.4-.3-.4 0-.2.3-.2.8-.2.5-.3.2-.3 0-.3-.2-.4-.2-.5 0-.7.2-.7.2-.6 0-.6-.2-.3-.5-.3-.8-.2-.4-.2 0-.1.3-.2.7-.1.5-.3.4-.3.2-.4.1-.3-.1-.3-.2-.3-.4-.3-.4-.2-.2-.3.1-.2.4-.3.8-.3.4-.3.2-.3-.1-.4-.3-.3-.5-.2-.7-.2-.7-.2-.9-.1-.5-.1-.1-.1.3-.2.7-.1.5-.3.4-.3.2-.4.1-.4.2-.4.4-.4.6-.4.8-.4.5-.3.3-.3.1-.2-.1-.1-.3-.1-.5 0-.6 0-.8-.1-.6-.2-.3-.3-.1-.4.2-.3 0-.3-.1-.2-.4-.2-.4-.2-.3-.1.1-.2.3-.1.7-.2.5-.1.3-.2.3-.2.1-.2 0-.4 0-.4-.2-.5-.2-.4-.1-.4.1-.2.4-.2.4-.3.3-.3 0-.4-.3-.6-.4-.5-.4-.5-.3-.5-.1-.6 0-.5-.1-.4-.1-.2-.2-.2-.2-.2-.2-.3-.1-.3-.1-.3 0-.2.1-.2.2-.1.3-.1.3-.2.3-.2.3-.4.2-.4.1-.5 0-.5-.1-.5-.2-.6-.3-.4-.3-.4-.4-.2-.4-.1-.4-.2-.2-.2.2-.2.4-.2.8-.3.3-.4 0-.4-.3-.6-.8-.4-.4-.4-.1-.3.2-.2.4-.3.4-.3.1-.3-.1-.3-.2-.2-.1-.2 0-.1.3-.1.3-.2.3-.2.3-.4.2-.4.1-.4-.1-.3-.3-.3-.5-.3-.8-.2-.4-.2-.1-.2.2-.2.4-.3.4-.4.1-.4-.1-.6-.2-.5 0-.4.2-.2.5-.2.8-.2.3-.3-.1-.3-.6-.3-1-.2-.5-.2-.1-.1.4-.1.9-.1.7-.1.5-.2.3-.2.1-.2 0-.3-.1-.3-.3-.4-.3-.3-.5-.2-.5-.1-.5-.1-.7-.1-.3-.2-.1-.2.3-.2.4-.3.4-.4.1-.4-.1-.6-.2-.5-.2-.5 0-.5.2-.6.2-.5.1-.4-.1-.2-.4-.2-.4-.2-.3-.3 0-.3.3-.3.4-.3.3-.3 0-.2-.3-.3-.4-.3-.2-.3.1-.4.4-.4.8-.4.5-.4.2-.3 0-.2-.2-.6-.2-.9 0-1.2.2-1.6.2-1.2.1-.9-.1-.5-.4-.2-.4-.2-.4-.3-.1-.3.1-.3.2-.5.2-.6.1-.8.1-1 0-1.1.3-1.2.5-1.2.8-1.3 1.1-1 1-.5 1.1zM328.9 263l-.6-.8-.5-.6-.6-.4-.5-.2-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.5-.4-.5-.1-.4.1-.2.2-.4.2-.5.1-.7.1-.8 0-.8-.1-.6-.1-.6-.2-.5-.2-.4 0-.3.3-.1.6-.1.9-.1.7-.1.5-.2.3-.2.1-.2-.1-.3-.5-.4-.7-.4-1-.4-.6-.4-.1-.4.3-.3.8-.2.4-.3.2-.1-.2-.2-.4-.1-.3-.3-.1-.3 0-.4.2-.4 0-.4-.3-.4-.5-.4-.8-.4-.4-.4-.1-.3.2-.2.4-.4.4-.6.1-.7 0-.9-.2-.7.2-.5.5-.3.8-.1 1.2-.2.9-.1.5-.2.2-.2-.1-.1-.3-.1-.5-.1-.7-.1-.9-.1-.7-.2-.6-.2-.4-.2-.2-.3-.2-.2 0-.3.2-.2.2-.4.2-.4.1-.4.1-.6 0-.5-.1-.4-.3-.2-.4-.2-.4-.3-.2-.3.1-.4.4-.6.8-.4.3-.4 0-.4-.3-.3-.8-.3-.4-.2-.1-.2.2-.2.4-.2.4-.3.1-.3-.1-.3-.2-.3-.2-.3 0-.2.2-.3.2-.2.2-.3 0-.2-.2-.3-.2-.2-.2-.2 0-.2.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.3-.2.4-.2.4-.2.2-.2-.1-.3-.4-.2-.8-.3-.5-.3-.4-.3-.2-.3 0-.3.1-.2.3-.2.4-.2.4-.2.4-.3.1-.3-.1-.3-.2-.3-.2-.4 0-.4.2-.4.2-.4.2-.4 0-.3-.2-.2-.2-.3-.2-.2 0-.3.2-.2.2-.4.2-.4 0-.4-.2-.6-.2-.5-.2-.4 0-.3.2-.3.2-.3 0-.5-.2-.6-.5-.7-.8-.6-.3-.6 0-.5.3-.6.8-.4.4-.4.1-.3-.2-.2-.4-.3-.3-.4 0-.4.3-.6.4-.4.3-.4 0-.3-.3-.2-.4-.3-.3-.4 0-.4.3-.6.4-.4.3-.4 0-.4-.3-.3-.4-.3-.2-.2.1-.2.4-.2.8-.2.3-.2 0-.3-.3-.2-.8-.3-.4-.4-.1-.4.2-.6.4-.4.4-.4.3-.4.1-.3 0-.3-.1-.3-.3-.2-.4-.3-.4-.3-.2-.3.1-.4.4-.4.8-.5.4-.5.1-.4-.2-.6-.4-.4-.4-.4-.1-.3.1-.2.2-.4.2-.5.1-.6.1-.8 0-.6-.1-.5-.1-.5-.2-.3-.2-.3-.1-.3.1-.2.4-.3.4-.3.3-.3 0-.4-.3-.4-.4-.5-.4-.5-.3-.5-.1-.6 0-.5-.1-.4-.3-.2-.4-.2-.4-.3-.2-.3.1-.4.4-.6.8-.4.5-.4.2-.4 0-.3-.2-.4-.2-.5-.1-.7-.1-.7 0-.6-.1-.6-.3-.3-.4-.3-.4-.2-.3-.2 0-.1.2-.2.4-.1.4-.3.4-.2.3-.3.3-.3.2-.4 0-.3-.1-.3-.2-.3-.1-.3.1-.2.4-.3.4-.3.2-.5-.3-.6-.6-.7-1-.7-.6-.9-.3-1 .2-1.1.4-.8.2-.6-.1-.4-.4-.2-.8-.2-.3-.2 0-.3.3-.2.8-.4.6-.5.5-.7.4-.8.2-.7.1-.5-.1-.4-.4-.3-.4-.3-.2-.3.1-.4.4-.4.8-.5.3-.5 0-.4-.3-.6-.8-.4-.5-.4-.4-.4-.2-.3 0-.3.1-.2.3-.2.4-.2.4-.2.3-.2 0-.3-.3-.2-.4-.3-.3-.2 0-.3.3-.2.4-.3.4-.3.1-.3-.1-.3-.2-.3-.2-.4-.1-.5-.1-.5 0-.4.1-.4.1-.2.2-.2.2-.2.2-.3 0-.3-.2-.3-.2-.3-.2-.4 0-.5.2-.5.2-.5 0-.5-.2-.4-.5-.4-.8-.4-.3-.4 0-.3.3-.2.8-.3.5-.3.4-.4.1-.3-.1-.4-.2-.2-.4-.3-.5-.2-.7-.2-.2-.1.1-.2.6-.2 1-.2.7-.2.5-.2.1-.2-.1-.1-.3-.1-.5-.1-.7-.1-.9-.1-.5-.2-.2-.2.2-.2.4-.3.4-.3.1-.3-.1-.3-.2-.3-.1-.4.1-.4.4-.4.4-.4.3-.4 0-.3-.3-.2-.4-.4-.4-.4-.3-.4-.1-.6 0-.5.1-.4.1-.2.2-.2.2-.2.2-.2 0-.3-.2-.2-.2-.3-.2-.2 0-.3.2-.2.2-.4.2-.4 0-.4-.2-.6-.2-.5-.1-.4.1-.2.4-.2.4-.2.3-.2 0-.3-.3-.2-.4-.3-.3-.2 0-.3.3-.2.4-.4.3-.5 0-.7-.3-.8-.4-.7-.4-.5-.1-.3.1-.2.2-.4.2-.6.1-.9.1-1.1 0-.9.1-.8.1-.6.2-.5.2-.4.1-.4-.1-.2-.4-.2-.4-.4-.4-.5-.1-.6.1-.8.2-.7.1-.5-.1-.4-.4-.3-.4-.2-.3-.2 0-.1.2-.2.4-.2.4-.3.4-.5.3-.6.3-.5.3-.6.1-.5.1-.6 0-.6-.1-.5-.3-.5-.4-.5-.4-.4-.2-.4.1-.2.4-.2.8-.3.5-.3.2-.4 0-.6-.2-.4-.2-.4 0-.4.2-.3.2-.3 0-.2-.2-.2-.5-.2-.8-.2-.5-.3-.4-.3-.2-.3 0-.2.1-.2.2-.1.3-.1.3-.2.3-.2.3-.4.2-.4.1-.5 0-.5-.1-.5-.2-.6-.3-.4-.3-.4-.4-.2-.4-.1-.4-.2-.2-.2 0-.2.3-.2.4-.7.4-1 .1-1.4-.1-1.8-.2-1.5-.1-1.1.1-.8.4-.4.4-.6.4-.8.3-.9.1-1.1 0-.8-.1-.7-.3-.4-.4-.3-.4-.2-.3-.3 0-.2.3-.3.4-.2.3-.2-.1-.1-.4-.2-.7-.1-.5-.3-.4-.3-.2-.4-.1-.3 0-.2.2-.1.3-.1.3-.2.4-.4.4-.4.4-.7.3-.5.3-.4 0-.4-.1-.2-.2-.3-.2-.3 0-.3.2-.3.2-.5.1-.6-.1-.8-.4-.9-.4-.8-.3-.6 0-.5.3-.3.4-.3.3-.2 0-.2-.3-.2-.4-.2-.4-.3-.3-.3-.1-.3 0-.3.2-.2.6-.2.7-.2 1-.3.6-.3.2-.4-.2-.4-.7-.3-.6-.3-.6-.1-.6-.1-.7-.2-.3-.4 0-.4.2-.7.6-.5.5-.3.5-.3.5-.1.4-.3.3-.4 0-.5-.2-.7-.3-.6-.5-.3-.5-.2-.5-.1-.7-.2-.2-.3 0-.3.4-.6.8-.4.4-.4.1-.3-.2-.2-.4-.3-.4-.4-.1-.4.1-.6.2-.5.2-.7.1-.7.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.2-.2-.2 0-.3.2-.2.2-.4.2-.4.1-.4.1-.6 0-.5-.1-.4-.1-.3-.2-.3-.2-.3 0-.3.2-.4.5-.4.8-.6.3-.6-.1-.6-.6-.8-1-.6-.5-.5 0-.4.5-.2 1-.3.7-.3.6-.3.2-.3 0-.3-.2-.4-.4-.4-.5-.4-.8-.4-.5-.4-.2-.4 0-.3.2-.3.1-.2-.1-.2-.4-.2-.4-.2-.2-.2.1-.3.4-.2.8-.3.5-.3.4-.3.2-.3 0-.3-.1-.2-.3-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.3.3-.2 0-.3-.3-.2-.4-.3-.3-.4 0-.4.3-.6.4-.4.4-.4.3-.4.1-.3 0-.3-.2-.3-.4-.2-.5-.3-.8-.2-.3-.2.1-.2.6-.2 1-.3.6-.5.3-.6-.2-.8-.4-.7-.4-.6-.1-.6.1-.6.2-.5.1-.4-.1-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.3.4-.2.1-.2 0-.2-.2-.2-.1-.3 0-.3.1-.4.2-.3 0-.3-.1-.2-.4-.2-.4-.4-.3-.6 0-.9.3-1.1.4-.9.3-.8.1-.7-.1-.6-.3-.4-.3-.4-.4-.2-.4-.1-.4-.2-.2-.2.2-.2.4-.2.8-.3.5-.3.4-.3.2-.3 0-.3-.1-.2-.3-.2-.4-.2-.4-.2-.3-.2 0-.3.3-.2.4-.3.4-.2.1-.3-.1-.2-.2-.3-.2-.2 0-.3.2-.2.2-.4.2-.4.1-.4.1-.6 0-.5-.1-.4-.3-.2-.4-.2-.4-.2-.3-.3 0-.3.3-.3.4-.3.2-.4-.1-.5-.4-.5-.8-.6-.3-.7 0-.9.3-.9.8-.8.5-.6.4-.5.2-.3 0-.4.2-.6.4-.7.6-.8.8-.6.8-.4.7-.2.6 0 .6.1.5.1.6.3.5.3.6.5.6.6.5.9.5 1 .5 18.3.4 35.6.2 53 .2 70.3 0 53-.2 35.7-.3 18.4-.4 1.1-.6.8-.6.7-.9.4-.9.3-1.1 0-1-.1-.9zM296.7 220.8l-1.1 3.9-.7 3-.4 2.1 0 1.2.3.3.7.2 1 .2 1.5.1 1.8 0 1.2-.1.7-.2.1-.3-.4-.4-.2-.3.2-.3.4-.1.7-.2.5-.1.4-.3.2-.3.1-.4-.2-.4-.3-.4-.6-.4-.7-.4-.6-.7-.4-.9-.1-1.1 0-1.3-.2-1.1-.2-.9-.4-.6-.5-.4-.4-.7-.3-.7-.2-1-.2-1.1-.3.1-.6 1.4zM39.1 248.8l.1.4 3.6.3 7.2.2 10.7.1 14.3 0 10.8-.1 7.3-.1 3.7-.2.2-.3 9.9-.2 19.6-.1 29.3 0 39.1 0 29.3 0 19.7.1 9.9.2.2.3.9.2 1.8.1 2.5.1 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3 1.8-.2 3.5-.1 5.2 0 6.8 0 5.1 0 3.5.1 1.9.2.2.3 2 .1 3.7.1 5.6.1 7.4-.1 5.5-.1 3.7-.3 1.8-.3-.1-.3-.4-.4-.9-.3-1.1-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-.9-.4-.9-.3-.8-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.3-1.3-.2-1.8-.3-2.3-.2-1.8-.3-1.2-.2-.7-.3-.2-.2-2.9-.2-5.7-.1-8.3-.1-11.1 0-8.3-.1-5.6-.1-2.9-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1-.4-1-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-1.2-.2-2.3 0-3.3.2-4.3.2-3.3.1-2.4-.1-1.4-.4-.4-.4-.6-.5-.8-.4-.9-.3-1.1-.2-.9-.4-.9-.4-.7-.5-.6-.7-.5-2.1-.3-3.6-.1-5 0-6.6-.1-5.1-.1-3.5-.2-2-.3-.5 0-.5.2-.4.4-.4.6-.4.7-.3.8-.2.8-.1.8-.1.7-.6.4-1.2.3-1.8 0-2.3 0-1.8.2-1.4.3-.8.4-.4.4-.3.5-.2.5 0 .6 0 .4 0 .4.1.4.2.2.3.3.1.3 0 .3-.2.3-.3.2-.5.2-.5.1-.7 0-.8-.5-1.1-.9-1.2-1.3-1.5-1.7-1.7-1.3-1.3-.9-1-.4-.7 0-.3-.2-.4-.4-.5-.6-.6-.7-.7-.6-.6-.4-.5-.1-.4 0-.3-.2-.3-.2-.4-.4-.4-.5-.4-.5-.6-.5-.7-.5-.9-.5-1-.3-1.1-.1-1.3 0-1.4.3-1.6.1-1.2 0-.9-.1-.5-.3-.2-.3-.6-.4-1-.4-1.4-.5-1.8-.6-1.6-.6-1.2-.7-1-.7-.7-.6-.7-.4-.7-.1-.8 0-.8.2-.7.5-.4.7-.3.9-.2.8-.1.6-.3.5-.2.3-.3.2-.5.2-.5.1-.7 0-.8 0-.7.1-.5.2-.3.3-.2.1-.3 0-.3-.1-.4-.3-.6-.2-.6-.1-.8 0-.9 0-1.1 0-.9.1-.8.2-.6.3-.5-.2-.6-.7-.6-1.1-.8-1.6-.8-1.5-.5-1.6-.3-1.5 0-1.6.2-1.3.3-1 .4-.7.5-.4.4-.6.4-.8.3-.9.1-1.1 0-1 .2-.9.4-.9.6-.8.8-.7.9-.5.9-.4 1-.2 1.1-.4 1-.5.9-.7.9-.8.8-.8.7-.6.4-.5.3-.4.2-.2.1.2.2.4.2.8.3.3.3 0 .4-.3.5-.8.6-.4.4-.2.3.1.2.3.1.4-.1.2-.1.3-.1.2-.3.2-.1.1 0 .2 0 .2.2-.2.6-.5 1.1-.9 1.5-1.2 1.9-1 1.8-.6 1.7-.3 1.4 0 1.3.1 1.1.1.8.2.5.2.2.1.3-.1.4-.4.4-.4.4-.4.5-.3.5-.1.5 0 .6-.1.4-.1.4-.2.3-.2.2-.2.9-.1 1.8-.1 2.5 0 3.3.1 2.6.1 1.9.2 1.2.2.6.5.5.6.7.9.7 1.1.8.9.6.8.3.7 0 .6-.3.6-.1.7.1.8.3.9.4.6.4.3.4 0 .3-.2.2-.2.7-.1 1-.1 1.3 0 1.8-.2 1.4-.3 1.2-.4.9-.7.7-.8.6-1.2.6-1.3.6-1.7.7-1 .5-.4.4.1.3.8.2.5.2.2.2 0 .3-.2.3-.1.3.2.4.3.3.6.3.7.2.9.3 1 .1 1.2.2 1 .2.7.3.5.4.2.5.2.7.1.9.1 1.1 0 1.3-.3 1.4-.6 1.5-1 1.6-1.2 1.7-1.1 1.9-.9 2-.7 2.1-.4 2.3-.6 2-.4 1.7-.6 1.3-.4 1-.6.9-.6.7-.7.6-.8.4-.5.5-.4.7-.2.7 0 .8-.2.7-.3.6-.4.5-.7.3-.9.3-1.4.2-1.7.1-2.1 0-1.6-.1-1.3-.3-.8-.4-.4-.4-.5-.5-.4-.3-.5-.2-.4-.1-.3-.2-.2-.4-.1-.4 0-.6-.1-.5-.1-.4-.2-.2-.3-.2-.2-.5-.1-.7 0-1.1 0-1.3 0-1 .1-.8.2-.4.3-.2.2-1.6.1-3 .1-4.4 0-5.8-.1-4.4-.1-3-.2-1.6-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.3-.7-.4-1.1-.4-1.6-.5-2.1-.5-1.7-.5-1.4-.5-1-.5-.7-.4-1-.2-1.3-.1-1.7 0-2-.1-1.6-.1-1.1-.2-.8-.3-.3-.1-.3.1-.4.3-.3.4-.4.4-.2.3.1.2.2.1.4.5.8 1 1.1 1.3 1.3 1.8 1.7 1.3 1.5.9 1.4.4 1.2 0 1.1.1.9.1.7.3.5.3.3.4.2.4.2.5.1.6 0 .5-.2.6-.3.5-.4.6-.6.4-.5.3-.4.2-.4 0-.3-.3-.5-.5-.6-.8-.8-1-.9-1-1.2-1-1.5-1-1.7-1-2-.7-1.6-.5-1.3-.2-.9 0-.6-.2-.7-.4-.9-.6-1-.7-1.2-.6-1.1-.4-1-.1-.9 0-.8 0-.7.1-.5.2-.3.3-.2.2-.3.1-.4.1-.4 0-.6-.1-.5-.1-.4-.2-.2-.3-.2-.2-.7-.1-1.3 0-1.8 0-2.3-.4-2.1-.6-1.9-.9-1.7-1.3-1.5-.8-1.3-.3-1.2.2-1.1.6-.8.7-.7.7-.4.8-.2.8 0 .7-.1.5-.2.5-.2.3-.3.2-.4.2-.4.1-.5 0-.6 0-.5.1-.4.2-.2.3-.2.1-.6 0-.8-.1-1.2-.3-1.6.1-1.2.3-.9.7-.4.9-.2.8-.2.6-.4.5-.5.3-.6-.1-.5-.6-.3-.9-.2-1.4-.1-1.3-.3-1.3-.5-1.2-.8-1.2-1-1.2-.7-1.1-.6-1.1-.2-1.1 0-1 .1-1 .3-1 .4-1 .4-.8.5-.5.5-.3.4-.1.3-.2.4-.3.4-.4.5-.4.4-.4.6-.3.7-.1.9 0 1.1.1 1 .3 1 .4 1 .4.9.4 1 .3.8.1.9 0 .8-.2.7-.3.8-.4.6-.7.7-.9.4-1.2.2-1.5-.1-1.8-.2-1.6-.1-1.2.1-1 .4-.7.4-.7.4-.7.3-.8.1-.8 0-.8.1-.7.3-.6.4-.6.6-.4.8-.4 1.1-.4 1.3-.2 1.6-.3 1.2-.2.8-.3.6-.2.2-.2.2-.1.4-.1.5 0 .6.1.4.1.4.2.4.2.2 0 .5-.4.7-.7 1-1 1.2-.8 1.8-.6 2.5-.5 3.2-.2 3.8-.1 3.1.1 2.4.4 1.7.4 1 .7.9.8.8.9.6 1.1.6 1.2.5 1.3.3 1.6.2 1.7.2 1.2 1 .9 2 .4 2.9 0 3.8-.1 2.9-.1 2-.2 1.1-.2.2-.2.5-.1.9-.1 1.2 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.2 0 .2.2.3.2.3-.2.6-.6.7-1 1-1.6 1.2-1.3 1.5-1.3 1.9-1.1 2.2-1 2.6-1.1 2.2-1.3 2-1.3 1.8-1.6 1.4-1 1.3-.7 1.2-.3 1.1.1.9-.2.7-.4.5-.8.2-1.1 0-.9-.1-.7-.3-.6-.4-.4-.4-.5-.5-.6-.3-.6-.2-.7-.1-.5-.2-.4-.4-.1-.4 0-.6.1-.5.2-.4.4-.3.5-.3.2-.3-.1-.5-.5-.6-.7-.7-.5-.7-.3-.7 0-.8.3-.8 0-.7-.1-.7-.3-.5-.5-.4-.5-1-.4-1.4-.3-1.9-.3-2.3-.4-1.8-.3-1.2-.4-.5-.3.1-.3.2-.2.4-.1.7 0 .8-.1.8-.3.7-.4.7-.4.7-.4.7-.1.6.1.6.2.6.1.5-.1.7-.4.6-.4.7-.4.7-.1.6.1.5.2.5.2.5 0 .5-.2.5-.2.5-.2 1.5-.1 2.4-.1 3.3 0 4.3 1.2 3.3 2.5 2.2 3.6 1.1 4.9.1 3.7.2 2.5.3 1.3.6.1.7 0 .6-.1.5-.3.5-.3.3-.5.3-.4.2-.5.1-.6 0-.7.1-.7.3-.9.4-.9.4-.9.4-.9.3-.8.1-.8 0-.7.1-.5.1-.3.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.1-.2.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.1-.2.2-.2.2-.9.4-1.5.5-2.1.6-2.8.8-2.3.7-1.8.6-1.2.6-.7.4-.6.4-.7.3-.5.1-.6 0-.6.1-.6.3-.7.4-.7.4-.6.4-.7.3-.6.2-.7.1-.4.1-.3.2zM155.8 196.1l.9.8.6.8.5.8.2.6 0 .6.1.4.1.4.2.3.2.2.2.2 0 .4-.2.4-.2.5-.2.8-.1 1.2-.1 1.5 0 1.8.1 1.4.1 1 .2.6.2.2.2.2.1.4.1.5 0 .6.1.6.3.8.4.8.4.9.4 1 .3.8.1.9 0 .8.1.6.1.5.2.4.2.2.2.2 0 .4-.2.4-.2.5-.2.6-.1.6-.1.8 0 .8-.2.6-.3.5-.5.3-.7.1-.6.2-.4.2-.3.2-.2.2-.8.2-1.4.1-1.9.1-2.6 0-2 .1-1.3.1-.8.2-.2.2-.4.2-.5.1-.6.1-.8 0-.9-.3-1-.5-1-.9-1.2-1.1-.8-1.1-.6-1.1-.2-1.1 0-1.1.1-1 .4-1 .6-1 .7-.9.8-1.1.7-1.2.8-1.4.7-1.6.7-1.3.6-1 .6-.7.5-.4.4-.4.2-.4.2-.4 0-.3.1-.4.4-.5.6-.6.7-.7.8-.9.7-1.1.8-1.3.7-1.4.6-1.3.4-1 .2-.8 0-.6.1-.5.2-.5.3-.4.4-.4.6-.1.6.3zM102.9 191.3l.4.4.6.7.6.9.6 1.3.8 1.6.7 1.2.6 1 .6.8.4.4.4.5.3.5.1.5 0 .6-.1.4-.1.4-.2.3-.2.2-.2.6-.1 1-.1 1.4 0 1.8.1 1.4.1 1 .2.6.2.2.2.6.1 1.2.1 1.5 0 2.1.1 1.6.1 1.1.2.7.2.2.2.7 0 1.1 0 1.7-.1 2.2-.3 1.7-.5 1.1-.6.5-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.9-.1-.8-.3-1-.4-.9-.4-1-.4-1-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.9-.1-.8-.1-.6-.2-.5-.2-.5-.4-.4-.4-.4-.5-.4-.7-.2-.7-.1-.8.1-1 .3-1.1 1.1-1.7 2-2.3 2.9-3.1 3.7-3.7 3-3 2.1-2.3 1.3-1.7.5-1 .4-1 .2-.9.2-.8 0-.8.1-.9.3-.8.5-.9.6-.8.6-.6.5-.3zM160.7 166.8l.3 0 .6.3.9.8 1.2 1.1 1.4 1.5 1.1 1.1.9.8.6.4.3 0 .5.2.8.4.9.7 1.1.8.9.8.5.7.3.6 0 .5-.2.5-.3.6-.4.7-.7.7-.7.4-.8.1-1-.3-1.1-.4-1.2-.8-1.3-1.1-1.5-1.3-1.6-1.7-1.2-1.5-.8-1.6-.3-1.5.2-1.4.1-1.1.3-.7zM148.7 129.9l.1 1.4.2 1.2.3 1 .5.7.4.4.4.4.3.4.1.3 0 .3-.4.5-.7.8-1.1.9-1.4 1.1-1.2.7-1.1.4-.8-.1-.6-.4-.3-.5.1-.6.4-.6.7-.7.6-.6.6-.6.3-.5.3-.6.2-.7.1-.9.1-1.1 0-1.3.1-1.1.2-.8.3-.6.4-.4.4.1.3.5z"/></g></svg><svg x="520" y="0" width="260" height="236" viewBox="40 0 260 236" overflow="hidden"><path d="M274.3 227.5l-.3.2-2 .2-3.6.1-5.2.2-6.9.1-4.9.1-2.9.1-.9.1 1.1.1.9.1.9.3.9.4.7.5.7.2.7 0 .6-.2.6-.5.4-.3.4-.2.2 0 .1.2 0 .2 0 .2-.2.2-.2.2-.1.1 0 .2.3.1.3.2.4-.1.5-.2.4-.3.6-.5 1.3-.4 2.1-.2 2.9-.1 3.8 0 2.9-.1 2-.2 1.2-.3.3-.4.1-.2 0-.1zM230.3 210l-.8 0-.8.1-.7.1-.6.3-.6.3-.4.4-.3.4-.1.5 0 .6-.1.4-.1.4-.2.4-.2.2-.2 1-.1 1.7-.1 2.5 0 3.2 0 2.5-.1 1.7-.2 1.1-.2.4 0 .3.3.1.4.1.6-.1.5-.2.3-.3.2-.4 0-.6.1-.7.4-.7.6-.9.7-.9.5-.7.2-.6-.1-.3-.4-.1-.4-.3-.3-.3-.4-.5-.4-.7-.3-.6-.2-.8 0-.7 0-.8.1-.7.4-.7.6-.5.7-.4.6-.6.4-.6.2-.7 0-.8.1-.7.2-.4.3-.3.4-.2.4-.1.2-.2.1-.1 0-.2-.2-.2-.4-.1zM223.5 209.2l-.2 0-.3.3-.2.5-.4.7-.3.9-2 .7-3.4.5-5 .2-6.6 0-5-.1-3.4-.3-1.8-.4-.3-.4-.2-.3-.1-.1-.1.2-.1.3.1.5.2.6.4.6.4.8.3.6 0 .5-.3.3-.4.2-.4.8-.3 1.3-.1 2 0 2.6.2 2 .3 1.4.4.9.7.3.5.1.5 0 .4-.1.3-.3.3-.5.3-.7.2-.9.3-1.1.3-.8.5-.8.5-.5.6-.4.6-.3.6-.2.6 0 .6 0 .6.2.7.4.8.7.9.8.6.8.5.8.2.6 0 .6.1.5.1.6.3.5.3.6 1.1.4 1.9.3 2.8.2 3.6 0 2.6-.3 1.9-.6.9-.8.1-1.2.1-.9.1-.7.2-.4.3-.3.2-1 .1-1.9.1-2.7 0-3.5-.1-2.6-.1-1.8zM247.1 190.8l-1.2-.3-.9-.4-.8-.4-.6-.5-.4-.4-.8-.4-1.1-.3-1.4-.1-1.8 0-1.3.1-1 .1-.7.2-.2.2-.5.3-.8.2-1.1.3-1.3.2-1 .2-.8 0-.4-.2-.2-.2-.3-.2-.5-.2-.5-.2-.7-.1-.4-.2-.2-.3.2-.3.4-.3.2-.3 0-.2-.3-.1-.6 0-.5.1-.4.1-.3.2-.3.2-.4.2-.7.2-.8.1-1.1.1-.5 0 0 .1.6.1 1.1.2.9.1.5.3.3.2 0 .3-.4.3-.8.1-1.2.1-1.7 0-1.2-.1-.9-.1-.5-.2-.1-.2-.2-.2-.2-.1-.3-.1-.3 0-.2 0-.2.1-.1.2 0 .2.2.1.2.2.3 0 .4.1.3.1.2.2 0 .2-.1.2-.4.2-.8.1-1 .1-1.3 0-1 .1-.8.1-.4.2-.2.2-.4.2-.5.1-.6.1-.8 0-.7.1-.5.1-.3.2-.2.2-.5.3-.8.3-1.1.4-1.3.3-.5.4.3.3 1.3.4 2.1.3 1.7.1 1.3-.1.9-.3.4-.5.8-.4 1.1-.2 1.5-.1 1.8 0 1.3 0 .9.2.5.2 0 .3-.2.3-.3.2-.4.2-.7.1-.2.1.1.1.5.1.9.1.8-.1.7-.1.6-.2.6-.3.4-.3.1-.4 0-.3-.3-.3-.1-.3.1-.4.2-.3.4-.4.3-.2.3-.1.3.1.3.3.4.2.7.1.8.1 1.1 0 .8-.1.6-.1.4-.2.1-.3.4-.2.6-.1.8 0 1.1 0 .8-.1.7-.1.4-.2.3-.3.6-.2 1-.1 1.5 0 1.8 0 1.4 0 1 .1.6.2.2.3.5.1.9.1 1.3 0 1.6-.2.9-.1.3-.3z"/><path d="M129.5 334.2l.3.6.6.7.9.7 1.2.7 1.5.7 1.7.6 1.9.4 2.1.2 2.3 0 2-.2 1.6-.2 1.3-.4.9-.5 1.3-.4 1.7-.2 1.9-.1 2.3 0 2.4.3 2.5.8 2.6 1.1 2.7 1.5 2.3 1.1 1.9.8 1.4.4 1.1 0 .9 0 .6.1.4.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.5 3-.9 3.1-1.2 3.2-1.5 2.9-1.1 2.6-.8 2.3-.3 2.1 0 2.4.3 2.6.8 2.9 1.1 3.2 1.5 3.1 1.1 3 .8 2.9.4 2.8 0 2.1-.1 1.5-.1.9-.2.2-.3.2-.2.4-.1.5 0 .6 0 .6-.2.8-.2.9-.4 1-.5 1-.6 1.1-.8 1.2-.9 1.2-1 1.1-.8 1-.6 1-.5.8-.3.7-.4.4-.3.2-.4-.1-.3-.4-.3-.9-.2-1.1-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.1.3-1 .4-.9.5-.7.4-1.1.4-1.5.3-1.9.1-2.3 0-2.5-.4-2.6-.7-2.8-1.1-2.9-1.6-3-1.1-3.1-.7-3.3-.4-3.3 0-3.2.4-3.1.7-3.1 1.1-2.9 1.6-2.8 1.1-2.6.9-2.5.6-2.3.2-1.8.2-1.2 0-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.3-.4-1.8-.7-2.2-1.1-2.7-1.6-2.2-1.1-1.7-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.6-.2-1-.1-1.4-.1-1.8 0-1.4.1-1 .1-.6.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.1-.2.2-.2.2-.3.2-.4.1-.4.1-.6 0-.7.1-.7.3-.9.4-.9.4-1.4.4-1.7.1-2.2 0-2.7-.2-1.9 0-1.1.3zM85.5 307.2l.3.6.3.5.3.3.3.2.3 0 .7.3 1 .8 1.3 1.1 1.7 1.5 1.4 1.1 1.1.8.9.4.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2 .3 1.8.6 1.8.9 1.7 1.3 1.7 1 1.6.7 1.6.5 1.6.3 1.2.2.8.3.6.2.2.3.6.2 1 .1 1.4.1 1.8 0 1.4-.1 1-.1.6-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.5 2-.9 2.6-1.3 3.2-1.7 3.1-1.3 3-.9 2.9-.4 2.8 0 2.9.4 3 .9 3.1 1.3 3.2 1.7 2.6 1.3 2 .9 1.4.5.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1-.2 1.1-.4 1.4-.6 1.4-.7 1.3-.7 1-.6.7-.6.4-.5.5-.4.5-.2.5-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.2-.4 1.4-.2 1.6-.1 1.8 0 1.4 0 1 .1.6.2.2.3.4.2.8.3 1 .2 1.3.3 1.1.3.9.4.7.4.4.5.7.6 1 .6 1.2.7 1.5.7 1.3.6 1.2.4 1 .2.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.4 2-.8 2.6-1.1 3.2-1.5 2.8-1.1 2.5-.8 2.2-.3 1.8 0 1.7.1 1.7.4 1.6.6 1.4.7 1.3.7 1 .6.7.6.4.5.6.4.7.4.9.3 1.1.3 1.2 0 1.3-.3 1.4-.5 1.4-.7 1.7-1 1.8-1.3 1.9-1.6 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.1-.2-.2-.2-.3-.1-.4-.1-.3 0-.3.1-.2.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.2.3-.9.2-.5.3-.2.2-.6.2-.8.1-1.2.1-1.6 0-1.4-.1-1.1-.3-.9-.4-.7-.4-.6-.4-.7-.3-.5-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.2-.4-1.5-.3-1.8-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.2.3-1.5.6-1.8 1-2.2 1.2-2 1-1.9.8-1.7.5-1.6.2-1.2.3-.9.2-.5.3-.2.2-.4.2-.6.1-.9.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.3-.8-.2-1.2-.3-1.6-.2-1.4-.4-1.3-.5-1.1-.6-.9-.8-1.1-.7-1.4-.6-1.6-.6-1.8-.4-1.4-.5-1-.4-.6-.3-.2-.2-.9-.2-1.5-.1-2.1-.1-2.8 0-3.1.4-3.2.9-3.5 1.3-3.7 1.8-3.5 1.3-3.4.9-3.2.4-3.1 0-2.9-.4-2.9-.7-2.8-1.1-2.7-1.6-2.6-1.2-2.7-1-2.5-.8-2.6-.4-2-.4-1.3-.1-.8.1-.2.2-.5.2-.7.1-1.1.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.3.2-.4.1-.4.1-.6 0-1.1.4-1.6.7-2.2 1.1-2.7 1.6-2.7 1.1-2.7.7-2.8.4-2.8 0-2.9-.4-2.8-.9-3-1.3-2.9-1.8-2.8-1.3-2.8-.9-2.6-.4-2.6 0-2 .1-1.3.1-.8.2-.2.2-.5.2-.7.1-1.1.1-1.3 0-1-.1-.8-.1-.4-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1 .2-.5.3zM64 288.5l1.3 1.3 1.2 1.1 1.2.9 1.1.7 1 .5 1.2.4 1.4.2 1.6.2 1.8 0 1.8-.3 1.9-.5 1.9-.8 1.9-1 1.6-.7 1.3-.5.9-.2.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2.4.4 2.8.9 3.1 1.3 3.4 1.7 3.4 1.4 3.4 1 3.3.6 3.3.3 2.6.1 1.7 0 1-.1.2-.3.5-.2.9-.3 1.2-.2 1.6-.3 1.9-.5 2.2-.9 2.6-1.2 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.7-1.1 2.6-.8 2.6-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.8-.8 2.3-1.1 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.8.4 3.1.9 3.4 1.3 3.7 1.7 3.6 1.3 3.5.9 3.4.5 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.9-.8 1.9-1.2 2-1.5 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.5-.2-1-.2-1.4-.1-1.8-.1-2.2.3-2.4.7-2.7 1.1-2.9 1.6-2.7 1.1-2.3.7-2.1.4-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.6-.3-1-.4-1.4-.5-1.8-.4-1.5-.6-1.1-.4-.8-.6-.4-.4-.5-.4-.5-.3-.5-.1-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.6.4-2.2.9-3 1.3-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.9-1.3-2.2-.9-1.7-.4-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.8-.2-1.4 0-1.9.2-2.6.2-2.8.6-3 1-3.2 1.4-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.8-.2-1-.4-1.3-.5-1.5-.8-1.2-.7-1-.6-.7-.6-.4-.4-.8-.5-1-.4-1.2-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.9-.2-1.5 0-2.1.2-2.8.2-3.1.6-3.2 1-3.5 1.4-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.5-.3-.7-.2-1.1-.3-1.3-.2-1.1-.3-.9-.4-.6-.5-.4-.4-.6-.6-.7-.4-.9-.6-1-.4-1.1-.5-1.3-.4-1.4-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.3-1.6.6-2 1-2.4 1.2-2.3 1-2.1.6-2 .3-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8.1-.5.2-.3.3-.1.3.3.6.6.9zM38 258.7l0 .3.2.4.4.5.5.6.8.7.5.6.4.5.2.4 0 .3.3.5.5.7.8.9 1.1 1.1 1 .8.9.5.9.3.8 0 .6 0 .5.1.4.2.2.3.3.2.5.1.7.1.8 0 .6 0 .5.1.4.2.2.3.2.2.4.1.5.1.6 0 .6.1.8.2.8.4.9.5 1.1.4 1.1.2 1.2.2 1.3 0 1.1 0 .7.1.5.2.2.3.2.1.4 0 .4-.1.5-.3.8-.2 1-.1 1.3 0 1.6 0 1.2-.1.8-.1.6-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.2-1.1 1.8-.8 1.3-.3.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.6 3.2-1 3.3-1.4 3.4-1.7 3.3-1.3 3.3-.9 3.1-.4 3.1 0 3.2.4 3.2.9 3.4 1.3 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 3.5-.5 3.5-.9 3.5-1.3 3.4-1.7 2.8-1.3 2.1-.9 1.5-.4.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.7.1 1.2 0 1.8-.1 2.3-.3 1.8-.2 1.3-.3.7-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.6-.6 1.4-.6 1.1-.7.9-.7 1.1-.7 1.3-.4 1.4-.4 1.6-.3 1.2-.2.8-.3.6-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.6.6 2.9 1 3.2 1.4 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 2.7-.1 1.9-.1 1-.2.2-.3.2-.2.4-.1.5 0 .6 0 .7-.2.8-.4 1.1-.6 1.2-.7 1-.6.9-.4.7-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.1-.4 1.1-.2 1.2-.1 1.3 0 1.1 0 .7.1.5.2.2.3.5.2.9.3 1.2.2 1.6.3 1.6-.4 1.7-.9 1.7-1.4 1.8-2.1 1.4-1.6.8-1.3.5-.8-.1-.3-1.1-.3-2-.2-3.1-.1-4.1 0-3.1.1-2.1.1-1.1.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.6.7-2.5.4-2.3 0-1.8-.1-1.2-.1-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.4-.4-1.9-.7-2.4-1.1-2.9-1.6-2.4-1.1-1.9-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.5.4-2.1.9-2.8 1.3-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-.8.1-.8.3-.7.4-.7.4-.6.4-.7.3-.5.1-.6 0-.5.1-.5.3-.5.4-.4.4-.8.6-1.2.4-1.4.6-1.8.4-1.4.5-1 .4-.6.3-.2.2-.8.2-1.4.1-1.9.1-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.4-1.8.7-2.2 1.1-2.7 1.6-2.2 1.1-1.7.7-1.3.4-.8 0-.7.1-.5.1-.3.2-.2.2-.9.2-1.5.1-2.1.1-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.8.7-2.6.4-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1.1.1-.7.2zM208 197.2l-1.8-.1-1.6.1-1.3.2-1.1.4-.9.6-.7.7-.6.9-.4 1.1-.2 1.3-.3 1-.3.9-.4.6-.3.4-.4.3-.3.1-.4-.1-.3-.2-.3-.1-.3.2-.3.4-.3.7-.2.5.1.5.2.4.3.3.5 0 .6-.2.7-.6.8-.8.6-.7.4-.7.3-.5 0-.6.1-.6.4-.9.5-1 .7-1.2.7-.9.9-.6.9-.2 1 0 .8 0 .7.2.6.3.3.4.3.5 0 .8-.1.8-.2 1.1-.3.9-.4.8-.5.6-.4.6-.2.3.2.3.5.2.9.1.8-.6.7-1.1.6-1.8.6-2.4 0-1.8-.7-1.2zM226.2 195.8l-.4-.3-.5-.3-.7-.1-.8-.1-1 0-.8.1-.6.1-.4.2-.2.2-.5.2-.7.1-1 .1-1.2 0-1.1.1-.9.1-.7.2-.6.2-.5.3-.4.3-.4.4-.3.3-.3.8-.3 1.2-.3 1.6-.2 2 .5 1.5 1.3 1 2.1.6 2.9.1 2.3-.1 1.7-.1 1-.1.6-.3.5-.8.5-1.3.5-1.8.6-2.4.3-1.8.1-1.4zM240.8 195.4l-.6-.6-.7-.3-.6-.2-.7.1-.7.2-1 .2-1.2.2-1.6.1-1.9.1-1.5.6-1.2 1.2-.9 1.7-.4 2.3-.3 1.8-.1 1.4.1.8.3.3 1.1.2 1.9.2 2.8.1 3.6 0 2.6-.4 1.9-.7.9-1 .1-1.4-.1-1.1-.1-.7-.1-.5-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.2-.8-.3-.7zM43.6 128.4l.3.2.7-.1.9-.3 1.2-.6 1.4-.7 1.3-.6 1.3-.4 1.1-.1 1.1 0 .8 0 .5.2.3.2 0 .3-.2.3-.5.4-.6.3-.9.3-.5.2-.1.3.2.1.7.2.7-.1.7-.2.9-.3.9-.5 1.2-.4 1.4-.4 1.6-.3 1.8-.3 1.3-.1.9 0 .5.2 0 .3-.3.4-.5.4-.8.5-1.1.4-.9.4-.8.3-.6.1-.5 0-.5.1-.4.2-.3.3-.3.3.5.3 1.2.1 2.1-.1 2.9-.2 2.1 0 1.5 0 .7.2 0 .3-.2.3-.5.2-.6.2-.9.1-.2.1.3.1 1 .1 1.7.1 1.2.1.9.1.5.1.1.2 0 .3-.3.2-.4.4-.7.3-.6.3-.6.2-.5.1-.6 0-.4.1-.3.2-.2.4 0 .4.6.3 1.2.2 1.7.2 2.3 0 1.8 0 1.1.2.6.2 0 .3-.3.3-.7.2-1.1.2-1.3.1-.7.2 0 .2.7.3 1.3.3 1.5.5 1.7.7 1.7.9 1.9 1.2 1.3.9.9.6.3.4-.2.2-.4 0-.7-.3-.9-.5-1.2-.8-1.2-.5-1.3-.4-1.3-.2-1.3 0-1-.1-.8-.1-.4-.2-.2-.2-.5-.2-.7-.1-1.1-.1-1.3 0-1.1-.1-.9-.1-.7-.2-.5-.2-.4-.2-.4 0-.2.2-.2.2-.4.2-.6.1-.9.1-1.1 0-.8.1-.6.1-.4.2-.2.2-.6.3-1 .2-1.4.3-1.8.2-1.4.3-.9.2-.5.2 0 .2.2.2.4.1.5.2.7.2.2.2-.3.1-.7.2-1.2.1-1.1.2-1.1.3-1 .5-1 .4-1 .6-.9.7-.9.7-.8.8-.5.7-.4.4 0 .3.2.2.2 0 .1-.1.2-.1.2-.3.2-.1.1 0 .2 0 .1.2-.3.6-.8.9-1.3 1.3-1.8 1.7-1.3 1.4-.9 1-.4.6 0 .3-.2.5-.4.6-.5.8-.8.9-.6 1-.5.9-.3.9-.2.8.4.1.9-.7 1.4-1.4 2-2.3 1.6-1.6 1.1-.9.6-.3.2.4.1.5-.2.6-.3.8-.4.8.2.1.8-.7 1.4-1.4 2.1-2.3 1.6-1.6 1.1-1 .6-.5.1.2 0 .3-.2.5-.4.5-.4.7-.4.7-.2.6 0 .7.1.6.6-.1 1-.8 1.5-1.5 1.9-2.3 1.5-1.6 1.1-1 .6-.5.2.2 0 .3-.1.3-.4.4-.4.4-.4.5-.3.5-.1.5 0 .6.3.1.5-.1.8-.6 1.1-.9.8-.7.7-.5.5-.2.3 0 .3 0 .2.1.2.2.1.3 0 .3-.2.3-.4.3-.4.4-.4.4-.2.3 0 .4.1.4.2.1.2-.1.3-.4.3-.6.6-.8.8-.8 1.1-1 1.4-1.2 1.1-.7.8-.3.5.1.3.5.3.2.6 0 .6-.2.7-.5.7-.3.6-.2.5-.1.4.2.3.1.2.3-.1.3-.2.4 0 .3.2.2.3.1.5 0 .6-.2.8-.2.9-.4 1-.5 1.1-.3 1.2-.2 1.3-.1 1.4.2 1 .2.4.2-.1.4-.7.4-.7.4-.8.2-.9.1-1 0-1.3.2-1.7.6-2 .7-2.3 1-2.2 1.1-2 1.3-2 1.4-1.8 1.6-1.7 1.9-1.7 2.3-1.5 2.7-1.6 3-1.1 2.6-.7 2.3-.4 1.9 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.5-.1.9 0 1.3.1 1.6.1 1.1.2.5.3 0 .4-.6.3-.6.2-.7.1-.7 0-.8 0-.7.1-.5.2-.3.3-.2.2-.5.3-.7.2-1.1.3-1.3.2-1 .3-.6.3-.4.3 0 .3.3.1.5.1.8 0 1.1.1.8.2.6.3.3.3.1.3-.3.3-.7.1-1 .1-1.4.3-1.5.5-1.5.7-1.7 1-1.7.9-1.3.6-.9.5-.5.3 0 .3.2.2.3.2.5.1.6.3 0 .4-.5.5-1.2.7-1.7.7-1.3.6-.9.6-.4.6 0 .5-.2.5-.4.5-.6.4-.7.4-.4.4 0 .3.4.3.7.3.4.4-.1.3-.5.3-.8.4-.8.4-.8.6-.7.6-.6.5-.5.4-.2.3-.1.2.2.1.1 0 .2-.2.1-.2.2-.2.2 0 .2 0 .2.1.2.5-.2.7-.5 1.2-.9 1.4-1.3 1.1-.8.8-.4.5 0 .2.4 0 .5-.1.4-.4.5-.4.4-.4.5-.3.5-.1.5 0 .6-.3 1-.6 1.5-1 2-1.2 2.6-1.1 1.9-.9 1.5-.7 1-.4.4-.6.6-.4.7-.6.9-.4 1-.4.8-.3.8-.1.7 0 .6-.2.7-.4.8-.5 1.1-.8 1.2-.5 1-.4.9-.2.7 0 .6-.2.9-.6 1.2-.7 1.6-1 1.9-.7 1.7-.6 1.4-.2 1.1 0 .8-.2.9-.4 1.2-.5 1.3-.8 1.4-.5 1.3-.4 1.1-.2 1 0 .8-.1.8-.3.9-.4.9-.4.9-.4 1-.3.8-.1.9 0 .8-.1.6-.1.5-.2.4-.2.2-.2.3-.1.5-.1.7 0 .8-.1.6-.1.5-.2.4-.2.2-.2.3-.1.5-.1.7 0 .8-.1.6-.1.5-.2.4-.2.2-.2.5-.1.9-.1 1.2 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.3-.1.5-.1.7 0 .8-.1.6-.1.5-.2.4-.2.2-.2.7-.1 1.2-.1 1.8 0 2.3-.1 1.9-.1 1.4-.2.9-.2.6 0 .4.2.4.5.3.8.2.2.3-.4.3-.9.4-1.4.3-1.1.4-.8.3-.5.3-.2.2-.3.2-.4.1-.4.1-.6 0-.9.2-1.3.6-1.6.7-1.9 1-1.6.7-1.2.6-.9.2-.6 0-.4.1-.3.2-.2.4 0 .4 3.6.3 7.2.2 10.7.2 14.3 0 10.8-.1 7.3-.1 3.7-.2.2-.3 9.9-.2 19.6-.1 29.3 0 39.1 0 29.3 0 19.7.1 9.9.2.2.3.9.2 1.8.1 2.5.1 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3 1.8-.2 3.5-.1 5.2 0 6.8 0 5.1 0 3.5.1 1.9.2.2.3 2 .1 3.7.1 5.6.1 7.4-.1 5.5-.1 3.7-.3 1.8-.3-.1-.3-.2-.3-.3-.2-.4-.1-.6 0-.5-.1-.4-.1-.2-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-.9-.4-.9-.3-.8-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.2-.7-.2-.9-.1-.7-1.1-.5-1.9-.2-2.9 0-3.8-.1-2.9-.1-2-.2-1.1-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.1-.8-.1-.6-.2-.4-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.1-.8-.1-.6-.2-.4-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.2-.9-.2-.8-.4-1-.5-.9-.4-.9-.2-.9-.1-.8 0-.8-.2-.8-.2-.8-.4-.7-.5-.7-.4-.7-.2-.7-.1-.8 0-.8-.7-1.9-1.2-2.9-1.9-3.9-2.5-5-2.3-4.3-2.2-3.4-2-2.6-1.8-1.8-1.4-1.3-1.1-.9-.8-.4-.3.1-.4.1-.3.3-.3.4-.2.5-.2.6-.1.6-.1.8 0 .8-.1.6-.1.5-.2.4-.2.2-.2.9-.1 1.7-.1 2.5 0 3.3.1 2.5.1 1.7.2 1 .2.3.2.6.1 1 .1 1.4 0 1.7.1 1.6.3 1.4.4 1.2.4 1 .4 1 .3 1 .1 1 0 1.1.1.9.1.6.2.4.2.2.2.2.1.4.1.5 0 .6.1.6.3.8.4.8.4.9.4.9.3.9.1.8 0 .7.2 1.1.6 1.4.7 1.6 1 2 .7 1.7.6 1.3.2.9 0 .6.4 1.1.7 1.6 1.1 2.1 1.6 2.7 1 2.1.7 1.4.3.8-.1.2-.2.1-.2 0-.2-.2-.2-.2-.4-.2-.5-.1-.7-.1-.8 0-.9-.1-.8-.2-.9-.3-.8-.3-.5-.4-.1-.3.4-.3.7-.2.6-.4.4-.5.2-.7 0-.8-.3-1.1-.5-1.2-.8-1.5-1-1.7-.7-1.4-.5-1.1-.2-.8 0-.6-.2-.6-.2-.6-.4-.7-.5-.7-.4-.7-.2-.7-.1-.7 0-.8-.2-.7-.2-.8-.4-.7-.5-.8-.4-.7-.2-.8-.1-.8 0-.8-.2-.8-.2-.7-.4-.7-.5-.6-.4-.8-.2-1-.1-1.2 0-1.4-.1-1.1-.1-.7-.2-.5-.3-.2-.2-.9-.3-1.5-.3-2.2-.3-2.9-.4-2.2-.4-1.6-.4-.9-.6-.2-.6-.2-.8-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-1.1-.2-1.9-.2-2.8-.2-3.7-.1-2.7-.2-1.6-.3-.7-.4.4-.4 1.1-.3 1.8-.2 2.6-.1 3.3 0 2.6-.1 1.8-.2 1.1-.2.3-.3.1-.4 0-.3-.1-.4-.3-.3-.7-.3-1.1-.2-1.4-.1-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-1-.2-1.7-.1-2.6-.1-3.3 0-2.5.1-1.8.1-1 .2-.3.2-.6.2-1 .1-1.4.1-1.7 0-1.6.1-1.3.3-1.2.4-.9.4-1.3.5-1.8.4-2.1.3-2.6.2-2.2.4-1.8.4-1.4.5-1.1.7-.7.5-.4.5 0 .4.3.3.5.2.7.2.8.1 1.1 0 .8 0 .6.1.3.2.1.3-.2.2-.4.1-.6.1-.8.1-.7.1-.8.3-.6.3-.7.3.1.3.8.1 1.4-.1 2.1-.2 1.6-.2 1.2-.2.6-.2.1-.3.5-.2.9-.1 1.2 0 1.7 0 1.2-.1.8-.1.4-.1 0-.2-.3-.2-.5-.1-.8 0-1.1 0-.8 0-.6-.1-.3-.2-.2-.2.4-.2.9-.3 1.5-.3 1.9-.4 1.5-.2 1-.1.6 0 .1.2 0 .2-.2.1-.3.2-.4.1-.3.2-.2.1-.2.2 0 .2 1 0 2 0 3-.1 4-.3 3.4 0 2.6.1 2 .3 1.3.5 1.1.5.9.5.6.4.3.4-.9.4-2.1.3-3.4.2-4.7.1-3.6.2-2.5.2-1.3.2-.3.2-.6.2-1 .1-1.4.1-1.7 0-1.3 0-.9.1-.5.2 0 .2.6.1 1.1.1 1.7.1 2.3 0 1.7-.1 1.3-.1.8-.2.3-.3 2-.2 3.7-.1 5.3 0 7 0 5.2.1 3.6.3 1.7.4 0 .6-.8.3-1.7.2-2.6 0-3.3-.2-2.6 0-1.8 0-1.1.1-.2.3-.2.3-.1.4-.1.5 0 .6.1.4.1.4.2.3.2.2.3.5.2.9.3 1.2.2 1.6.3 1.2.3.9.3.7.3.3 1.1.2 1.9.2 2.8.1 3.6 0 2.8 0 2 .1 1.2.2.6.3.4.3.3.3.2.3.1.4.1.3 0 .3-.1.2-.1.2-2.7.2-5.2.1-7.8 0-10.3 0-7.7.9-5.2 1.8-2.6 2.6-.1 3.6-.1 2.7-.2 1.9-.2 1.1-.2.3-.2.5-.2.7-.2.9-.1 1.2-1 .9-1.8.6-2.7.3-3.6 0-2.8-.2-1.9-.3-1.2-.4-.4-.7-.3-.6-.2-.6 0-.5 0-.6-.3-.6-.5-.7-.8-.8-1.1-.8-.9-.6-.7-.4-.5-.2-.3 0-.4.2-.6.4-.7.6-.8.8-.6.8-.4.7-.2.6 0 .6-.1.5-.2.4-.3.5-.3.3-.5.3-.4 0-.5-.1-.6-.2-.5-.1-.5.1-.5.4-.4.4-.7.4-.9.3-1.1.1-1.3 0-1-.4-.7-.9-.4-1.2-.2-1.7-.1-1.3-.2-1-.2-.5-.3-.2-.2-.3-.1-.4 0-.4 0-.6-.2-.8-.4-1-.6-1.3-.7-1.5-.9-1.3-1-1.2-1.2-1-1.3-.8-1.3-.7-1.2-.5-1.1-.4-1.1-.2-.8-.3-.8-.3-.5-.4-.4-.3-.3-.5-.2-.4 0-.5 0-.6.1-.5.2-.5.4-.5.5-.4.4-.8.2-1 .2-1.2 0-1.6-.1-1.3-.1-1-.2-.8-.3-.5-.3-.5-.4-.4-.5-.3-.6-.3-.6-.3-.9-.1-.9-.1-1.1 0-1 .2-1 .4-1 .5-.9.8-.9.5-.9.3-.9 0-.9-.2-.6 0-.5 0-.2.2 0 .3.2.4.4.4.5.4.8.4.6.8.5 1.3.4 1.6.2 2.1.4 1.6.5 1.2.6.7.8.2.3.4 0 .4-.5.5-.9.7-.9.5-1 .4-1 .4-1.1.2-.9.4-.8.4-.7.4-.6.6-.4.6-.3.5-.1.6 0 .6-.1.6-.3.8-.4.8-.4.9-.4 1.1-.3 1.3-.1 1.4 0 1.6-.1 1.3-.2 1.1-.3.8-.3.7-.5.4-.5.3-.6 0-.7-.1-.5-.2-.4-.4-.1-.4 0-.6 0-.5.1-.4.2-.3.3-.3.1-.2 0-.2-.1-.2-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.4-.3-.6-.2-.9-.3-1.1-.5-.9-.7-.9-1-.8-1.3-.7-.8-.6-.4-.6.1-.5.5-.6.4-.4.2-.4.2-.4 0-.3-.2-.4-.2-.5-.4-.6-.5-.7-.4-.9-.4-1.3-.3-1.5-.3-1.8-.3-1.5-.4-1-.5-.7-.6-.3-.7-.3-.9-.1-1.2-.1-1.3 0-1.1.2-.9.4-.8.6-.6.8-.4.8-.3.9-.1.8 0 .8-.1.6-.1.5-.2.4-.2.2-.2.5-.1.9-.1 1.2 0 1.6.1 1.2.1.9.2.6.2.2.2.2 0 .2-.1.2-.2.1-.2 0-.2 0-.2-.2-.3-.2-.2-.1-.1 0-.1.3-.1.3-.3.5-.5.5-.8.6-1 .7-.8.7-.6.6-.5.5-.2.5-.2.6-.1.6-.1.8 0 .8-.1.6-.1.5-.2.4-.2.2-.2.3-.1.5-.1.7 0 .8-.3.6-.6.5-.9.3-1.2.1-.9-.3-.6-.6-.4-1.1-.2-1.4-.1-1.1-.2-.8-.2-.5-.3-.2-.2-.5-.3-.7-.2-1.1-.3-1.3-.3-1.1-.4-.9-.5-.8-.6-.6-.8-.5-1.1-.6-1.4-.6-1.7-.7-1.3-.5-.8-.5-.4-.4 0-.3.1-.3.4-.4.6-.4.7-.4.6-.5.4-.5.2-.5 0-.6 0-.5.1-.4.2-.2.3-.2.1-.2 0-.2-.1-.3-.3-.2-.2-.4-.1-.4 0-.4 0-.6.1-.5.2-.5.4-.5.5-.4.4-.4.2-.4.2-.4 0-.3-.2-.2-.3-.2-.5-.1-.6-.1-.6-.2-.5-.3-.5-.4-.4-.4-.6-.5-.6-.4-.7-.3-.8-.2-.7-.2-.5 0-.3.2-.2.2-.3.2-.4.1-.4.1-.6 0-.4.1-.4.2-.1.3-.1.3-.2.4-.3.4-.4.5-.4.4-.4.6-.3.7-.1.9 0 1.1.1 1 .3.9.4.7.4.7.4.7.3.6.1.6 0 .6-.3.6-.7.7-1.1.8-1.3.9-1.3.6-1.1.5-.9.2-.8 0-.8.2-.9.4-.8.6-.8.8-.7 1.1-.7 1.3-.6 1.6-.4 1.8-.5 1.4-.4 1-.3.6-.2.2-.2.2 0 .4.2.5.2.6-.5.4-1.2.4-1.9.2-2.7.1-2.1.4-1.3.8-.7 1.1-.1 1.3 0 1.1.1.8.2.5.2.2.2.2.1.4.1.5 0 .6-.1.5-.2.4-.3.5-.3.3-.6.3-.7.2-.9.1-1.1 0-.9.1-.7.3-.6.4-.4.4-.6.4-.6.3-.7.1-.8 0-.7-1.1-.4-2.2-.3-3.4-.2-4.4 0-3.4.1-2.3.1-1.2.3-.2.2-.7.1-1.3.1-1.8 0-2.3 0-1.8.1-1.2.2-.7.3-.2.3-1 .4-1.9.4-2.7.5-3.6.4-2.7.4-1.9.3-1 .3-.2.2-.6.3-.8.2-1.2.3-1.6.3-1.4.4-1.1.4-.9.5-.7.4-.6.2-.7.2-.5 0-.6 0-.5.1-.4.2-.2.3-.2.4-.9.4-1.5.7-2.1.7-2.8.8-2.6.9-2.2.9-2 1-1.7.9-1.5.6-1.4.4-1.2.3-1.1.3-.9.4-.7.4-.6.5-.4.5-.6.5-.8.5-.9.5-1.1.5-.8.5-.5.6-.3.6 0 .4.4.4.6.4 1 .2 1.3.3 1.1.3.8.3.6.3.3.3.1.3-.1.2-.3.3-.5.2-.3.2-.2.2-.1.2.2.2.5.1 1 .1 1.5.1 1.8 0 1.3.1.6.1 0 .2-.6.2-.6.2-.5.3-.4.4-.4.3-.2.3-.2.2 0 .2.2.1.1 0 .2-.2.2-.2.3-.2.6-.1.9 0 1.3.1 1.6.1 1.1.2.7.3.1.4-.4.3-.4.2-.4.1-.5 0-.5 0-.4.2-.2.2-.2.3 0 .2.6 0 1-.1 1.5-.2 2.1-.1 1.5 0 .9.3.4.3-.2.4-.3.3-.5.3-.6.2-.7.2-.2.2.3.2.9.1 1.4 0 1.2 0 1-.2.7-.2.6-.1.3.1.2.4.1.4-.1.4.1.1.2-.1.4-.2.5-.2.5-.1.6 0 .6.1.6.1.1.2-.3.3-.9.4-1.4.3-1 .4-.7.3-.4.3 0 .3.4.1.8.1 1.2 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.4 0 .6 0 .9.1 1.2.2.7.2.2.3-.1.3-.6.2-.5.2-.6.1-.5 0-.6 0-.5.1-.4.2-.2.3-.2.2-.7.1-1.1.1-1.6 0-2.1 0-1.5.1-1.2.2-.6.3-.2.1-.6 0-.8-.1-1.2-.3-1.6 0-1.2.1-.8.3-.4.5 0 0-.7-.5-1.5-1-2.2-1.5-3-1.5-2.6-1.4-2.2-1.3-1.7-1.3-1.3-1.1-1-.8-.7-.6-.3-.3 0-.2-.1-.2-.1-.1-.3 0-.3.3-.2.4 0 .6.1.8.3.9.4 1 .6 1.1.8 1.2 1 .9.7.8.4.5.1.3-.3.5.1.6.6.8.8.9 1.3.8.9.6.4.5.2.3-.3.4.1.4.6.4.8.4 1.3.4.6.2.1.2-.5.2-1.2.1-.8.2-.7.1-.3.2-.2.3.3.2.7.4 1 .3 1.4.4 1.2.3.8.3.5.2.2.2.2.1.4.1.5 0 .6.1.5.1.4.3.4.3.3.2 0 .3-.2.1-.6.2-.8 0-.7-.1-.5-.1-.4-.3-.2-.2-.4-.1-.4 0-.4 0-.6 0-.5.1-.3.1-.2.2-.2.3 0 .2.2.4.2.3.4.4.9.3 1.3.4 1.9.3 2.4.3 1.8.4 1.1.3.6.4-.1.3-.4.2-.9.1-1.1 0-1.6 0-1.2.1-.9.1-.4.2-.2.3.2.2.3.4.7.3.8.3 1.2.3 1.3.1 1.7.1 1.8.1 1.4.2.7.3.3.4-.3.3-.5.2-.5.1-.7 0-.8 0-.6.2-.4.2-.3.3 0 .3.2.1.2.1.4 0 .5.1.4.1.4.2.3.2.3.2.6.2 1.1.1 1.5.1 1.8.1 1.4.2.9.3.5.4-.1.3-.8.2-1.4.1-2.1 0-2.8-.2-2.4-.2-1.9-.4-1.4-.5-.9-.4-.9-.2-.7-.1-.7 0-.7 0-.5.1-.4.2-.3.3-.2.1-.1 0-.2-.1-.1-.3-.2-.3-.4-.4-.7-.4-1.1-.5-1.4-.5-1-.4-.8-.4-.3-.4-.1-.3-.2-.3-.2-.1-.4-.2-.4-.3-.6-.6-.7-.8-.9-1.1-1.1-1-.9-.9-.6-.9-.5-.8-.2-.7-.3-.7-.4-.5-.5-.4-.4-.6-.4-.6-.3-.7-.1-.8 0-.8-.1-.8-.3-.7-.4-.7-.4-1.1-.5-1.5-.4-1.9-.3-2.3-.2-1.7-.3-1.2-.3-.6-.3 0-.3.4-.2.8-.2 1.2 0 1.6 0 1.2-.1.8-.1.5-.2.1-.3.3-.2.5-.1.7 0 .9 0 .9.1.9.2 1 .4 1 .5.6.2.3 0-.1-.4-.4-.6-.4-.5-.5-.4-.5-.3-.5-.2-.2-.2.1-.2.4-.2.7-.2.6 0 .5.1.5.3.3.4.7.6 1 .6 1.3.7 1.7.8 1.2.5.8.3.5-.1.1-.4-.3-.5-.6-.7-.9-.8-1.3-.9-.9-.7-.5-.6-.2-.4.2-.2.7.3 1.2.6 1.8 1.1 2.2 1.5 1.7 1 1 .5.4-.1-.2-.6-.3-.6-.5-.6-.6-.7-.7-.8-.5-.6-.3-.5-.1-.3.2-.2.7.3 1.2.8 1.8 1.3 2.2 1.7 1.7 1.2 1 .5.4 0-.2-.6-.3-.7-.5-.7-.6-.7-.7-.7-.5-.6-.3-.5-.1-.2.2-.2.3 0 .3.1.4.1.6.3.7.5 1 .9 1.3 1.2 1.4 1.5 1.2 1 .8.6.4.1.1-.4-.1-.4-.2-.4-.4-.4-.5-.4-.3-.5-.2-.4 0-.5.2-.4.7.2 1.2.8 1.7 1.4 2.2 2 1.6 1.4 1.2 1 .6.4.2-.2-.1-.3-.2-.6-.3-.7-.5-1-.9-1.3-1.2-1.5-1.6-1.7-2-1.9-1.6-1.6-1.2-1.3-.7-.9-.3-.7-.6-.6-.9-.7-1.3-.7-1.4-.8-1.4-.5-1.1-.4-1-.2-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.8-.2-1.4-.1-1.9-.1-2.6 0-2 .1-1.3.1-.8.2-.2.2-.4.2-.6.1-.9.1-1.1 0-.8.1-.6.1-.4.2-.2.2-.3.2-.4.1-.4.1-.6 0-.9.2-1.3.6-1.7.7-2 1-1.6.9-1.2.7-.8.7-.4.4-.4.4-.3.2-.3 0-.2-.1.5-.6 1-1.1 1.6-1.5 2.3-2 1.6-1.5.9-1.1.3-.6-.4-.1-.5 0-.5.2-.7.4-.7.4-.6.4-.5.1-.2 0-.2-.2 0-.2.2-.3.2-.3.4-.4.7-.5 1.2-.6 1.5-.7 1.8-.8 1.2-.6.3-.5-.3-.3-1.2-.1-.9 0-.8 0-.7.2-.5.2-.4.2-.3 0-.2-.1-.2-.2.6-.5 1.3-.8 2.1-1.2 2.7-1.5 1.7-1.1.6-.8-.5-.4-1.6-.1-1.3.1-1.2.2-.9.4-.8.4-.6.4-.5.1-.3 0-.2-.2 0-.3.3-.4.4-.5.6-.6.7-.6.8-.6 1-.5 1-.5.8-.4.8-.2.7-.1.6 0 .6-.2.6-.2.7-.4.8-.5.7-.4.6-.3.6-.1.6-.1.1-.1-.4-.1-.9-.1-1.4-.1-1.1-.2-.7-.1-.4-.2-.2-.2 0-.2.2-.3.2-.3.4-.4.5-.3.8-.3.8-.3 1.1-.3.9-.2.6-.3.4-.2.2-.3.3-.2.5-.1.7 0 .8 0 .7-.2.7-.2.5-.3.6-.4-.1-.4-.7-.2-1.2-.1-1.8 0-1.4.1-1 .1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-.9.2-1 .4-1.1.5-1.2.8-1 .5-.6.3-.5 0-.2-.2 0-.2 0-.2.1-.2.3-.3.1-.2-.1-.1-.2-.1-.4-.1-.6.3-.9.7-1.2 1.1-1.4 1.6-1.2 1.1-.9.7-.6.4-.3 0-.4.1-.4.3-.5.4-.6.6-.4.6-.4.6-.2.7-.1.7-.2.4-.3.3-.3 0-.3-.2-.4.1-.5.4-.5.8-.4 1-.4.8-.3.8-.1.7 0 .6-.1.4-.1.4-.2.3-.2.2-.3.7-.3 1.1-.4 1.7-.3 2.2-.6 1.2-.6.1-.8-.9-.9-1.9-1-1.7-.8-1.4-.9-1.1-.8-.8-.6-.5-.5-.4-.3 0-.1.2 0 .2 0 .1.2.2.2.2.2.2 0 .1-.1.2-.2.1-.5-.3-.8-.7-1.1-1-1.4-1.6-1.3-1-1-.6-.7-.2-.6.2-.6.1-.6-.1-.7-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.7-.2-1.3-.1-1.8-.1-2.3 0-1.8.1-1.4.3-.9.4-.4.4-.5.4-.5.3-.5.1-.6 0-.8.2-1 .4-1.3.5-1.5.8-1.3.7-1 .6-.8.6-.6.6-.3.5-.1.3zM286.9 232.1l.4.8.3.9.2.7 0 .8-.1.7-.2.3-.3-.1-.4-.5-.4-.9-.3-.8-.1-.8-.1-.7.2-.7.2-.3.2.1zM261 231.1l2.2-.2 1.7 0 1.1 0 .7.1.1.2-.4.2-1.1.1-1.6.2-2.2.1-1.6.1-1.2-.1-.6-.1-.2-.2.5-.1 1-.2zM244.9 228.2l.2-.2 1.9-.1 3.6-.1 5.4 0 7.2.1 5.4.1 3.5.2 1.7.2-.1.2-1 .2-2 .1-2.8.1-3.8 0-2.9.1-2.1.3-1.3.4-.6.4-.5.4-.7.3-.7.1-.8 0-.8-.1-.8-.3-.8-.4-.7-.4-.9-.5-1.1-.3-1.2-.2-1.4-.1-1-.2-.6-.1zM202.7 227.3l-.9.7-.7.5-.5.2-.4.1-.2-.1 0-.3.1-.4.2-.5.4-.7.4-.5.6-.3.6-.1.7.2.3.2-.1.4zM283.9 221.1l.4.8.3.9.2.7 0 .8-.1.7-.2.3-.3-.1-.4-.5-.4-.9-.3-.8-.1-.8-.1-.7.2-.7.2-.3.2.1zM248.3 215.7l.4-.4.4-.3.5-.2.5 0 .6 0 .5.1.4.4.5.5.3.7.2.6 0 .5-.2.5-.3.3-.5.3-.4.2-.5.1-.6 0-.5-.2-.5-.3-.4-.5-.4-.7-.2-.6 0-.6zM281.9 214.1l.4.8.3.9.2.7 0 .8-.1.7-.2.3-.3-.1-.4-.5-.4-.9-.3-.8-.1-.8-.1-.7.2-.7.2-.3.2.1zM231.7 210l.1.2 0 .2-.2.2-.4.2-.4.2-.4.3-.3.5-.1.7 0 .8-.2.7-.4.6-.5.6-.8.4-.5.5-.4.7-.2.7 0 .8.1.7.1.7.2.5.2.6.3.4.4.4.5.3.4.2.2.4-.1.6-.4.8-.8.9-.5.9-.4.7-.2.7 0 .6-.2.4-.3.4-.5.2-.7.1-.5-.8-.3-1.8-.1-2.6.2-3.7.1-2.7.2-2 .2-1.1.3-.2.2-.4.1-.5.1-.7 0-.8.3-.7.7-.4 1.1-.3 1.4-.2 1.2 0 .7 0zM277.7 199.3l.9 2.4.7 1.9.4 1.6.1 1.1-.1.7-.2.3-.3.1-.4-.3-.4-.7-.3-.6-.2-.8-.1-.7 0-.8-.2-.9-.2-.8-.4-1-.5-.9-.3-.9-.2-.8-.1-.7.2-.7.3.1.5.8zM235.5 186.1l1.2-.2.9 0 .7 0 .4.1.1.2-.2.2-.5.1-.9.2-1.2.1-.9.1-.6-.1-.4-.1-.2-.2.2-.1.6-.2zM239.4 182.9l-.3.4-.8.4-1.1.2-1.4.1-1.8 0-1.4.1-1 .1-.6.2-.2.2-.5.2-.8 0-1.2 0-1.4-.1-1-.2-.7-.1-.3-.2.2-.2.7-.2 1.3-.2 1.9-.2 2.5-.3 2-.2 1.4-.3.8-.2.3-.3.5-.1.6-.1.7 0 .9.2.5.2.3.2zM271.9 181.1l.4.8.4.8.2.8.1.6 0 .6.1.5.3.7.4.6.4.7.4.7.2.7 0 .7-.1.7-.2.3-.3.1-.4-.3-.4-.7-.4-.8-.3-.9-.3-1.2-.3-1.3-.2-1-.3-.8-.2-.4-.3-.2-.1-.3-.1-.5 0-.5.2-.7.2-.3.2.1z"/></svg><svg x="780" y="0" width="260" height="236" viewBox="40 0 260 236" overflow="hidden"><clipPath id="kac0"><path clip-rule="evenodd" d="M40 0H300V236H40Z M40 104H90L83.5 236H40Z"/></clipPath><g clip-path="url(#kac0)"><path d="M225.9 187.2l-.3.8-.3.8-.2.9-.1.8 0 .8-.2 1-.6 1.3-.7 1.4-1 1.7-.8 1.7-.6 1.6-.5 1.6-.2 1.6-.3 1.2-.2.8-.2.5-.2.1-.2 0-.3-.1-.3-.3-.4-.3-.3-.5-.2-.4 0-.5 0-.6-.1-.5-.2-.4-.3-.4-.4-.3-.3.1-.4.5-.3 1-.3 1.3-.5 1.4-.5 1.2-.6 1.3-.8 1.2-.5 1.3-.4 1.5-.2 1.7 0 1.8.2 1.6.4 1.4.5 1.2.8 1 .4.8 0 .5-.3.4-.7.1-.6.2-.5.2-.4.3-.3.3-.3.3-.1.4 0 .3.1.4.7.3 1.3.1 2 .1 2.6-.1 1.8-.2.9-.3.1-.3-.7-.6-.7-.7-.4-1-.4-1.3-.3-1.6 0-1.2.3-.7.5-.4.7.1.6-.2.5-.6.2-.9.2-1.2.2-.8.4-.5.5-.2.6.2.6-.3.7-.9.6-1.4.6-1.9.6-1.3.5-.7.5 0 .4.6.4.6.2.6.1.6 0 .6.2.6.4.8.5.8.8.9.5.9.4.9.2.8 0 .7-.1.7-.1.5-.2.4-.2.3-.1.3 0 .2.3.1.3.1.4-.2.3-.4.4-.7.3-.8.3-.7.3-.4.3-.3.3 0 .3.4.1.6.1 1 0 1.3-.1 1.3-.3 1.1-.4 1.1-.4 1-.6.8-.4.6-.6.5-.4.2.2.2 1 .1 1.7.1 2.4 0 1.7-.1 1.1-.2.4-.3-.3-.3-.4-.4-.5-.2-.6-.3-.7-.2-.4-.2-.1-.1.2-.2.5-.2.6-.4.6-.6.7-.8.7-1 .6-1.3.4-1.5.2-1.8 0-2.1-.1-1.6-.2-1.4-.2-.9-.3-.6-.4-.4-.5-.4-.6-.2-.7-.1-.6-.6-.3-1.2-.2-1.6-.1-2.1-.1-1.4-.3-.6-.3.1-.3.9-.4.7-.4.7-.4.5-.3.3-.4.3-.2.1-.3 0-.2-.1-.2-.6-.2-.9-.2-1.4-.3-1.8-.5-2-.8-2.2-1-2.4-1.3-2.6-1.1-1.7-.9-.9zM100 215.2l0 1.3.1 1.3.3 1.1.4 1 .4.9.4 1 .3.9.2.9.1.8.4.7.8.4 1.2.3 1.6 0 1.2-.1.8-.1.6-.2.2-.3.9-.2 1.8-.3 2.5-.2 3.3-.3 2.7-.4 1.9-.5 1.2-.7.6-.8.4-.7.3-.7.2-.6 0-.6.3-1.2.8-1.8 1.1-2.3 1.5-3 1.3-2.4 1-1.7.7-1.1.5-.4.6-.9.8-1.2.8-1.7 1-2.1 1.7-2.7 2.4-3.5 3-4.2 3.7-4.8 2.8-1.4 1.9 2.2 1 5.6.1 9.2 0 7 0 4.6-.2 2.5-.2.2-.2.3-.1.5-.1.7 0 .8-.1.6-.1.5-.2.4-.2.2-.2.4-.1.8-.1 1 0 1.3-.4 1-.9.8-1.2.4-1.7.1-1.3.2-.8.3-.5.4 0 .4 3.6.3 7.2.2 10.8.1 14.4-.1 10.6-.2 7-.3 3.2-.3-.5-.6-.7-1-.9-1.7-1-2.2-1.3-2.8-1-2.3-.9-1.6-.7-1-.5-.4-.4-.6-.4-.6-.3-.7-.3-.8-.3-.7-.4-.7-.4-.5-.5-.4-.4-.6-.4-.6-.3-.7-.3-.8-.3-.8-.6-.8-.6-.7-.7-.7-.7-.7-.6-.9-.6-1-.5-1.1-1.3-1.7-2.2-2.4-3-3.2-3.8-3.8-2.9-2.8-2.1-1.9-1.2-1-.3 0-.4-.2-.5-.4-.6-.5-.7-.8-.6-.5-.5-.4-.4-.2-.3 0-.4-.2-.5-.4-.6-.5-.7-.8-.6-.5-.5-.4-.4-.2-.3 0-.5-.2-.8-.6-.9-.7-1.2-1-1.1-.7-1-.6-.9-.2-.8 0-1 .2-1.1.4-1.3.5-1.4.8-1.3.5-1 .4-.7.2-.6 0-.7.2-.9.4-1 .5-1.2.8-1.1.5-.8.4-.7.2-.6 0-.7.2-.7.4-.9.5-.9.8-.9.6-.9.5-.8.4-.8.2-.8.4-.8.5-.7.6-.7.8-.6.5-.5.4-.4.2-.3 0-.5.3-.8.6-.9 1-1.2 1.2-1 1-.7.6-.6.3-.3 0-.7.6-1.2 1.1-1.6 1.8-2.1 2.3-1.6 1.8-1 1.3-.5.8 0 .3-.2.4-.4.5-.5.6-.8.7-.6.7-.5.8-.4.8-.2.8-.3.7-.4.6-.5.6-.4.4-.5.5-.4.7-.3.7-.2.8-.4.8-.5.9-.6.9-.8.9-.5 1.1-.4 1.1zM154.7 178.4l.9 1.2.7.9.5.7.2.5 0 .3.2.4.4.5.5.6.8.7.5.6.4.5.2.4 0 .3.4.8.7 1.1 1.1 1.5 1.6 1.9 1.1 1.7.9 1.4.6 1.1.2.8.5.9.6 1 .8 1.1 1 1.2.8 1.1.6 1 .5.9.2.8.3.7.4.6.5.6.4.4.5.5.4.7.3.7.2.8.3.7.4.6.5.6.4.4.7.9.9 1.5 1.1 2 1.2 2.5.9 2 .6 1.5.2.9-.1.4-.2.3-.3.1-.4-.1-.6-.2-.7-.2-1-.1-1.3-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-1.1.2-2.1 0-3 0-3.9-.1-3.1-.2-2.1-.3-1.1-.4-.3-.6-.2-.5-.1-.7 0-.7 0-.8-.2-.8-.2-.8-.4-.7-.5-.7-.4-2.9-.3-5.2-.2-7.4-.2-9.7.2-7 .4-4.3z"/><path d="M282.2 153.1l-.7.8-.8.6-1.1.4-1.2.2-1.3.1-1.1.1-.7.4-.3.4 0 .6.1.5.1.4.3.4.3.3.4.2.5.3.6.1.7.2.5.6.5 1.3.4 1.7.2 2.3.4 1.9.4 1.4.4 1 .6.6.7.5.7.3.9.2.9.2.7.2.5.3.2.5 0 .6-.1.4-.2.4-.4.2-.4.1-.5.3-.5.5-.5.6-.6.8-.4.8-.3.7-.1.6 0 .6-.1.4-.1.4-.2.3-.2.2-.2.2-.1.4-.1.5 0 .6-.1.4-.1.4-.2.3-.2.2-.2.2-.1.4-.1.5 0 .6-.1.6-.3.8-.4.9-.4 1-.5.8-.5.7-.4.6-.3.3-.6.4-.7.3-.9.3-1.1.2-.8.3-.6.2-.4.3-.2.2-.6.2-1 .1-1.4.1-1.8 0-1.5-.1-1.1-.3-.8-.4-.4-.4-.6-.4-.6-.3-.7-.1-.8 0-.8.1-.7.3-.6.4-.6.6-.4.6-.3.7-.1.8 0 .8.1.7.1.5.3.5.3.3.4.2.6.2.7.1.8 0 .6.1.5.2.3.3.1.4 0 .6-.2.7-.4.8-.4.9-.5 2.1-.4 3.3-.3 4.4-.2 5.6-.4 4.3-.5 3-.6 1.7-.8.6-.3.3.2.3.7.2 1.1.1.9-.1.7-.1.5-.1.2-.3.2 0 .1.1 0 .3-.1.5.3.4.7.4 1 .2 1.4.2 1-.1.5-.4.2-.8-.3-1.1-.1-.8 0-.6.1-.4.3-.2.2-.4.1-.5.1-.6 0-.8.1-.9.2-.8.4-1 .5-.9.4-1.1.2-1.2.2-1.4 0-1.6.1-1.2.2-.9.3-.4.4-.2.6.2.6.3.8.7.9.8.6.8.5.6.2.4 0 .3.3.7.6 1 1 1.3 1.2 1.7 1 1.4.6 1.1.3.9 0 .6-.2.7-.6.8-.7 1.1-1 1.2-.8 1-.6.9-.4.8-.2.6 0 .5 0 .3.2.2.3 0 .4-.2.4-.3.5-.4.6-.6.4-.5.3-.4.2-.4 0-.3.1-.4.3-.4.5-.6.6-.6.6-.5.4-.3.4-.1.3 0 .4.2.5.6.5.9.7 1.2.6 1 .5.8.6.7.4.4.4.4.3.4.1.3 0 .3.1.3.1.4.3.3.3.3.3.2.4.1.3.1.4-.1.3-.1.2-.2.1-.3 0-.3-.2-.3-.2-.4-.4-.4-.5-.4-.4-.4-.2-.4-.1-.4 0-.3-.4-.6-.6-1-.9-1.4-1.3-1.7-.8-1.4-.4-1.1.1-.7.5-.6.3-.4.1-.4 0-.4-.3-.3 0-.3.1-.3.3-.2.5-.3.3-.2 0-.1-.1-.1-.4-.1-.4.1-.3.2-.4.4-.4.4-.4.4-.3.3-.4.1-.4 0-.6-.4-.7-.8-.9-1.2-1.2-1.7-.6-1.2-.3-.9.3-.6.7-.2.5 0 .5 0 .3.1.2.3.4.2.6.3.8.2 1.1.3.9.3.6.4.5.4.2.5.5.4.6.2.8.2 1 0 1.3.5 1.5 1.2 1.9 1.8 2.1 2.4 1.2 2.1.3 2-.5 1.7-1.6 1.5-1.1 1.3-.7 1-.3.9.1.6.3.2.6-.2.8-.6 1.2-1.1.9-1 .8-.9.5-.7.4-.7.3-.5.4-.4.3-.1.3 0 .9.6 1.3 1.4 2 2.1 2.4 2.7 2 2.1 1.6 1.4 1.3.7.8 0 .5-.4.4-.7 0-1-.2-1.4-.2-1.1-.3-.8-.4-.5-.4-.3-.4 0-.2.3-.1.6 0 .8 0 .6-.1.5-.2.3-.2.1-.7-.5-1.3-1.2-1.8-1.8-2.4-2.4-1.3-2.3-.4-2.1.7-2.1 1.7-1.8 1.3-1.3 1.1-.6.7.1.3.7.4 1 .3 1.5.3 1.9.2 2.2.3 1.7.4 1.1.4.6.4 0 .3-.5.1-.9-.1-1.3-.3-1.8-.2-1.5-.3-1-.2-.6-.3-.3-.2-.4-.1-.6 0-.8 0-1-.1-.9-.1-.6-.2-.4-.3-.3.2-.6.6-1 1.1-1.3 1.5-1.7 1.1-1.3.8-1 .4-.7 0-.3-.2-.3-.2-.3-.4-.2-.5-.3-.3-.3-.1-.5 0-.6.3-.7.2-.8.1-1 .1-1.2 0-1.3 0-1 .1-.8.2-.4.3-.2.2-.5.1-.7.1-1.1 0-1.3 0-1 .1-.8.2-.4.3-.2.2-.3.1-.4.1-.4 0-.6.1-.7.2-.7.4-.9.5-.9.4-.9.2-.9.2-.8 0-.8.1-1 .4-1.2.6-1.3.7-1.5.5-1.2.2-.9-.1-.6-.4-.3-.5-.1-.7.2-.8.5-.9.8-1.1.5-1.2.4-1.4.2-1.6 0-1.2.1-.8.2-.4.3-.1.3-.2.3-.2.3-.4.2-.4.1-.4-.3-.4-.8-.4-1.2-.4-1.7-.7-1.7-.9-1.6-1.3-1.6-1.6-1.6-1.4-1.2-1.2-1-1.1-.7-.9-.3-.7-.5-.5-.6-.2-.7 0-.8.1-.7.2-.7.4-.5.5-.4.2-1 0-1.3-.2-1.9-.5-2.3-.5-1.9-.5-1.4-.6-1-.6-.6-.9-.4-1.3-.3-1.7-.1-2.1 0-1.7.2-1.4.4zM307 214.7l0 .3-.2.5-.6.6-.7.8-1 .9-.7.8-.6.6-.2.5 0 .3-.3.6-.7.9-1.1 1.1-1.3 1.3-1.1 1-.8.4-.5 0-.2-.4-.5-.7-.8-.9-1.2-1.2-1.5-1.4-1.1-1.2-.7-.8-.3-.5.2-.2.4-.1.7-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 .4-.1.4-.1.3-.2.2-.3.2-.2.4-.1.5 0 .6 0 .6-.2.8-.2.8-.4.9-.5.8-.3.6-.2.3-.1.2.2.2.1.1.3zM309.7 203.9l.1 2.2 0 1.7-.1 1.2-.3.9-.3.4-.5.4-.6.2-.7.1-.8 0-.7 0-.4-.1-.3-.2-.2-.2.2-.7.6-1.3.8-1.8 1.2-2.4.9-1.2.7-.2zM284.8 196.4l-.1 1.4-.6 1-1 .6-1.5 0-1.9-.3-1.1-.5-.3-.5.6-.6 1.4-.7 1.2-.7 1-.6.7-.5.4-.5.4-.3.3-.2.2-.1.2.2.1.4.1.8z"/><path d="M223.2 224.4l-1.1-.6-1-.4-.9-.3-.9-.1-.8 0-.7.1-.4.2-.3.4-.2.4-.1.3-.3.1-.3 0-.4-.2-.4-.1-.5 0-.5.1-.6.2-.5 0-.4-.1-.5-.3-.3-.4-.4-.4-.3-.2-.4-.1-.3 0-.3.1-.3.3-.2.4-.3.4-1.4.3-2.4 0-3.7-.3-4.7-.4-3.7-.5-2.5-.5-1.5-.4-.4-.3-.2-1-.1-1.6.1-2.2.3-2.8.2-2.2.2-1.4.2-.8.2-.2.2.1.2.2.2.3.2.5.2.4.2.2.3.2.3 0 .3-.4.4-.7.3-1 .3-1.4.1-1.1-.1-.9-.3-.7-.5-.4-.4-.6-.4-.6-.3-.7-.3-.8-.4-.8-.5-.9-.7-.8-.8-.8-.7-.6-.5-.4-.5-.2-.3 0-.2.3-.2.5-.1.9-.1 1.1-.1.9-.2.7-.2.4-.2.2-.2.6-.1 1-.1 1.4 0 1.8-.2 1.7-.4 1.6-.5 1.6-.8 1.4-.5 1.4-.4 1.4-.2 1.3 0 1.3.1 1.1.1.7.2.5.2.2.2.3 0 .4-.1.6-.2.7-.3.5-.5.3-.7.1-.8-.1-.6-.1-.5-.3-.3-.3-.1-.4-1.4-.4-2.6-.2-3.8-.1-5.1 0-3.8.1-2.6.1-1.4.2-.2.2-1.3.2-2.4.1-3.4.1-4.6 0-3.5.1-2.4.1-1.3.2-.3.2-.7.2-1.1.2-1.6.2-2.1.1 4.4.1 10.8 0 17.2 0 23.7-.1 17.5-.1 11.3-.4zM173.4 11l-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.6.1-.9.1-1.1 0-.8.1-.6.1-.4.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.7.6-2 .9-2.4 1.1-2.7 1.6-2.8 1.8-2.8 2.1-2.8 2.5-2.8 2.8-2.1 2.2-1.4 1.6-.7.9 0 .3-.2.4-.4.5-.5.6-.8.7-.5.6-.4.5-.2.4 0 .3-.2.4-.4.5-.5.6-.8.7-.5.6-.4.5-.2.4 0 .3-.2.6-.6.7-.7 1-1 1.2-.9 1.3-.9 1.5-.8 1.7-.8 1.8-.6 1.4-.6 1.1-.6.8-.4.3-.4.1-.2-.3-.2-.6-.2-.9-.1-.8-.2-.6-.2-.3-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.2-.8-.4-.8-.6-.7-.7-.7-.6-.7-.4-.7-.1-.8 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.3-.1-.4 0-.4 0-.6-.2-.8-.4-1-.6-1.3-.7-1.5-1.3-2-1.8-2.5-2.3-3.1-2.8-3.6-2.2-2.6-1.5-1.8-1-.9-.3 0-.6-.4-1-.7-1.4-1.1-1.7-1.6-1.7-1.3-1.9-1.3-1.9-1.1-2-1-2-.8-1.9-.6-1.8-.5-1.8-.2-1.4-.3-1-.2-.6-.3-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.6.1-1.2.1-.7.3-.3.3-.3.3-.1.4 0 .3.1.4.2.3.4.2.7.1.8 0 .6 0 .5.1.4.2.2.3.6.3 1.2.4 1.5.4 2.1.5 1.7.5 1.4.5 1 .5.7.5.7.4.6.2.6.2.6 0 .6.1.8.2.9.4 1 .5.8.5.7.4.6.4.3.4.2.3 0 .3-.3.2-.4.2-.4.1-.3 0-.3-.2-.3-.2-.6-.2-1-.1-1.4-.1-1.7 0-1.3.1-.9.2-.5.4 0 .4.6.4 1 .5 1.5.5 2.1.5 1.9.6 1.8.6 1.7.7 1.4.7 1.5.8 1.3.8 1.2.9 1.1.8.7.7.4.6-.1.3-.4.2-.4.1-.3 0-.3-.2-.3-.2-.5-.2-.7-.1-1-.1-1.3 0-.9.1-.7.2-.3.3-.1.3.5.6 1 .7 1.6.9 2.1 1.1 1.9 1 1.8 1.1 1.6 1.1 1.3 1.2 1 .9.4.6 0 .4-.4.2-.4.1-.3 0-.3-.2-.3-.2-.4-.2-.4-.1-.7-.1-.7 0-.6-.1-.5-.1-.3-.2-.2-.2-.3-.2-.4-.1-.5 0-.7.1-.4.1-.3.2-.1.3.1.4.3.4.5.4.8.5 1.1.5 1 .6.9.6.7.7.7.7.6.6.5.4.4.2.3 0 .6.2.9.6 1.1.8 1.3 1.2 1 .9.4.6 0 .4-.4.2-.5 0-.6-.1-.6-.4-.7-.4-.6-.4-.5-.2-.5-.1-.3.1-.3.1-.2.2-.1.2 0 .3.6.8 1.1 1.3 1.7 1.7 2.2 2.2 1.7 1.7 1.1 1.2.6.8 0 .3.2.4.4.5.5.6.8.7.6.7.5.6.4.6.2.6.1.4-.1.4-.3.2-.4.1-.5-.1-.6-.3-.6-.5-.7-.8-.6-.5-.5-.4-.4-.2-.3 0-.7-.4-1.1-.7-1.6-1.1-1.9-1.6-1.9-1.3-2-1.3-2-1.1-2-1-1.6-.7-1.3-.6-.9-.2-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.6-.4-.7-.3-.5-.1-.6 0-.5-.1-.4-.1-.2-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1-.4-1-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-1.3-.2-2.4-.1-3.4-.1-4.6 0-3.5.1-2.4.1-1.2.2-.2.2-.6.3-1 .2-1.4.3-1.8.2-2.2.6-2.5 1-2.9 1.4-3.3 1.8-2.9 1.9-2.7 2-2.3 2.2-2.1 2.3-1.6 1.9-1 1.4-.5 1 0 .6.1.4.2.3.3.2.3.1.5-.2.5-.3.6-.6.7-.7.6-.6.5-.4.4-.1.3 0 .6-.3.7-.5 1-.8 1.2-1 1.7-1.1 2.4-1.2 3-1.4 3.6-1.5 2.7-1 1.8-.5 1-.1.1.4 0 .4-.2.3-.4.3-.4.2-.9.6-1.3 1.1-1.6 1.5-2 2-1.5 1.6-1 1.2-.4.8.1.4.2.2.4.1.7-.1.8-.3.7-.3.6-.4.6-.4.4-.5.5-.4.7-.4.7-.3.8-.3.7-.3.6-.4.6-.4.4-.5.7-.6 1-.6 1.2-.7 1.5-.7 1.5-.7 1.5-.4 1.6-.4 1.6-.3 1.1-.1.8 0 .4.2 0 .3-.1.3-.2.2-.3.1-.3.1-.7.3-.9.7-1.2.9-1.6 1.3-1.1 1.1-.7.9-.3.8.1.6.5.2 1-.2 1.5-.6 2-1 2.1-.8 2-.8 2-.6 2.1-.5 1.6-.3 1.1-.2.6 0 .1.2 0 .3-.1.2-.3.4-.3.3-.4.3-.3.2-.4.1-.3 0-.4.2-.5.4-.6.5-.7.8-.6.6-.5.4-.5.2-.3.1-.3.1-.2.2 0 .3.1.4.1.2.3.1.4-.1.5-.3.6-.2.6-.1.8 0 .8 0 .8-.2.9-.2.9-.4.9-.5 1-.4 1-.2 1-.1 1.1 0 .9-.1.6-.1.5-.2.2-.3.2-.1.2 0 .2 0 .1.2 0 .3-.3.4-.4.5-.7.7-.5.4-.5.4-.5.2-.3.1-.3.1-.2.2 0 .3.1.4.8.1 1.7 0 2.5-.3 3.3-.5 2.5-.3 1.8-.2.9 0 .1.2 0 .2-.2.2-.4.2-.4.2-.4.2-.2.3-.1.3.1.4.8.4 1.5.4 2.3.5 3.1.5 2.3.4 1.7.4.9.3.2.3.2.2.4.1.5.1.6 0 .5 0 .6.2.6.3.7.4.4.3.3.3 0 .2-.1.2-.7.2-1.2.1-1.8 0-2.3 0-1.8.1-1.2.1-.7.2-.2.2-.4.2-.6.1-.9.1-1.1 0-.8.1-.6.1-.4.2-.2.2-.6.3-1 .2-1.4.3-1.8.2-1.4.3-1 .2-.6.3-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.5.5-1.6.6-1.9.8-2 1-1.6.9-1.2.7-.8.7-.4.4-.6.5-.6.4-.7.3-.8.2-.9.5-.8.6-1 .8-.9 1-.8.7-.6.6-.5.2-.3 0-.6.5-.9.9-1.3 1.3-1.6 1.8-1.1 1.5-.8 1-.4.7 0 .3-.3.7-.6 1-1 1.3-1.2 1.7-1 1.6-.7 1.4-.5 1.2-.2 1.2 0 .8 0 .6.2.3.3 0 .9-.7 1.5-1.4 2.1-2.1 2.7-2.7 2.1-2 1.4-1.1.8-.4.2.4 0 .5-.1.6-.4.6-.4.7-.4.7-.2.6-.1.7.1.6.1.5.2.3.2.2.3 0 .3-.1.2-.2.1-.3.1-.4.1-.3.3-.3.3-.1.4-.2.4-.2.4-.4.4-.5.3-.6.6-.8.8-1 1.1-1.2 1.4-1.4 1.1-1 .7-.6.5-.2.2.2 0 .3-.1.5-.4.5-.4.7-.4.6-.2.6-.1.4.1.4.1.3.2.2.2.1.3 0 .8-.6 1.1-1 1.5-1.4 1.9-2 1.5-1.5 1.1-.9.6-.4.2.2 0 .3-.1.5-.4.5-.4.7-.4.6-.2.6-.1.4.1.4.1.3.2.2.2.1.3 0 .8-.6 1.3-1 1.7-1.4 2.2-2 1.7-1.5 1.1-.9.7-.4.2.2.1.3 0 .3-.2.4-.2.6-.1.3 0 .3.3.2.3.1.7-.3 1.1-.6 1.3-.9 1.7-1.3 1.5-.8 1.2-.6 1.1-.1.8.3 1.1-.2 1.5-.4 1.9-.9 2.2-1.3 1.8-.9 1.3-.6 1-.3.6 0 .5-.2.7-.2.6-.4.7-.5.6-.3.6-.2.5-.1.4.2.2.4-.2.8-.4 1.2-.8 1.5-.5 1.3-.4 1-.2.8 0 .6-.2.8-.6 1.1-.7 1.4-1 1.7-.9 1.7-.7 1.8-.7 1.8-.4 1.8-.6 1.5-.4 1.3-.6.9-.4.7-.6 1-.4 1.4-.6 1.7-.4 2.1-.6 1.7-.4 1.4-.6 1-.4.7-.5.9-.4 1.1-.3 1.4-.2 1.6-.3 1.2-.2.8-.3.6-.2.2-.2.2-.1.4-.1.5 0 .6-.1.4-.1.4-.2.3-.2.2-.2.2-.1.4-.1.5 0 .6-.1.6-.3.8-.4.8-.4.9-.4 1-.3.8-.1.9 0 .8-.1.8-.3.9-.4.9-.4.9-.5 1.2-.4 1.4-.3 1.6-.2 1.8-.3 1.4-.3 1.1-.4.8-.3.3-.6.1-.7-.2-.8-.4-1-.8-.9-.5-.8-.4-.6-.2-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.5-.4-2.2-.3-2.7-.1-3.3 0-2.5.1-1.8.1-.9.2-.2.2-.5.2-.6.2-1 .2-1.2.1-.6-.1-.1-.5.4-.7 1-1 .8-.9.5-.8.3-.6 0-.6.3-.6.6-.6.9-.7 1.3-.7.9-.6.6-.5.4-.4 0-.3-.2-.3-.2-.3-.4-.2-.5-.3 0-.4.5-.6 1-.8 1.5-.9 1.1-.8.7-.6.4-.6-.1-.3-.2-.3-.3 0-.3.1-.6.2-.4.2-.5 0-.5-.1-.4-.2-.2-.2-.1-.3.2-.3.4-.4.7-.5 1.1-.5 1.5-.7 1.8-.7 1.4-.7.9-.5.5-.5.1-.4-.1-.3-.2-.3-.4-.2-.5-.2-.3-.3 0-.3.1-.4.4-.4.4-.3.5-.2.5-.1.6 0 .7-.2.8-.4 1.1-.6 1.2-.7 1.1-.6 1-.4.9-.1.8 0 .6-.2.4-.2.2-.3 0-.4-.6-.4-1.1-.2-1.8-.1-2.3 0-1.8.1-1.2.1-.7.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.3.4-1.4.5-1.5.6-1.5.8-1.6 1-1.6 1.3-1.8 1.5-1.8 1.8-1.3 1.5-.9 1-.5.7 0 .3-.1.4-.3.4-.4.4-.4.4-.6.7-.6 1-.7 1.2-.8 1.5-.5 1.3-.4 1-.2.8 0 .6-.1.5-.2.4-.3.5-.3.3-.6-.3-.8-1-1-1.8-1.2-2.4-1.3-2.3-1.5-2.1-1.7-2-1.8-1.8-1.8-1.6-1.9-1.4-2-1.2-2-1-1.7-.7-1.4-.6-1.1-.2-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.2-.7.1-.9.1-.6.1-.4.2-.2.3.1.4.6.3 1.2.3 1.7.3 2.3.3 1.9.4 1.5.6 1.1.8.7 1 .9.9 1 .6 1.1.4 1.3.3 1.1.3.9.3.6.4.3.4.2.4 0 .3-.3.2-.4.1-.3.2-.3.2-.1.4-.1.3.3.5.6.4 1.1.5 1.3.6 1.1.5.7.4.5.2.1.2 0 .3 0 .3-.2.4-.2.6 0 .5.4.6.7.6 1 .7.7.7.6.6.2.6 0 .6.1.4.2.3.3.2.3.1.5.2.7.5.7.8.9.9.5.7.3.6-.2.3-.4.1-.4 0-.3 0-.2-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.9-.2-1.7-.1-2.3-.1-3.1 0-2.3.1-1.6.1-.9.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.1.2-1.4.6-1.8.7-2 1-1.9 1.2-1.9 1.4-1.9 1.6-1.8 1.8-1.5 1.6-1.1 1.4-.9 1.3-.4 1-.4.8-.3.8-.1.7 0 .6.1.4.2.3.3.2.3.1.4-.2.3-.2.4-.5.3-.6.6-.8 1-1 1.3-1.2 1.6-1.4 1.3-.9.9-.4.6 0 .3.5.3.4.4.2.5.2.6 0 .5-.2.7-.4.6-.6.7-.7.8-.5.9-.3.9 0 1.1.3 1 0 .9-.1.7-.3.7-.5.7-.3.8-.1.8 0 .8.3.6.1.5 0 .4-.1.2-.3.7-.2 1.2-.1 1.8 0 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.2-.2.4-.1.5 0 .6 0 .4 0 .4.1.2.1.1.2-.1.3-.2.2-.5.4-.7.3-.8.6-.8.7-.9.8-.9 1-.8.7-.6.6-.5.2-.3 0-.2.1-.2.2-.1.3-.1.3-.3.6-.5.6-.8.8-1 .9-.9 1.1-.9 1.2-.8 1.4-.8 1.5-.5 1.3-.4 1-.2.8 0 .6-.1.4-.1.4-.2.3-.2.2-.2.8-.1 1.5-.1 2.2 0 2.8.1 2.1.1 1.5.2.9.2.2.3.4.2.6.3.8.2 1.1.3.8.3.6.4.3.3.1.3-.5.3-1.1.1-1.5.1-2.2.1-1.7.1-1.3.2-.9.3-.5.2-.4.3-.2.3-.2.3 0 .3.2.2.3.1.5.1.6.1.5.2.2.3.2.4-.1.3-.6.3-1 .3-1.6.3-2.1.2-1.5.2-1.1.2-.6.2-.2.2.1.2.2.2.3.2.5.2.4.3.2.3.1.4-.1.4-.5.4-.9.5-1.4.5-1.8.5-1.5.4-1.1.4-.7.4-.4.4-.3.5-.2.6-.1.6-.1.6-.4.6-.7.5-1 .5-1.3.6-1.2.7-1.3.9-1.1.9-1.2.8-.6.6-.3.6.2.3.6.3.6.2.6.1.6 0 .6.1.5.3.7.4.6.4.7.4.7.3.6.1.6 0 .6.1.5.3.7.4.6.4.7.4.7.3.6.1.6 0 .6.1.5.3.7.4.6.4.7.4.7.3.6.1.6 0 .6.1.5.3.7.4.6.4.7.5.9.4 1 .3 1.1.2 1.3.3 1.2.4 1 .5.8.4.7.4.7.3.6.1.6 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.4.1.4.2.3.2.2.2.2.1.4.1.5 0 .6.1.6.3.8.4.8.4.9.4 1 .3.8.1.9 0 .8.1.6.1.5.2.4.2.2.2.3.1.5.1.7 0 .8.1.8.3.9.4.9.4.9.4 1 .3.8.1.9 0 .8.1.6.1.5.2.4.2.2.2.3.1.5.1.7 0 .8.1.6.1.5.2.4.2.2.3.6.3 1 .3 1.5.3 1.8 1.6 1.4 3 .9 4.3.5 5.6-.1 4.1-.3 2.6-.5 1-.8-.5-1-.4-1-.2-.9-.1-.8 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.1-.8-.1-.6-.2-.4-.3-.2-.2-.6-.1-.8 0-1.2 0-1.6-.1-1.2-.1-.9-.2-.5-.3-.2-.2-.9-.1-1.5 0-2.1 0-2.8-.1-2.2-.1-1.5-.2-.8-.3-.2-.2-1.3-.1-2.4 0-3.4 0-4.6 0-3.5.1-2.4.2-1.2.3-.2.2-.9.1-1.5.1-2.1 0-2.8 0-2.2.1-1.5.2-.8.3-.2.2-1 .3-1.9.2-2.7.3-3.6.2-2.7.3-1.9.2-1 .3-.2.2-.4.1-.6.1-.9 0-1.1 0-.8.1-.6.2-.4.3-.2.2-.4.1-.6.1-.9 0-1.1 0-.8.1-.6.2-.4.3-.2.2-.4.1-.6.1-.9 0-1.1 0-.8.1-.6.2-.4.3-.2.2-.4.1-.5.1-.6 0-.8 0-.7.1-.5.2-.3.3-.2.3-.9.4-1.5.4-2.1.5-2.8.4-2.2.4-1.5.3-.8.3-.2.2-.3.1-.4.1-.4 0-.6 0-.5.1-.4.2-.2.3-.2.2-.3.1-.4.1-.4 0-.6.1-.7.2-.7.4-.9.5-.9.4-.9.2-.9.2-.8 0-.8.1-.8.2-.8.4-.7.5-.7.4-.6.2-.7.2-.5 0-.6.1-.6.2-.6.4-.7.5-.7.4-.6.2-.7.2-.5 0-.6.1-.6.2-.6.4-.7.5-.7.4-.6.2-.7.2-.5 0-.6.1-.7.2-.8.4-.8.5-1 .5-.8.6-.6.7-.3.7-.2.7-.3.7-.6.7-.8.8-1 1.1-.2 1.4.6 1.8 1.3 2.1 2.2 1.6 1.7 1.1 1.2.6.8.1.4.1.2.4.1.4-.1.6-.3.6.1.7.3.8.6.9.8.8 1.1.9 1.2.8 1.5.8 1.6.7 1.2.6.8.5.4.4-.1.3-.2.2-.3.1-.4 0-.6-.1-.5-.1-.4-.2-.2-.3-.2-.1-.3 0-.5 0-.5.2-.7.4-.3.5.3.7.6.9 1.2.8 1.3.9 1.5.8 1.7.8 1.8.7 1.4.6.9.5.5.4-.1.3-.3.2-.6.1-.8 0-1.1 0-.8.2-.5.2-.3.3 0 .7.8.9 1.6 1.2 2.3 1.6 3.2 1.3 2.3.9 1.5.7.8.4-.1.3-.4.2-.7.1-1 0-1.3 0-1 .2-.6.2-.4.3 0 .3.2.1.2.1.4 0 .5.2.9.6 1.2.7 1.6 1 2 .8 1.8.5 1.4.3 1.2.1.8.1.7.2.4.3.2.4-.1.3-.4.2-.9.1-1.1 0-1.6 0-1.2.1-.9.1-.4.2-.2.4.3.5.6.7 1 .9 1.4.6 1.2.5.9.2.8 0 .6.1.4.2.3.3.2.3.1.3-.5.3-1.1.1-1.5.1-2.2-.1-1.6-.1-1.2-.1-.6-.3-.2-.2-.4-.1-.5 0-.6 0-.8-.1-.7-.1-.5-.2-.3-.3-.2-.2-.4-.1-.6 0-.9 0-1.1-.3-1.3-.5-1.5-.8-1.8-1-2-1-1.7-1-1.5-1-1.2-1-.9-.7-.8-.5-.6-.2-.5 0-.3-.2-.4-.3-.4-.4-.5-.6-.6-.5-.4-.4-.3-.4-.1-.3 0-.5-.3-.8-.6-.9-1-1.2-1.2-1-1-.7-.6-.6-.3-.3 0-.3-.1-.4-.3-.4-.4-.4-.4-.6-.5-.6-.4-.7-.3-.8-.2-.9-.4-.8-.5-1-.6-.9-.8-.8-.5-.8-.4-.6-.2-.6 0-.9-.2-1.2-.5-1.6-.7-1.8-.9-.4-.8 1.2-.5 2.6-.3 4.2-.2 3.2-.1 2.2-.2 1.2-.2.2-.3.6-.1 1 0 1.4.1 1.8.3 1.4.1.9-.1.5-.2.1-.4.1-.3.3-.3.3-.1.4-.2.5.1.6.2.6.3.7.5.9.4 1 .4 1.1.3 1.3.3 1 0 .5-.2.2-.4-.2-.6 0-.5.1-.4.3-.2.4-.2.4 0 .3.1.3.1.2.3.2.2.4.1.5.1.6 0 .8.1 1 .4 1.3.6 1.4.7 1.2.4.8.1.4-.2.1-.6-.1-.5-.1-.4-.1-.4-.3-.3 0-.2.2-.3.5-.1.7-.2.7.1.8.3.9.6.9.7 1 .7 1 .6 1 .6 1 .5.8.4.8.2.7.2.6 0 .4-.1.3-.2.2-.3.1-.4-.2-.4-.3-.6-.6-.6-.7-.7-.5-.5-.1-.5.1-.3.4-.2.6 0 .7.2.9.3 1 .5.9.5.7.5.6.5.4.5.4.4.4.2.3.2.3 0 .4.1.4.2.4.4.4.5.4.4.4.2.3.2.3 0 .6.3.7.6 1 .9 1.2 1.3 1 .9.9.6.8.3.6-.1.4-.4 0-.7-.2-1-.5-1.3-.6-1.2-.8-1.1-.9-1.1-1-.9-.7-.8-.5-.6-.3-.6-.1-.3-.1-.3-.2-.2-.3-.1-.3 0-.6-.4-1-.7-1.4-1.1-1.7-1.6-1.7-1.3-1.9-1.3-1.9-1.1-2-1-1.6-.7-1.3-.6-.9-.2-.6 0-.5-.1-.4-.1-.2-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-1.6-.2-2.8-.1-4.2-.1-5.6 0-4.2.1-2.9.1-1.5.2-.2.2-.4.2-.6.1-.9.1-1.1 0-.8.1-.6.1-.4.2-.2.2-.6.3-1 .2-1.4.3-1.8.2-1.6.3-1.4.4-1.2.5-.9.4-.8.4-.7.2-.6 0-.4-.1.1-.5.6-.7 1.1-1.2 1.6-1.4 1.3-1.1 1-.7.6-.3.3 0 .4-.2.4-.4.4-.6.4-.7.5-.7.7-.5.8-.4.8-.3.8-.5.5-.7.4-.9.3-1.1.3-.8.4-.6.4-.4.5-.2.4-.3.2-.4.2-.4 0-.6-.2-.5-.2-.4-.4-.3-.5-.3-.3-.3 0-.3.1-.3.4-.4.5-.3.6-.3.7-.3.8-.3.7-.3.6-.6.6-.6.4-.7.7-.8 1.1-.8 1.3-.8 1.6-.8 1.2-.7.8-.6.4-.5-.1-.3-.3-.3-.5-.2-.8-.1-1 0-.8.1-.6.1-.5.2-.2.2-.3.2-.4 0-.4-.1-.4-.2 0-.3.3-.6.7-.7 1.2-.8.9-.7.7-.4.5-.2.3 0 .4-.2.4-.4.4-.6.4-.7.7-.7 1.1-.7 1.3-.6 1.6-.6 1.2-.5.8-.4.4-.5-.1-.3-.3-.3-.4-.2-.6-.1-.8 0-.7.1-.5.1-.3.2-.2.2-.2.2-.2 0-.2-.1-.2-.2 0-.2.1-.3.2-.3.4-.4.6-.4.8-.4 1.1-.5 1.3-.5 1-.6.6-.6.3-.7-.1-.7.1-.6.3-.4.4-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1-.4.8-.2.9-.1.8 0 .7-.1.7-.2.6-.2.6-.3.4-.4.3-.3.1-.4-.1-.3-.6-.3-1-.2zM57 149.1l.5.3.6.2.6.1.8.1.8 0 .6 0 .5.1.4.2.2.3.3.2.5.1.7.1.8 0 .7-.1.5-.1.4-.2.2-.3.5.1.7.4 1 .6 1.2 1 1 .8.7.5.6.2.4-.1.2-.2.1-.3-.1-.3-.3-.6-.1-.4-.1-.3 0-.3.2-.2.3 0 .6.2.8.3 1.1.5.8.2.5-.1.2-.5-.1-.7.3-.5.5-.1.7.2 1.1.5.8.2.5-.1.2-.5-.1-.7.1-.6.3-.4.4-.1.6 0 .5.1.5.2.5.4.4.5.4.4.5.3.4.2.4.2.3.5.1 1-.1 1.4-.2 1.8-.3 1.4-.2 1-.3.6-.2.2-.2.5-.1.9-.1 1.2 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.5-.1.9-.1 1.2 0 1.6-.1 1.2-.1.8-.2.6-.2.2-.2.6-.1 1.2-.1 1.5 0 2.1-.1 1.6-.1 1.1-.2.7-.2.2-.2 1.5-.2 2.8-.2 4.1-.1 5.4-.3 3.9-.4 2.3-.5.7-.7-.9-.5-.8-.4-.7-.1-.6 0-.6-.4-1-.6-1.5-.9-2-1.3-2.4-.9-2-.6-1.5-.3-1 0-.6-.2-.7-.4-.9-.6-1-.7-1.2-.6-1.1-.4-.8-.1-.7 0-.6-.4-1-.6-1.3-.9-1.8-1.3-2.2-.9-1.8-.6-1.4-.3-.9 0-.6-.2-.7-.4-.9-.6-1-.7-1.2-.6-1.1-.4-.8-.1-.7 0-.6-.4-1.1-.8-1.6-1.1-2.2-1.5-2.7-1.1-2.1-.7-1.6-.3-1 .2-.4.2-.3.3-.1z"/><path d="M129.5 334.2l.3.6.6.7.9.7 1.2.7 1.5.7 1.7.6 1.9.4 2.1.2 2.3 0 2-.2 1.6-.2 1.3-.4.9-.5 1.3-.4 1.7-.2 1.9-.1 2.3 0 2.4.3 2.5.8 2.6 1.1 2.7 1.5 2.3 1.1 1.9.8 1.4.4 1.1 0 .9 0 .6.1.4.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.5 3-.9 3.1-1.2 3.2-1.5 2.9-1.1 2.6-.8 2.3-.3 2.1 0 2.4.3 2.6.8 2.9 1.1 3.2 1.5 3.1 1.1 3 .8 2.9.4 2.8 0 2.1-.1 1.5-.1.9-.2.2-.3.2-.2.4-.1.5 0 .6 0 .6-.2.8-.2.9-.4 1-.5 1-.6 1.1-.8 1.2-.9 1.2-1 1.1-.8 1-.6 1-.5.8-.3.7-.4.4-.3.2-.4-.1-.3-.4-.3-.9-.2-1.1-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.5.3-.7.2-1.1.3-1.3.2-1.1.3-1 .4-.9.5-.7.4-1.1.4-1.5.3-1.9.1-2.3 0-2.5-.4-2.6-.7-2.8-1.1-2.9-1.6-3-1.1-3.1-.7-3.3-.4-3.3 0-3.2.4-3.1.7-3.1 1.1-2.9 1.6-2.8 1.1-2.6.9-2.5.6-2.3.2-1.8.2-1.2 0-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.3-.4-1.8-.7-2.2-1.1-2.7-1.6-2.2-1.1-1.7-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.6-.2-1-.1-1.4-.1-1.8 0-1.4.1-1 .1-.6.2-.2.2-.3.2-.4.1-.4.1-.6 0-.5.1-.4.1-.2.2-.2.2-.3.2-.4.1-.4.1-.6 0-.7.1-.7.3-.9.4-.9.4-1.4.4-1.7.1-2.2 0-2.7-.2-1.9 0-1.1.3zM85.5 307.2l.3.6.3.5.3.3.3.2.3 0 .7.3 1 .8 1.3 1.1 1.7 1.5 1.4 1.1 1.1.8.9.4.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2 .3 1.8.6 1.8.9 1.7 1.3 1.7 1 1.6.7 1.6.5 1.6.3 1.2.2.8.3.6.2.2.3.6.2 1 .1 1.4.1 1.8 0 1.4-.1 1-.1.6-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.5 2-.9 2.6-1.3 3.2-1.7 3.1-1.3 3-.9 2.9-.4 2.8 0 2.9.4 3 .9 3.1 1.3 3.2 1.7 2.6 1.3 2 .9 1.4.5.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1-.2 1.1-.4 1.4-.6 1.4-.7 1.3-.7 1-.6.7-.6.4-.5.5-.4.5-.2.5-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.2-.4 1.4-.2 1.6-.1 1.8 0 1.4 0 1 .1.6.2.2.3.4.2.8.3 1 .2 1.3.3 1.1.3.9.4.7.4.4.5.7.6 1 .6 1.2.7 1.5.7 1.3.6 1.2.4 1 .2.8 0 .6 0 .5.1.4.2.2.3.7.2 1.2.1 1.8.1 2.3 0 1.8-.1 1.3-.1.7-.2.2-.3.3-.2.5-.1.7 0 .8 0 1.4-.4 2-.8 2.6-1.1 3.2-1.5 2.8-1.1 2.5-.8 2.2-.3 1.8 0 1.7.1 1.7.4 1.6.6 1.4.7 1.3.7 1 .6.7.6.4.5.6.4.7.4.9.3 1.1.3 1.2 0 1.3-.3 1.4-.5 1.4-.7 1.7-1 1.8-1.3 1.9-1.6 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.1-.2-.2-.2-.3-.1-.4-.1-.3 0-.3.1-.2.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.2.3-.9.2-.5.3-.2.2-.6.2-.8.1-1.2.1-1.6 0-1.4-.1-1.1-.3-.9-.4-.7-.4-.6-.4-.7-.3-.5-.1-.6 0-.7-.1-.7-.3-.9-.4-.9-.4-1.2-.4-1.5-.3-1.8-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.2.3-1.5.6-1.8 1-2.2 1.2-2 1-1.9.8-1.7.5-1.6.2-1.2.3-.9.2-.5.3-.2.2-.4.2-.6.1-.9.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.3-.8-.2-1.2-.3-1.6-.2-1.4-.4-1.3-.5-1.1-.6-.9-.8-1.1-.7-1.4-.6-1.6-.6-1.8-.4-1.4-.5-1-.4-.6-.3-.2-.2-.9-.2-1.5-.1-2.1-.1-2.8 0-3.1.4-3.2.9-3.5 1.3-3.7 1.8-3.5 1.3-3.4.9-3.2.4-3.1 0-2.9-.4-2.9-.7-2.8-1.1-2.7-1.6-2.6-1.2-2.7-1-2.5-.8-2.6-.4-2-.4-1.3-.1-.8.1-.2.2-.5.2-.7.1-1.1.1-1.3 0-1 .1-.8.1-.4.2-.2.2-.3.2-.4.1-.4.1-.6 0-1.1.4-1.6.7-2.2 1.1-2.7 1.6-2.7 1.1-2.7.7-2.8.4-2.8 0-2.9-.4-2.8-.9-3-1.3-2.9-1.8-2.8-1.3-2.8-.9-2.6-.4-2.6 0-2 .1-1.3.1-.8.2-.2.2-.5.2-.7.1-1.1.1-1.3 0-1-.1-.8-.1-.4-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1 .2-.5.3zM64 288.5l1.3 1.3 1.2 1.1 1.2.9 1.1.7 1 .5 1.2.4 1.4.2 1.6.2 1.8 0 1.8-.3 1.9-.5 1.9-.8 1.9-1 1.6-.7 1.3-.5.9-.2.6 0 .5-.2.7-.2.6-.4.7-.5 1-.4 1.4-.2 1.7-.1 2.1 0 2.4.4 2.8.9 3.1 1.3 3.4 1.7 3.4 1.4 3.4 1 3.3.6 3.3.3 2.6.1 1.7 0 1-.1.2-.3.5-.2.9-.3 1.2-.2 1.6-.3 1.9-.5 2.2-.9 2.6-1.2 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.7-1.1 2.6-.8 2.6-.3 2.6 0 2.7.4 3 .9 3.3 1.3 3.4 1.7 3.2 1.4 3 1 2.8.6 2.6.3 1.9.1 1.4 0 .8-.1.2-.3.4-.2.8-.1 1 0 1.3 0 1.1-.1.7-.1.5-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.8-.8 2.3-1.1 2.9-1.5 2.9-1.1 2.7-.8 2.7-.3 2.6 0 2.8.4 3.1.9 3.4 1.3 3.7 1.7 3.6 1.3 3.5.9 3.4.5 3.3 0 2.6-.1 1.7-.1 1-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.9-.8 1.9-1.2 2-1.5 2.1-1.8 1.5-1.4 1-1.1.6-.7 0-.3-.5-.2-1-.2-1.4-.1-1.8-.1-2.2.3-2.4.7-2.7 1.1-2.9 1.6-2.7 1.1-2.3.7-2.1.4-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.6-.3-1-.4-1.4-.5-1.8-.4-1.5-.6-1.1-.4-.8-.6-.4-.4-.5-.4-.5-.3-.5-.1-.6 0-.6-.1-.6-.3-.7-.4-.7-.4-.7-.4-.9-.3-1-.1-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.6.4-2.2.9-3 1.3-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.9-1.3-2.2-.9-1.7-.4-1.1 0-.8-.1-.6-.1-.4-.2-.2-.2-.8-.2-1.4 0-1.9.2-2.6.2-2.8.6-3 1-3.2 1.4-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.3-.2-.4-.1-.4-.1-.6 0-.8-.2-1-.4-1.3-.5-1.5-.8-1.2-.7-1-.6-.7-.6-.4-.4-.8-.5-1-.4-1.2-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.9-.2-1.5 0-2.1.2-2.8.2-3.1.6-3.2 1-3.5 1.4-3.7 1.8-3.4 1.3-3.3.9-3 .4-2.8 0-2.2-.1-1.5-.1-.8-.2-.2-.2-.5-.3-.7-.2-1.1-.3-1.3-.2-1.1-.3-.9-.4-.6-.5-.4-.4-.6-.6-.7-.4-.9-.6-1-.4-1.1-.5-1.3-.4-1.4-.3-1.6-.2-1.2-.3-.9-.2-.5-.3-.2-.2-.6-.2-.8-.1-1.2-.1-1.6 0-1.2.1-.9.1-.5.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.3-1.6.6-2 1-2.4 1.2-2.3 1-2.1.6-2 .3-1.8 0-1.4-.1-1-.1-.6-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.4-.2-.6-.1-.9-.1-1.1 0-.8.1-.5.2-.3.3-.1.3.3.6.6.9zM38 258.7l0 .3.2.4.4.5.5.6.8.7.5.6.4.5.2.4 0 .3.3.5.5.7.8.9 1.1 1.1 1 .8.9.5.9.3.8 0 .6 0 .5.1.4.2.2.3.3.2.5.1.7.1.8 0 .6 0 .5.1.4.2.2.3.2.2.4.1.5.1.6 0 .6.1.8.2.8.4.9.5 1.1.4 1.1.2 1.2.2 1.3 0 1.1 0 .7.1.5.2.2.3.2.1.4 0 .4-.1.5-.3.8-.2 1-.1 1.3 0 1.6 0 1.2-.1.8-.1.6-.2.2-.3.2-.2.4-.1.5 0 .6 0 1.1-.4 1.6-.8 2.1-1.1 2.7-1.5 2.2-1.1 1.8-.8 1.3-.3.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.8.1 1.5 0 2.2-.1 2.8-.3 2.9-.6 3.2-1 3.3-1.4 3.4-1.7 3.3-1.3 3.3-.9 3.1-.4 3.1 0 3.2.4 3.2.9 3.4 1.3 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 3.5-.5 3.5-.9 3.5-1.3 3.4-1.7 2.8-1.3 2.1-.9 1.5-.4.8 0 .6-.1.5-.1.4-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.4.5 2.5.9 2.6 1.2 2.7 1.5 2.5 1.2 2.2.9 2.1.5 1.8.3 1.4.2 1 .3.6.2.2.3.7.1 1.2 0 1.8-.1 2.3-.3 1.8-.2 1.3-.3.7-.2.2-.3.6-.3 1-.4 1.4-.4 1.8-.5 1.6-.6 1.4-.6 1.1-.7.9-.7 1.1-.7 1.3-.4 1.4-.4 1.6-.3 1.2-.2.8-.3.6-.2.2-.3.7-.1 1.2 0 1.8.1 2.3.3 2.6.6 2.9 1 3.2 1.4 3.4 1.7 3.5 1.3 3.5.9 3.5.5 3.6 0 2.7-.1 1.9-.1 1-.2.2-.3.2-.2.4-.1.5 0 .6 0 .7-.2.8-.4 1.1-.6 1.2-.7 1-.6.9-.4.7-.1.6 0 .6-.2.8-.2.8-.4.9-.5 1.1-.4 1.1-.2 1.2-.1 1.3 0 1.1 0 .7.1.5.2.2.3.5.2.9.3 1.2.2 1.6.3 1.6-.4 1.7-.9 1.7-1.4 1.8-2.1 1.4-1.6.8-1.3.5-.8-.1-.3-1.1-.3-2-.2-3.1-.1-4.1 0-3.1.1-2.1.1-1.1.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.6.7-2.5.4-2.3 0-1.8-.1-1.2-.1-.7-.2-.2-.2-.4-.2-.5-.1-.6-.1-.8 0-1.4-.4-1.9-.7-2.4-1.1-2.9-1.6-2.4-1.1-1.9-.7-1.3-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.5.4-2.1.9-2.8 1.3-3.4 1.8-3.3 1.3-3.2.9-2.9.4-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-.8.1-.8.3-.7.4-.7.4-.6.4-.7.3-.5.1-.6 0-.5.1-.5.3-.5.4-.4.4-.8.6-1.2.4-1.4.6-1.8.4-1.4.5-1 .4-.6.3-.2.2-.8.2-1.4.1-1.9.1-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.4.2-.5.1-.6.1-.8 0-1.3.4-1.8.7-2.2 1.1-2.7 1.6-2.2 1.1-1.7.7-1.3.4-.8 0-.7.1-.5.1-.3.2-.2.2-.9.2-1.5.1-2.1.1-2.8 0-3-.4-3.1-.9-3.3-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.7-.2-1.1-.1-1.6-.1-2.1 0-1.5.1-1.2.1-.6.2-.2.2-.6.3-.8.2-1.2.3-1.6.2-1.9.6-2.3.9-2.6 1.1-2.9 1.6-2.8 1.1-2.8.7-2.6.4-2.6 0-2.8-.4-3-.9-3.2-1.3-3.4-1.8-2.8-1.3-2.1-.9-1.5-.4-.8 0-.7-.1-.5-.1-.3-.2-.2-.2-.5-.2-.8-.1-1.1 0-1.3.1-1.1.1-.7.2zM39.1 242.4l.1.3 3.6.2 7.2.2 10.7 0 14.3 0 10.8 0 7.3-.1 3.7-.2.2-.2 9.9-.1 19.6-.1 29.3 0 39.1 0 29.3 0 19.7.1 9.9.1.2.2.9.2 1.8.1 2.5 0 3.3 0 2.6 0 1.7-.1 1-.2.2-.2 1.8-.1 3.5-.1 5.2 0 6.8 0 5.1 0 3.5.1 1.9.1.2.2 2 .1 3.7.1 5.6.1 7.4-.1 5.5-.1 3.7-.2 1.8-.2-.1-.2-.4-.3-.9-.2-1.1-.2-1.6-.2-1.2-.2-.9-.2-.5-.2-.2-.1-.3-.2-.4 0-.4-.1-.6 0-.7-.1-.7-.2-.9-.3-.9-.3-.9-.3-.9-.2-.8 0-.8 0-.7-.1-.5-.1-.3-.1-.2-.2-.4-.1-.5-.1-.6-.1-.8 0-.7 0-.5-.1-.3-.1-.2-.2-.4-.1-.5-.1-.6-.1-.8 0-.7-.1-.5 0-.3-.2-.2-.1-.4-.2-.5 0-.6-.1-.8 0-.7-.1-.5 0-.3-.2-.2-.1-.4-.2-.5 0-.6-.1-.8 0-.7-.1-.5-.1-.3-.1-.2-.2-.4-.1-.6-.1-.9 0-1.1 0-.8-.1-.6-.1-.4-.1-.2-.2-.4-.1-.5-.1-.6-.1-.8 0-.7 0-.5-.1-.3-.1-.2-.2-.4-.1-.5-.1-.6-.1-.8 0-.7-.1-.5 0-.3-.2-.2-.1-.4-.2-.5 0-.6-.1-.8 0-.7-.1-.5 0-.3-.2-.2-.1-.4-.2-.6 0-.9-.1-1.1 0-.8-.1-.6-.1-.4-.1-.2-.2-.4-.1-.5-.1-.6 0-.8 0-.7-.1-.5-.1-.3-.1-.2-.2-.4-.1-.6-.1-.9-.1-1.1 0-.8 0-.6-.1-.4-.1-.2-.2-.4-.1-.5-.1-.6-.1-.8 0-.7-.1-.5 0-.3-.2-.2-.1-.4-.2-.6 0-.9-.1-1.1 0-.8-.1-.6 0-.4-.2-.2-.1-.4-.2-.6 0-.9-.1-1.1 0-.8-.1-.6-.1-.4-.1-.2-.2-.6-.1-.8-.1-1.2 0-1.6 0-1.2-.1-.9-.1-.5-.1-.2-.2-.6-.1-.8-.1-1.2-.1-1.6 0-1.2 0-.9-.2-.5-.3-.2-.3-6.7-.3-13.1-.2-19.6-.1-26.1 0-19.5.1-13.2 0-6.6.2-.2.1-.7.2-1.3 0-1.8.1-2.3 0-1.8.1-1.2.1-.7.1-.2.2-.9.2-1.7.1-2.3.2-3.1.2-2.3.2-1.6.1-.9.2-.2.2-.4.1-.6.1-.8.1-1 0-.8.1-.6 0-.5.2-.2.1-.3.1-.4-.2-.4-.2-.4-.6-.3-.4-.3-.4-.1-.4-.1-.6-1.4-.2-2.7-.3-4-.1-5.3 0-4 .2-2.7.5-1.3.8-.1.9 0 .8.1.6.2.4.2.1.2.2.1.3.1.3 0 .4-.1.4-.2.3-.3.4-.3.2-.5.2-.4.1-.5.1-.6 0-.7.1-.7.2-.9.3-.9.3-.9.3-.9.2-.8 0-.8 0-.7.1-.5.1-.3.1-.2.2-.3.1-.4.1-.4.1-.6 0-.5 0-.4.1-.2.1-.2.2-.3.1-.4.1-.4.1-.6 0-.5.1-.4 0-.2.2-.2.1-.9.3-1.5.4-2.1.4-2.8.6-2.3.5-1.8.4-1.2.4-.7.3-.6.3-.7.2-.5.1-.6 0-.6.1-.6.2-.7.3-.7.3-.6.3-.7.2-.6.1-.7.1-.4.1-.3.1z"/></g></svg><rect x="0" y="232" width="1040" height="6" rx="3"/></svg>';
     function put() {
       var sp = document.querySelector("#v-profile .sigpick");
@@ -5167,7 +5198,7 @@ try {
       var d = document.createElement("div");
       d.className = "khart";
       d.setAttribute("aria-hidden", "true");
-      d.innerHTML = A;
+      d.innerHTML = SIGNATURE_SVG;
       sp.after(d);
     }
     put();
@@ -5182,9 +5213,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var q = 0;
+    var frame = 0;
     function run() {
-      q = 0;
+      frame = 0;
       document.querySelectorAll("#v-home .summary").forEach(function (c) {
         var li = [].slice.call(c.querySelectorAll(".dsrows li")).filter(function (l) {
           return l.getClientRects().length;
@@ -5200,16 +5231,16 @@ try {
         });
       });
     }
-    function go() {
-      q || (q = requestAnimationFrame(run));
+    function queueFix() {
+      frame || (frame = requestAnimationFrame(run));
     }
-    var h = document.getElementById("v-home");
-    if (h) new MutationObserver(go).observe(h, { childList: !0, subtree: !0 });
-    new MutationObserver(go).observe(document.documentElement, {
+    var homeView = document.getElementById("v-home");
+    if (homeView) new MutationObserver(queueFix).observe(homeView, { childList: !0, subtree: !0 });
+    new MutationObserver(queueFix).observe(document.documentElement, {
       attributes: !0,
       attributeFilter: ["class"],
     });
-    go();
+    queueFix();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Home card: hides a stay row when the same stay is already li", err);
@@ -5231,17 +5262,17 @@ try {
         m = Math.round(W - D);
       if (Math.abs(m - cur) > 0.5) a.style.marginBottom = m + "px";
     }
-    var t = 0;
-    function go() {
-      clearTimeout(t);
-      t = setTimeout(fit, 120);
+    var fitTimer = 0;
+    function queueFit() {
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fit, 120);
     }
-    addEventListener("resize", go);
+    addEventListener("resize", queueFit);
     document.addEventListener("click", function (e) {
       e.target.closest && e.target.closest(".nav") && setTimeout(fit, 400);
     });
     setInterval(fit, 2500);
-    go();
+    queueFit();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Keeps the More page art sitting exactly on top of the nav ba", err);
@@ -5252,13 +5283,13 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var AG = [
+    var AGE_GROUPS = [
         ["kid", "Kid", "under 13"],
         ["teen", "Teen", "13–17"],
         ["adult", "Adult", "18–59"],
         ["senior", "Senior", "60+"],
       ],
-      GN = [
+      GENDERS = [
         ["woman", "Woman"],
         ["man", "Man"],
         ["nb", "Other"],
@@ -5298,9 +5329,9 @@ try {
       ed.className = "gxed";
       ed.innerHTML =
         '<div class="gxhead" hidden><span class="gxav"></span><div><b class="gxname"></b><small class="gxsub"></small></div></div><div class="gmrow2"><span>Age</span>' +
-        seg("age", AG) +
+        seg("age", AGE_GROUPS) +
         '</div><div class="gmrow2"><span>Gender</span>' +
-        seg("gender", GN) +
+        seg("gender", GENDERS) +
         '</div><div class="gxfoot" hidden><button type="button" class="gmrm gxrm">Remove</button><button type="button" class="gmdone gxdone">Done</button></div>';
       gadd.after(ed);
       var mode = -1,
@@ -5495,7 +5526,7 @@ try {
         t = g.querySelector("#grp-title");
       if (!b || !w || !a) return;
       g.__gb = 1;
-      function st() {
+      function updateGroupButton() {
         var add = !!w.value.trim() && !g.classList.contains("gxedit");
         b.classList.toggle("gxadd", add);
         b.textContent = add
@@ -5512,23 +5543,24 @@ try {
             e.stopImmediatePropagation();
             a.click();
             w.blur();
-            setTimeout(st, 30);
+            setTimeout(updateGroupButton, 30);
           }
         },
         !0,
       );
-      w.addEventListener("input", st);
+      w.addEventListener("input", updateGroupButton);
       w.addEventListener("keydown", function () {
-        setTimeout(st, 30);
+        setTimeout(updateGroupButton, 30);
       });
       g.addEventListener("click", function () {
-        setTimeout(st, 60);
+        setTimeout(updateGroupButton, 60);
       });
       new MutationObserver(function () {
-        setTimeout(st, 30);
+        setTimeout(updateGroupButton, 30);
       }).observe(g, { attributes: !0, attributeFilter: ["hidden", "class"] });
-      t && new MutationObserver(st).observe(t, { childList: !0, characterData: !0, subtree: !0 });
-      st();
+      t &&
+        new MutationObserver(updateGroupButton).observe(t, { childList: !0, characterData: !0, subtree: !0 });
+      updateGroupButton();
     }
     setTimeout(init, 900);
     setInterval(init, 2000);
@@ -5542,12 +5574,12 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var ok = 0;
+    var handled = 0;
     document.addEventListener(
       "click",
       function (e) {
         var b = e.target.closest && e.target.closest("#vz-edit,#home-edit,[data-ctedit]");
-        if (!b || ok || !window.__confirm) return;
+        if (!b || handled || !window.__confirm) return;
         e.preventDefault();
         e.stopImmediatePropagation();
         var vz = !document.documentElement.classList.contains("ct-on");
@@ -5558,11 +5590,11 @@ try {
             : "You’ll edit dates, travellers and places. Saving updates the full trip, and its days and stops are rebuilt from your changes.",
           "Continue",
           function () {
-            ok = 1;
+            handled = 1;
             try {
               b.click();
             } finally {
-              ok = 0;
+              handled = 0;
             }
           },
           "trip",
@@ -5580,10 +5612,10 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      LS;
+    var doc = document,
+      storage;
     try {
-      LS = window.localStorage;
+      storage = window.localStorage;
     } catch (e) {
       return;
     }
@@ -5611,39 +5643,39 @@ try {
       "vizag-wimg",
       "vizag-last-sync",
     ];
-    function g(k) {
+    function readKey(k) {
       try {
-        return LS.getItem(k);
+        return storage.getItem(k);
       } catch (e) {
         return null;
       }
     }
-    function si() {
+    function isSignedIn() {
       return !!(window.__signedIn && window.__signedIn());
     }
     window.__isDemo = function () {
-      return g("vizag-demo") === "1";
+      return readKey("vizag-demo") === "1";
     };
     function enter() {
       if (window.__isDemo()) return !0;
       var st = {};
       KEYS.forEach(function (k) {
-        var v = g(k);
+        var v = readKey(k);
         v !== null && (st[k] = v);
       });
       try {
-        LS.setItem("vizag-real-stash", JSON.stringify(st));
+        storage.setItem("vizag-real-stash", JSON.stringify(st));
       } catch (e) {
         return !1;
       }
       KEYS.forEach(function (k) {
         try {
-          LS.removeItem(k);
+          storage.removeItem(k);
         } catch (e) {}
       });
       try {
-        LS.setItem("vizag-active-trip", "vizag");
-        LS.setItem("vizag-demo", "1");
+        storage.setItem("vizag-active-trip", "vizag");
+        storage.setItem("vizag-demo", "1");
       } catch (e) {}
       return !0;
     }
@@ -5651,23 +5683,23 @@ try {
       if (!window.__isDemo()) return;
       var st = null;
       try {
-        st = JSON.parse(g("vizag-real-stash") || "null");
+        st = JSON.parse(readKey("vizag-real-stash") || "null");
       } catch (e) {}
       if (!st || typeof st !== "object") st = {};
       KEYS.forEach(function (k) {
         try {
-          LS.removeItem(k);
+          storage.removeItem(k);
         } catch (e) {}
       });
       Object.keys(st).forEach(function (k) {
         if (KEYS.indexOf(k) >= 0)
           try {
-            LS.setItem(k, String(st[k]));
+            storage.setItem(k, String(st[k]));
           } catch (e) {}
       });
       try {
-        LS.removeItem("vizag-real-stash");
-        LS.removeItem("vizag-demo");
+        storage.removeItem("vizag-real-stash");
+        storage.removeItem("vizag-demo");
       } catch (e) {}
     }
     window.__leaveDemo = function () {
@@ -5675,12 +5707,12 @@ try {
       location.reload();
     };
     /* Try demo mode: keep the person's own data aside, load the sample trip */
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var b = e.target.closest && e.target.closest("#login-cancel");
-        if (!b || si() || window.__isDemo()) return;
-        var f = D.getElementById("login-form");
+        if (!b || isSignedIn() || window.__isDemo()) return;
+        var f = doc.getElementById("login-form");
         if (f && f.dataset.preview) return;
         if (enter())
           setTimeout(function () {
@@ -5690,11 +5722,11 @@ try {
       !0,
     );
     /* Home tag in demo mode: explain and offer a way out */
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest("#v-home .offtag");
-        if (!t || !window.__isDemo() || si() || navigator.onLine === !1 || !window.__confirm) return;
+        if (!t || !window.__isDemo() || isSignedIn() || navigator.onLine === !1 || !window.__confirm) return;
         e.preventDefault();
         e.stopImmediatePropagation();
         window.__confirm(
@@ -5709,22 +5741,22 @@ try {
     );
     /* Signing in ends demo mode, so the person's own data is what syncs */
     setInterval(function () {
-      si() && window.__isDemo() && window.__leaveDemo();
+      isSignedIn() && window.__isDemo() && window.__leaveDemo();
     }, 1500);
     /* Rolling reveal on the Demo mode tag when Home opens */
-    var R =
+    var ROLL_SVG =
         '<svg class="netroll" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg>',
       done = 0;
     function roll() {
-      var s = D.querySelector("#v-home .offtag");
+      var s = doc.querySelector("#v-home .offtag");
       if (
         !s ||
         !window.__isDemo() ||
-        si() ||
+        isSignedIn() ||
         navigator.onLine === !1 ||
         !s.offsetParent ||
-        D.hidden ||
-        D.getElementById("kssplash") ||
+        doc.hidden ||
+        doc.getElementById("kssplash") ||
         s.classList.contains("rfx") ||
         s.classList.contains("reveal") ||
         s.classList.contains("fade") ||
@@ -5737,7 +5769,7 @@ try {
       var o = s.querySelector(".netroll");
       o && o.remove();
       s.classList.add("reveal");
-      s.insertAdjacentHTML("afterbegin", R);
+      s.insertAdjacentHTML("afterbegin", ROLL_SVG);
       var w = s.querySelector(":scope > i");
       w && s.style.setProperty("--dx", w.offsetLeft + w.offsetWidth / 2 - 7 + "px");
       setTimeout(function () {
@@ -5757,9 +5789,9 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      n = 0;
-    var SH = {
+    var doc = document,
+      paintCount = 0;
+    var PLAN_SHAPES = {
       free: '<path d="M22 41s-11-9.6-11-18a11 11 0 0 1 22 0c0 8.4-11 18-11 18z"/>',
       pass: '<path d="M5 14a3 3 0 0 1 3-3h28a3 3 0 0 1 3 3v4.6a4.4 4.4 0 0 0 0 8.8V32a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-4.6a4.4 4.4 0 0 0 0-8.8z"/>',
       atlas:
@@ -5768,7 +5800,7 @@ try {
       custom:
         '<path d="M22 6a16 16 0 1 0 0 32c2.2 0 3.2-1.6 2.6-3.4-.7-2 .4-3.8 2.6-3.8H32a6 6 0 0 0 6-6C38 13.6 30.8 6 22 6z"/>',
     };
-    var IN = {
+    var PLAN_INNER = {
       free: '<circle cx="22" cy="22.5" r="4.2" fill="B" stroke="var(--accent)" stroke-width="1.3"/>',
       pass: '<path d="M29 13v20" fill="none" stroke="var(--ink)" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="1.4 3.2"/><rect x="11" y="17" width="12" height="12" rx="2.5" fill="B"/>',
       atlas: '<path d="M22 14c.8 5 3 7.2 8 8-5 .8-7.2 3-8 8-.8-5-3-7.2-8-8 5-.8 7.2-3 8-8z" fill="B"/>',
@@ -5778,8 +5810,8 @@ try {
         '<circle cx="14.5" cy="21" r="2.8" fill="var(--ink)"/><circle cx="20" cy="13.5" r="3" fill="B"/><circle cx="28.5" cy="14.5" r="2.8" fill="var(--ink)" fill-opacity=".45"/>',
     };
     function art(k) {
-      if (!SH[k]) return "";
-      var u = "kp" + ++n,
+      if (!PLAN_SHAPES[k]) return "";
+      var u = "kp" + ++paintCount,
         A = "url(#" + u + "a)",
         B = "url(#" + u + "b)";
       return (
@@ -5791,18 +5823,18 @@ try {
         '<g transform="translate(4.5 4.5)" fill="' +
         A +
         '">' +
-        SH[k] +
+        PLAN_SHAPES[k] +
         "</g>" +
         '<g fill="var(--surface)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round">' +
-        SH[k] +
+        PLAN_SHAPES[k] +
         "</g>" +
-        IN[k].replace(/"B"/g, '"' + B + '"') +
+        PLAN_INNER[k].replace(/"B"/g, '"' + B + '"') +
         "</svg>"
       );
     }
     window.__planArt = art;
     function paint() {
-      var s = D.getElementById("plans-sheet");
+      var s = doc.getElementById("plans-sheet");
       if (!s) return;
       s.querySelectorAll(".p2card").forEach(function (c) {
         var m = (c.className.match(/p2-(free|pass|atlas|yearly)/) || [])[1],
@@ -5820,16 +5852,16 @@ try {
         t.classList.add("kpt");
       });
     }
-    var mo = new MutationObserver(function () {
-      mo.disconnect();
+    var plansObserver = new MutationObserver(function () {
+      plansObserver.disconnect();
       paint();
-      go();
+      watchPlans();
     });
-    function go() {
-      var s = D.getElementById("plans-sheet");
-      s ? (paint(), mo.observe(s, { childList: !0, subtree: !0 })) : setTimeout(go, 800);
+    function watchPlans() {
+      var s = doc.getElementById("plans-sheet");
+      s ? (paint(), plansObserver.observe(s, { childList: !0, subtree: !0 })) : setTimeout(watchPlans, 800);
     }
-    go();
+    watchPlans();
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Plans: halftone icons for Free, Trip pass, Atlas, Yearly and", err);
@@ -5840,8 +5872,8 @@ try {
    ========================================================================== */
 try {
   (function () {
-    var D = document,
-      DK = [
+    var doc = document,
+      DEV_KEYS = [
         "vizag-plan",
         "vizag-renew-skip",
         "vizag-anydates",
@@ -5850,58 +5882,58 @@ try {
         "vizag-offer-until",
         "vizag-offer-seen",
       ],
-      SN = "vizag-dev-snap";
-    function g(k) {
+      SNAPSHOT_KEY = "vizag-dev-snap";
+    function readKey(k) {
       try {
         return localStorage.getItem(k);
       } catch (e) {
         return null;
       }
     }
-    function p(k, v) {
+    function writeKey(k, v) {
       try {
         v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
       } catch (e) {}
     }
     /* Before the first dev change, remember the person's own settings */
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest("#devgrp button");
-        if (!t || t.id === "dev-off" || t.closest(".devhead") || g(SN)) return;
+        if (!t || t.id === "dev-off" || t.closest(".devhead") || readKey(SNAPSHOT_KEY)) return;
         var s = {};
-        DK.forEach(function (k) {
-          s[k] = g(k);
+        DEV_KEYS.forEach(function (k) {
+          s[k] = readKey(k);
         });
-        p(SN, JSON.stringify(s));
+        writeKey(SNAPSHOT_KEY, JSON.stringify(s));
       },
       !0,
     );
     /* Turning dev options off puts those settings back */
-    D.addEventListener(
+    doc.addEventListener(
       "click",
       function (e) {
         var t = e.target.closest && e.target.closest("#dev-off");
         if (!t) return;
         var s = null;
         try {
-          s = JSON.parse(g(SN) || "null");
+          s = JSON.parse(readKey(SNAPSHOT_KEY) || "null");
         } catch (x) {}
         if (s && typeof s === "object") {
-          DK.forEach(function (k) {
-            p(k, k in s ? s[k] : null);
+          DEV_KEYS.forEach(function (k) {
+            writeKey(k, k in s ? s[k] : null);
           });
         } else {
-          p("vizag-anydates", null);
-          p("vizag-zoom", null);
-          p("vizag-renew-skip", null);
+          writeKey("vizag-anydates", null);
+          writeKey("vizag-zoom", null);
+          writeKey("vizag-renew-skip", null);
           var pl = {};
           try {
-            pl = JSON.parse(g("vizag-plan") || "{}") || {};
+            pl = JSON.parse(readKey("vizag-plan") || "{}") || {};
           } catch (x) {}
-          (pl.plan === "pro" || pl.plan === "plus") && p("vizag-plan", null);
+          (pl.plan === "pro" || pl.plan === "plus") && writeKey("vizag-plan", null);
         }
-        p(SN, null);
+        writeKey(SNAPSHOT_KEY, null);
         try {
           sessionStorage.removeItem("vizag-dev-empty");
         } catch (x) {}
@@ -5921,7 +5953,7 @@ try {
    ========================================================================== */
 try {
   window.__pastTrip = function (id) {
-    var E = { vizag: "2026-12-08" };
+    var TRIP_END_DATES = { vizag: "2026-12-08" };
     try {
       (JSON.parse(localStorage.getItem("vizag-trips") || "[]") || []).forEach(function (t) {
         if (!t || !t.id) return;
@@ -5931,10 +5963,10 @@ try {
           d.setDate(d.getDate() + (+t.days || 1) - 1);
           e = d.toISOString().slice(0, 10);
         }
-        E[t.id] = e;
+        TRIP_END_DATES[t.id] = e;
       });
     } catch (x) {}
-    var e = E[id];
+    var e = TRIP_END_DATES[id];
     if (!e) return !1;
     var n = new Date(),
       t =

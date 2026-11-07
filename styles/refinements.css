@@ -166,25 +166,13 @@
   display: none !important;
 }
 .acx {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
   margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px dashed var(--line);
 }
 .acx[hidden] {
   display: none;
 }
 .acx button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   min-width: 0;
-  padding: 10px 9px;
-  border-radius: 18px;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--ink) 3%, var(--surface));
   font: inherit;
   color: var(--ink);
   text-align: left;
@@ -198,7 +186,6 @@
 }
 .acx b {
   display: block;
-  font-size: 0.84rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -207,7 +194,6 @@
 .acx small {
   display: block;
   color: var(--muted);
-  font-size: 0.74rem;
 }
 .acx .xs {
   display: flex;
@@ -228,8 +214,6 @@
   place-items: center;
 }
 .acx .xc svg {
-  width: 17px;
-  height: 17px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -403,11 +387,11 @@
   font-size: 0.84rem;
 }
 #grp-sheet .pfgrp {
-  background: var(--surface) !important;
-  border-radius: 22px !important;
+  background: var(--surface);
+  border-radius: 22px;
 }
 #grp-sheet input {
-  border-radius: 14px !important;
+  border-radius: 14px;
 }
 #grp-sheet #grp-addm {
   border-radius: 14px !important;
@@ -430,7 +414,7 @@
   min-width: 0;
 }
 .ptr svg {
-  transform: rotate(calc(var(--p) * 240deg)) scale(calc(0.6 + var(--p) * 0.4)) !important;
+  transform: rotate(calc(var(--p) * 240deg)) scale(calc(0.6 + var(--p) * 0.4));
 }
 .ptrg {
   stroke: var(--line) !important;
@@ -483,9 +467,9 @@
 }
 .nav,
 .nav * {
-  -webkit-user-select: none !important;
-  user-select: none !important;
-  -webkit-touch-callout: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .nav button {
   touch-action: manipulation;
@@ -616,12 +600,12 @@ html:has(.chatsh:not([hidden])) .bblur {
   border-top: 1px solid var(--line);
   pointer-events: none;
 }
-:root:root:root .planner .pfoot {
+.planner .pfoot {
   --fb: var(--surface);
-  background: transparent !important;
+  background: transparent;
   isolation: isolate;
-  padding-top: 12px !important;
-  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px)) !important;
+  padding-top: 12px;
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px));
 }
 :root:root:root .planner .pfoot:before {
   content: "" !important;
@@ -641,7 +625,7 @@ html:has(.chatsh:not([hidden])) .bblur {
   left: calc(-1 * var(--gl, 16px)) !important;
   right: calc(-1 * var(--gr, 16px)) !important;
 }
-:root:root:root .planner .pfoot:after {
+.planner .pfoot:after {
   content: "";
   position: absolute;
   z-index: -1;
@@ -653,104 +637,101 @@ html:has(.chatsh:not([hidden])) .bblur {
   left: calc(-1 * var(--gl, 16px));
   right: calc(-1 * var(--gr, 16px));
 }
-:root:root:root #plans-sheet .pp-foot {
+#plans-sheet .pp-foot {
   --fb: var(--surface);
   isolation: isolate;
-  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px)) !important;
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px));
 }
-:root:root:root #plans-sheet .pp-foot:before {
-  content: "" !important;
-  position: absolute !important;
-  z-index: -1 !important;
-  left: 0 !important;
-  right: 0 !important;
-  top: auto !important;
-  bottom: 100% !important;
-  height: 26px !important;
+#plans-sheet .pp-foot:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: auto;
+  bottom: 100%;
+  height: 26px;
   pointer-events: none;
-  -webkit-backdrop-filter: blur(8px) !important;
-  backdrop-filter: blur(8px) !important;
-  background: linear-gradient(to top, color-mix(in srgb, var(--fb) 65%, transparent), transparent) !important;
-  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent) !important;
-  mask-image: linear-gradient(to top, #000 25%, transparent) !important;
-  -webkit-mask: linear-gradient(to top, #000 25%, transparent) !important;
-  mask: linear-gradient(to top, #000 25%, transparent) !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: linear-gradient(to top, color-mix(in srgb, var(--fb) 65%, transparent), transparent);
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent);
+  mask-image: linear-gradient(to top, #000 25%, transparent);
+  -webkit-mask: linear-gradient(to top, #000 25%, transparent);
+  mask: linear-gradient(to top, #000 25%, transparent);
 }
 
 /* ==========================================================================
    Palette picker rows and icon maker rows.
    ========================================================================== */
-:root:root:root .pl-row {
-  grid-template-columns: none !important;
-  grid-auto-flow: column !important;
-  grid-auto-columns: minmax(0, 1fr) !important;
-  gap: 10px !important;
-  justify-items: center !important;
+.pl-row {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 10px;
+  justify-items: center;
 }
-:root:root:root .pl-s {
-  width: min(42px, 100%) !important;
+.pl-s {
+  width: min(42px, 100%);
 }
-:root:root:root .kz-sw {
-  grid-template-columns: none !important;
-  grid-auto-flow: column !important;
-  grid-auto-columns: minmax(0, 1fr) !important;
-  gap: 8px !important;
-  justify-items: center !important;
+.kz-sw {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  justify-items: center;
 }
-:root:root:root .kz-sw > * {
-  width: min(38px, 100%) !important;
-  height: auto !important;
-  aspect-ratio: 1 !important;
+.kz-sw > * {
+  width: min(38px, 100%);
+  height: auto;
+  aspect-ratio: 1;
 }
-:root:root:root .kz-row {
-  grid-template-columns: none !important;
-  grid-auto-flow: column !important;
-  grid-auto-columns: minmax(0, 1fr) !important;
-  gap: 10px !important;
+.kz-row {
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 10px;
 }
-:root:root:root .kz-row > .kz-t {
-  width: 100% !important;
-  height: auto !important;
-  max-width: none !important;
-  aspect-ratio: 1 !important;
+.kz-row > .kz-t {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  aspect-ratio: 1;
 }
-:root:root:root .kz-head .kz-ttl {
+.kz-head .kz-ttl {
   white-space: nowrap;
 }
-:root:root:root .kz-head > button {
-  flex: none !important;
+.kz-head > button {
+  flex: none;
 }
-:root:root:root .kz-head > button:last-child {
-  width: 36px !important;
-  height: 36px !important;
-  padding: 0 !important;
+.kz-head > button:last-child {
+  width: 36px;
+  height: 36px;
+  padding: 0;
 }
 
 /* ==========================================================================
    Top blur bar, Profile/More account card actions.
    ========================================================================== */
-:root:root:root .acx {
-  gap: 0 !important;
+.acx {
+  gap: 0;
   grid-template-columns: 1fr 1fr;
-  padding-top: 0 !important;
-  margin: 4px 0 0 !important;
+  padding-top: 0;
+  margin: 4px 0 0;
 }
 :root:root:root #acct > .acx {
   margin: 0 !important;
 }
-:root:root:root .acx button {
-  border-radius: 0 !important;
-  background: none !important;
+.acx button {
+  border-radius: 0;
+  background: none;
 }
-:root:root:root #acct-empty .acx button {
-  padding: 14px 16px !important;
+#acct-empty .acx button {
+  padding: 14px 16px;
 }
 .acx .xc {
-  border-radius: 11px !important;
-  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
-  color: var(--muted) !important;
-  width: 34px !important;
-  height: 34px !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  color: var(--muted);
 }
 .lbsub2 {
   margin: 2px 4px 14px;
@@ -784,21 +765,21 @@ html:has(.chatsh:not([hidden])) .bblur {
   justify-self: center !important;
   align-self: center !important;
 }
-:root:root:root :is(.list2, .places) .emo {
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 14px !important;
+:is(.list2, .places) .emo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
 }
-:root:root:root :is(.list2, .places) .emo .il svg.ph,
-:root:root:root :is(.list2, .places) .emo svg {
-  width: 23px !important;
-  height: 23px !important;
+:is(.list2, .places) .emo .il svg.ph,
+:is(.list2, .places) .emo svg {
+  width: 23px;
+  height: 23px;
 }
 :root:root:root :is(.list2, .places) .emo .ie {
   font-size: 22px !important;
 }
 .kz-now:has(.kzi) {
-  flex-wrap: wrap !important;
+  flex-wrap: wrap;
 }
 .kzi {
   flex: 1 0 100%;
@@ -990,34 +971,34 @@ html.kzmatch .kzi {
   background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
   color: var(--link) !important;
 }
-:root:root:root .acx {
-  display: block !important;
-  border-top: 1px solid var(--line) !important;
+.acx {
+  display: block;
+  border-top: 1px solid var(--line);
 }
-:root:root:root #acct-empty .acx {
-  margin: 16px -16px -16px !important;
+#acct-empty .acx {
+  margin: 16px -16px -16px;
 }
-:root:root:root .acx button {
-  width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 13px 0 !important;
-  border: 0 !important;
-  border-left: 0 !important;
+.acx button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+  border: 0;
+  border-left: 0;
 }
-:root:root:root .acx button + button {
-  border-top: 1px solid var(--line) !important;
-  border-left: 0 !important;
+.acx button + button {
+  border-top: 1px solid var(--line);
+  border-left: 0;
 }
-:root:root:root .acx .xt {
+.acx .xt {
   flex: 1;
 }
-:root:root:root .acx b {
-  font-size: 0.95rem !important;
+.acx b {
+  font-size: 0.95rem;
 }
-:root:root:root .acx small {
-  font-size: 0.8rem !important;
+.acx small {
+  font-size: 0.8rem;
 }
 .acx .xr {
   display: flex;
@@ -1219,67 +1200,67 @@ html.kzmatch .kzi {
   background: color-mix(in srgb, var(--link) 18%, var(--surface)) !important;
   color: var(--link);
 }
-:root:root:root #theme-sheet .thcap,
-:root:root:root #theme-sheet .pl-sub,
-:root:root:root #theme-sheet .kzc b,
-:root:root:root #kz-pv svg + svg {
-  display: none !important;
+#theme-sheet .thcap,
+#theme-sheet .pl-sub,
+#theme-sheet .kzc b,
+#kz-pv svg + svg {
+  display: none;
 }
 :root:root:root #theme-sheet .thsec {
   margin: 0 0 12px !important;
   padding: 0 !important;
   border: 0 !important;
 }
-:root:root:root #theme-sheet .pl-ui {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 14px !important;
+#theme-sheet .pl-ui {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-:root:root:root #theme-sheet .pl-mode {
-  margin: 0 !important;
+#theme-sheet .pl-mode {
+  margin: 0;
 }
-:root:root:root #theme-sheet .pl-row {
-  margin: 0 !important;
+#theme-sheet .pl-row {
+  margin: 0;
 }
-:root:root:root #theme-sheet .kz-now {
-  background: var(--surface) !important;
-  border: 1px solid var(--line) !important;
-  border-radius: 24px !important;
-  padding: 14px !important;
-  display: grid !important;
-  grid-template-columns: 52px minmax(0, 1fr) !important;
-  column-gap: 12px !important;
-  row-gap: 0 !important;
-  align-items: center !important;
+#theme-sheet .kz-now {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 0;
+  align-items: center;
 }
-:root:root:root #kz-pv {
-  width: 52px !important;
-  height: 52px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: none !important;
-  border: 0 !important;
-  display: block !important;
-}
-:root:root:root #kz-pv svg {
-  width: 52px !important;
-  height: 52px !important;
-  border-radius: 14px !important;
+#kz-pv {
+  width: 52px;
+  height: 52px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
   display: block;
 }
-:root:root:root .kz-now .pl-match {
-  margin: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
+#kz-pv svg {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: block;
+}
+.kz-now .pl-match {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
   min-width: 0;
 }
-:root:root:root .kz-now .kzi {
+.kz-now .kzi {
   grid-column: 1/-1;
   margin-top: 14px;
   padding-top: 12px;
@@ -1290,20 +1271,20 @@ html.kzmatch .kzi {
   font-size: 0.8rem;
   color: var(--muted);
 }
-:root:root:root .kz-now .kzr {
-  margin: 0 0 14px !important;
+.kz-now .kzr {
+  margin: 0 0 14px;
 }
-:root:root:root .kz-now .kzr:last-child {
-  margin: 0 !important;
+.kz-now .kzr:last-child {
+  margin: 0;
 }
-:root:root:root .kz-now .kzr button {
-  border-radius: 50% !important;
+.kz-now .kzr button {
+  border-radius: 50%;
   overflow: hidden;
-  padding: 0 !important;
+  padding: 0;
 }
-:root:root:root .kz-now .kzr button svg {
-  width: 100% !important;
-  height: 100% !important;
+.kz-now .kzr button svg {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 :root:root:root #theme-sheet .thnote2 {
@@ -1327,8 +1308,8 @@ html.kzmatch .kzi {
   align-self: center !important;
   width: auto !important;
 }
-:root:root:root #theme-sheet .pl-mode {
-  width: 100% !important;
+#theme-sheet .pl-mode {
+  width: 100%;
   box-sizing: border-box;
 }
 :root:root:root .lpd .lst {
@@ -1347,8 +1328,8 @@ html.kzmatch .kzi {
 .lpd {
   height: auto !important;
 }
-:root:root:root .kz-now .kzr[aria-label="Background"] button {
-  box-shadow: inset 0 0 0 1px var(--line) !important;
+.kz-now .kzr[aria-label="Background"] button {
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 .lpd .lpp {
   color: var(--muted);
@@ -1368,10 +1349,10 @@ html.kzmatch .kzi {
   mask-composite: intersect;
 }
 .onbart {
-  aspect-ratio: 4/3 !important;
+  aspect-ratio: 4/3;
 }
-:root:root .onbtrack {
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) !important;
+.onbtrack {
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .onbs .onbart,
 .onbs h2,
@@ -1392,7 +1373,7 @@ html.kzmatch .kzi {
 .onbs[aria-hidden="false"] p {
   transition-delay: 0.06s;
 }
-:root:root .lpage .lart {
+.lpage .lart {
   transition:
     opacity 0.3s ease,
     transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
@@ -1466,28 +1447,28 @@ html.kzmatch .kzi {
 /* ==========================================================================
    App icon 'match theme' switch, account card icons.
    ========================================================================== */
-:root:root:root .kz-now .pl-match > i {
+.kz-now .pl-match > i {
   flex: none;
   position: relative;
-  width: 46px !important;
-  height: 28px !important;
-  border-radius: 999px !important;
-  background: color-mix(in srgb, var(--ink) 16%, var(--surface)) !important;
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 16%, var(--surface));
   transition: background 0.25s;
 }
-:root:root:root .kz-now .pl-match > i:after {
-  content: "" !important;
+.kz-now .pl-match > i:after {
+  content: "";
   position: absolute;
-  left: 2px !important;
-  top: 2px !important;
-  width: 24px !important;
-  height: 24px !important;
-  border-radius: 50% !important;
-  background: #fff !important;
+  left: 2px;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.18),
-    0 0 0 0.5px rgba(0, 0, 0, 0.06) !important;
-  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+    0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   transform: none;
 }
 :root:root:root .kz-now .pl-match[aria-checked="true"] > i {
@@ -1497,23 +1478,23 @@ html.kzmatch .kzi {
   transform: translateX(18px) !important;
   background: var(--on-accent, #fff) !important;
 }
-:root:root:root .acx .xc {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 13px !important;
+.acx .xc {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
 }
-:root:root:root .acx .xc svg {
-  width: 20px !important;
-  height: 20px !important;
+.acx .xc svg {
+  width: 20px;
+  height: 20px;
 }
-:root:root:root .acx {
-  padding: 0 18px !important;
-  align-self: stretch !important;
-  width: auto !important;
-  max-width: none !important;
+.acx {
+  padding: 0 18px;
+  align-self: stretch;
+  width: auto;
+  max-width: none;
 }
-:root:root:root #acct-empty > .acx {
-  margin: 16px -18px -16px !important;
+#acct-empty > .acx {
+  margin: 16px -18px -16px;
 }
 :root:root:root .lbl2:not(:has(.you)) {
   background: none !important;
@@ -1626,9 +1607,9 @@ html.dv-both .dspend {
   padding-top: 14px !important;
   border-top: 1px dashed var(--line) !important;
 }
-:root:root:root #theme-sheet :is(.pl-s, .kzr button) {
+#theme-sheet :is(.pl-s, .kzr button) {
   position: relative;
-  overflow: visible !important;
+  overflow: visible;
 }
 .pln {
   position: absolute;
@@ -1642,24 +1623,24 @@ html.dv-both .dspend {
   pointer-events: none;
   line-height: 1;
 }
-:root:root:root #theme-sheet [aria-pressed="true"] > .pln {
+#theme-sheet [aria-pressed="true"] > .pln {
   color: var(--ink);
   font-weight: 600;
 }
-:root:root:root #theme-sheet .pl-row {
-  padding-bottom: 18px !important;
+#theme-sheet .pl-row {
+  padding-bottom: 18px;
 }
-:root:root:root .kz-now .kzr {
-  padding-bottom: 18px !important;
+.kz-now .kzr {
+  padding-bottom: 18px;
   justify-items: center;
 }
-:root:root:root .kz-now .kzr button {
-  width: 34px !important;
-  height: 34px !important;
-  min-width: 0 !important;
-  aspect-ratio: auto !important;
+.kz-now .kzr button {
+  width: 34px;
+  height: 34px;
+  min-width: 0;
+  aspect-ratio: auto;
 }
-:root:root:root .kz-now .kzr button svg {
+.kz-now .kzr button svg {
   border-radius: 50%;
 }
 :root:root:root #pp-chip {
@@ -1732,14 +1713,14 @@ html.dv-both .dspend {
   gap: 12px;
 }
 .p2head .ptile {
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 15px !important;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
   flex: none;
 }
 .p2head .ptile svg {
-  width: 28px !important;
-  height: 28px !important;
+  width: 28px;
+  height: 28px;
 }
 .p2nm {
   flex: 1;
@@ -1888,8 +1869,8 @@ html.dv-both .dspend {
   opacity: 0.4;
 }
 .onbart {
-  width: min(68vw, 280px) !important;
-  margin-bottom: 30px !important;
+  width: min(68vw, 280px);
+  margin-bottom: 30px;
 }
 @keyframes obfl {
   0%,
@@ -1932,8 +1913,6 @@ html.dv-both .dspend {
   left: 50%;
   top: 50%;
   border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--link) 45%, transparent), transparent 68%);
-  filter: blur(6px);
   opacity: calc(var(--p) * 0.9);
   transform: scale(calc(0.4 + var(--p) * 0.7));
   transition:
@@ -1956,7 +1935,7 @@ html.dv-both .dspend {
   }
 }
 .ptr {
-  background: none !important;
+  background: none;
 }
 .ptr svg {
   position: relative;
@@ -2083,10 +2062,10 @@ html.dv-both .dspend {
 .ptr > svg:not(.kgl) {
   display: none !important;
 }
-:root:root .ptr svg.kgl {
-  display: block !important;
-  transform: scale(calc(0.55 + var(--p) * 0.45)) !important;
-  animation: none !important;
+.ptr svg.kgl {
+  display: block;
+  transform: scale(calc(0.55 + var(--p) * 0.45));
+  animation: none;
   transition: transform 0.12s linear;
   overflow: visible;
 }
@@ -2107,7 +2086,6 @@ html.dv-both .dspend {
 }
 .kgl .kgr {
   fill: none;
-  stroke: color-mix(in srgb, var(--ink) 10%, transparent);
   stroke-width: 3;
 }
 .kgl .kgp {
@@ -2138,15 +2116,6 @@ html.dv-both .dspend {
   --brand-soft: #d9e6fb !important;
   --band: #f1f6fe !important;
 }
-:root:root[data-pal="sage"][data-skin="light"] {
-  --bg: #dee8da !important;
-  --surface: #f8fbf6 !important;
-  --soft: #edf3ea !important;
-  --line: #cfddcb !important;
-  --tile: #e7f0e3 !important;
-  --brand-soft: #dae9dc !important;
-  --band: #f2f7f0 !important;
-}
 :root:root[data-pal="lilac"][data-skin="light"] {
   --bg: #e7dff6 !important;
   --surface: #fbf8ff !important;
@@ -2170,19 +2139,19 @@ html.dv-both .dspend {
   background: color-mix(in srgb, var(--accent) 11%, var(--surface)) !important;
   color: var(--accent) !important;
 }
-:root:root .ptr {
-  margin-top: 22px !important;
-  width: 54px !important;
-  height: 54px !important;
+.ptr {
+  margin-top: 22px;
+  width: 54px;
+  height: 54px;
 }
-:root:root .ptr svg.kgl {
-  width: 54px !important;
-  height: 54px !important;
+.ptr svg.kgl {
+  width: 54px;
+  height: 54px;
 }
 .ptr:before {
-  width: 76px !important;
-  height: 76px !important;
-  margin: -38px 0 0 -38px !important;
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
 }
 
 /* ==========================================================================
@@ -2279,11 +2248,11 @@ html.dv-both .dspend {
 .lrow.you .lrk {
   font-size: 0.78rem;
 }
-:root:root:root:root :is(#acct-empty, #acct) .acx button {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+:is(#acct-empty, #acct) .acx button {
+  padding-left: 0;
+  padding-right: 0;
 }
-:root:root:root:root .acx .xr > svg {
+.acx .xr > svg {
   margin-right: -4px;
 }
 
@@ -2438,11 +2407,11 @@ html.dv-both .dspend {
   --accent: #235fb8 !important;
   --ctl: #235fb8 !important;
 }
-:root:root:root[data-pal="sage"][data-skin="light"] {
-  --brand: #508c5c !important;
-  --link: #508c5c !important;
-  --accent: #508c5c !important;
-  --ctl: #508c5c !important;
+:root[data-pal="sage"][data-skin="light"] {
+  --brand: #508c5c;
+  --link: #508c5c;
+  --accent: #508c5c;
+  --ctl: #508c5c;
 }
 :root:root:root[data-pal="lilac"][data-skin="light"] {
   --brand: #5931d8 !important;
@@ -2450,8 +2419,8 @@ html.dv-both .dspend {
   --accent: #5931d8 !important;
   --ctl: #5931d8 !important;
 }
-:root:root:root #acct-empty {
-  border-style: solid !important;
+#acct-empty {
+  border-style: solid;
 }
 #profile #prof-body {
   display: flex;
@@ -2588,8 +2557,8 @@ html.dv-both .dspend {
   font-size: 0.8rem;
   color: var(--muted);
 }
-:root:root:root .p2seg button {
-  display: inline-flex !important;
+.p2seg button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -2603,31 +2572,31 @@ html.dv-both .dspend {
   margin: 0 !important;
   flex: none;
 }
-:root:root:root .p2card .p2head {
-  margin-bottom: 0 !important;
+.p2card .p2head {
+  margin-bottom: 0;
   align-items: flex-start;
 }
-:root:root:root .p2card .ptile {
-  width: 46px !important;
-  height: 46px !important;
-  border-radius: 14px !important;
+.p2card .ptile {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
 }
-:root:root:root .p2card .p2nm small {
+.p2card .p2nm small {
   margin-top: 3px;
   line-height: 1.35;
 }
-:root:root:root .p2card .p2price {
-  margin: 20px 0 0 !important;
-  padding-top: 18px !important;
-  border-top: 1px dashed var(--line) !important;
+.p2card .p2price {
+  margin: 20px 0 0;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line);
 }
-:root:root:root .p2card .p2per {
-  margin: 8px 0 0 !important;
+.p2card .p2per {
+  margin: 8px 0 0;
 }
-:root:root:root .p2card .p2inc {
-  margin: 20px 0 0 !important;
-  padding-top: 6px !important;
-  border-top: 1px dashed var(--line) !important;
+.p2card .p2inc {
+  margin: 20px 0 0;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
 }
 @keyframes navglow {
   0%,
@@ -2649,12 +2618,12 @@ html.dv-both .dspend {
     filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 32%, transparent));
   }
 }
-:root:root:root .nav button:not([aria-current="page"]) {
-  color: var(--faint) !important;
-  opacity: 1 !important;
+.nav button:not([aria-current="page"]) {
+  color: var(--faint);
+  opacity: 1;
 }
-:root:root:root .nav button:not([aria-current="page"]) svg {
-  opacity: 1 !important;
+.nav button:not([aria-current="page"]) svg {
+  opacity: 1;
 }
 .lart > .lslides,
 .lcopy > .lsteps,
@@ -2750,10 +2719,10 @@ html.dv-both .dspend {
   mask: none !important;
   border-radius: 50% !important;
 }
-:root:root:root:root #acct-empty {
-  border: 0 !important;
-  border-radius: 24px !important;
-  background: var(--surface) !important;
+#acct-empty {
+  border: 0;
+  border-radius: 24px;
+  background: var(--surface);
 }
 #profile .pidcard {
   position: relative;
@@ -2781,34 +2750,34 @@ html.dv-both .dspend {
 .onbart,
 .onbart svg,
 .lob .lobs svg {
-  overflow: visible !important;
+  overflow: visible;
 }
-:root:root .onbart {
-  margin-top: 40px !important;
+.onbart {
+  margin-top: 40px;
 }
 .lob .lobs {
-  padding-top: 48px !important;
+  padding-top: 48px;
 }
 #plans-sheet {
   --p2r: 20px;
 }
-:root:root:root #plans-sheet .p2seg {
+#plans-sheet .p2seg {
   height: 44px;
-  padding: 4px !important;
-  border-radius: 14px !important;
-  margin-bottom: 16px !important;
+  padding: 4px;
+  border-radius: 14px;
+  margin-bottom: 16px;
 }
-:root:root:root #plans-sheet .p2seg button {
-  height: 36px !important;
-  padding: 0 !important;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  border-radius: 10px !important;
-  line-height: 1 !important;
+#plans-sheet .p2seg button {
+  height: 36px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  line-height: 1;
 }
-:root:root:root #plans-sheet .p2card {
-  padding: var(--p2r) !important;
-  border-radius: 24px !important;
+#plans-sheet .p2card {
+  padding: var(--p2r);
+  border-radius: 24px;
 }
 :root:root:root #plans-sheet .p2off {
   margin: calc(-1 * var(--p2r)) calc(-1 * var(--p2r)) var(--p2r) !important;
@@ -2820,39 +2789,39 @@ html.dv-both .dspend {
 :root:root:root #plans-sheet .p2off * {
   font-size: 13px !important;
 }
-:root:root:root #plans-sheet .p2head {
-  display: grid !important;
+#plans-sheet .p2head {
+  display: grid;
   grid-template-columns: 44px 1fr auto;
   column-gap: 12px;
-  align-items: center !important;
-  margin: 0 !important;
+  align-items: center;
+  margin: 0;
 }
-:root:root:root #plans-sheet .p2head .ptile {
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 12px !important;
-  margin: 0 !important;
+#plans-sheet .p2head .ptile {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  margin: 0;
 }
-:root:root:root #plans-sheet .p2head .ptile svg {
-  width: 24px !important;
-  height: 24px !important;
+#plans-sheet .p2head .ptile svg {
+  width: 24px;
+  height: 24px;
 }
-:root:root:root #plans-sheet .p2nm {
-  display: flex !important;
+#plans-sheet .p2nm {
+  display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-:root:root:root #plans-sheet .p2nm b {
-  font-size: 20px !important;
-  font-weight: 700 !important;
-  line-height: 24px !important;
+#plans-sheet .p2nm b {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
 }
-:root:root:root #plans-sheet .p2nm small {
-  font-size: 13px !important;
-  line-height: 18px !important;
-  margin: 0 !important;
-  color: var(--muted) !important;
+#plans-sheet .p2nm small {
+  font-size: 13px;
+  line-height: 18px;
+  margin: 0;
+  color: var(--muted);
 }
 :root:root:root #plans-sheet .p2tag {
   align-self: center;
@@ -2862,71 +2831,71 @@ html.dv-both .dspend {
   padding: 6px 10px !important;
   border-radius: 999px !important;
 }
-:root:root:root #plans-sheet .p2price {
-  display: flex !important;
-  align-items: baseline !important;
-  gap: 6px !important;
-  margin: var(--p2r) 0 0 !important;
-  padding-top: var(--p2r) !important;
-  border-top: 1px dashed var(--line) !important;
-  line-height: 1 !important;
+#plans-sheet .p2price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: var(--p2r) 0 0;
+  padding-top: var(--p2r);
+  border-top: 1px dashed var(--line);
+  line-height: 1;
 }
-:root:root:root #plans-sheet .p2price > b {
-  font-size: 40px !important;
-  font-weight: 700 !important;
-  line-height: 40px !important;
+#plans-sheet .p2price > b {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 40px;
   letter-spacing: -0.02em;
 }
-:root:root:root #plans-sheet .p2price > b .inr i {
-  font-size: 20px !important;
-  font-weight: 600 !important;
+#plans-sheet .p2price > b .inr i {
+  font-size: 20px;
+  font-weight: 600;
 }
-:root:root:root #plans-sheet .p2price > span,
-:root:root:root #plans-sheet .p2price > s {
-  font-size: 15px !important;
-  line-height: 20px !important;
-  font-weight: 400 !important;
-  color: var(--muted) !important;
+#plans-sheet .p2price > span,
+#plans-sheet .p2price > s {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 400;
+  color: var(--muted);
 }
-:root:root:root #plans-sheet .p2price .inr i {
-  font-size: inherit !important;
+#plans-sheet .p2price .inr i {
+  font-size: inherit;
 }
-:root:root:root #plans-sheet .p2per {
-  margin: 8px 0 0 !important;
-  font-size: 13px !important;
-  line-height: 18px !important;
-  color: var(--muted) !important;
+#plans-sheet .p2per {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
 }
 :root:root:root #plans-sheet .p2per .inr i {
   font-size: 13px !important;
 }
-:root:root:root #plans-sheet .p2inc {
-  margin: var(--p2r) 0 0 !important;
-  padding: 4px 0 0 !important;
-  border-top: 1px dashed var(--line) !important;
+#plans-sheet .p2inc {
+  margin: var(--p2r) 0 0;
+  padding: 4px 0 0;
+  border-top: 1px dashed var(--line);
 }
-:root:root:root #plans-sheet .p2inc li {
-  display: grid !important;
+#plans-sheet .p2inc li {
+  display: grid;
   grid-template-columns: 20px 1fr auto;
   column-gap: 12px;
   align-items: center;
   min-height: 48px;
-  padding: 0 !important;
+  padding: 0;
 }
-:root:root:root #plans-sheet .p2inc li svg {
-  width: 20px !important;
-  height: 20px !important;
-  margin: 0 !important;
+#plans-sheet .p2inc li svg {
+  width: 20px;
+  height: 20px;
+  margin: 0;
 }
-:root:root:root #plans-sheet .p2inc li span {
-  font-size: 15px !important;
-  line-height: 20px !important;
+#plans-sheet .p2inc li span {
+  font-size: 15px;
+  line-height: 20px;
 }
-:root:root:root #plans-sheet .p2inc li em {
-  font-size: 13px !important;
-  line-height: 18px !important;
-  font-style: normal !important;
-  color: var(--muted) !important;
+#plans-sheet .p2inc li em {
+  font-size: 13px;
+  line-height: 18px;
+  font-style: normal;
+  color: var(--muted);
 }
 :root:root:root #plans-sheet .p2cap {
   margin: 28px 4px 8px !important;
@@ -2935,33 +2904,33 @@ html.dv-both .dspend {
   line-height: 16px !important;
   letter-spacing: 0.08em;
 }
-:root:root:root #plans-sheet .p2cmp {
-  border-radius: 24px !important;
+#plans-sheet .p2cmp {
+  border-radius: 24px;
 }
-:root:root:root #plans-sheet .p2r {
+#plans-sheet .p2r {
   min-height: 48px;
   align-items: center;
 }
-:root:root:root #plans-sheet .p2r > span {
-  font-size: 15px !important;
-  line-height: 20px !important;
+#plans-sheet .p2r > span {
+  font-size: 15px;
+  line-height: 20px;
 }
-:root:root:root #plans-sheet .p2r > b {
-  font-size: 13px !important;
-  font-weight: 700 !important;
+#plans-sheet .p2r > b {
+  font-size: 13px;
+  font-weight: 700;
 }
-:root:root:root #plans-sheet .p2r > em,
-:root:root:root #plans-sheet .p2r > em * {
-  font-size: 13px !important;
-  line-height: 18px !important;
+#plans-sheet .p2r > em,
+#plans-sheet .p2r > em * {
+  font-size: 13px;
+  line-height: 18px;
 }
-:root:root:root #plans-sheet .p2r .p2ck {
-  width: 18px !important;
-  height: 18px !important;
+#plans-sheet .p2r .p2ck {
+  width: 18px;
+  height: 18px;
 }
-:root:root:root #plans-sheet .pp-line {
-  font-size: 13px !important;
-  line-height: 18px !important;
+#plans-sheet .pp-line {
+  font-size: 13px;
+  line-height: 18px;
 }
 :root:root:root #plans-sheet #pl-upgrade {
   height: 52px !important;
@@ -2982,12 +2951,12 @@ html.dv-both .dspend {
   --kg2: #f2a93b;
   --kg3: #e0703c;
 }
-:root:root[data-pal="ocean"] {
+:root[data-pal="ocean"] {
   --kg1: #7fe0ff;
   --kg2: #5b9cff;
   --kg3: #4a5cf0;
 }
-:root:root[data-pal="sage"] {
+:root[data-pal="sage"] {
   --kg1: #c4ef9b;
   --kg2: #5fcf8c;
   --kg3: #2fa59a;
@@ -3007,33 +2976,33 @@ html.dv-both .dspend {
   --kg2: #3a3a40;
   --kg3: #141416;
 }
-:root:root:root .ptr:before {
+.ptr:before {
   background: radial-gradient(
     circle,
     color-mix(in srgb, var(--kg2) 60%, transparent) 0,
     color-mix(in srgb, var(--kg1) 22%, transparent) 45%,
     transparent 70%
-  ) !important;
-  filter: blur(8px) !important;
+  );
+  filter: blur(8px);
 }
-:root:root:root[data-skin="light"] .ptr:before {
+:root[data-skin="light"] .ptr:before {
   background: radial-gradient(
     circle,
     color-mix(in srgb, var(--kg2) 38%, transparent) 0,
     color-mix(in srgb, var(--kg1) 16%, transparent) 45%,
     transparent 70%
-  ) !important;
+  );
 }
-:root:root:root .ptr svg.kgl {
+.ptr svg.kgl {
   filter: drop-shadow(0 0 3px color-mix(in srgb, var(--kg2) 70%, transparent))
-    drop-shadow(0 0 12px color-mix(in srgb, var(--kg2) 45%, transparent)) !important;
+    drop-shadow(0 0 12px color-mix(in srgb, var(--kg2) 45%, transparent));
 }
-:root:root:root[data-skin="light"] .ptr svg.kgl {
+:root[data-skin="light"] .ptr svg.kgl {
   filter: drop-shadow(0 0 2px color-mix(in srgb, var(--kg2) 45%, transparent))
-    drop-shadow(0 0 10px color-mix(in srgb, var(--kg2) 28%, transparent)) !important;
+    drop-shadow(0 0 10px color-mix(in srgb, var(--kg2) 28%, transparent));
 }
-:root:root:root .kgl .kgr {
-  stroke: color-mix(in srgb, var(--kg2) 18%, transparent) !important;
+.kgl .kgr {
+  stroke: color-mix(in srgb, var(--kg2) 18%, transparent);
 }
 :root:root:root .kgs {
   fill: var(--ink) !important;
@@ -3106,8 +3075,8 @@ html.dv-both .dspend {
 :root:root:root[data-skin="graphite"] #kz-pv svg:first-child {
   display: none !important;
 }
-:root:root:root[data-skin="graphite"] #kz-pv svg + svg {
-  display: block !important;
+:root[data-skin="graphite"] #kz-pv svg + svg {
+  display: block;
 }
 :root:root:root #theme-sheet .thsec {
   margin-top: 22px !important;
@@ -3115,22 +3084,22 @@ html.dv-both .dspend {
 :root:root:root #theme-sheet .thsec:first-of-type {
   margin-top: 6px !important;
 }
-:root:root:root #theme-sheet .thcap {
-  display: flex !important;
-  margin: 0 6px 10px !important;
+#theme-sheet .thcap {
+  display: flex;
+  margin: 0 6px 10px;
 }
 :root:root:root #theme-sheet .thcap b {
   display: none !important;
 }
-:root:root:root #theme-sheet .pl-row {
-  margin-top: 18px !important;
-  padding-top: 16px !important;
-  border-top: 1px dashed var(--line) !important;
+#theme-sheet .pl-row {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
 }
-:root:root:root #theme-sheet .kz-now .kzi {
-  margin-top: 16px !important;
-  padding-top: 16px !important;
-  border-top: 1px dashed var(--line) !important;
+#theme-sheet .kz-now .kzi {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
 }
 :root:root:root #theme-sheet .kzc {
   margin: 0 0 12px !important;
@@ -3325,13 +3294,13 @@ html.dv-both .dspend {
 /* ==========================================================================
    Plan page: four day chips; notification bar.
    ========================================================================== */
-:root:root:root #v-plan .seg-days.seg-4 {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  height: 50px !important;
-  box-sizing: border-box !important;
-  align-items: stretch !important;
-  border-radius: 20px !important;
+#v-plan .seg-days.seg-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: 50px;
+  box-sizing: border-box;
+  align-items: stretch;
+  border-radius: 20px;
 }
 :root:root:root #v-plan .seg-days.seg-4 > .chip {
   width: auto !important;
@@ -3368,11 +3337,6 @@ html.dv-both .dspend {
 }
 :root:root:root #v-alerts .noldt {
   padding: 0 17px !important;
-}
-.onbs:first-child .onbart svg,
-.lob .lobs:first-child svg {
-  -webkit-mask-image: radial-gradient(ellipse 46% 62% at 50% 44%, #000 50%, transparent 100%);
-  mask-image: radial-gradient(ellipse 46% 62% at 50% 44%, #000 50%, transparent 100%);
 }
 #v-profile .procap {
   margin-top: 4px;
@@ -3428,24 +3392,24 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
    Signature picker layout.
    ========================================================================== */
 .sigpick {
-  display: flex !important;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 22px !important;
-  margin: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 120px) !important;
+  gap: 22px;
+  margin: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 120px);
 }
 .sigpick .sgo {
   --ink: #2b2620;
   --muted: #8a8073;
   width: min(78%, 280px);
-  padding: 18px 14px 16px !important;
-  border: 0 !important;
-  border-radius: 3px !important;
-  background: #fbf8f1 repeating-linear-gradient(transparent 0 23px, rgba(70, 90, 140, 0.08) 23px 24px) !important;
-  color: #2b2620 !important;
+  padding: 18px 14px 16px;
+  border: 0;
+  border-radius: 3px;
+  background: #fbf8f1 repeating-linear-gradient(transparent 0 23px, rgba(70, 90, 140, 0.08) 23px 24px);
+  color: #2b2620;
   box-shadow:
     0 1px 1px rgba(0, 0, 0, 0.08),
-    0 10px 22px rgba(0, 0, 0, 0.14) !important;
+    0 10px 22px rgba(0, 0, 0, 0.14);
   transform: rotate(-3deg);
 }
 .sigpick .sgo:nth-child(2) {
@@ -3462,14 +3426,11 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
 .sigpick .sgo .sgf {
   display: none !important;
 }
-.sigpick .sgo small {
-  color: #8a8073 !important;
-}
 :root[data-skin="graphite"] .sigpick .sgo {
-  background-color: #ece6d8 !important;
+  background-color: #ece6d8;
 }
 .gpick {
-  margin: 0 !important;
+  margin: 0;
   padding: 14px 0 16px;
   border-top: 1px dashed var(--line);
 }
@@ -3490,8 +3451,8 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
   gap: 6px;
 }
 .gpick button {
-  background: transparent !important;
-  padding: 10px 2px 8px !important;
+  background: transparent;
+  padding: 10px 2px 8px;
 }
 
 /* ==========================================================================
@@ -3515,14 +3476,14 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
   --brand-soft: #e3e9f4 !important;
   --band: #f5f8fc !important;
 }
-:root:root:root[data-pal="sage"][data-skin="light"] {
-  --bg: #e7ece6 !important;
-  --surface: #fbfcfa !important;
-  --soft: #f2f5f1 !important;
-  --line: #d8dfd8 !important;
-  --tile: #edf1ec !important;
-  --brand-soft: #e4ebe6 !important;
-  --band: #f6f8f6 !important;
+:root[data-pal="sage"][data-skin="light"] {
+  --bg: #e7ece6;
+  --surface: #fbfcfa;
+  --soft: #f2f5f1;
+  --line: #d8dfd8;
+  --tile: #edf1ec;
+  --brand-soft: #e4ebe6;
+  --band: #f6f8f6;
 }
 :root:root:root[data-pal="lilac"][data-skin="light"] {
   --bg: #ebe8f3 !important;
@@ -3547,15 +3508,15 @@ html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] sv
    Home card: Span and Spend blocks.
    ========================================================================== */
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan {
-  display: block !important;
-  padding-top: 0 !important;
+  display: block;
+  padding-top: 0;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend > .dayroute {
-  margin-bottom: 0 !important;
+  margin-bottom: 0;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan > .dayroute {
   display: none !important;
@@ -3573,9 +3534,8 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
 :root:root .sigpick .sgo:nth-child(n + 2) {
   display: none !important;
 }
-:root:root .sigpick {
-  margin-top: 158px !important;
-  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px) !important;
+.sigpick {
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
 }
 :root:root .sigpick .sgo,
 :root:root .sigpick .sgo:active,
@@ -3588,8 +3548,8 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
   color: var(--ink) !important;
   padding: 0 !important;
 }
-:root:root .sigpick .sgo small {
-  color: var(--muted) !important;
+.sigpick .sgo small {
+  color: var(--muted);
 }
 
 /* ==========================================================================
@@ -3636,13 +3596,13 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
    Plans sheet: four plan tabs and add-on row.
    ========================================================================== */
 .p2seg.p2seg4 {
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr);
 }
 .p2seg4 button {
-  font-size: 0.88rem !important;
+  font-size: 0.88rem;
 }
 .p2cmp4 .p2r {
-  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr)) !important;
+  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr));
 }
 .p2add {
   display: flex;
@@ -3714,8 +3674,8 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
 /* ==========================================================================
    Plans sheet: offer price line.
    ========================================================================== */
-:root:root:root #plans-sheet .p2ck {
-  stroke: var(--link) !important;
+#plans-sheet .p2ck {
+  stroke: var(--link);
   color: var(--link);
 }
 :root:root:root .p2card.hasofl .p2price {
@@ -3749,16 +3709,16 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
 :root:root:root .offtag.on > i {
   background: #2fbf71 !important;
 }
-:root:root:root .hometop .acnt {
-  background: #f0565e !important;
+.hometop .acnt {
+  background: #f0565e;
 }
 
 /* ==========================================================================
    What's new tag, notification style chips.
    ========================================================================== */
-:root:root .wntag.wnlat {
-  background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
-  color: var(--link) !important;
+.wntag.wnlat {
+  background: color-mix(in srgb, var(--link) 14%, var(--surface));
+  color: var(--link);
 }
 .nstyles {
   display: flex;
@@ -3895,44 +3855,44 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
    Home card: Span block layout.
    ========================================================================== */
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan {
-  margin-top: 6px !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+  margin-top: 6px;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan .dstrack {
-  visibility: hidden !important;
+  visibility: hidden;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan .dsrows {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan + .wxlocrow {
-  margin-top: 6px !important;
-  padding-top: 10px !important;
+  margin-top: 6px;
+  padding-top: 10px;
 }
 
 /* ==========================================================================
    Plans sheet: plan header and pills.
    ========================================================================== */
-:root:root:root:root #plans-sheet .p2head.p2hr {
-  grid-template-columns: 1fr 48px !important;
-  text-align: left !important;
-  align-items: start !important;
+#plans-sheet .p2head.p2hr {
+  grid-template-columns: 1fr 48px;
+  text-align: left;
+  align-items: start;
 }
-:root:root:root:root #plans-sheet .p2hr .p2nm {
-  text-align: left !important;
-  align-items: flex-start !important;
+#plans-sheet .p2hr .p2nm {
+  text-align: left;
+  align-items: flex-start;
 }
-:root:root:root:root #plans-sheet .p2hr .ptile {
-  width: 48px !important;
-  height: 48px !important;
-  background: none !important;
-  box-shadow: none !important;
-  border: 0 !important;
+#plans-sheet .p2hr .ptile {
+  width: 48px;
+  height: 48px;
+  background: none;
+  box-shadow: none;
+  border: 0;
 }
-:root:root:root:root #plans-sheet .p2hr .ptile svg {
-  width: 40px !important;
-  height: 40px !important;
+#plans-sheet .p2hr .ptile svg {
+  width: 40px;
+  height: 40px;
 }
 .p2pills {
   display: flex;
@@ -3969,12 +3929,12 @@ html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan + .wxlocrow {
   }
 }
 html.sheet-bottom:root:root:root .sheet:not([hidden]):not(.shghost) {
-  animation: iosup2 0.52s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  animation: iosup2 0.52s cubic-bezier(0.22, 1, 0.36, 1);
 }
 html.sheet-bottom:root:root:root .sheet.shghost {
   animation: iosdn 0.32s cubic-bezier(0.4, 0, 0.6, 1) forwards;
 }
-:root:root #scrim:not([hidden]) {
+#scrim:not([hidden]) {
   animation: scrimin 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 :root:root .scrimghost {
@@ -4013,8 +3973,8 @@ html.sheet-bottom:root:root:root .sheet.shghost {
     opacity: 0;
   }
 }
-:root:root:root:root .vmore > .pghead {
-  padding-bottom: 12px !important;
+.vmore > .pghead {
+  padding-bottom: 12px;
 }
 
 /* ==========================================================================
@@ -4087,14 +4047,11 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   line-height: 30px !important;
   letter-spacing: normal !important;
 }
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
-  padding-top: 14px !important;
-}
-:root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
-  padding-top: 4px !important;
-  margin-top: 0 !important;
-  z-index: 19 !important;
-  box-shadow: none !important;
+:is(#v-days, #v-route, #v-plan) .vz > .chips {
+  padding-top: 4px;
+  margin-top: 0;
+  z-index: 19;
+  box-shadow: none;
 }
 
 /* ==========================================================================
@@ -4107,17 +4064,17 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   margin: 0 0 12px !important;
   align-items: center !important;
 }
-:root:root:root:root:root #v-home > .hometop {
-  margin: 0 0 12px !important;
+#v-home > .hometop {
+  margin: 0 0 12px;
 }
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
-  display: block !important;
+:is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
+  display: block;
 }
-:root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
-  top: calc(env(safe-area-inset-top, 0px) + var(--hdr2) - 2px) !important;
+:is(#v-days, #v-route, #v-plan) .vz > .chips {
+  top: calc(env(safe-area-inset-top, 0px) + var(--hdr2) - 2px);
 }
-:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead + * {
-  margin-top: 0 !important;
+:is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead + * {
+  margin-top: 0;
 }
 
 /* ==========================================================================
@@ -4148,14 +4105,14 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   min-height: 0 !important;
   padding-bottom: 0 !important;
 }
-:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
-  padding-top: calc(var(--hdr2) + 7px) !important;
+:is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
+  padding-top: calc(var(--hdr2) + 7px);
 }
-:root:root:root:root:root:root #v-profile {
-  padding-top: calc(var(--hdr2) + 3px) !important;
+#v-profile {
+  padding-top: calc(var(--hdr2) + 3px);
 }
-:root:root:root:root:root #v-home {
-  padding-top: calc(var(--hdrh) + 7px) !important;
+#v-home {
+  padding-top: calc(var(--hdrh) + 7px);
 }
 
 /* ==========================================================================
@@ -4173,8 +4130,8 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   --hdr2: 58px;
   --hdrh: 78px;
 }
-:root:root:root:root:root #v-home > .hometop {
-  align-items: center !important;
+#v-home > .hometop {
+  align-items: center;
 }
 :root:root:root:root #v-profile .setcap.procap {
   padding-top: 2px !important;
@@ -4188,8 +4145,8 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 :root:root:root:root .sigpick .sgw {
   font-weight: 400 !important;
 }
-:root:root:root:root .sigpick {
-  margin-top: 22px !important;
+.sigpick {
+  margin-top: 22px;
 }
 :root:root:root:root .offtag .odot,
 :root:root:root:root .offtag > i {
@@ -4202,33 +4159,26 @@ html.sheet-bottom:root:root:root .sheet.shghost {
   vertical-align: -0.02em !important;
   margin: 0 0.02em !important;
 }
-:root:root:root:root .offtag .odot {
+.offtag .odot {
   color: #f0565e;
 }
-:root:root:root:root .offtag.on .odot {
+.offtag.on .odot {
   color: #2fbf71;
 }
 :root:root:root:root #v-profile .setrow:has(.devdanger) .seti {
   background: color-mix(in srgb, #e5484d 13%, transparent) !important;
   color: #e5484d !important;
 }
-:root:root:root:root #v-profile .setrow:has(.devdanger) .seti svg {
-  color: #e5484d !important;
-  stroke: #e5484d;
-}
 :root:root:root:root #theme-sheet .kz-pcap,
 :root:root:root:root #theme-sheet #kz-presets,
 :root:root:root:root #theme-sheet .thnote2 {
   display: none !important;
 }
-:root:root:root:root .psheet > .shtitle {
-  padding-bottom: 6px !important;
+.psheet > .shtitle {
+  padding-bottom: 6px;
 }
 :root:root:root:root .psheet > .shtitle + * {
   margin-top: 10px !important;
-}
-:root:root:root:root #theme-sheet {
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
 }
 :root:root:root:root #theme-sheet > :last-child {
   margin-bottom: 0 !important;
@@ -4264,19 +4214,19 @@ html.sheet-bottom:root:root:root .sheet.shghost {
 :root:is([data-skin="graphite"], [data-skin="midnight"], [data-skin="navy"]) {
   --dng: #ff6369;
 }
-:root:root:root:root:root #v-profile .setrow .setbtn.devdanger {
-  background: color-mix(in srgb, var(--dng) 13%, transparent) !important;
-  color: var(--dng) !important;
-  border: 0 !important;
-  box-shadow: none !important;
+#v-profile .setrow .setbtn.devdanger {
+  background: color-mix(in srgb, var(--dng) 13%, transparent);
+  color: var(--dng);
+  border: 0;
+  box-shadow: none;
 }
 :root:root:root:root:root #v-profile .setrow:has(.devdanger) .seti {
   background: color-mix(in srgb, var(--dng) 13%, transparent) !important;
   color: var(--dng) !important;
 }
-:root:root:root:root:root #v-profile .setrow:has(.devdanger) .seti svg {
-  color: var(--dng) !important;
-  stroke: var(--dng) !important;
+#v-profile .setrow:has(.devdanger) .seti svg {
+  color: var(--dng);
+  stroke: var(--dng);
 }
 
 /* ==========================================================================
@@ -4349,19 +4299,19 @@ html:has(.chatsh:not([hidden])) #kssb {
 :root:root:root:root:root #theme-sheet .thsec:last-child {
   margin-bottom: 0 !important;
 }
-:root:root:root:root:root #theme-sheet .kz-now {
-  margin-bottom: 0 !important;
-  padding-bottom: 22px !important;
+#theme-sheet .kz-now {
+  margin-bottom: 0;
+  padding-bottom: 22px;
 }
 
 /* ==========================================================================
    Avatar faces in pickers.
    ========================================================================== */
-:root:root:root:root:root svg.kav {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  color: inherit !important;
+svg.kav {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
 }
 :root:root:root:root:root .avemo:has(svg.kav),
 :root:root:root:root:root .avopt:has(svg.kav) {
@@ -4383,13 +4333,13 @@ svg.kav {
   --kc: var(--kc1);
 }
 html.dim {
-  background-color: color-mix(in srgb, var(--bg) 42%, #000) !important;
+  background-color: color-mix(in srgb, var(--bg) 42%, #000);
   transition: background-color 0.16s ease-out;
 }
 html {
   transition: background-color 0.16s ease-out;
 }
-:root:root:root:root:root body {
+body {
   background-color: var(--bg);
 }
 
@@ -4405,13 +4355,13 @@ html:is(.dv-both, .dv-span)
 /* ==========================================================================
    Sticky sheet buttons; group member editor.
    ========================================================================== */
-:root:root:root:root:root .sheet.psheet > .btn.full:not([hidden]) {
-  position: sticky !important;
-  z-index: 6 !important;
+.sheet.psheet > .btn.full:not([hidden]) {
+  position: sticky;
+  z-index: 6;
   box-shadow:
     0 0 0 14px var(--shbg, var(--bg)),
     0 26px 0 14px var(--shbg, var(--bg)),
-    0 -16px 18px 6px var(--shbg, var(--bg)) !important;
+    0 -16px 18px 6px var(--shbg, var(--bg));
 }
 :root:root:root:root:root #grp-sheet .gmc.open {
   background: var(--surface) !important;
@@ -4427,37 +4377,37 @@ html:is(.dv-both, .dv-span)
   border-top: 1px dashed var(--line) !important;
   margin: 0 0 0 !important;
 }
-:root:root:root:root:root #grp-sheet .gmrow2 {
-  gap: 8px !important;
-  margin-top: 14px !important;
+#grp-sheet .gmrow2 {
+  gap: 8px;
+  margin-top: 14px;
 }
-:root:root:root:root:root #grp-sheet .segc {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-  padding: 0 !important;
-  background: none !important;
-  border-radius: 0 !important;
+#grp-sheet .segc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border-radius: 0;
 }
-:root:root:root:root:root #grp-sheet .segc button {
-  flex: 1 1 0 !important;
-  min-width: 0 !important;
-  padding: 9px 4px !important;
-  border-radius: 14px !important;
-  background: color-mix(in srgb, var(--ink) 4%, var(--surface)) !important;
-  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent) !important;
-  box-shadow: none !important;
-  gap: 1px !important;
+#grp-sheet .segc button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 9px 4px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ink) 4%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow: none;
+  gap: 1px;
   transition:
     background 0.15s,
     color 0.15s;
 }
-:root:root:root:root:root #grp-sheet .segc button b {
-  font-size: 0.86rem !important;
-  font-weight: 550 !important;
+#grp-sheet .segc button b {
+  font-size: 0.86rem;
+  font-weight: 550;
 }
-:root:root:root:root:root #grp-sheet .segc button small {
-  font-size: 0.68rem !important;
+#grp-sheet .segc button small {
+  font-size: 0.68rem;
 }
 :root:root:root:root:root #grp-sheet .segc button[aria-pressed="true"] {
   background: var(--ink) !important;
@@ -4499,8 +4449,8 @@ html:is(.dv-both, .dv-span)
   border-radius: 999px !important;
   font-size: 0.86rem !important;
 }
-:root:root:root:root:root #grp-sheet .gmrow2 > span {
-  font-size: 0.7rem !important;
+#grp-sheet .gmrow2 > span {
+  font-size: 0.7rem;
 }
 
 /* ==========================================================================
@@ -4513,23 +4463,23 @@ html:is(.dv-both, .dv-span)
 /* ==========================================================================
    More page art position.
    ========================================================================== */
-:root:root:root #v-profile .khart {
-  margin-top: 28px !important;
+#v-profile .khart {
+  margin-top: 28px;
 }
 
 /* ==========================================================================
    Group sheet editor.
    ========================================================================== */
-:root:root:root:root:root #grp-sheet.gxon #grp-members {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
-  clip-path: inset(50%) !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+#grp-sheet.gxon #grp-members {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  opacity: 0;
+  pointer-events: none;
 }
-:root:root:root:root:root #grp-sheet .gxed {
+#grp-sheet .gxed {
   margin-top: 6px;
 }
 :root:root:root:root:root #grp-sheet .gxed .gmrow2:first-of-type {
@@ -4580,7 +4530,7 @@ html:is(.dv-both, .dv-span)
 :root:root:root:root:root #grp-sheet .gxfoot[hidden] {
   display: none;
 }
-:root:root:root:root:root #grp-sheet .gprev .gstack i {
+#grp-sheet .gprev .gstack i {
   cursor: pointer;
   transition:
     transform 0.18s cubic-bezier(0.32, 0.72, 0, 1),
@@ -4613,23 +4563,23 @@ html:is(.dv-both, .dv-span)
 :root:root:root:root:root .sheet.psheet {
   padding-bottom: 24px !important;
 }
-:root:root:root:root:root #theme-sheet {
-  padding-bottom: 24px !important;
+#theme-sheet {
+  padding-bottom: 24px;
 }
 :root:root:root:root:root .sheet.psheet > .btn.full:not([hidden]) {
   bottom: 0 !important;
   margin-top: 22px !important;
 }
-:root:root:root:root:root #v-profile .sigpick {
-  margin-top: 56px !important;
+#v-profile .sigpick {
+  margin-top: 56px;
   transform-origin: 50% 0;
 }
 :root:root:root:root:root #grp-sheet #grp-addm {
   display: none !important;
 }
-:root:root:root:root:root #grp-sheet .gadd input {
-  width: 100% !important;
-  flex: 1 1 auto !important;
+#grp-sheet .gadd input {
+  width: 100%;
+  flex: 1 1 auto;
 }
 :root:root:root:root:root #grp-sheet #grp-save.gxadd {
   background: transparent !important;
@@ -4640,14 +4590,14 @@ html:is(.dv-both, .dv-span)
 /* ==========================================================================
    Placeholder text colour (lighter than typed text).
    ========================================================================== */
-:root:root:root:root input::placeholder,
-:root:root:root:root textarea::placeholder {
-  color: color-mix(in srgb, var(--ink) 34%, transparent) !important;
-  -webkit-text-fill-color: color-mix(in srgb, var(--ink) 34%, transparent) !important;
-  opacity: 1 !important;
-  font-weight: 400 !important;
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--ink) 34%, transparent);
+  -webkit-text-fill-color: color-mix(in srgb, var(--ink) 34%, transparent);
+  opacity: 1;
+  font-weight: 400;
 }
-:root:root:root:root :is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
+:is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
   color: var(--ink);
 }
 
@@ -4730,19 +4680,19 @@ html:is(.dv-both, .dv-span)
   justify-content: center;
   align-self: center;
 }
-:root:root:root:root .onbs:first-child .onbart svg,
-:root:root:root:root .lob .lobs:first-child svg {
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
+.onbs:first-child .onbart svg,
+.lob .lobs:first-child svg {
+  -webkit-mask-image: none;
+  mask-image: none;
 }
-:root:root:root:root #login-fine {
+#login-fine {
   white-space: nowrap;
-  font-size: 0.8rem !important;
+  font-size: 0.8rem;
 }
-:root:root:root:root:root #v-profile .sigpick {
-  transform: scale(0.55) !important;
+#v-profile .sigpick {
+  transform: scale(0.55);
   opacity: 0.55;
-  margin-bottom: -36px !important;
+  margin-bottom: -36px;
 }
 
 /* ==========================================================================
@@ -4932,7 +4882,7 @@ html:is(.dv-both, .dv-span)
     opacity: 0.25 !important;
   }
 }
-:root:root:root:root .lbtips.lbtl {
+.lbtips.lbtl {
   background: none;
   border: 0;
   border-radius: 0;
@@ -4962,7 +4912,7 @@ html:is(.dv-both, .dv-span)
   z-index: 1;
 }
 .lbtl li:first-child > span {
-  background: var(--ink) !important;
+  background: var(--ink);
   color: var(--surface);
 }
 .lbtl li > div {
@@ -4973,7 +4923,7 @@ html:is(.dv-both, .dv-span)
   margin-top: 2px;
   line-height: 1.4;
 }
-:root:root:root:root #acct-signin {
+#acct-signin {
   margin-bottom: 6px;
 }
 :root:root:root:root .acnote {
@@ -4982,9 +4932,9 @@ html:is(.dv-both, .dv-span)
   margin-left: auto !important;
   margin-right: auto !important;
 }
-:root:root:root:root #login-fine {
-  text-overflow: clip !important;
-  overflow: visible !important;
+#login-fine {
+  text-overflow: clip;
+  overflow: visible;
 }
 .lart,
 .lcopy,
@@ -5009,28 +4959,27 @@ html:is(.dv-both, .dv-span)
   padding-top: 18px !important;
   clip-path: none !important;
 }
-:root:root:root:root:root:root .wxlocrow {
-  gap: 10px !important;
+.wxlocrow {
+  gap: 10px;
 }
-:root:root:root:root:root:root .wxlocrow > svg {
-  width: 18px !important;
-  height: 18px !important;
-  margin-left: 2px !important;
+.wxlocrow > svg {
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
   flex: none;
 }
 :root:root:root:root:root:root .wxrowico {
   margin-left: 2px !important;
   margin-right: 10px !important;
 }
-:root:root:root:root:root:root :is(.wxrowico, .wxrowico .ic, .wxrowico .il, .wxrowico svg) {
-  width: 18px !important;
-  height: 18px !important;
-  min-width: 18px !important;
+:is(.wxrowico, .wxrowico .ic, .wxrowico .il, .wxrowico svg) {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
   flex: none;
 }
 
-:root:root:root:root
-  body
+body
   #v-home#v-home
   :is(
     .wxlocrow svg,
@@ -5043,62 +4992,62 @@ html:is(.dv-both, .dv-span)
     .dpmeta .ph,
     .dsrows .ph
   ) {
-  width: 18px !important;
-  height: 18px !important;
-  min-width: 18px !important;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
 }
-:root:root:root:root body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
-  margin-left: 2px !important;
+body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
+  margin-left: 2px;
 }
 :root:root:root:root #confirm:has(.kdm) #cf-go {
   background: var(--accent) !important;
   color: var(--on-accent) !important;
   border-color: transparent !important;
 }
-:root:root:root:root:root .lbsz .lbblk {
-  background: color-mix(in srgb, var(--ink) 9%, transparent) !important;
+.lbsz .lbblk {
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
 }
-:root:root:root:root:root .lbsz .lbp.p1 .lbblk {
-  background: color-mix(in srgb, var(--ink) 15%, transparent) !important;
+.lbsz .lbp.p1 .lbblk {
+  background: color-mix(in srgb, var(--ink) 15%, transparent);
 }
-:root:root:root:root:root .lbsz .lbav {
+.lbsz .lbav {
   box-shadow:
     0 0 0 3px var(--bg),
     0 0 0 4px color-mix(in srgb, var(--ink) 12%, transparent);
 }
-:root:root:root:root .acx .xav.kxav i {
+.acx .xav.kxav i {
   overflow: hidden;
-  background: none !important;
+  background: none;
   padding: 0;
 }
-:root:root:root:root .acx .xav.kxav i svg.kav {
-  width: 100% !important;
-  height: 100% !important;
+.acx .xav.kxav i svg.kav {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
 /* ==========================================================================
    Plans: halftone icon sizes.
    ========================================================================== */
-:root:root:root:root:root #plans-sheet .ptile.kpt {
-  background: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  width: 56px !important;
-  height: 56px !important;
+#plans-sheet .ptile.kpt {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  width: 56px;
+  height: 56px;
 }
-:root:root:root:root:root #plans-sheet .ptile.kpt svg.kpic {
-  width: 56px !important;
-  height: 56px !important;
+#plans-sheet .ptile.kpt svg.kpic {
+  width: 56px;
+  height: 56px;
   overflow: visible;
 }
-:root:root:root:root:root #plans-sheet .p2ai.kpt {
-  background: none !important;
-  width: 44px !important;
-  height: 44px !important;
+#plans-sheet .p2ai.kpt {
+  background: none;
+  width: 44px;
+  height: 44px;
 }
-:root:root:root:root:root #plans-sheet .p2ai.kpt svg.kpic {
-  width: 44px !important;
-  height: 44px !important;
+#plans-sheet .p2ai.kpt svg.kpic {
+  width: 44px;
+  height: 44px;
 }
