@@ -8034,7 +8034,10 @@ try {
           function sendChat(t) {
             if (((t = (t || "").trim()), !!t)) {
               addChatMessage("me", escapeHtml(t));
-              var a = addChatMessage("ai typing", "<span></span><span></span><span></span>"),
+              var a = addChatMessage(
+                  "ai typing",
+                  (window.__ksMark && window.__ksMark("ksload loop kstype")) || "<span></span><span></span><span></span>",
+                ),
                 i = localAnswer(t);
               if (i) {
                 setTimeout(function () {
@@ -13164,6 +13167,20 @@ try {
       };
       var k = (window.__CHANGES = [
           {
+            b: "551",
+            d: "7 Nov 2026",
+            s: "The Kosway pin is now the app's loader.",
+            n: [
+              "Pull to refresh, Refreshing and Atlas typing show the Kosway pin dropping in",
+            ],
+            f: [
+              "Tapping the build number again says developer options are already on",
+            ],
+            u: [
+              "The opening screen uses the Drop animation",
+            ],
+          },
+          {
             b: "550",
             d: "7 Nov 2026",
             s: "A cleaner opening screen and updates at the bottom.",
@@ -13436,6 +13453,14 @@ try {
           q &&
             ((q.style.cursor = "default"),
             q.addEventListener("click", function () {
+              /* already on: say so instead of counting again */
+              var on0 = document.getElementById("devgrp");
+              if (on0 && !on0.hidden && !(document.querySelector(".devcap") || {}).hidden) {
+                G = 0;
+                clearTimeout(Qt);
+                window.__toast && window.__toast("Developer options are already on");
+                return;
+              }
               if (
                 (G++,
                 clearTimeout(Qt),
@@ -13445,7 +13470,7 @@ try {
                 G >= 3 &&
                   G < 7 &&
                   window.__toast &&
-                  window.__toast(7 - G + " more taps for developer options", 1200),
+                  window.__toast(7 - G + (G === 6 ? " more tap" : " more taps") + " for developer options", 1200),
                 G >= 7)
               ) {
                 (G = 0), l("vizag-dev-unlock", "1"), l("vizag-dev", "1"), l("vizag-dev-off", null);

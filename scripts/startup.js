@@ -291,14 +291,24 @@ try {
   (function () {
     var d = document,
       done = 0,
-      t0 = Date.now(),
-      ksa = "glide";
-    /* Logo animation picked in Developer options (Glide, Rise or Drop) */
-    try {
-      ksa = localStorage.getItem("vizag-splash") || ksa;
-    } catch (err) {}
-    if (!/^(glide|rise|drop)$/.test(ksa)) ksa = "glide";
-    d.documentElement.setAttribute("data-ksa", ksa);
+      t0 = Date.now();
+    /* Kosway mark as a loader anywhere in the app: __ksMark("ksload loop")
+       returns the splash logo SVG with its own ids (masks and patterns need
+       unique ids per copy). Classes: ksload = drop once; loop = keeps hopping. */
+    var markN = 0;
+    window.__ksMark = function (cls) {
+      var src = window.__ksLogo;
+      if (!src) {
+        var sp = d.getElementById("kssplash");
+        src = window.__ksLogo = sp ? sp.innerHTML : "";
+      }
+      if (!src) return "";
+      var k = "m" + ++markN;
+      return src
+        .replace(/id="([a-z]+)"/g, 'id="$1' + k + '"')
+        .replace(/url\(#([a-z]+)\)/g, "url(#$1" + k + ")")
+        .replace('class="kslogo"', 'class="kslogo ' + String(cls || "ksload").replace(/[^a-z0-9 -]/gi, "") + '"');
+    };
     /* Android: stop Chrome's own pull-to-refresh so the Kosway globe shows */
     if (/Android/i.test(navigator.userAgent)) d.documentElement.classList.add("android");
     function hide() {
@@ -309,7 +319,7 @@ try {
       done = 1;
       var e = d.getElementById("kssplash");
       if (!e) return;
-      window.__ksLogo = e.innerHTML;
+      window.__ksLogo = window.__ksLogo || e.innerHTML;
       e.classList.add("go");
       setTimeout(function () {
         e.remove();

@@ -51,7 +51,6 @@
    46. Atlas AI switch: turning Atlas on picks the AI for you; off switches AI off.
    47. Opens Home and Days on today's day while a trip is on.
    48. More: Customisation sits right below Profile.
-   49. Developer options: splash animation picker with a live preview.
 */
 
 /* ==========================================================================
@@ -3414,7 +3413,13 @@ try {
         setTimeout(setupGlobe, 500);
         return;
       }
-      if (t.querySelector(".kgl")) return;
+      if (t.querySelector(".kgl,.ksptr")) return;
+      /* 550: the Kosway mark (drop animation) replaces the globe */
+      var mk = window.__ksMark && window.__ksMark("ksload ksptr");
+      if (mk) {
+        t.insertAdjacentHTML("beforeend", mk);
+        return;
+      }
       t.insertAdjacentHTML(
         "beforeend",
         '<svg class="kgl" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="kglg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--kg1)"/><stop offset=".55" style="stop-color:var(--kg2)"/><stop offset="1" style="stop-color:var(--kg3)"/></linearGradient><clipPath id="kglc"><circle cx="50" cy="50" r="34"/></clipPath></defs><circle class="kgr" cx="50" cy="50" r="44"/><path class="kgp" pathLength="1" d="M50 6a44 44 0 1 1 0 88a44 44 0 1 1 0-88"/><g clip-path="url(#kglc)"><g class="kgb"></g></g></svg>',
@@ -3609,17 +3614,19 @@ try {
       tg.classList.add("rfx");
       /* Same line globe as the online/offline reveal, rolling across the text */
       var w = tx.getBoundingClientRect().width || 80;
-      var old = tg.querySelector(".netroll");
+      var old = tg.querySelector(".netroll,.ksmini");
       old && old.remove();
+      var mk = window.__ksMark && window.__ksMark("ksload ksmini");
       tg.insertAdjacentHTML(
         "afterbegin",
-        '<svg class="netroll rfroll" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg>',
+        mk ||
+          '<svg class="netroll rfroll" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3z"/></svg>',
       );
-      var sv = tg.querySelector(".netroll");
+      var sv = tg.querySelector(".netroll,.ksmini");
       sv.style.setProperty("--dx", Math.round(w - 10) + "px");
       setTimeout(function () {
         sv.remove();
-      }, 1000);
+      }, 1600);
     }
     function hook() {
       var t = doc.querySelector(".ptr");
@@ -6182,60 +6189,4 @@ try {
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "More: Customisation sits right below Profile.", err);
-}
-
-/* ==========================================================================
-   Developer options: splash animation picker with a live preview.
-   Saves the choice in vizag-splash; startup.js reads it on the next launch.
-   ========================================================================== */
-try {
-  (function () {
-    var doc = document,
-      root = doc.documentElement;
-    function mark() {
-      var cur = root.getAttribute("data-ksa") || "glide";
-      doc.querySelectorAll("[data-ksa]").forEach(function (b) {
-        if (b === root) return;
-        b.setAttribute("aria-pressed", b.dataset.ksa === cur ? "true" : "false");
-      });
-    }
-    function preview() {
-      if (!window.__ksLogo) return;
-      var old = doc.getElementById("kssplash");
-      old && old.remove();
-      var e = doc.createElement("div");
-      e.id = "kssplash";
-      e.className = "kspv";
-      e.setAttribute("aria-hidden", "true");
-      e.innerHTML = window.__ksLogo;
-      doc.body.appendChild(e);
-      var gone = 0;
-      function close() {
-        if (gone) return;
-        gone = 1;
-        e.classList.add("go");
-        setTimeout(function () {
-          e.remove();
-        }, 320);
-      }
-      e.addEventListener("click", close);
-      setTimeout(close, 2200);
-    }
-    doc.addEventListener("click", function (ev) {
-      var b = ev.target.closest && ev.target.closest("button[data-ksa]");
-      if (!b) return;
-      ev.stopPropagation();
-      var v = b.dataset.ksa;
-      if (!/^(glide|rise|drop)$/.test(v)) return;
-      root.setAttribute("data-ksa", v);
-      try {
-        localStorage.setItem("vizag-splash", v);
-      } catch (e) {}
-      mark();
-      preview();
-    });
-    mark();
-  })();
-} catch (err) {
-  console.error("[Kosway] part failed:", "Developer options: splash animation picker with a live preview.", err);
 }
