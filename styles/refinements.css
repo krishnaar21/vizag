@@ -1,0 +1,5632 @@
+/* refinements.css
+
+   Fine-tuning added after the base styles: newer screens, spacing fixes and theme tweaks. Many rules start with repeated ":root" so they win over older rules; step 2 of the cleanup will merge these into base.css.
+
+   Sections, in the order they apply (later ones win when two rules clash):
+    1. Drag-to-checkbox zone.
+    2. Notification and alert icons, sound settings row.
+    3. Plan tags, ticked checklist items, Home summary grid.
+    4. Palette picker rows and icon maker rows.
+    5. Top blur bar, Profile/More account card actions.
+    6. Alert cards and settings sub-rows.
+    7. Onboarding art and screen transitions.
+    8. App icon 'match theme' switch, account card icons.
+    9. Pull-to-refresh globe.
+   10. Light palettes: tinted icon tiles.
+   11. 'Refreshing...' roll under the Home title.
+   12. Online/offline dot in the Home tag.
+   13. Leaderboard rows and account buttons.
+   14. Signature picker at the bottom of More.
+   15. Home title and its status tag.
+   16. Light palettes: account card and Profile body.
+   17. Account avatar, Profile ID card, onboarding art sizes.
+   18. Theme colour tokens per palette.
+   19. Section caption style, app icon preview, theme sheet sections.
+   20. Plan page: alerts section and day chips.
+   21. Plan page: four day chips; notification bar.
+   22. Plans sheet: offer timer.
+   23. Nav bar 'Shadow' style.
+   24. Signature picker layout.
+   25. Light palettes: more tinted surfaces.
+   26. Home card: Span and Spend blocks.
+   27. Signature picker: secondary options.
+   28. Top blur bar.
+   29. Signature writing animation.
+   30. Plans sheet: four plan tabs and add-on row.
+   31. Plans sheet: offer price line.
+   32. Home tag dot and badge.
+   33. What's new tag, notification style chips.
+   34. Home card: Span block layout.
+   35. Plans sheet: plan header and pills.
+   36. Sheet open and close animation, scrim.
+   37. Header hairline animation.
+   38. More header, signature end state.
+   39. Home header when scrolled, sub-tab chips, plan card.
+   40. Page headers: sizes and positions.
+   41. Page headers: fixed position and spacing.
+   42. Page headers: final layout for every tab.
+   43. Main area and nav: no transforms (keeps fixed headers steady).
+   44. Header heights, Profile stats, signature size.
+   45. More page landscape art.
+   46. Red colour for Reset and Delete, developer danger rows.
+   47. Notification rows: icon and time, title, text.
+   48. Dimmed band behind the status bar when a sheet is open.
+   49. Theme sheet bottom spacing.
+   50. Avatar faces in pickers.
+   51. Avatar colours in light and dark; dimmed page behind sheets.
+   52. Stay row icon.
+   53. Sticky sheet buttons; group member editor.
+   54. Home card: hides a duplicate stay row.
+   55. More page art position.
+   56. Group sheet editor.
+   57. Sheet bottom spacing, signature size, group sheet add button.
+   58. Placeholder text colour (lighter than typed text).
+   59. Top travellers 'Coming soon' sheet and tips.
+   60. List sheet titles, Top travellers podium and tip timeline, More note, sign-in demo line.
+   61. Floating Plans and Top travellers sheets, Home card icon sizes, podium colours, Leave demo button.
+   62. Plans: halftone icon sizes.
+*/
+
+/* ==========================================================================
+   Drag-to-checkbox zone.
+   ========================================================================== */
+:root .cbzone {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--brand) 55%, var(--bg)),
+    color-mix(in srgb, var(--brand) 30%, transparent) 50%,
+    transparent
+  ) !important;
+}
+:root .cbzone.hot {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--brand) 80%, var(--bg)),
+    color-mix(in srgb, var(--brand) 45%, transparent) 55%,
+    transparent
+  ) !important;
+}
+:root .cbzone .cbx,
+:root .cbzone.hot .cbx {
+  width: 46px !important;
+  height: 46px !important;
+  border: 0 !important;
+  background: var(--brand) !important;
+  color: var(--on-accent) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+:root .cbzone .cbx svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+:root .cbzone b {
+  color: var(--ink) !important;
+  text-shadow: none !important;
+}
+
+/* ==========================================================================
+   Notification and alert icons, sound settings row.
+   ========================================================================== */
+:root {
+  --strike: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M1 7.2C12 4.6 22 8.8 36 6.4S62 4.2 78 6.9 94 5.8 99 4.8' fill='none' stroke='%231D5FD1' stroke-width='2.2' stroke-linecap='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E");
+}
+#snd-style.sndsub {
+  display: flex;
+}
+#snd-style > .setl {
+  margin-left: 52px;
+}
+:root:root .alert .aico,
+:root:root .nci {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 13px !important;
+  justify-content: center !important;
+  align-content: center !important;
+  justify-items: center !important;
+}
+:root:root .alert .aico > .ic,
+:root:root .nci > * {
+  grid-area: 1/1 !important;
+}
+:root:root .alert .aico svg,
+:root:root .nci svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+:root:root:root #plans-sheet.shghost {
+  animation: ppout 0.26s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+@keyframes ppout {
+  to {
+    translate: 0 48px;
+    opacity: 0;
+  }
+}
+.pp-price {
+  text-align: left !important;
+  padding: 14px !important;
+  border-radius: 26px !important;
+  border: 1px solid color-mix(in srgb, var(--link) 22%, var(--line)) !important;
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--link) 16%, var(--surface)),
+    var(--surface) 72%
+  ) !important;
+}
+.pp-price:before {
+  display: none !important;
+}
+.pp-off {
+  display: flex !important;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  height: 36px !important;
+  margin: 0 0 14px !important;
+  padding: 0 12px !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
+  color: var(--link) !important;
+  font-size: 0.8rem !important;
+}
+.pp-off time {
+  font-variant-numeric: tabular-nums;
+}
+.pp-bill {
+  max-width: none !important;
+  margin: 0 0 14px !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+}
+.pp-bill button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pp-bill button i {
+  font-style: normal;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--link) 16%, var(--surface));
+  color: var(--link);
+}
+.pp-amt {
+  justify-content: flex-start !important;
+  align-items: baseline;
+  gap: 6px !important;
+  flex-wrap: wrap;
+}
+.pp-amt b {
+  font-size: 2.6rem !important;
+  line-height: 1;
+  letter-spacing: -0.03em !important;
+}
+.pp-amt .pp-unit {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.pp-amt .pp-was {
+  margin-left: auto;
+  font-size: 1.05rem !important;
+}
+.pp-was:after {
+  background: var(--strike) center/100% 100% no-repeat !important;
+}
+.pp-per {
+  margin-top: 8px !important;
+  font-size: 0.84rem !important;
+}
+.pp-save {
+  font-weight: 700;
+  color: var(--link);
+}
+.checks input:checked + .ct .t {
+  background-image: var(--strike) !important;
+}
+.checks .ct .t + .s {
+  margin-top: 4px;
+}
+:root:root:root:root #acct #acct-av#acct-av {
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--link) 30%, var(--surface)),
+    color-mix(in srgb, var(--link) 12%, var(--surface))
+  ) !important;
+  color: var(--link) !important;
+}
+:root:root:root:root #acct #acct-av#acct-av .avlet {
+  color: var(--link) !important;
+  background: transparent !important;
+}
+:root:root #lb-ent,
+:root:root .pfent {
+  display: none !important;
+}
+.acx {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.acx[hidden] {
+  display: none;
+}
+.acx button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px 9px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--ink) 3%, var(--surface));
+  font: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+.acx button[hidden] {
+  display: none;
+}
+.acx .xt {
+  min-width: 0;
+}
+.acx b {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.acx small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+.acx .xs {
+  display: flex;
+  flex: none;
+}
+.acx .xs .lav {
+  width: 24px;
+  height: 24px;
+  font-size: 0.56rem;
+  margin-left: -7px;
+}
+.acx .xs .lav:first-child {
+  margin-left: 0;
+}
+.acx .xc {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--link) 60%, #fff), var(--accent));
+  color: var(--on-accent);
+}
+.acx .xc svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+#acct-empty .acx {
+  text-align: left;
+}
+#acct > .acx {
+  margin: 0 14px 14px;
+}
+:root:root .lbhero {
+  background: radial-gradient(
+    130% 90% at 50% 0%,
+    color-mix(in srgb, var(--link) 24%, transparent),
+    transparent 72%
+  ) !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  border-radius: 0 0 28px 28px;
+}
+.pod .blk {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--link) 16%, var(--surface)),
+    transparent
+  ) !important;
+  color: color-mix(in srgb, var(--link) 55%, transparent) !important;
+}
+.lavw {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+}
+.rtag {
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  transform: translateX(-50%);
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 2px 6px rgba(0, 0, 0, 0.15);
+}
+.rtag.r1 {
+  background: linear-gradient(150deg, #ffe08a, #e8941a);
+  color: #4a2c00;
+}
+.rtag.r2 {
+  background: linear-gradient(150deg, #f1f3f6, #aeb4bd);
+  color: #2b2f36;
+}
+.rtag.r3 {
+  background: linear-gradient(150deg, #ffd2b0, #c47a45);
+  color: #3d1f08;
+}
+.pod .rtag {
+  bottom: -6px;
+  height: 22px;
+  min-width: 22px;
+  font-size: 0.74rem;
+}
+.lbrow .lavw {
+  margin-right: 2px;
+}
+.lbtier {
+  display: inline-flex;
+  vertical-align: 2px;
+  margin-left: 4px;
+  font-style: normal;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--link) 14%, var(--surface));
+  color: var(--link);
+}
+.lbtier.pro {
+  background: linear-gradient(150deg, #ffe08a, #f0a830);
+  color: #4a2c00;
+}
+#tp-blur {
+  position: fixed;
+  inset: 0;
+  z-index: 127;
+  background: rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+#tp-blur[hidden] {
+  display: none;
+}
+:root:root .setgrp:has(> #grp-list) {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  padding: 8px 8px 2px !important;
+  border-radius: 24px !important;
+}
+:root:root #grp-list .grow {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--link) 14%, var(--surface)),
+    color-mix(in srgb, var(--link) 3%, var(--surface)) 80%
+  ) !important;
+  border-color: color-mix(in srgb, var(--link) 14%, var(--line)) !important;
+  margin: 0 0 8px !important;
+  border-radius: 18px !important;
+}
+:root:root #grp-list .grow:nth-child(n + 3) {
+  display: none !important;
+}
+:root:root #grp-list .gedit {
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+:root:root .setgrp:has(> #grp-list) .mpaddrow {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 4px 8px 6px !important;
+}
+:root:root .setgrp:has(> #grp-list) .mpaddrow .setbtn {
+  background: none !important;
+  border: 0 !important;
+  padding: 8px 0 !important;
+  font-weight: 700;
+}
+#grp-sheet .gprev {
+  position: relative;
+  overflow: hidden;
+  margin: 0 0 14px;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--link) 16%, var(--line));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--link) 18%, var(--surface)),
+    color-mix(in srgb, var(--link) 4%, var(--surface)) 80%
+  );
+}
+#grp-sheet .gprev .gstack {
+  display: flex;
+  padding-left: 8px;
+  min-height: 44px;
+  align-items: center;
+}
+#grp-sheet .gprev .gstack i {
+  width: 44px;
+  height: 44px;
+  margin-left: -8px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #1b1b1f;
+  box-shadow: 0 0 0 3px var(--surface);
+}
+#grp-sheet .gprev .gstack i.add {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1.5px dashed color-mix(in srgb, var(--ink) 25%, transparent);
+  box-shadow: none;
+  margin-left: -4px;
+}
+#grp-sheet .gprev b {
+  display: block;
+  margin-top: 12px;
+  font-size: 1.15rem;
+}
+#grp-sheet .gprev small {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+#grp-sheet .pfgrp {
+  background: var(--surface) !important;
+  border-radius: 22px !important;
+}
+#grp-sheet input {
+  border-radius: 14px !important;
+}
+#grp-sheet #grp-addm {
+  border-radius: 14px !important;
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border: 0 !important;
+  font-weight: 700;
+  padding: 0 16px;
+}
+#grp-sheet .gmav {
+  border-radius: 50% !important;
+  color: #1b1b1f !important;
+  font-weight: 800;
+}
+:root:root :is(#hl-sheet, #nv-sheet) .hlm {
+  align-items: center !important;
+}
+:root:root :is(#hl-sheet, #nv-sheet) .hlm .setl {
+  flex: 1;
+  min-width: 0;
+}
+.ptr svg {
+  transform: rotate(calc(var(--p) * 240deg)) scale(calc(0.6 + var(--p) * 0.4)) !important;
+}
+.ptrg {
+  stroke: var(--line) !important;
+  fill: none !important;
+}
+.ptrs {
+  fill: none !important;
+  fill-opacity: 0 !important;
+  stroke: var(--link) !important;
+  stroke-width: 3 !important;
+}
+.ptrd {
+  fill: none !important;
+  stroke: var(--link);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: none !important;
+  opacity: calc(var(--p) * 12 - 11) !important;
+  animation: none !important;
+}
+.ptr.go .ptrd {
+  opacity: 1 !important;
+}
+.ptr.go svg {
+  animation: ptrrot 0.75s linear infinite !important;
+}
+.ptr.fire svg {
+  animation: ptrpop 0.4s cubic-bezier(0.3, 0.7, 0.3, 1) forwards !important;
+}
+@keyframes ptrrot {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ptrpop {
+  0% {
+    transform: rotate(0) scale(1);
+  }
+  60% {
+    transform: rotate(300deg) scale(1.15);
+  }
+  to {
+    transform: rotate(360deg) scale(0.9);
+    opacity: 0;
+  }
+}
+.nav,
+.nav * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+.nav button {
+  touch-action: manipulation;
+}
+.bblur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--bbot, 64px);
+  height: 44px;
+  z-index: 19;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  background: linear-gradient(to top, color-mix(in srgb, var(--bg) 55%, transparent), transparent);
+  -webkit-mask: linear-gradient(to top, #000 20%, transparent);
+  mask: linear-gradient(to top, #000 20%, transparent);
+}
+html.kbd .bblur,
+html.navhide .bblur,
+html.login-open .bblur,
+html:has(.chatsh:not([hidden])) .bblur {
+  display: none;
+}
+@media (max-width: 820px) {
+  .lpage.kb {
+    height: var(--vvh, 100dvh) !important;
+    transform: translateY(var(--vvt, 0px));
+  }
+  .lpage.kb .lart {
+    display: block !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto !important;
+  }
+  .lpage.kb .ltop {
+    flex: none !important;
+    justify-content: flex-end !important;
+    padding-top: 18px !important;
+    padding-bottom: 14px !important;
+  }
+}
+
+/* ==========================================================================
+   Plan tags, ticked checklist items, Home summary grid.
+   ========================================================================== */
+.ptag {
+  display: none !important;
+}
+.checks input:checked + .ct .s {
+  opacity: 0.5;
+}
+:root:root:root .card.summary .sgrid {
+  gap: 0 !important;
+  row-gap: 0 !important;
+  column-gap: 0 !important;
+  padding: 2px 0 0 !important;
+}
+:root:root:root .card.summary .sgrid > .mi {
+  display: flex !important;
+  flex-direction: column-reverse !important;
+  justify-content: flex-end !important;
+  gap: 4px !important;
+  padding: 14px 10px 14px 16px !important;
+  border-left: 1px solid var(--line) !important;
+  border-top: 1px dashed var(--line) !important;
+  border-bottom: 0 !important;
+  border-right: 0 !important;
+  min-width: 0;
+}
+:root:root:root .card.summary .sgrid > .mi:nth-child(odd) {
+  border-left: 0 !important;
+  padding-left: 0 !important;
+}
+:root:root:root .card.summary .sgrid > .mi:nth-child(-n + 2) {
+  border-top: 0 !important;
+}
+:root:root:root .card.summary .sgrid .mk {
+  font-size: 0.76rem !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+}
+:root:root:root .card.summary .sgrid .mv {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: var(--ink) !important;
+  margin: 0 !important;
+}
+:root:root:root .psfoot {
+  --fb: var(--surface);
+  background: transparent !important;
+  border-top: 0 !important;
+  isolation: isolate;
+  padding-top: 12px !important;
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px)) !important;
+}
+:root:root:root .psfoot:before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  bottom: 100% !important;
+  height: 26px !important;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  background: linear-gradient(to top, color-mix(in srgb, var(--fb) 65%, transparent), transparent) !important;
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  -webkit-mask: linear-gradient(to top, #000 25%, transparent) !important;
+  mask: linear-gradient(to top, #000 25%, transparent) !important;
+}
+:root:root:root .psfoot:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--fb);
+  border-top: 1px solid var(--line);
+  pointer-events: none;
+}
+:root:root:root .planner .pfoot {
+  --fb: var(--surface);
+  background: transparent !important;
+  isolation: isolate;
+  padding-top: 12px !important;
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px)) !important;
+}
+:root:root:root .planner .pfoot:before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  bottom: 100% !important;
+  height: 26px !important;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  background: linear-gradient(to top, color-mix(in srgb, var(--fb) 65%, transparent), transparent) !important;
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  -webkit-mask: linear-gradient(to top, #000 25%, transparent) !important;
+  mask: linear-gradient(to top, #000 25%, transparent) !important;
+  left: calc(-1 * var(--gl, 16px)) !important;
+  right: calc(-1 * var(--gr, 16px)) !important;
+}
+:root:root:root .planner .pfoot:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: var(--fb);
+  border-top: 1px solid var(--line);
+  pointer-events: none;
+  left: calc(-1 * var(--gl, 16px));
+  right: calc(-1 * var(--gr, 16px));
+}
+:root:root:root #plans-sheet .pp-foot {
+  --fb: var(--surface);
+  isolation: isolate;
+  padding-bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) - 10px)) !important;
+}
+:root:root:root #plans-sheet .pp-foot:before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  bottom: 100% !important;
+  height: 26px !important;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  background: linear-gradient(to top, color-mix(in srgb, var(--fb) 65%, transparent), transparent) !important;
+  -webkit-mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  mask-image: linear-gradient(to top, #000 25%, transparent) !important;
+  -webkit-mask: linear-gradient(to top, #000 25%, transparent) !important;
+  mask: linear-gradient(to top, #000 25%, transparent) !important;
+}
+
+/* ==========================================================================
+   Palette picker rows and icon maker rows.
+   ========================================================================== */
+:root:root:root .pl-row {
+  grid-template-columns: none !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  gap: 10px !important;
+  justify-items: center !important;
+}
+:root:root:root .pl-s {
+  width: min(42px, 100%) !important;
+}
+:root:root:root .kz-sw {
+  grid-template-columns: none !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  gap: 8px !important;
+  justify-items: center !important;
+}
+:root:root:root .kz-sw > * {
+  width: min(38px, 100%) !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+}
+:root:root:root .kz-row {
+  grid-template-columns: none !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  gap: 10px !important;
+}
+:root:root:root .kz-row > .kz-t {
+  width: 100% !important;
+  height: auto !important;
+  max-width: none !important;
+  aspect-ratio: 1 !important;
+}
+:root:root:root .kz-head .kz-ttl {
+  white-space: nowrap;
+}
+:root:root:root .kz-head > button {
+  flex: none !important;
+}
+:root:root:root .kz-head > button:last-child {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+}
+
+/* ==========================================================================
+   Top blur bar, Profile/More account card actions.
+   ========================================================================== */
+.tblur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--tbot, 0px);
+  height: 26px;
+  z-index: 19;
+  pointer-events: none;
+  border-top: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 70%, transparent), transparent);
+  -webkit-mask: linear-gradient(to bottom, #000 15%, transparent);
+  mask: linear-gradient(to bottom, #000 15%, transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tblur.on {
+  opacity: 1;
+}
+html.kbd .tblur,
+html.login-open .tblur {
+  display: none;
+}
+:root:root:root .acx {
+  gap: 0 !important;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 0 !important;
+  border-top: 1px solid var(--line) !important;
+  margin: 4px 0 0 !important;
+}
+:root:root:root #acct > .acx {
+  margin: 0 !important;
+}
+:root:root:root .acx button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  padding: 14px 16px !important;
+  gap: 10px !important;
+}
+:root:root:root .acx button + button {
+  border-left: 1px solid var(--line) !important;
+}
+:root:root:root #acct-empty .acx {
+  margin: 14px -16px -16px !important;
+}
+:root:root:root #acct-empty .acx button {
+  padding: 14px 16px !important;
+}
+.acx .xc {
+  border-radius: 11px !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+  color: var(--muted) !important;
+  width: 34px !important;
+  height: 34px !important;
+}
+.ppcap {
+  margin: 18px 4px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+:root:root:root .pp-hero {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "ic h" "ic p" "b b";
+  column-gap: 14px;
+  align-items: center;
+  text-align: left !important;
+  padding: 8px 4px 0 !important;
+}
+:root:root:root .pp-hero .ptile {
+  grid-area: ic;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 18px !important;
+}
+:root:root:root .pp-hero .ptile svg {
+  width: 36px !important;
+  height: 36px !important;
+}
+:root:root:root .pp-hero h2 {
+  grid-area: h;
+  margin: 0 !important;
+  align-self: end;
+  font-size: 1.45rem !important;
+}
+:root:root:root .pp-hero p {
+  grid-area: p;
+  margin: 2px 0 0 !important;
+  align-self: start;
+  text-wrap: pretty;
+}
+:root:root:root .pp-hero .pp-badge {
+  grid-area: b;
+  justify-self: start;
+  margin-top: 14px !important;
+}
+:root:root:root .pp-rows {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+}
+:root:root:root .pp-row {
+  min-height: 60px;
+  padding: 10px 0 !important;
+  border-top: 1px solid var(--line) !important;
+}
+:root:root:root .pp-row:first-child {
+  border-top: 0 !important;
+}
+:root:root:root .pp-row .pi {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 13px !important;
+}
+:root:root:root .pp-row .pi svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+:root:root:root .pp-price {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 16px !important;
+}
+:root:root:root .pp-off {
+  border-radius: 12px !important;
+}
+.lbsub2 {
+  margin: 2px 4px 14px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+.lbcap {
+  margin: 20px 4px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lbtop {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 6px 0;
+}
+.lbtop button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 16px 6px 14px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 0;
+}
+.lbtop button + button {
+  border-left: 1px solid var(--line);
+}
+.lbtop .lavw {
+  margin-bottom: 8px;
+}
+.lbtop .pn {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+.lbtop .pp {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: inherit !important;
+  font-variant-numeric: tabular-nums;
+}
+.pp-save {
+  white-space: nowrap;
+}
+.lbtop .lbtier {
+  margin: 0;
+}
+:root:root:root .lblist {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+}
+:root:root:root .lbrow {
+  border-top: 1px solid var(--line) !important;
+  padding: 12px 0 !important;
+}
+:root:root:root .lblist .lbrow:first-child,
+:root:root:root .lbyou .lbrow {
+  border-top: 0 !important;
+}
+:root:root:root .lbyou {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+}
+:root:root:root .lbrow .pt {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+:root:root:root #grp-list .mpempty,
+:root:root:root .setgrp:has(> #grp-list) .sethint {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+:root:root:root .nci {
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+}
+:root:root:root .nci > * {
+  grid-area: 1/1 !important;
+  position: static !important;
+  margin: 0 !important;
+  transform: none !important;
+  inset: auto !important;
+  justify-self: center !important;
+  align-self: center !important;
+}
+:root:root:root :is(.list2, .places) .emo {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
+}
+:root:root:root :is(.list2, .places) .emo .il svg.ph,
+:root:root:root :is(.list2, .places) .emo svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+:root:root:root :is(.list2, .places) .emo .ie {
+  font-size: 22px !important;
+}
+.kz-now:has(.kzi) {
+  flex-wrap: wrap !important;
+}
+.kzi {
+  flex: 1 0 100%;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.kzi .kzr:last-child {
+  margin-bottom: 0;
+}
+.kzi .kzsw button {
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.3);
+}
+.kzi .kzc {
+  display: flex;
+  justify-content: space-between;
+  margin: 2px 2px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.kzi .kzc b {
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.kzi .kzr {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.kzi .kzr button {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 24%;
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+  box-shadow: 0 0 0 1px var(--line);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.kzi .kzr button[aria-pressed="true"] {
+  outline-color: var(--accent);
+  box-shadow: none;
+}
+.kzi .kzr svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+html.kzinl #kz-open,
+html.kzinl .kz-pcap,
+html.kzinl #kz-presets {
+  display: none !important;
+}
+html.kzmatch .kzi {
+  display: none;
+}
+
+/* ==========================================================================
+   Alert cards and settings sub-rows.
+   ========================================================================== */
+#snd-style,
+#settings-profile .setrow.hcsub {
+  display: none !important;
+}
+:root:root:root .alert {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 14px 14px 14px !important;
+  border: 0 !important;
+  border-left: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  border-radius: 22px !important;
+  background-image: none !important;
+}
+:root:root:root .alert .aico {
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+:root:root:root .alert .aico .ic {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+}
+:root:root:root .alert .at {
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.3 !important;
+}
+:root:root:root .alert .as2 {
+  color: var(--muted) !important;
+  font-size: 0.82rem !important;
+  margin-top: 2px !important;
+  line-height: 1.35 !important;
+}
+:root:root:root .alert .alater {
+  border: 0 !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+  color: var(--ink) !important;
+  border-radius: 999px !important;
+  padding: 7px 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+}
+:root:root:root .ncard {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) auto !important;
+  grid-template-areas: "i t m" "i s s" "i c c" !important;
+  column-gap: 12px !important;
+  row-gap: 2px !important;
+  align-items: start !important;
+  padding: 14px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: var(--surface) !important;
+  border-radius: 22px !important;
+}
+:root:root:root .ncard .ncrow {
+  display: contents !important;
+}
+:root:root:root .ncard .nci {
+  grid-area: i !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+  margin: 0 !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+  border: 0 !important;
+}
+:root:root:root .ncard em {
+  grid-area: m !important;
+  font-style: normal !important;
+  color: var(--muted) !important;
+  font-size: 0.76rem !important;
+  margin: 2px 0 0 !important;
+  white-space: nowrap;
+}
+:root:root:root .ncard > b {
+  grid-area: t !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+  align-self: center;
+}
+:root:root:root .ncard > small {
+  grid-area: s !important;
+  color: var(--muted) !important;
+  font-size: 0.82rem !important;
+  margin: 0 !important;
+}
+:root:root:root .ncard .ncgo {
+  grid-area: c !important;
+  justify-self: start !important;
+  margin: 8px 0 0 !important;
+  border: 0 !important;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface)) !important;
+  color: var(--ink) !important;
+  border-radius: 999px !important;
+  padding: 7px 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+}
+:root:root:root .ncard.new .nci {
+  background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
+  color: var(--link) !important;
+}
+:root:root:root .acx {
+  display: block !important;
+  border-top: 1px solid var(--line) !important;
+  padding: 0 16px !important;
+}
+:root:root:root #acct-empty .acx {
+  margin: 16px -16px -16px !important;
+}
+:root:root:root .acx button {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 13px 0 !important;
+  border: 0 !important;
+  border-left: 0 !important;
+}
+:root:root:root .acx button + button {
+  border-top: 1px solid var(--line) !important;
+  border-left: 0 !important;
+}
+:root:root:root .acx .xt {
+  flex: 1;
+}
+:root:root:root .acx b {
+  font-size: 0.95rem !important;
+}
+:root:root:root .acx small {
+  font-size: 0.8rem !important;
+}
+:root:root:root .acx .xc {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+}
+.acx .xr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.acx .xr svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.acx .xav {
+  display: flex;
+}
+.acx .xav i {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  border: 2px solid var(--surface);
+  margin-left: -8px;
+}
+.acx .xav i:first-child {
+  margin-left: 0;
+}
+.lbpod {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 18px 12px 0;
+  overflow: hidden;
+}
+.lpd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  min-width: 0;
+}
+.lpa {
+  position: relative;
+  display: grid;
+  margin-bottom: 10px;
+}
+.lra {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #1d1d1f;
+  flex: none;
+}
+.lpd .lra {
+  width: 56px;
+  height: 56px;
+  font-size: 1.05rem;
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 0 0 5px var(--rc);
+}
+.lpd.p1 .lra {
+  width: 70px;
+  height: 70px;
+  font-size: 1.25rem;
+}
+.lpd.p1 {
+  --rc: #e9b949;
+}
+.lpd.p2 {
+  --rc: #b8c0cc;
+}
+.lpd.p3 {
+  --rc: #d99a6c;
+}
+.lpr {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--rc);
+  color: #1d1d1f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.lpd .pn {
+  font-weight: 600;
+  font-size: 0.95rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lpd .pp {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+.lst {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 14px 14px 0 0;
+  background: color-mix(in srgb, var(--rc) 22%, var(--surface));
+  height: 34px;
+}
+.lpd.p1 .lst {
+  height: 58px;
+}
+.lpd.p2 .lst {
+  height: 44px;
+}
+.lbl2 {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 0 16px;
+}
+.lrow {
+  display: grid;
+  grid-template-columns: 22px 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.lrow + .lrow {
+  border-top: 1px solid var(--line);
+}
+.lrk {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.lnm {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lnm b {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lnm small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lbar {
+  display: block;
+  height: 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  margin-top: 5px;
+  overflow: hidden;
+}
+.lbar > i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--link);
+}
+.lpt {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+}
+.lrow.you .lra {
+  background: color-mix(in srgb, var(--link) 18%, var(--surface)) !important;
+  color: var(--link);
+}
+:root:root:root .pp-rows {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+:root:root:root .pp-row {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 1px !important;
+  min-height: 0 !important;
+  padding: 14px !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  text-align: left !important;
+}
+:root:root:root .pp-row:first-child {
+  border-top: 1px solid var(--line) !important;
+}
+:root:root:root .pp-row .pi {
+  order: 0;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 12px !important;
+  margin-bottom: 10px !important;
+}
+:root:root:root .pp-row .pi svg {
+  width: 19px !important;
+  height: 19px !important;
+}
+:root:root:root .pp-row > span:last-child {
+  order: 1;
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: var(--ink) !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+:root:root:root .pp-row > b {
+  order: 2;
+  font-weight: 400 !important;
+  font-size: 0.8rem !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+}
+:root:root:root #theme-sheet .thcap,
+:root:root:root #theme-sheet .pl-sub,
+:root:root:root #theme-sheet .kzc b,
+:root:root:root #kz-pv svg + svg {
+  display: none !important;
+}
+:root:root:root #theme-sheet .thsec {
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+:root:root:root #theme-sheet .pl-ui {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 14px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+:root:root:root #theme-sheet .pl-mode {
+  margin: 0 !important;
+}
+:root:root:root #theme-sheet .pl-row {
+  margin: 0 !important;
+}
+:root:root:root #theme-sheet .kz-now {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 14px !important;
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  column-gap: 12px !important;
+  row-gap: 0 !important;
+  align-items: center !important;
+}
+:root:root:root #kz-pv {
+  width: 52px !important;
+  height: 52px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  display: block !important;
+}
+:root:root:root #kz-pv svg {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 14px !important;
+  display: block;
+}
+:root:root:root .kz-now .pl-match {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  min-width: 0;
+}
+:root:root:root .kz-now .kzi {
+  grid-column: 1/-1;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+:root:root:root .kz-now .kzc {
+  margin: 0 0 8px !important;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+:root:root:root .kz-now .kzr {
+  margin: 0 0 14px !important;
+}
+:root:root:root .kz-now .kzr:last-child {
+  margin: 0 !important;
+}
+:root:root:root .kz-now .kzr button {
+  aspect-ratio: 1;
+  border-radius: 50% !important;
+  overflow: hidden;
+  padding: 0 !important;
+}
+:root:root:root .kz-now .kzr button svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+:root:root:root #theme-sheet .thnote2 {
+  margin: 4px 6px 0 !important;
+}
+:root:root:root .alert .aico {
+  grid-area: 1/1 !important;
+}
+:root:root:root .alert .atx {
+  display: block !important;
+  grid-area: 1/2 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+:root:root:root .alert .atx > * {
+  grid-area: auto !important;
+}
+:root:root:root .alert .alater {
+  grid-area: 1/3 !important;
+  align-self: center !important;
+  width: auto !important;
+}
+:root:root:root #theme-sheet .pl-mode {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+:root:root:root .lpd .lst {
+  display: block !important;
+}
+.lpd .lst {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+.lpd.p1 .lst {
+  height: 58px !important;
+}
+.lpd.p2 .lst {
+  height: 44px !important;
+}
+.lpd {
+  height: auto !important;
+}
+:root:root:root .kz-now .kzr[aria-label="Background"] button {
+  box-shadow: inset 0 0 0 1px var(--line) !important;
+}
+.lpd .lpp {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Onboarding art and screen transitions.
+   ========================================================================== */
+.onbs:first-child .onbart svg {
+  -webkit-mask: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(to bottom, #000 72%, transparent);
+  -webkit-mask-composite: source-in;
+  mask: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
+    linear-gradient(to bottom, #000 72%, transparent);
+  mask-composite: intersect;
+}
+.onbart {
+  width: min(84vw, 360px) !important;
+  aspect-ratio: 4/3 !important;
+  margin-bottom: 26px !important;
+}
+:root:root .onbtrack {
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1) !important;
+}
+.onbs .onbart,
+.onbs h2,
+.onbs p {
+  transition:
+    opacity 0.45s ease,
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.onbs[aria-hidden="true"] .onbart {
+  opacity: 0;
+  transform: scale(0.94);
+}
+.onbs[aria-hidden="true"] h2,
+.onbs[aria-hidden="true"] p {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.onbs[aria-hidden="false"] p {
+  transition-delay: 0.06s;
+}
+:root:root .lpage .lart {
+  transition:
+    opacity 0.3s ease,
+    transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+:root:root .lpage.kb .lart {
+  opacity: 0 !important;
+  transform: translateY(-14px) scale(0.98) !important;
+  pointer-events: none;
+}
+:root:root .psbox {
+  opacity: 1 !important;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+}
+:root:root .placesh.in .psbox {
+  transform: none;
+  transition-duration: 0.5s !important;
+}
+:root:root .psbg {
+  transition: opacity 0.35s ease-out !important;
+}
+:root:root:root #plans-sheet.shghost {
+  animation: iosdn 0.36s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+}
+@keyframes vpush {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes vpop {
+  from {
+    transform: translateX(-28%);
+    opacity: 0.6;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.view.vpush {
+  animation: vpush 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.view.vpop {
+  animation: vpop 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+}
+:is(.btn, .setbtn, .alater, .ncgo, .lpd, .shclose, .hback, .acx button, .pl-s, .kzr button, .onbnext) {
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+:is(.btn, .setbtn, .alater, .ncgo, .lpd, .shclose, .hback, .acx button, .pl-s, .kzr button, .onbnext):active {
+  transform: scale(0.96);
+}
+@media (prefers-reduced-motion: reduce) {
+  .view.vpush,
+  .view.vpop {
+    animation: none;
+  }
+  :root:root .onbtrack,
+  :root:root .psbox {
+    transition: none !important;
+  }
+  .onbs .onbart,
+  .onbs h2,
+  .onbs p {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   App icon 'match theme' switch, account card icons.
+   ========================================================================== */
+:root:root:root .kz-now .pl-match > i {
+  flex: none;
+  position: relative;
+  width: 46px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--ink) 16%, var(--surface)) !important;
+  transition: background 0.25s;
+}
+:root:root:root .kz-now .pl-match > i:after {
+  content: "" !important;
+  position: absolute;
+  left: 2px !important;
+  top: 2px !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.18),
+    0 0 0 0.5px rgba(0, 0, 0, 0.06) !important;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  transform: none;
+}
+:root:root:root .kz-now .pl-match[aria-checked="true"] > i {
+  background: var(--accent, var(--ink)) !important;
+}
+:root:root:root .kz-now .pl-match[aria-checked="true"] > i:after {
+  transform: translateX(18px) !important;
+  background: var(--on-accent, #fff) !important;
+}
+:root:root:root .acx .xc {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 13px !important;
+}
+:root:root:root .acx .xc svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+:root:root:root .acx {
+  padding: 0 18px !important;
+  align-self: stretch !important;
+  width: auto !important;
+  max-width: none !important;
+}
+:root:root:root #acct-empty > .acx {
+  margin: 16px -18px -16px !important;
+}
+:root:root:root .lbl2:not(:has(.you)) {
+  background: none !important;
+  border: 0 !important;
+  padding: 0 4px !important;
+}
+.lbl2 .lrow + .lrow {
+  border-top: 1px dashed var(--line) !important;
+}
+.lbar {
+  display: none !important;
+}
+.setbeach {
+  position: relative;
+}
+.setbeach > svg * {
+  animation: none !important;
+}
+.setbeach > svg > .bzoff {
+  display: none !important;
+}
+.sig {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  color: var(--muted);
+}
+.sig small {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.sig.go small {
+  opacity: 1;
+}
+.setbeach .sig svg {
+  width: 150px !important;
+  height: 40px !important;
+  overflow: visible !important;
+  display: block;
+}
+.sig text {
+  font-family: Caveat, "Segoe Script", "Snell Roundhand", cursive;
+  font-size: 34px;
+  font-weight: 600;
+  fill: transparent;
+  stroke: var(--ink);
+  stroke-width: 0.9;
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+}
+.sig.go text {
+  animation: sigw 2.8s ease-in-out 0.3s forwards;
+}
+@keyframes sigw {
+  75% {
+    stroke-dashoffset: 0;
+    fill: transparent;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    fill: var(--ink);
+    stroke-width: 0.3;
+  }
+}
+:root:root:root .devopts {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+:root:root:root .devopts .setrow {
+  padding: 14px 0 !important;
+  border-top: 1px dashed var(--line) !important;
+  border-bottom: 0 !important;
+}
+:root:root:root #hl-sheet .vpopt .vpn {
+  display: flex !important;
+  align-items: center;
+}
+:root:root:root #hl-sheet .vpopt .vpn b {
+  display: block !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+}
+:root:root:root #hl-sheet .vpgrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+html.dv-both body :is(.hday, .ctday2) .summary > .sgrid.sgrid.sgrid {
+  display: none !important;
+}
+html.dv-both :is(.hday, .ctday2) .summary > :is(.dspan, .dspend) {
+  display: block !important;
+}
+html.dv-both .dspan .dsrows,
+html.dv-both .dspend .dpmeta {
+  display: none !important;
+}
+html.dv-both .dspend {
+  margin-top: 14px !important;
+  padding-top: 14px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+:root:root:root #theme-sheet :is(.pl-s, .kzr button) {
+  position: relative;
+  overflow: visible !important;
+}
+.pln {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  font-style: normal;
+  font-size: 0.66rem;
+  color: var(--muted);
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+}
+:root:root:root #theme-sheet [aria-pressed="true"] > .pln {
+  color: var(--ink);
+  font-weight: 600;
+}
+:root:root:root #theme-sheet .pl-row {
+  padding-bottom: 18px !important;
+}
+:root:root:root .kz-now .kzr {
+  padding-bottom: 18px !important;
+  justify-items: center;
+}
+:root:root:root .kz-now .kzr button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 0 !important;
+  aspect-ratio: auto !important;
+}
+:root:root:root .kz-now .kzr button svg {
+  border-radius: 50%;
+}
+:root:root:root #pp-chip {
+  display: none !important;
+}
+.p2seg {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  margin: 4px 0 14px;
+}
+.p2seg button {
+  position: relative;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--muted);
+  padding: 10px 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
+    color 0.2s;
+}
+.p2seg button[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 0 0 0.5px var(--line);
+}
+.p2dot {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--link);
+}
+.p2card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 18px;
+  overflow: hidden;
+}
+.p2off {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: -18px -18px 16px;
+  padding: 10px 18px;
+  background: color-mix(in srgb, var(--link) 12%, var(--surface));
+  color: var(--link);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.p2off time {
+  font-variant-numeric: tabular-nums;
+}
+.p2head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.p2head .ptile {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 15px !important;
+  flex: none;
+}
+.p2head .ptile svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+.p2nm {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.p2nm b {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.p2nm small {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+.p2tag {
+  flex: none;
+  font-style: normal;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 7%, var(--surface));
+  color: var(--ink);
+}
+.p2price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 18px 0 2px;
+}
+.p2price b {
+  font-size: 2.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.p2price span {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.p2price s {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: 4px;
+}
+.p2per {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+.p2bill {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  margin-top: 14px;
+}
+.p2bill button {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.p2bill button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.p2bill i {
+  font-style: normal;
+  color: var(--link);
+  font-size: 0.76rem;
+  margin-left: 3px;
+}
+.p2inc {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px solid var(--line);
+}
+.p2inc li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  font-size: 0.92rem;
+}
+.p2inc li + li {
+  border-top: 1px dashed var(--line);
+}
+.p2inc li svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--ink);
+}
+.p2inc li span {
+  flex: 1;
+}
+.p2inc li em {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 0.86rem;
+  text-align: right;
+}
+.p2cap {
+  margin: 22px 4px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.p2cmp {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 4px 14px;
+}
+.p2r {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 4px;
+  padding: 11px 0;
+  font-size: 0.84rem;
+}
+.p2r + .p2r {
+  border-top: 1px dashed var(--line);
+}
+.p2r > span {
+  color: var(--ink);
+  min-width: 0;
+}
+.p2r > em,
+.p2r > b {
+  text-align: center;
+  font-style: normal;
+  color: var(--muted);
+  font-size: 0.78rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.p2h b {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.p2r > .on {
+  color: var(--ink);
+  font-weight: 600;
+}
+.p2ck {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+.p2r > em:not(.on) .p2ck {
+  opacity: 0.55;
+}
+.p2no {
+  font-style: normal;
+  opacity: 0.4;
+}
+.onbart {
+  width: min(68vw, 280px) !important;
+  margin-bottom: 30px !important;
+}
+@keyframes obfl {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.onbs[aria-hidden="false"] .obfl {
+  animation: obfl 3.4s ease-in-out infinite;
+}
+.onbs[aria-hidden="false"] .obfl.b {
+  animation-delay: -1.7s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .obfl {
+    animation: none !important;
+  }
+}
+:root:root:root .vmore > .pghead {
+  position: sticky !important;
+  z-index: 20 !important;
+  background: var(--bg) !important;
+  padding: 16.5px 24px 8px 30px !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  left: auto;
+  right: auto;
+}
+:root:root:root .vmore > .pghead h2 {
+  font-size: 26px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.52px !important;
+}
+.ptr:before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--link) 45%, transparent), transparent 68%);
+  filter: blur(6px);
+  opacity: calc(var(--p) * 0.9);
+  transform: scale(calc(0.4 + var(--p) * 0.7));
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  pointer-events: none;
+}
+.ptr.go:before {
+  animation: ptrbr 1.4s ease-in-out infinite;
+}
+@keyframes ptrbr {
+  0%,
+  100% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+}
+.ptr {
+  background: none !important;
+}
+.ptr svg {
+  position: relative;
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--link) 35%, transparent));
+}
+:root:root .ptrs {
+  stroke: url(#ptrgr) !important;
+}
+:root:root .ptrd {
+  stroke: #7c6cff !important;
+}
+:root:root .ptrg {
+  stroke: color-mix(in srgb, var(--ink) 10%, transparent) !important;
+}
+.ptrfx {
+  position: fixed;
+  z-index: 199;
+  pointer-events: none;
+  inset: 0;
+  overflow: hidden;
+}
+.ptrfx i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+}
+.ptrfx .rp {
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  padding: 2.5px;
+  background: conic-gradient(from 210deg, var(--link), #7c6cff, #4fd1e0, var(--link));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  animation: ptrrp 0.8s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+.ptrfx .rp.b {
+  animation-delay: 0.12s;
+  opacity: 0;
+}
+.ptrfx .bl {
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+  background: radial-gradient(circle at 40% 38%, #cfc6ff, var(--link) 50%, #4fd1e0 72%, transparent 74%);
+  filter: blur(12px);
+  animation: ptrbl 0.75s ease-out forwards;
+}
+.ptrfx .wa {
+  left: 0 !important;
+  right: 0;
+  top: 0 !important;
+  height: 180px;
+  border-radius: 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--link) 16%, transparent), transparent);
+  animation: ptrwa 0.8s ease-out forwards;
+}
+@keyframes ptrrp {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(4.2);
+    opacity: 0;
+  }
+}
+@keyframes ptrbl {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.15);
+    opacity: 0.9;
+  }
+  60% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(-60px) scale(0.4);
+    opacity: 0;
+  }
+}
+@keyframes ptrwa {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+:root:root .ptr.fire svg {
+  animation: ptrgo 0.7s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+}
+@keyframes ptrgo {
+  0% {
+    transform: rotate(180deg) scale(1.05);
+  }
+  45% {
+    transform: rotate(520deg) scale(1.2);
+  }
+  to {
+    transform: translateY(-36px) rotate(620deg) scale(0.4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ptrfx {
+    display: none;
+  }
+  .ptr.go:before {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Pull-to-refresh globe.
+   ========================================================================== */
+.ptr > svg:not(.kgl) {
+  display: none !important;
+}
+:root:root .ptr svg.kgl {
+  display: block !important;
+  width: 44px;
+  height: 44px;
+  transform: scale(calc(0.55 + var(--p) * 0.45)) !important;
+  animation: none !important;
+  transition: transform 0.12s linear;
+  overflow: visible;
+}
+:root:root .ptr.fire svg.kgl {
+  animation: kglgo 0.7s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
+}
+@keyframes kglgo {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.25);
+  }
+  to {
+    transform: translateY(-34px) scale(0.45);
+    opacity: 0;
+  }
+}
+.kgl .kgr {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 10%, transparent);
+  stroke-width: 3;
+}
+.kgl .kgp {
+  fill: none;
+  stroke: url(#kglg);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* ==========================================================================
+   Light palettes: tinted icon tiles.
+   ========================================================================== */
+:root:root[data-pal="paper"][data-skin="light"] {
+  --bg: #eee5d4 !important;
+  --surface: #fbf7ef !important;
+  --soft: #f5eee2 !important;
+  --line: #e2d5c0 !important;
+  --tile: #f2e8d8 !important;
+  --brand-soft: #f0e1cb !important;
+  --band: #f7f0e4 !important;
+}
+:root:root[data-pal="ocean"][data-skin="light"] {
+  --bg: #e0e9f9 !important;
+  --surface: #f7faff !important;
+  --soft: #edf3fd !important;
+  --line: #d0dcf3 !important;
+  --tile: #e8effc !important;
+  --brand-soft: #d9e6fb !important;
+  --band: #f1f6fe !important;
+}
+:root:root[data-pal="sage"][data-skin="light"] {
+  --bg: #dee8da !important;
+  --surface: #f8fbf6 !important;
+  --soft: #edf3ea !important;
+  --line: #cfddcb !important;
+  --tile: #e7f0e3 !important;
+  --brand-soft: #dae9dc !important;
+  --band: #f2f7f0 !important;
+}
+:root:root[data-pal="lilac"][data-skin="light"] {
+  --bg: #e7dff6 !important;
+  --surface: #fbf8ff !important;
+  --soft: #f2ecfc !important;
+  --line: #d9cef0 !important;
+  --tile: #eee7fb !important;
+  --brand-soft: #e3daf8 !important;
+  --band: #f6f2fd !important;
+}
+:root:root[data-pal="mono"][data-skin="light"] {
+  --bg: #e9e9e9 !important;
+  --surface: #ffffff !important;
+  --soft: #f4f4f4 !important;
+  --line: #d9d9d9 !important;
+  --tile: #f0f0f0 !important;
+  --brand-soft: #e2e2e2 !important;
+  --band: #f7f7f7 !important;
+}
+:root:root:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])[data-skin="light"]
+  :is(.setrow > .seti, .acx .xc) {
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface)) !important;
+  color: var(--accent) !important;
+}
+:root:root .ptr {
+  margin-top: 22px !important;
+  width: 54px !important;
+  height: 54px !important;
+}
+:root:root .ptr svg.kgl {
+  width: 54px !important;
+  height: 54px !important;
+}
+.ptr:before {
+  width: 76px !important;
+  height: 76px !important;
+  margin: -38px 0 0 -38px !important;
+}
+
+/* ==========================================================================
+   'Refreshing...' roll under the Home title.
+   ========================================================================== */
+:root:root .ptr.fire:before {
+  opacity: 0 !important;
+  animation: none !important;
+  transition: opacity 0.35s ease;
+}
+.offtag.rfx {
+  position: relative;
+}
+.offtag.rfx > i {
+  opacity: 0 !important;
+  animation: none !important;
+}
+.offtag.rfx .otx {
+  color: var(--link);
+  animation: rfxrev 0.95s cubic-bezier(0.5, 0, 0.3, 1) both;
+}
+@keyframes rfxrev {
+  0% {
+    -webkit-clip-path: inset(0 100% 0 0);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    -webkit-clip-path: inset(0 0 0 0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+.kgs {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  margin-top: -7.5px;
+  pointer-events: none;
+  animation: kgsroll 0.95s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+}
+@keyframes kgsroll {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(var(--kx, 80px));
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kgs {
+    display: none;
+  }
+  .offtag.rfx .otx {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Online/offline dot in the Home tag.
+   ========================================================================== */
+.offtag .odot {
+  display: inline-block;
+  width: 0.532em;
+  height: 0.532em;
+  border-radius: 50%;
+  margin: 0 0.1em;
+  vertical-align: 0.02em;
+  background: #e5484d;
+  animation: offblink 1.2s ease-in-out infinite;
+}
+.offtag.on .odot {
+  background: #2e9d5b;
+  animation: none;
+}
+.offtag.reveal .odot {
+  animation: netdot 0.3s 1.3s both;
+}
+:root:root .offtag > i:not(.odot) {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Leaderboard rows and account buttons.
+   ========================================================================== */
+.lrow {
+  grid-template-columns: 28px 44px minmax(0, 1fr) auto !important;
+}
+.lrow.you .lrk {
+  font-size: 0.78rem;
+}
+:root:root:root:root :is(#acct-empty, #acct) .acx button {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+:root:root:root:root .acx .xr > svg {
+  margin-right: -4px;
+}
+
+/* ==========================================================================
+   Signature picker at the bottom of More.
+   ========================================================================== */
+:root:root .setbeach {
+  display: none !important;
+}
+.sigpick {
+  margin: 28px 0 calc(env(safe-area-inset-bottom, 0px) + 110px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.sigpick .sgc {
+  grid-column: 1/-1;
+  margin: 0 4px 2px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sgo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.sgo:active {
+  transform: scale(0.96);
+}
+.sgo.wide {
+  grid-column: 1/-1;
+}
+.sgo > b {
+  position: absolute;
+  left: 11px;
+  top: 9px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.sgo > em {
+  position: absolute;
+  right: 11px;
+  top: 9px;
+  font-size: 0.62rem;
+  font-style: normal;
+  color: var(--faint);
+}
+.sgo .sgf {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--muted);
+}
+.sgo small {
+  font-size: 0.66rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.sgo svg {
+  width: 100%;
+  max-width: 240px;
+  height: 54px;
+  overflow: visible;
+  display: block;
+}
+.sgo text {
+  fill: transparent;
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  stroke-dasharray: var(--da, 800);
+  stroke-dashoffset: var(--da, 800);
+  font-size: var(--fs, 36px);
+}
+.sgo.go text {
+  animation: sgdraw var(--t, 2.6s) ease-in-out forwards;
+}
+@keyframes sgdraw {
+  75% {
+    stroke-dashoffset: 0;
+    fill: transparent;
+  }
+  to {
+    stroke-dashoffset: 0;
+    fill: var(--ink);
+    stroke-width: 0.2;
+  }
+}
+.sgo.hello text {
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sgo.hello.go text {
+  animation: sghello 3.2s cubic-bezier(0.45, 0.05, 0.3, 1) forwards;
+}
+@keyframes sghello {
+  85% {
+    stroke-dashoffset: 0;
+    fill: transparent;
+  }
+  to {
+    stroke-dashoffset: 0;
+    fill: var(--ink);
+    stroke-width: 0.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sgo text {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+    fill: var(--ink) !important;
+  }
+}
+
+/* ==========================================================================
+   Home title and its status tag.
+   ========================================================================== */
+#v-home .htitle {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+#v-home .htitle .offtag {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Light palettes: account card and Profile body.
+   ========================================================================== */
+:root:root:root[data-pal="paper"][data-skin="light"] {
+  --bg: #f0e5d2 !important;
+  --surface: #fcf7ee !important;
+  --soft: #f6eee1 !important;
+  --line: #e4d5be !important;
+  --tile: #f4e8d6 !important;
+  --brand-soft: #f2e1c9 !important;
+  --band: #f8f0e3 !important;
+  --brand: #996b29 !important;
+  --link: #996b29 !important;
+  --accent: #996b29 !important;
+  --ctl: #996b29 !important;
+}
+:root:root:root[data-pal="ocean"][data-skin="light"] {
+  --bg: #dee6fb !important;
+  --surface: #f7f9ff !important;
+  --soft: #ecf1fe !important;
+  --line: #ced8f5 !important;
+  --tile: #e7ecfd !important;
+  --brand-soft: #d7e0fd !important;
+  --band: #f0f4ff !important;
+  --brand: #235fb8 !important;
+  --link: #235fb8 !important;
+  --accent: #235fb8 !important;
+  --ctl: #235fb8 !important;
+}
+:root:root:root[data-pal="sage"][data-skin="light"] {
+  --bg: #dde9d9 !important;
+  --surface: #f7fbf6 !important;
+  --soft: #ecf4e9 !important;
+  --line: #cfdeca !important;
+  --tile: #e6f1e2 !important;
+  --brand-soft: #ddead9 !important;
+  --band: #f2f7f0 !important;
+  --brand: #508c5c !important;
+  --link: #508c5c !important;
+  --accent: #508c5c !important;
+  --ctl: #508c5c !important;
+}
+:root:root:root[data-pal="lilac"][data-skin="light"] {
+  --bg: #e6def7 !important;
+  --surface: #faf8ff !important;
+  --soft: #f1ebfd !important;
+  --line: #d9ccf2 !important;
+  --tile: #ede6fc !important;
+  --brand-soft: #e3d8fa !important;
+  --band: #f5f1fe !important;
+  --brand: #5931d8 !important;
+  --link: #5931d8 !important;
+  --accent: #5931d8 !important;
+  --ctl: #5931d8 !important;
+}
+:root:root:root #acct-empty {
+  border-style: solid !important;
+}
+#profile #prof-body {
+  display: flex;
+  flex-direction: column;
+}
+#profile #prof-body .pcard1 {
+  order: 1;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+#profile #prof-body .pidcard {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center;
+  gap: 10px !important;
+  padding: 2px 0 18px !important;
+  background: none !important;
+}
+:root:root:root:root #profile .pidcard .pav {
+  width: 84px !important;
+  height: 84px !important;
+  border-radius: 50% !important;
+  font-size: 2rem !important;
+  flex: none;
+}
+#profile .pidcard .pav img {
+  border-radius: 50% !important;
+}
+#profile .pid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+#profile .pid .pnm {
+  font-size: 1.25rem;
+}
+#profile .pidcard .psign {
+  width: 100% !important;
+  height: 46px !important;
+  margin-top: 6px !important;
+  border-radius: 14px !important;
+  font-size: 1rem !important;
+}
+#profile .pidcard .aico2 {
+  position: absolute;
+  right: 18px;
+  top: 68px;
+}
+#profile #prof-contacts {
+  order: 1;
+}
+:root:root:root #profile .plevel {
+  order: 2;
+  display: block !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  padding: 16px 16px 14px !important;
+  margin: 0 !important;
+}
+#profile .plevel > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#profile .plevel {
+  position: relative;
+}
+#profile .plevel .ppts {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  text-align: left !important;
+}
+#profile .plevel .ppts b {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+#profile .plevel .ppts small {
+  color: var(--muted);
+}
+#profile .plbar {
+  display: block;
+  height: 6px;
+  border-radius: 6px;
+  margin-top: 10px;
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+  overflow: hidden;
+}
+#profile .plbar > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--link);
+  transition: width 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+:root:root:root #profile .pstats {
+  order: 3;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 0 !important;
+  margin: 12px 0 0 !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+:root:root:root #profile .pstats > div {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  padding: 14px 4px !important;
+}
+:root:root:root #profile .pstats > div + div {
+  border-left: 1px dashed var(--line) !important;
+}
+#profile .pptsnote {
+  order: 4;
+  text-align: center;
+  margin: 12px 0 0 !important;
+  font-size: 0.78rem;
+  color: var(--faint);
+}
+#profile .pnote {
+  order: 5;
+  margin: 6px 8px 0 !important;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+:root:root:root .p2seg button {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+:root:root:root .p2seg .p2dot {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  width: 6px !important;
+  height: 6px !important;
+  margin: 0 !important;
+  flex: none;
+}
+:root:root:root .p2card .p2head {
+  margin-bottom: 0 !important;
+  align-items: flex-start;
+}
+:root:root:root .p2card .ptile {
+  width: 46px !important;
+  height: 46px !important;
+  border-radius: 14px !important;
+}
+:root:root:root .p2card .p2nm small {
+  margin-top: 3px;
+  line-height: 1.35;
+}
+:root:root:root .p2card .p2price {
+  margin: 20px 0 0 !important;
+  padding-top: 18px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+:root:root:root .p2card .p2per {
+  margin: 8px 0 0 !important;
+}
+:root:root:root .p2card.p2-trail .p2per {
+  display: none !important;
+}
+:root:root:root .p2card .p2bill {
+  margin: 18px 0 0 !important;
+}
+:root:root:root .p2card .p2inc {
+  margin: 20px 0 0 !important;
+  padding-top: 6px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+@keyframes navglow {
+  0%,
+  100% {
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 0.13;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+@keyframes navglows {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 1px color-mix(in srgb, currentColor 18%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 3px color-mix(in srgb, currentColor 32%, transparent));
+  }
+}
+:root:root:root .nav button:not([aria-current="page"]) {
+  color: var(--faint) !important;
+  opacity: 1 !important;
+}
+:root:root:root .nav button:not([aria-current="page"]) svg {
+  opacity: 1 !important;
+}
+.lart > .lslides,
+.lcopy > .lsteps,
+.lcopy > .ldots {
+  display: none !important;
+}
+.lob {
+  position: absolute;
+  inset: 0;
+}
+.lob .lobs {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 24px 6px;
+  opacity: 0;
+  transform: translateX(24px);
+  transition:
+    opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.lob .lobs.on,
+.lobc .lobs.on {
+  opacity: 1;
+  transform: none;
+}
+.lob .lobs.out,
+.lobc .lobs.out {
+  transform: translateX(-24px);
+}
+.lob .lobs svg {
+  width: min(68vw, 270px);
+  height: auto;
+  max-height: 100%;
+}
+.lobc {
+  position: relative;
+  text-align: center;
+  padding: 0 24px;
+}
+.lobc .lobw {
+  display: grid;
+}
+.lobc .lobs {
+  grid-area: 1/1;
+  opacity: 0;
+  transform: translateX(24px);
+  transition:
+    opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+    transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.lobc h2 {
+  margin: 0 0 4px;
+}
+.lobc p {
+  margin: 0 auto;
+  color: var(--muted);
+  max-width: 300px;
+}
+.lobd {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+.lobd i {
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+  transition:
+    width 0.35s cubic-bezier(0.32, 0.72, 0, 1),
+    background 0.35s;
+}
+.lobd i.on {
+  width: 18px;
+  background: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lob .lobs,
+  .lobc .lobs {
+    transition: opacity 0.3s;
+  }
+}
+
+/* ==========================================================================
+   Account avatar, Profile ID card, onboarding art sizes.
+   ========================================================================== */
+:root:root:root:root #acct #acct-av#acct-av {
+  -webkit-mask: none !important;
+  mask: none !important;
+  border-radius: 50% !important;
+}
+:root:root:root:root #acct-empty {
+  border: 0 !important;
+  border-radius: 24px !important;
+  background: var(--surface) !important;
+}
+#profile .pidcard {
+  position: relative;
+}
+:root:root:root #profile .pidcard .aico2 {
+  position: absolute !important;
+  right: auto !important;
+  left: calc(50% + 22px) !important;
+  top: 58px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: 0 0 0 3px var(--bg) !important;
+  display: grid !important;
+  place-items: center;
+}
+#profile .pidcard .aico2 svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+.onbart,
+.onbart svg,
+.lob .lobs svg {
+  overflow: visible !important;
+}
+:root:root .onbart {
+  margin-top: 40px !important;
+}
+.lob .lobs {
+  padding-top: 48px !important;
+}
+#plans-sheet {
+  --p2r: 20px;
+}
+:root:root:root #plans-sheet .p2seg {
+  height: 44px;
+  padding: 4px !important;
+  border-radius: 14px !important;
+  margin-bottom: 16px !important;
+}
+:root:root:root #plans-sheet .p2seg button {
+  height: 36px !important;
+  padding: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  line-height: 1 !important;
+}
+:root:root:root #plans-sheet .p2card {
+  padding: var(--p2r) !important;
+  border-radius: 24px !important;
+}
+:root:root:root #plans-sheet .p2off {
+  margin: calc(-1 * var(--p2r)) calc(-1 * var(--p2r)) var(--p2r) !important;
+  padding: 12px var(--p2r) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 16px !important;
+}
+:root:root:root #plans-sheet .p2off * {
+  font-size: 13px !important;
+}
+:root:root:root #plans-sheet .p2head {
+  display: grid !important;
+  grid-template-columns: 44px 1fr auto;
+  column-gap: 12px;
+  align-items: center !important;
+  margin: 0 !important;
+}
+:root:root:root #plans-sheet .p2head .ptile {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  margin: 0 !important;
+}
+:root:root:root #plans-sheet .p2head .ptile svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+:root:root:root #plans-sheet .p2nm {
+  display: flex !important;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+:root:root:root #plans-sheet .p2nm b {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 24px !important;
+}
+:root:root:root #plans-sheet .p2nm small {
+  font-size: 13px !important;
+  line-height: 18px !important;
+  margin: 0 !important;
+  color: var(--muted) !important;
+}
+:root:root:root #plans-sheet .p2tag {
+  align-self: center;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 16px !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+}
+:root:root:root #plans-sheet .p2price {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 6px !important;
+  margin: var(--p2r) 0 0 !important;
+  padding-top: var(--p2r) !important;
+  border-top: 1px dashed var(--line) !important;
+  line-height: 1 !important;
+}
+:root:root:root #plans-sheet .p2price > b {
+  font-size: 40px !important;
+  font-weight: 700 !important;
+  line-height: 40px !important;
+  letter-spacing: -0.02em;
+}
+:root:root:root #plans-sheet .p2price > b .inr i {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+:root:root:root #plans-sheet .p2price > span,
+:root:root:root #plans-sheet .p2price > s {
+  font-size: 15px !important;
+  line-height: 20px !important;
+  font-weight: 400 !important;
+  color: var(--muted) !important;
+}
+:root:root:root #plans-sheet .p2price .inr i {
+  font-size: inherit !important;
+}
+:root:root:root #plans-sheet .p2per {
+  margin: 8px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+  color: var(--muted) !important;
+}
+:root:root:root #plans-sheet .p2per .inr i {
+  font-size: 13px !important;
+}
+:root:root:root #plans-sheet .p2bill {
+  height: 44px;
+  padding: 4px !important;
+  margin: 16px 0 0 !important;
+  border-radius: 14px !important;
+}
+:root:root:root #plans-sheet .p2bill button {
+  height: 36px !important;
+  padding: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  border-radius: 10px !important;
+}
+:root:root:root #plans-sheet .p2bill button i {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-style: normal;
+  margin-left: 4px;
+}
+:root:root:root #plans-sheet .p2inc {
+  margin: var(--p2r) 0 0 !important;
+  padding: 4px 0 0 !important;
+  border-top: 1px dashed var(--line) !important;
+}
+:root:root:root #plans-sheet .p2inc li {
+  display: grid !important;
+  grid-template-columns: 20px 1fr auto;
+  column-gap: 12px;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 !important;
+}
+:root:root:root #plans-sheet .p2inc li svg {
+  width: 20px !important;
+  height: 20px !important;
+  margin: 0 !important;
+}
+:root:root:root #plans-sheet .p2inc li span {
+  font-size: 15px !important;
+  line-height: 20px !important;
+}
+:root:root:root #plans-sheet .p2inc li em {
+  font-size: 13px !important;
+  line-height: 18px !important;
+  font-style: normal !important;
+  color: var(--muted) !important;
+}
+:root:root:root #plans-sheet .p2cap {
+  margin: 28px 4px 8px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 16px !important;
+  letter-spacing: 0.08em;
+}
+:root:root:root #plans-sheet .p2cmp {
+  border-radius: 24px !important;
+}
+:root:root:root #plans-sheet .p2r {
+  min-height: 48px;
+  align-items: center;
+}
+:root:root:root #plans-sheet .p2r > span {
+  font-size: 15px !important;
+  line-height: 20px !important;
+}
+:root:root:root #plans-sheet .p2r > b {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+:root:root:root #plans-sheet .p2r > em,
+:root:root:root #plans-sheet .p2r > em * {
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+:root:root:root #plans-sheet .p2r .p2ck {
+  width: 18px !important;
+  height: 18px !important;
+}
+:root:root:root #plans-sheet .pp-line {
+  font-size: 13px !important;
+  line-height: 18px !important;
+}
+:root:root:root #plans-sheet #pl-upgrade {
+  height: 52px !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Theme colour tokens per palette.
+   ========================================================================== */
+:root {
+  --kg1: #4fd1e0;
+  --kg2: #7c6cff;
+  --kg3: #b39dff;
+}
+:root:root[data-pal="paper"] {
+  --kg1: #ffd88a;
+  --kg2: #f2a93b;
+  --kg3: #e0703c;
+}
+:root:root[data-pal="ocean"] {
+  --kg1: #7fe0ff;
+  --kg2: #5b9cff;
+  --kg3: #4a5cf0;
+}
+:root:root[data-pal="sage"] {
+  --kg1: #c4ef9b;
+  --kg2: #5fcf8c;
+  --kg3: #2fa59a;
+}
+:root:root[data-pal="lilac"] {
+  --kg1: #f0b8ff;
+  --kg2: #a98bff;
+  --kg3: #6c5cf5;
+}
+:root:root[data-pal="mono"] {
+  --kg1: #ffffff;
+  --kg2: #b9b9c2;
+  --kg3: #6e6e78;
+}
+:root:root[data-pal="mono"][data-skin="light"] {
+  --kg1: #8a8a94;
+  --kg2: #3a3a40;
+  --kg3: #141416;
+}
+:root:root:root .ptr:before {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--kg2) 60%, transparent) 0,
+    color-mix(in srgb, var(--kg1) 22%, transparent) 45%,
+    transparent 70%
+  ) !important;
+  filter: blur(8px) !important;
+}
+:root:root:root[data-skin="light"] .ptr:before {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--kg2) 38%, transparent) 0,
+    color-mix(in srgb, var(--kg1) 16%, transparent) 45%,
+    transparent 70%
+  ) !important;
+}
+:root:root:root .ptr svg.kgl {
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--kg2) 70%, transparent))
+    drop-shadow(0 0 12px color-mix(in srgb, var(--kg2) 45%, transparent)) !important;
+}
+:root:root:root[data-skin="light"] .ptr svg.kgl {
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--kg2) 45%, transparent))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--kg2) 28%, transparent)) !important;
+}
+:root:root:root .kgl .kgr {
+  stroke: color-mix(in srgb, var(--kg2) 18%, transparent) !important;
+}
+:root:root:root .kgs {
+  fill: var(--ink) !important;
+  color: var(--ink);
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--kg2) 55%, transparent));
+}
+.gpick {
+  margin: 28px 0 0;
+}
+.gpick .sgc {
+  margin: 0 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.gpick .gpr {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.gpick button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.gpick button:active {
+  transform: scale(0.96);
+}
+.gpick button[aria-pressed="true"] {
+  border-color: var(--kg2);
+  box-shadow: 0 0 0 1px var(--kg2) inset;
+}
+.gpick svg {
+  width: 44px;
+  height: 44px;
+  overflow: visible;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--kg2) 40%, transparent));
+}
+
+/* ==========================================================================
+   Section caption style, app icon preview, theme sheet sections.
+   ========================================================================== */
+:root:root:root
+  :is(
+    .setcap,
+    .thcap,
+    .thcap > span,
+    .kzc,
+    .kzc > span,
+    .kz-gh,
+    .kz-gh > span,
+    .sgc,
+    .p2cap,
+    .wngc,
+    .pgl,
+    .setcap > span
+  ) {
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.07em !important;
+  color: var(--muted) !important;
+}
+:root:root:root[data-skin="graphite"] #kz-pv svg:first-child {
+  display: none !important;
+}
+:root:root:root[data-skin="graphite"] #kz-pv svg + svg {
+  display: block !important;
+}
+:root:root:root #theme-sheet .thsec {
+  margin-top: 22px !important;
+}
+:root:root:root #theme-sheet .thsec:first-of-type {
+  margin-top: 6px !important;
+}
+:root:root:root #theme-sheet .thcap {
+  display: flex !important;
+  margin: 0 6px 10px !important;
+}
+:root:root:root #theme-sheet .thcap b {
+  display: none !important;
+}
+:root:root:root #theme-sheet .pl-row {
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+:root:root:root #theme-sheet .kz-now .kzi {
+  margin-top: 16px !important;
+  padding-top: 16px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+:root:root:root #theme-sheet .kzc {
+  margin: 0 0 12px !important;
+}
+:root:root:root #theme-sheet .kzr + .kzc {
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 1px dashed var(--line) !important;
+}
+#theme-sheet .kz-pcap {
+  display: none !important;
+}
+#theme-sheet .thhint {
+  margin: -4px 6px 10px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--faint);
+}
+
+/* ==========================================================================
+   Plan page: alerts section and day chips.
+   ========================================================================== */
+#v-plan .subp.alw > .vz {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+#v-plan .seg-days .schip .utc {
+  margin-left: 6px;
+}
+#v-alerts > .uptabs,
+#v-alerts .nlist > .card.summary {
+  display: none !important;
+}
+#v-alerts .nlist {
+  padding-top: 4px;
+}
+#v-alerts .nbar {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 6px 10px !important;
+  padding: 0 !important;
+}
+#v-alerts .nbar .ncount {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+:root:root:root #v-alerts .nclear {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: var(--link) !important;
+  background: none !important;
+  border: 0 !important;
+  padding: 6px 0 !important;
+}
+:root:root:root #v-alerts .ncards {
+  display: block !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 24px !important;
+  padding: 0 16px !important;
+  gap: 0 !important;
+}
+:root:root:root #v-alerts .ncard {
+  display: grid !important;
+  grid-template-columns: 40px 1fr auto;
+  column-gap: 12px;
+  row-gap: 2px;
+  align-items: start;
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 14px 0 !important;
+}
+:root:root:root #v-alerts .ncard + .ncard {
+  border-top: 1px dashed var(--line) !important;
+}
+#v-alerts .ncard .ncrow {
+  display: contents !important;
+}
+:root:root:root #v-alerts .ncard .nci {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: grid !important;
+  place-items: center;
+  background: color-mix(in srgb, var(--link) 12%, var(--surface)) !important;
+  color: var(--link) !important;
+  margin: 0 !important;
+}
+#v-alerts .ncard .nci svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+:root:root:root #v-alerts .ncard em {
+  grid-column: 3;
+  grid-row: 1;
+  font-style: normal;
+  font-size: 0.75rem !important;
+  color: var(--faint) !important;
+  line-height: 20px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#v-alerts .ncard.new em::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--link);
+}
+:root:root:root #v-alerts .ncard > b {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+  margin: 0 !important;
+}
+:root:root:root #v-alerts .ncard > small {
+  grid-column: 2/4;
+  grid-row: 2;
+  font-size: 0.84rem !important;
+  line-height: 1.35 !important;
+  color: var(--muted) !important;
+  margin: 0 !important;
+}
+:root:root:root #v-alerts .ncard > .ncgo {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+  margin: 6px 0 0 !important;
+  padding: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  font-size: 0.84rem !important;
+  font-weight: 600 !important;
+  color: var(--link) !important;
+}
+#v-alerts .ncard > .ncgo::after {
+  content: " \203A";
+}
+:root:root:root #v-alerts .nold {
+  margin-top: 22px !important;
+}
+:root:root:root #v-alerts .noldt {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0 0 10px !important;
+  padding: 0 6px !important;
+  background: none !important;
+  border: 0 !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted) !important;
+}
+#v-alerts .noldt svg {
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+}
+:root:root:root #v-alerts .nnote {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 18px 0 0 !important;
+  font-size: 0.76rem !important;
+  color: var(--faint) !important;
+  text-align: center;
+}
+#v-alerts .nnote svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+/* ==========================================================================
+   Plan page: four day chips; notification bar.
+   ========================================================================== */
+:root:root:root #v-plan .seg-days.seg-4 {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  height: 50px !important;
+  box-sizing: border-box !important;
+  align-items: stretch !important;
+  border-radius: 20px !important;
+}
+:root:root:root #v-plan .seg-days.seg-4 > .chip {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 2px !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 15px !important;
+  font-size: 0.9rem !important;
+}
+#v-plan .seg-days.seg-4 > .chip > span {
+  white-space: nowrap;
+}
+#v-plan .seg-days.seg-4 .utc {
+  display: none !important;
+}
+:root:root:root #v-alerts .nbar {
+  margin: 0 0 10px !important;
+  padding: 0 17px !important;
+}
+:root:root:root #v-alerts .ngrp {
+  margin: 0 17px 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+:root:root:root #v-alerts .ncards + .ngrp {
+  margin-top: 22px;
+}
+:root:root:root #v-alerts .noldt {
+  padding: 0 17px !important;
+}
+.onbs:first-child .onbart svg,
+.lob .lobs:first-child svg {
+  -webkit-mask-image: radial-gradient(ellipse 46% 62% at 50% 44%, #000 50%, transparent 100%);
+  mask-image: radial-gradient(ellipse 46% 62% at 50% 44%, #000 50%, transparent 100%);
+}
+#v-profile .procap {
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   Plans sheet: offer timer.
+   ========================================================================== */
+#plans-sheet .p2offx {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--link) 12%, var(--surface));
+  border: 1px dashed color-mix(in srgb, var(--link) 40%, transparent);
+  color: var(--link);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+}
+#plans-sheet .p2offx * {
+  font-size: 13px !important;
+}
+#plans-sheet .p2offx time {
+  font-variant-numeric: tabular-nums;
+}
+#plans-sheet .p2card > .p2off {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Nav bar 'Shadow' style.
+   ========================================================================== */
+html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"]::after,
+html[data-navind="glow"]:root:root:root:root .nvt[data-s="glow"] .nvb.on::after,
+:root:root:root:root .nvt[data-s="glow"] .nvb.on::after {
+  animation: none !important;
+  opacity: 0 !important;
+  display: none !important;
+}
+html[data-navind="glow"]:root:root:root:root .nav button[aria-current="page"] svg,
+:root:root:root:root .nvt[data-s="glow"] .nvb.on svg {
+  animation: none !important;
+  filter: drop-shadow(1.6px 1.6px 0 color-mix(in srgb, var(--kg1) 70%, transparent))
+    drop-shadow(-1.6px -1.6px 0 color-mix(in srgb, var(--kg3) 70%, transparent))
+    drop-shadow(0 6px 8px color-mix(in srgb, var(--kg2) 35%, transparent)) !important;
+}
+
+/* ==========================================================================
+   Signature picker layout.
+   ========================================================================== */
+.sigpick {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px !important;
+  margin: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 120px) !important;
+}
+.sigpick .sgo {
+  --ink: #2b2620;
+  --muted: #8a8073;
+  width: min(78%, 280px);
+  padding: 18px 14px 16px !important;
+  border: 0 !important;
+  border-radius: 3px !important;
+  background: #fbf8f1 repeating-linear-gradient(transparent 0 23px, rgba(70, 90, 140, 0.08) 23px 24px) !important;
+  color: #2b2620 !important;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.08),
+    0 10px 22px rgba(0, 0, 0, 0.14) !important;
+  transform: rotate(-3deg);
+}
+.sigpick .sgo:nth-child(2) {
+  transform: rotate(2.4deg) translateX(10px);
+}
+.sigpick .sgo:active {
+  transform: rotate(-3deg) scale(0.97);
+}
+.sigpick .sgo:nth-child(2):active {
+  transform: rotate(2.4deg) translateX(10px) scale(0.97);
+}
+.sigpick .sgo > b,
+.sigpick .sgo > em,
+.sigpick .sgo .sgf {
+  display: none !important;
+}
+.sigpick .sgo small {
+  color: #8a8073 !important;
+}
+:root[data-skin="graphite"] .sigpick .sgo {
+  background-color: #ece6d8 !important;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.3),
+    0 12px 26px rgba(0, 0, 0, 0.45) !important;
+}
+.gpick {
+  margin: 0 !important;
+  padding: 14px 0 16px;
+  border-top: 1px dashed var(--line);
+}
+.gpick .gph {
+  margin: 0 0 12px;
+}
+.gpick .gph .setl {
+  display: flex;
+  flex-direction: column;
+}
+.gpick .gph small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.gpick .gpr {
+  gap: 6px;
+}
+.gpick button {
+  background: transparent !important;
+  padding: 10px 2px 8px !important;
+}
+
+/* ==========================================================================
+   Light palettes: more tinted surfaces.
+   ========================================================================== */
+:root:root:root[data-pal="paper"][data-skin="light"] {
+  --bg: #efeae3 !important;
+  --surface: #fcfaf7 !important;
+  --soft: #f6f2ee !important;
+  --line: #e1dbd3 !important;
+  --tile: #f2eee7 !important;
+  --brand-soft: #eee7de !important;
+  --band: #f8f5f0 !important;
+}
+:root:root:root[data-pal="ocean"][data-skin="light"] {
+  --bg: #e8ecf4 !important;
+  --surface: #fafcfe !important;
+  --soft: #f2f5fa !important;
+  --line: #d9deea !important;
+  --tile: #eef1f7 !important;
+  --brand-soft: #e3e9f4 !important;
+  --band: #f5f8fc !important;
+}
+:root:root:root[data-pal="sage"][data-skin="light"] {
+  --bg: #e7ece6 !important;
+  --surface: #fbfcfa !important;
+  --soft: #f2f5f1 !important;
+  --line: #d8dfd8 !important;
+  --tile: #edf1ec !important;
+  --brand-soft: #e4ebe6 !important;
+  --band: #f6f8f6 !important;
+}
+:root:root:root[data-pal="lilac"][data-skin="light"] {
+  --bg: #ebe8f3 !important;
+  --surface: #fcfbfe !important;
+  --soft: #f4f2f9 !important;
+  --line: #ddd8e8 !important;
+  --tile: #f0edf7 !important;
+  --brand-soft: #e8e4f2 !important;
+  --band: #f8f6fb !important;
+}
+:root:root:root[data-pal="mono"][data-skin="light"] {
+  --bg: #ececed !important;
+  --surface: #fefefe !important;
+  --soft: #f5f5f6 !important;
+  --line: #ddddde !important;
+  --tile: #f1f1f2 !important;
+  --brand-soft: #e8e8e9 !important;
+  --band: #f8f8f9 !important;
+}
+
+/* ==========================================================================
+   Home card: Span and Spend blocks.
+   ========================================================================== */
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan {
+  display: block !important;
+  margin-top: 14px !important;
+  padding-top: 0 !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend > .dayroute {
+  margin-bottom: 0 !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan > .dayroute {
+  display: none !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspend :is(.dpbar, .dpleg) {
+  display: none !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dpmeta.mv {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Signature picker: secondary options.
+   ========================================================================== */
+:root:root .sigpick .sgo:nth-child(n + 2) {
+  display: none !important;
+}
+:root:root .sigpick {
+  margin-top: 158px !important;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px) !important;
+}
+:root:root .sigpick .sgo,
+:root:root .sigpick .sgo:active,
+:root[data-skin="graphite"] .sigpick .sgo {
+  --ink: inherit;
+  --muted: inherit;
+  background: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  color: var(--ink) !important;
+  padding: 0 !important;
+}
+:root:root .sigpick .sgo small {
+  color: var(--muted) !important;
+}
+
+/* ==========================================================================
+   Top blur bar.
+   ========================================================================== */
+:root:root:root .tblur {
+  border-top: 1px solid color-mix(in srgb, var(--ink) 7%, transparent) !important;
+}
+
+/* ==========================================================================
+   Signature writing animation.
+   ========================================================================== */
+.sgo .sgw {
+  display: block;
+  white-space: nowrap;
+  line-height: 1.15;
+  color: color-mix(in srgb, var(--ink) 38%, transparent);
+  font-size: 48px;
+  padding: 2px 10px 6px;
+  text-align: center;
+}
+.sgo .sgw i {
+  display: inline-block;
+  font-style: normal;
+  clip-path: inset(-40% 100% -40% -30%);
+  -webkit-clip-path: inset(-40% 100% -40% -30%);
+}
+.sgo.go .sgw i {
+  animation: sgwr 0.2s cubic-bezier(0.4, 0.1, 0.6, 1) forwards;
+  animation-delay: calc(var(--i) * 0.12s + 0.15s);
+}
+@keyframes sgwr {
+  to {
+    clip-path: inset(-40% -40% -40% -30%);
+    -webkit-clip-path: inset(-40% -40% -40% -30%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sgo .sgw i {
+    clip-path: none !important;
+    -webkit-clip-path: none !important;
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Plans sheet: four plan tabs and add-on row.
+   ========================================================================== */
+.p2seg.p2seg4 {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+.p2seg4 button {
+  font-size: 0.88rem !important;
+}
+.p2cmp4 .p2r {
+  grid-template-columns: minmax(0, 1.3fr) repeat(4, minmax(0, 1fr)) !important;
+}
+.p2add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.p2add:active {
+  transform: scale(0.98);
+}
+.p2add.own {
+  cursor: default;
+}
+.p2ai {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--link) 12%, var(--surface));
+  color: var(--link);
+}
+.p2ai svg {
+  width: 22px;
+  height: 22px;
+}
+.p2at {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.p2at b {
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+.p2at small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+.p2ap {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.p2ap b {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.p2ap small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+/* ==========================================================================
+   Plans sheet: offer price line.
+   ========================================================================== */
+:root:root:root #plans-sheet .p2ck {
+  stroke: var(--link) !important;
+  color: var(--link);
+}
+:root:root:root .p2card.hasofl .p2price {
+  border-top: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 10px !important;
+}
+.p2ofl {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  color: var(--link);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+.p2ofl time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Home tag dot and badge.
+   ========================================================================== */
+:root:root:root .offtag .odot,
+:root:root:root .offtag > i {
+  background: #f0565e !important;
+}
+:root:root:root .offtag.on .odot,
+:root:root:root .offtag.on > i {
+  background: #2fbf71 !important;
+}
+:root:root:root .hometop .acnt {
+  background: #f0565e !important;
+}
+
+/* ==========================================================================
+   What's new tag, notification style chips.
+   ========================================================================== */
+:root:root .wntag.wnlat {
+  background: color-mix(in srgb, var(--link) 14%, var(--surface)) !important;
+  color: var(--link) !important;
+}
+.nstyles {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 0 14px;
+  padding: 2px 17px;
+}
+.nstyles::-webkit-scrollbar {
+  display: none;
+}
+.nstyles button {
+  flex: none;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 6px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.nstyles button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+:root:root:root:root #v-alerts > .nstyles {
+  display: flex !important;
+}
+:root:root:root:root #v-alerts[data-nst="2"] .ncards {
+  background: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+:root:root:root:root #v-alerts[data-nst="2"] .ncard {
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  padding: 14px 16px !important;
+}
+:root:root:root:root #v-alerts[data-nst="2"] .ncard + .ncard {
+  border-top: 1px solid var(--line) !important;
+}
+:root:root:root:root #v-alerts[data-nst="3"] .ncards {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 17px !important;
+}
+:root:root:root:root #v-alerts[data-nst="3"] .ncard .nci {
+  background: none !important;
+  border: 1px solid var(--line) !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncards {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 17px !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard {
+  grid-template-columns: 28px 1fr auto !important;
+  column-gap: 10px !important;
+  padding: 10px 0 !important;
+  align-items: center !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard .nci {
+  width: 28px !important;
+  height: 28px !important;
+  grid-row: 1 / span 2 !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard .nci svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard > b {
+  font-size: 0.88rem !important;
+  line-height: 18px !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard > small {
+  -webkit-line-clamp: 1 !important;
+  font-size: 0.78rem !important;
+  grid-column: 2/3 !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard > .ncgo {
+  grid-column: 3 !important;
+  grid-row: 2 !important;
+  margin: 0 !important;
+  font-size: 0.76rem !important;
+  justify-self: end !important;
+}
+:root:root:root:root #v-alerts[data-nst="4"] .ncard + .ncard {
+  border-top: 1px solid color-mix(in srgb, var(--ink) 6%, transparent) !important;
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncards {
+  background: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 17px !important;
+  position: relative;
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncards::before {
+  content: "";
+  position: absolute;
+  left: 36px;
+  top: 18px;
+  bottom: 18px;
+  border-left: 1.5px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncard {
+  position: relative;
+  padding: 10px 0 !important;
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncard + .ncard {
+  border-top: 0 !important;
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncard .nci {
+  position: relative !important;
+  z-index: 1;
+  background: var(--bg) !important;
+  border: 1.5px solid color-mix(in srgb, var(--link) 45%, var(--line)) !important;
+  color: var(--link) !important;
+}
+:root:root:root:root #v-alerts[data-nst="5"] .ncard:not(.new) .nci {
+  border-color: var(--line) !important;
+  color: var(--muted) !important;
+}
+
+/* ==========================================================================
+   Home card: Span block layout.
+   ========================================================================== */
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan {
+  margin-top: 6px !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan .dstrack {
+  visibility: hidden !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan .dsrows {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+html.homeone.dv-spend :is(.hday, .ctday2) .summary > .dspan + .wxlocrow {
+  margin-top: 6px !important;
+  padding-top: 10px !important;
+}
+
+/* ==========================================================================
+   Plans sheet: plan header and pills.
+   ========================================================================== */
+:root:root:root:root #plans-sheet .p2head.p2hr {
+  grid-template-columns: 1fr 48px !important;
+  text-align: left !important;
+  align-items: start !important;
+}
+:root:root:root:root #plans-sheet .p2hr .p2nm {
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+:root:root:root:root #plans-sheet .p2hr .ptile {
+  width: 48px !important;
+  height: 48px !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+:root:root:root:root #plans-sheet .p2hr .ptile svg {
+  width: 40px !important;
+  height: 40px !important;
+}
+.p2pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+}
+.p2pills i {
+  font-style: normal;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  color: var(--ink);
+}
+.p2pills i.on {
+  background: color-mix(in srgb, var(--link) 14%, var(--surface));
+  color: var(--link);
+}
+#plans-sheet .p2card .p2per {
+  text-align: left;
+}
+
+/* ==========================================================================
+   Sheet open and close animation, scrim.
+   ========================================================================== */
+@keyframes iosup2 {
+  0% {
+    transform: translateY(calc(100% + 24px));
+  }
+  to {
+    transform: none;
+  }
+}
+html.sheet-bottom:root:root:root .sheet:not([hidden]):not(.shghost) {
+  animation: iosup2 0.52s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+html.sheet-bottom:root:root:root .sheet.shghost {
+  animation: iosdn 0.32s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+:root:root #scrim:not([hidden]) {
+  animation: scrimin 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root:root .scrimghost {
+  animation: scrimout 0.3s ease forwards !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.sheet-bottom:root:root:root .sheet:not([hidden]):not(.shghost) {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Header hairline animation.
+   ========================================================================== */
+:root:root:root .tblur {
+  display: none !important;
+}
+:root:root:root:root :is(.hometop, .pghead, .chips).tstk::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  top: 100%;
+  height: 24px;
+  pointer-events: none;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 70%, transparent), transparent);
+  -webkit-mask: linear-gradient(to bottom, #000 15%, transparent);
+  mask: linear-gradient(to bottom, #000 15%, transparent);
+  opacity: 1;
+  z-index: 1;
+  animation: tstkin 0.18s ease-out;
+}
+@keyframes tstkin {
+  from {
+    opacity: 0;
+  }
+}
+:root:root:root:root .vmore > .pghead {
+  padding-bottom: 12px !important;
+}
+
+/* ==========================================================================
+   More header, signature end state.
+   ========================================================================== */
+:root:root:root:root .vmore > .pghead {
+  box-shadow: 0 -80px 0 var(--bg) !important;
+}
+:root:root:root .sgo .sgw i.sgdn {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  animation: none !important;
+}
+
+/* ==========================================================================
+   Home header when scrolled, sub-tab chips, plan card.
+   ========================================================================== */
+:root:root:root:root html .pghead,
+:root:root:root:root html .hometop,
+:root:root:root:root html.scrolled .pghead,
+:root:root:root:root html.scrolled .hometop {
+  box-shadow: 0 -80px 0 var(--bg) !important;
+}
+:root:root:root:root html.stuck :is(#v-days, #v-route, #v-plan) .vz > .chips {
+  box-shadow: none !important;
+}
+#plans-sheet .p2card {
+  will-change: transform;
+  touch-action: pan-y;
+}
+#plans-sheet .p2card.p2hs {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Page headers: sizes and positions.
+   ========================================================================== */
+:root {
+  --hdrh: 82px;
+}
+:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead,
+:root:root:root:root:root #v-home > .hometop {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: env(safe-area-inset-top, 0px) !important;
+  z-index: 20 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  gap: 12px !important;
+  box-sizing: border-box !important;
+  min-height: var(--hdrh) !important;
+  padding: 16.5px 24px 16.5px 30px !important;
+  margin: 0 0 4px !important;
+  background: var(--bg) !important;
+  box-shadow: 0 -80px 0 var(--bg) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+  transition: none !important;
+  max-width: none !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead .htitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead h2,
+:root:root:root:root #v-home > .hometop h1 {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 26px !important;
+  font-weight: 700 !important;
+  line-height: 30px !important;
+  letter-spacing: normal !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead .hsub {
+  display: block;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 0;
+  background: none;
+  margin: 0;
+  padding: 2px 0 0;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead button.hsub {
+  cursor: pointer;
+}
+:root:root:root:root #v-profile > .pghead button.hsub:after {
+  content: " \203A";
+  font-weight: 700;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
+  display: none !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
+  padding-top: 14px !important;
+}
+:root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
+  top: calc(env(safe-area-inset-top, 0px) + var(--hdrh) - 4px) !important;
+  padding-top: 4px !important;
+  margin-top: 0 !important;
+  z-index: 19 !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================================================
+   Page headers: fixed position and spacing.
+   ========================================================================== */
+:root {
+  --hdr2: 64px;
+}
+:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead {
+  min-height: var(--hdr2) !important;
+  height: var(--hdr2) !important;
+  padding: 0 24px 0 30px !important;
+  margin: 0 0 12px !important;
+  align-items: center !important;
+}
+:root:root:root:root:root #v-home > .hometop {
+  margin: 0 0 12px !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead > .yrpill {
+  display: block !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead .hsub {
+  display: none !important;
+}
+:root:root:root:root:root :is(#v-days, #v-route, #v-plan) .vz > .chips {
+  top: calc(env(safe-area-inset-top, 0px) + var(--hdr2) - 2px) !important;
+}
+:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead + * {
+  margin-top: 0 !important;
+}
+
+/* ==========================================================================
+   Page headers: final layout for every tab.
+   ========================================================================== */
+:root:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead,
+:root:root:root:root:root:root #v-home > .hometop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  box-sizing: border-box !important;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0) !important;
+  will-change: transform;
+  contain: layout style;
+}
+:root:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) > .pghead {
+  height: calc(env(safe-area-inset-top, 0px) + var(--hdr2)) !important;
+  min-height: 0 !important;
+}
+:root:root:root:root:root:root #v-home > .hometop {
+  height: calc(env(safe-area-inset-top, 0px) + var(--hdrh)) !important;
+  min-height: 0 !important;
+  padding-bottom: 0 !important;
+}
+:root:root:root:root:root :is(#v-days, #v-plan, #v-route, #v-more, #v-profile) {
+  padding-top: calc(var(--hdr2) + 7px) !important;
+}
+:root:root:root:root:root:root #v-profile {
+  padding-top: calc(var(--hdr2) + 3px) !important;
+}
+:root:root:root:root:root #v-home {
+  padding-top: calc(var(--hdrh) + 7px) !important;
+}
+
+/* ==========================================================================
+   Main area and nav: no transforms (keeps fixed headers steady).
+   ========================================================================== */
+:root:root:root:root main,
+:root:root:root:root nav.nav {
+  filter: none !important;
+}
+
+/* ==========================================================================
+   Header heights, Profile stats, signature size.
+   ========================================================================== */
+:root {
+  --hdr2: 58px;
+  --hdrh: 78px;
+}
+:root:root:root:root:root #v-home > .hometop {
+  align-items: center !important;
+}
+:root:root:root:root #v-profile .setcap.procap {
+  padding-top: 2px !important;
+  margin-top: 0 !important;
+}
+:root:root:root:root #profile .pstats > div {
+  text-align: left !important;
+  align-items: flex-start !important;
+  padding: 14px 12px !important;
+}
+:root:root:root:root .sigpick .sgw {
+  font-weight: 400 !important;
+}
+:root:root:root:root .sigpick {
+  margin-top: 22px !important;
+}
+:root:root:root:root .offtag .odot,
+:root:root:root:root .offtag > i {
+  background: transparent !important;
+  border: 1.7px solid currentColor;
+  box-sizing: border-box;
+  width: 0.56em !important;
+  height: 0.56em !important;
+  animation: none !important;
+  vertical-align: -0.02em !important;
+  margin: 0 0.02em !important;
+}
+:root:root:root:root .offtag .odot {
+  color: #f0565e;
+}
+:root:root:root:root .offtag.on .odot {
+  color: #2fbf71;
+}
+:root:root:root:root #v-profile .setrow:has(.devdanger) .seti {
+  background: color-mix(in srgb, #e5484d 13%, transparent) !important;
+  color: #e5484d !important;
+}
+:root:root:root:root #v-profile .setrow:has(.devdanger) .seti svg {
+  color: #e5484d !important;
+  stroke: #e5484d;
+}
+:root:root:root:root #theme-sheet .kz-pcap,
+:root:root:root:root #theme-sheet #kz-presets,
+:root:root:root:root #theme-sheet .thnote2 {
+  display: none !important;
+}
+:root:root:root:root .psheet > .shtitle {
+  padding-bottom: 6px !important;
+}
+:root:root:root:root .psheet > .shtitle + * {
+  margin-top: 10px !important;
+}
+:root:root:root:root #theme-sheet {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px) !important;
+}
+:root:root:root:root #theme-sheet > :last-child {
+  margin-bottom: 0 !important;
+}
+:root:root:root:root #cs-send {
+  margin-top: 16px !important;
+}
+:root:root:root:root #notif-sheet .setrow > .seg.ntseg {
+  display: none !important;
+}
+
+/* ==========================================================================
+   More page landscape art.
+   ========================================================================== */
+.khart {
+  display: block;
+  margin: 48px 0 0;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--ink) 9%, var(--bg));
+}
+.khart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Red colour for Reset and Delete, developer danger rows.
+   ========================================================================== */
+:root {
+  --dng: #e5484d;
+}
+:root:is([data-skin="graphite"], [data-skin="midnight"], [data-skin="navy"]) {
+  --dng: #ff6369;
+}
+:root:root:root:root:root #v-profile .setrow .setbtn.devdanger {
+  background: color-mix(in srgb, var(--dng) 13%, transparent) !important;
+  color: var(--dng) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+:root:root:root:root:root #v-profile .setrow:has(.devdanger) .seti {
+  background: color-mix(in srgb, var(--dng) 13%, transparent) !important;
+  color: var(--dng) !important;
+}
+:root:root:root:root:root #v-profile .setrow:has(.devdanger) .seti svg {
+  color: var(--dng) !important;
+  stroke: var(--dng) !important;
+}
+
+/* ==========================================================================
+   Notification rows: icon and time, title, text.
+   ========================================================================== */
+:root:root:root:root:root #v-alerts .ncard {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  grid-template-areas: none !important;
+  column-gap: 10px !important;
+  row-gap: 4px !important;
+  align-items: center !important;
+}
+:root:root:root:root:root #v-alerts .ncard .ncrow {
+  display: contents !important;
+}
+:root:root:root:root:root #v-alerts .ncard .nci {
+  grid-area: 1/1/2/2 !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 11px !important;
+  margin: 0 0 6px !important;
+}
+:root:root:root:root:root #v-alerts .ncard .ncrow em {
+  grid-area: 1/2/2/3 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  margin: 0 0 6px !important;
+  font-size: 0.78rem !important;
+}
+:root:root:root:root:root #v-alerts .ncard > b {
+  grid-area: 2/1/3/3 !important;
+  margin: 0 !important;
+}
+:root:root:root:root:root #v-alerts .ncard > small {
+  grid-area: 3/1/4/3 !important;
+  margin: 0 !important;
+  -webkit-line-clamp: unset !important;
+}
+:root:root:root:root:root #v-alerts .ncard > .ncgo {
+  grid-area: 4/1/5/3 !important;
+  justify-self: start !important;
+}
+
+/* ==========================================================================
+   Dimmed band behind the status bar when a sheet is open.
+   ========================================================================== */
+#kssb {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: max(env(safe-area-inset-top, 0px), 1px);
+  z-index: 30;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--bg) 42%, #000);
+  opacity: 0;
+  transition: opacity 0.16s ease-out;
+}
+html.dim #kssb {
+  opacity: 1;
+}
+html:has(.chatsh:not([hidden])) #kssb {
+  display: none;
+}
+
+/* ==========================================================================
+   Theme sheet bottom spacing.
+   ========================================================================== */
+:root:root:root:root:root #theme-sheet {
+  padding-bottom: 16px !important;
+}
+:root:root:root:root:root #theme-sheet .thsec:last-child {
+  margin-bottom: 0 !important;
+}
+:root:root:root:root:root #theme-sheet .kz-now {
+  margin-bottom: 0 !important;
+  padding-bottom: 22px !important;
+}
+
+/* ==========================================================================
+   Avatar faces in pickers.
+   ========================================================================== */
+:root:root:root:root:root svg.kav {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: inherit !important;
+}
+:root:root:root:root:root .avemo:has(svg.kav),
+:root:root:root:root:root .avopt:has(svg.kav) {
+  background: none !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   Avatar colours in light and dark; dimmed page behind sheets.
+   ========================================================================== */
+svg.kav {
+  --kb: var(--kb0);
+  --kf: var(--kf0);
+  --kc: var(--kc0);
+}
+:root:is([data-skin="graphite"], [data-skin="midnight"], [data-skin="navy"]) svg.kav {
+  --kb: var(--kb1);
+  --kf: var(--kf1);
+  --kc: var(--kc1);
+}
+html.dim {
+  background-color: color-mix(in srgb, var(--bg) 42%, #000) !important;
+  transition: background-color 0.16s ease-out;
+}
+html {
+  transition: background-color 0.16s ease-out;
+}
+:root:root:root:root:root body {
+  background-color: var(--bg);
+}
+
+/* ==========================================================================
+   Stay row icon.
+   ========================================================================== */
+html:is(.dv-both, .dv-span)
+  :is(.hday, .ctday2):has(.dspan .dsrows > li)
+  :is(.dpstay.mv, .ctrows .dpstay, .summary .dpstay) {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Sticky sheet buttons; group member editor.
+   ========================================================================== */
+:root:root:root:root:root .sheet.psheet > .btn.full:not([hidden]) {
+  position: sticky !important;
+  bottom: 12px !important;
+  z-index: 6 !important;
+  box-shadow:
+    0 0 0 14px var(--shbg, var(--bg)),
+    0 26px 0 14px var(--shbg, var(--bg)),
+    0 -16px 18px 6px var(--shbg, var(--bg)) !important;
+}
+:root:root:root:root:root #grp-sheet .gmc.open {
+  background: var(--surface) !important;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07) !important;
+}
+:root:root:root:root:root #grp-sheet .gmc.open .gmh {
+  border-bottom: 0 !important;
+}
+:root:root:root:root:root #grp-sheet .gmed {
+  padding: 2px 14px 14px !important;
+  border-top: 1px dashed var(--line) !important;
+  margin: 0 0 0 !important;
+}
+:root:root:root:root:root #grp-sheet .gmrow2 {
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+:root:root:root:root:root #grp-sheet .segc {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  padding: 0 !important;
+  background: none !important;
+  border-radius: 0 !important;
+}
+:root:root:root:root:root #grp-sheet .segc button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  padding: 9px 4px !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--ink) 4%, var(--surface)) !important;
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent) !important;
+  box-shadow: none !important;
+  gap: 1px !important;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+:root:root:root:root:root #grp-sheet .segc button b {
+  font-size: 0.86rem !important;
+  font-weight: 550 !important;
+}
+:root:root:root:root:root #grp-sheet .segc button small {
+  font-size: 0.68rem !important;
+}
+:root:root:root:root:root #grp-sheet .segc button[aria-pressed="true"] {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  color: var(--surface) !important;
+}
+:root:root:root:root:root #grp-sheet .segc button[aria-pressed="true"] small {
+  color: color-mix(in srgb, var(--surface) 70%, transparent) !important;
+}
+:root:root:root:root:root #grp-sheet .gmfoot {
+  margin-top: 16px !important;
+  gap: 10px !important;
+}
+:root:root:root:root:root #grp-sheet .gmrm {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  padding: 0 14px !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--dng, #e5484d) 10%, transparent) !important;
+  color: var(--dng, #e5484d) !important;
+  font-size: 0.84rem !important;
+  font-weight: 600 !important;
+}
+:root:root:root:root:root #grp-sheet .gmrm::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3'/%3E%3C/svg%3E")
+    center/contain no-repeat;
+}
+:root:root:root:root:root #grp-sheet .gmdone {
+  height: 38px !important;
+  padding: 0 20px !important;
+  border-radius: 999px !important;
+  font-size: 0.86rem !important;
+}
+:root:root:root:root:root #grp-sheet .gmrow2 > span {
+  font-size: 0.7rem !important;
+}
+
+/* ==========================================================================
+   Home card: hides a duplicate stay row.
+   ========================================================================== */
+:root:root:root body #v-home .dpstay.kdup {
+  display: none !important;
+}
+
+/* ==========================================================================
+   More page art position.
+   ========================================================================== */
+:root:root:root #v-profile .khart {
+  margin-top: 28px !important;
+}
+
+/* ==========================================================================
+   Group sheet editor.
+   ========================================================================== */
+:root:root:root:root:root #grp-sheet.gxon #grp-members {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+:root:root:root:root:root #grp-sheet .gxed {
+  margin-top: 6px;
+}
+:root:root:root:root:root #grp-sheet .gxed .gmrow2:first-of-type {
+  margin-top: 10px !important;
+}
+:root:root:root:root:root #grp-sheet.gxedit .gadd {
+  display: none !important;
+}
+:root:root:root:root:root #grp-sheet .gxhead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ink) 4%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+:root:root:root:root:root #grp-sheet .gxhead[hidden] {
+  display: none;
+}
+:root:root:root:root:root #grp-sheet .gxav {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #1b1b1f;
+}
+:root:root:root:root:root #grp-sheet .gxhead b {
+  display: block;
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+:root:root:root:root:root #grp-sheet .gxhead small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+:root:root:root:root:root #grp-sheet .gxfoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  gap: 10px;
+}
+:root:root:root:root:root #grp-sheet .gxfoot[hidden] {
+  display: none;
+}
+:root:root:root:root:root #grp-sheet .gprev .gstack i {
+  cursor: pointer;
+  transition:
+    transform 0.18s cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 0.18s;
+}
+:root:root:root:root:root #grp-sheet .gprev .gstack i:active {
+  transform: scale(0.94);
+}
+:root:root:root:root:root #grp-sheet .gprev[data-sel="0"] .gstack i:nth-child(1),
+:root:root:root:root:root #grp-sheet .gprev[data-sel="1"] .gstack i:nth-child(2),
+:root:root:root:root:root #grp-sheet .gprev[data-sel="2"] .gstack i:nth-child(3),
+:root:root:root:root:root #grp-sheet .gprev[data-sel="3"] .gstack i:nth-child(4) {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 0 0 5px var(--ink) !important;
+  z-index: 2;
+  position: relative;
+}
+:root:root:root:root:root #grp-sheet .gprev[data-sel="-1"] .gstack i.add {
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 0 0 5px var(--ink) !important;
+  border-style: solid !important;
+}
+
+/* ==========================================================================
+   Sheet bottom spacing, signature size, group sheet add button.
+   ========================================================================== */
+:root:root:root:root:root .sheet.psheet {
+  padding-bottom: 24px !important;
+}
+:root:root:root:root:root #theme-sheet {
+  padding-bottom: 24px !important;
+}
+:root:root:root:root:root .sheet.psheet > .btn.full:not([hidden]) {
+  bottom: 0 !important;
+  margin-top: 22px !important;
+}
+:root:root:root:root:root #v-profile .sigpick {
+  margin-top: 56px !important;
+  transform: scale(0.7);
+  transform-origin: 50% 0;
+  margin-bottom: -24px !important;
+}
+:root:root:root:root:root #grp-sheet #grp-addm {
+  display: none !important;
+}
+:root:root:root:root:root #grp-sheet .gadd input {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+}
+:root:root:root:root:root #grp-sheet #grp-save.gxadd {
+  background: transparent !important;
+  color: var(--ink) !important;
+  border: 1.5px solid var(--ink) !important;
+}
+
+/* ==========================================================================
+   Placeholder text colour (lighter than typed text).
+   ========================================================================== */
+:root:root:root:root input::placeholder,
+:root:root:root:root textarea::placeholder {
+  color: color-mix(in srgb, var(--ink) 34%, transparent) !important;
+  -webkit-text-fill-color: color-mix(in srgb, var(--ink) 34%, transparent) !important;
+  opacity: 1 !important;
+  font-weight: 400 !important;
+}
+:root:root:root:root :is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   Top travellers 'Coming soon' sheet and tips.
+   ========================================================================== */
+.lbsoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 8px 8px 16px;
+}
+.lbsico {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+  margin-bottom: 6px;
+}
+.lbsico svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lbsoon b {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.lbsoon p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  max-width: 300px;
+}
+.lbtips {
+  list-style: none;
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+.lbtips li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+}
+.lbtips li + li {
+  border-top: 1px dashed var(--line);
+}
+.lbtips li > span {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--ink) 7%, var(--surface));
+}
+.lbtips b {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.lbtips small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.acnote {
+  margin: 12px 4px 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: center;
+}
+:root:root:root:root .lshead .lst h3 {
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+:root:root:root:root .lshead .lst p {
+  margin: 2px 0 0 !important;
+}
+:root:root:root:root .lshead .lst {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+}
+:root:root:root:root .onbs:first-child .onbart svg,
+:root:root:root:root .lob .lobs:first-child svg {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+:root:root:root:root #login-fine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem !important;
+}
+:root:root:root:root:root #v-profile .sigpick {
+  transform: scale(0.55) !important;
+  opacity: 0.55;
+  margin-bottom: -36px !important;
+}
+
+/* ==========================================================================
+   List sheet titles, Top travellers podium and tip timeline, More note, sign-in demo line.
+   ========================================================================== */
+:root:root:root:root:root .lshead .lst {
+  margin: 0 !important;
+  height: auto !important;
+  background: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+}
+.lbsz {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  width: 220px;
+  height: 150px;
+  margin: 4px auto 10px;
+}
+.lbp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 64px;
+}
+.lbav {
+  display: block;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 0 0 4px var(--line);
+  margin-bottom: 8px;
+  opacity: 0;
+  transform: translateY(10px) scale(0.7);
+  animation:
+    lbpop 0.5s cubic-bezier(0.32, 0.72, 0, 1) forwards,
+    lbfl 3.2s ease-in-out infinite;
+}
+.lbp.p1 .lbav {
+  width: 56px;
+  height: 56px;
+}
+.lbblk {
+  display: grid;
+  place-items: start center;
+  width: 100%;
+  border-radius: 12px 12px 4px 4px;
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface));
+  padding-top: 8px;
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: lbgrow 0.55s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+.lbblk b {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+.lbp.p1 .lbblk {
+  height: 62px;
+  background: color-mix(in srgb, var(--ink) 14%, var(--surface));
+}
+.lbp.p1 .lbblk b {
+  color: var(--ink);
+}
+.lbp.p2 .lbblk {
+  height: 44px;
+}
+.lbp.p3 .lbblk {
+  height: 32px;
+}
+.lbp.p2 .lbblk {
+  animation-delay: 0.1s;
+}
+.lbp.p1 .lbblk {
+  animation-delay: 0s;
+}
+.lbp.p3 .lbblk {
+  animation-delay: 0.2s;
+}
+.lbp.p1 .lbav {
+  animation-delay: 0.3s, 1s;
+}
+.lbp.p2 .lbav {
+  animation-delay: 0.42s, 1.6s;
+}
+.lbp.p3 .lbav {
+  animation-delay: 0.54s, 2.2s;
+}
+.lbcr {
+  position: absolute;
+  top: -20px;
+  width: 26px;
+  height: 18px;
+  fill: #f3c74b;
+  stroke: color-mix(in srgb, #f3c74b 60%, var(--ink));
+  stroke-width: 1;
+  stroke-linejoin: round;
+  opacity: 0;
+  animation:
+    lbcr 0.5s 0.7s cubic-bezier(0.32, 0.72, 0, 1) forwards,
+    lbfl 3.2s 1s ease-in-out infinite;
+}
+.lbsp {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0;
+  animation: lbtw 2.6s ease-in-out infinite;
+}
+.lbsp.s1 {
+  left: 22px;
+  top: 30px;
+  animation-delay: 1.2s;
+}
+.lbsp.s2 {
+  right: 20px;
+  top: 14px;
+  width: 4px;
+  height: 4px;
+  animation-delay: 2s;
+}
+.lbsp.s3 {
+  left: 56px;
+  top: 4px;
+  width: 4px;
+  height: 4px;
+  animation-delay: 2.7s;
+}
+@keyframes lbgrow {
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes lbpop {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lbcr {
+  from {
+    opacity: 0;
+    transform: translateY(8px) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes lbfl {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -4px;
+  }
+}
+@keyframes lbtw {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lbsz * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .lbsp {
+    opacity: 0.25 !important;
+  }
+}
+:root:root:root:root .lbtips.lbtl {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 4px 4px 0 6px;
+  margin-top: 6px;
+}
+.lbtl li {
+  position: relative;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  padding: 0 0 22px !important;
+  border: 0 !important;
+}
+.lbtl li:last-child {
+  padding-bottom: 4px !important;
+}
+.lbtl li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 30px;
+  bottom: 2px;
+  border-left: 2px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.lbtl li > span {
+  position: relative;
+  z-index: 1;
+}
+.lbtl li:first-child > span {
+  background: var(--ink) !important;
+  color: var(--surface);
+}
+.lbtl li > div {
+  padding-top: 3px;
+}
+.lbtl small {
+  display: block;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+:root:root:root:root #acct-signin {
+  margin-bottom: 6px;
+}
+:root:root:root:root .acnote {
+  margin-top: 16px !important;
+  max-width: 300px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+:root:root:root:root #login-fine {
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
+.lart,
+.lcopy,
+.lob,
+.lobc {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   Floating Plans and Top travellers sheets, Home card icon sizes, podium colours, Leave demo button.
+   ========================================================================== */
+:root:root:root:root:root :is(#lb-sheet, #plans-sheet):not([hidden]):not(.shghost) {
+  top: auto !important;
+  bottom: 8px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: auto !important;
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 20px) !important;
+  border-radius: 30px !important;
+  padding-top: 18px !important;
+  clip-path: none !important;
+}
+:root:root:root:root:root:root .wxlocrow {
+  gap: 10px !important;
+}
+:root:root:root:root:root:root .wxlocrow > svg {
+  width: 18px !important;
+  height: 18px !important;
+  margin-left: 2px !important;
+  flex: none;
+}
+:root:root:root:root:root:root .wxrowico {
+  margin-left: 2px !important;
+  margin-right: 10px !important;
+}
+:root:root:root:root:root:root :is(.wxrowico, .wxrowico .ic, .wxrowico .il, .wxrowico svg) {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  flex: none;
+}
+
+:root:root:root:root
+  body
+  #v-home#v-home
+  :is(
+    .wxlocrow svg,
+    .dpstay svg,
+    .dpstay .ph,
+    .wx.wxmoved .wxrowico,
+    .wx.wxmoved .wxrowico svg,
+    .wx.wxmoved .wxrowico .ic,
+    .wx.wxmoved .wxrowico .il,
+    .dpmeta .ph,
+    .dsrows .ph
+  ) {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+}
+:root:root:root:root body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
+  margin-left: 2px !important;
+}
+:root:root:root:root #confirm:has(.kdm) #cf-go {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border-color: transparent !important;
+}
+:root:root:root:root:root .lbsz .lbblk {
+  background: color-mix(in srgb, var(--ink) 9%, transparent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
+}
+:root:root:root:root:root .lbsz .lbp.p1 .lbblk {
+  background: color-mix(in srgb, var(--ink) 15%, transparent) !important;
+}
+:root:root:root:root:root .lbsz .lbav {
+  box-shadow:
+    0 0 0 3px var(--bg),
+    0 0 0 4px color-mix(in srgb, var(--ink) 12%, transparent);
+}
+:root:root:root:root .acx .xav.kxav i {
+  overflow: hidden;
+  background: none !important;
+  padding: 0;
+}
+:root:root:root:root .acx .xav.kxav i svg.kav {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+/* ==========================================================================
+   Plans: halftone icon sizes.
+   ========================================================================== */
+:root:root:root:root:root #plans-sheet .ptile.kpt {
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+:root:root:root:root:root #plans-sheet .ptile.kpt svg.kpic {
+  width: 56px !important;
+  height: 56px !important;
+  overflow: visible;
+}
+:root:root:root:root:root #plans-sheet .p2ai.kpt {
+  background: none !important;
+  width: 44px !important;
+  height: 44px !important;
+}
+:root:root:root:root:root #plans-sheet .p2ai.kpt svg.kpic {
+  width: 44px !important;
+  height: 44px !important;
+}

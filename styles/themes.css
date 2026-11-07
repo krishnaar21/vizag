@@ -1,0 +1,1117 @@
+/* themes.css
+
+   Colour palettes. Each palette (Mono, Paper, Ocean, Sage, Lilac) sets its own light and dark colours on top of Classic.
+
+   Sections, in the order they apply (later ones win when two rules clash):
+    1. Palette colours for Mono, Paper, Ocean, Sage and Lilac in light and dark.
+*/
+
+/* ==========================================================================
+   Palette colours for Mono, Paper, Ocean, Sage and Lilac in light and dark.
+   ========================================================================== */
+:root[data-pal="mono"][data-skin="light"] {
+  --bg: #f0f0f2 !important;
+  --surface: #fcfcfc !important;
+  --soft: #f7f7f8 !important;
+  --line: #dedee0 !important;
+  --band: #f9f9fa !important;
+  --brand: #141416 !important;
+  --link: #141416 !important;
+  --brand-soft: #e3e3e3 !important;
+  --muted: #4f4f50 !important;
+  --faint: #828289 !important;
+  --ink: #141416 !important;
+  --head: #27272b !important;
+  --tile: #f6f6f7 !important;
+  --accent: #141416 !important;
+  --on-accent: #ffffff !important;
+  --ctl: #141416 !important;
+  --on-ctl: #ffffff !important;
+}
+:root[data-pal="mono"][data-skin="graphite"] {
+  --bg: #09090b !important;
+  --surface: #191a1d !important;
+  --soft: #232427 !important;
+  --line: #303134 !important;
+  --band: #1d1d20 !important;
+  --brand: #f0f0f2 !important;
+  --link: #f0f0f2 !important;
+  --brand-soft: #373739 !important;
+  --muted: #b1b1b8 !important;
+  --faint: #8a8a91 !important;
+  --ink: #f4f4f5 !important;
+  --head: #e5e5e8 !important;
+  --tile: #1e1f22 !important;
+  --accent: #f0f0f2 !important;
+  --on-accent: #09090b !important;
+  --ctl: #f0f0f2 !important;
+  --on-ctl: #09090b !important;
+}
+:root[data-pal="paper"][data-skin="light"] {
+  --bg: #f2f0ec !important;
+  --surface: #fcfcfb !important;
+  --soft: #f8f7f5 !important;
+  --line: #ece4da !important;
+  --band: #faf9f7 !important;
+  --brand: #a35f0b !important;
+  --link: #a35f0b !important;
+  --brand-soft: #f4ece2 !important;
+  --muted: #6c5e4d !important;
+  --faint: #9c8f87 !important;
+  --ink: #1f1a15 !important;
+  --head: #39302a !important;
+  --tile: #f7f6f4 !important;
+  --accent: #a35f0b !important;
+  --on-accent: #ffffff !important;
+  --ctl: #a35f0b !important;
+  --on-ctl: #ffffff !important;
+}
+:root[data-pal="paper"][data-skin="graphite"] {
+  --bg: #0e0d0d !important;
+  --surface: #1d1a19 !important;
+  --soft: #242220 !important;
+  --line: #312e2c !important;
+  --band: #1f1d1c !important;
+  --brand: #f2b45a !important;
+  --link: #f2b45a !important;
+  --brand-soft: #3c2e1c !important;
+  --muted: #b1a59a !important;
+  --faint: #8b8179 !important;
+  --ink: #f4f1ed !important;
+  --head: #e5dfd9 !important;
+  --tile: #211e1d !important;
+  --accent: #f2b45a !important;
+  --on-accent: #0e0d0d !important;
+  --ctl: #f2b45a !important;
+  --on-ctl: #0e0d0d !important;
+}
+:root[data-pal="ocean"][data-skin="light"] {
+  --bg: #ecf0f7 !important;
+  --surface: #fbfcfd !important;
+  --soft: #f5f7fb !important;
+  --line: #dbe4f4 !important;
+  --band: #f7f9fc !important;
+  --brand: #1d5fd1 !important;
+  --link: #1d5fd1 !important;
+  --brand-soft: #e4ecf9 !important;
+  --muted: #515e75 !important;
+  --faint: #848faa !important;
+  --ink: #151a25 !important;
+  --head: #283042 !important;
+  --tile: #f4f6fa !important;
+  --accent: #1d5fd1 !important;
+  --on-accent: #ffffff !important;
+  --ctl: #1d5fd1 !important;
+  --on-ctl: #ffffff !important;
+}
+:root[data-pal="ocean"][data-skin="graphite"] {
+  --bg: #080b14 !important;
+  --surface: #131a29 !important;
+  --soft: #1a2336 !important;
+  --line: #263042 !important;
+  --band: #161d2e !important;
+  --brand: #6ea8ff !important;
+  --link: #6ea8ff !important;
+  --brand-soft: #1c2a43 !important;
+  --muted: #97a2bb !important;
+  --faint: #767f93 !important;
+  --ink: #edf0f6 !important;
+  --head: #d8dee9 !important;
+  --tile: #171e30 !important;
+  --accent: #6ea8ff !important;
+  --on-accent: #080b14 !important;
+  --ctl: #6ea8ff !important;
+  --on-ctl: #080b14 !important;
+}
+:root[data-pal="sage"][data-skin="light"] {
+  --bg: #ebefe8 !important;
+  --surface: #fbfbfa !important;
+  --soft: #f4f6f2 !important;
+  --line: #dde5db !important;
+  --band: #f7f9f6 !important;
+  --brand: #3d7747 !important;
+  --link: #3d7747 !important;
+  --brand-soft: #e8efe9 !important;
+  --muted: #576359 !important;
+  --faint: #899492 !important;
+  --ink: #171c1a !important;
+  --head: #2c3331 !important;
+  --tile: #f3f5f1 !important;
+  --accent: #3d7747 !important;
+  --on-accent: #ffffff !important;
+  --ctl: #3d7747 !important;
+  --on-ctl: #ffffff !important;
+}
+:root[data-pal="sage"][data-skin="graphite"] {
+  --bg: #0b0e0a !important;
+  --surface: #1a2117 !important;
+  --soft: #232c1f !important;
+  --line: #30392b !important;
+  --band: #1d251a !important;
+  --brand: #93d1a0 !important;
+  --link: #93d1a0 !important;
+  --brand-soft: #263528 !important;
+  --muted: #9eaba8 !important;
+  --faint: #7b8584 !important;
+  --ink: #eff2f1 !important;
+  --head: #dce2e0 !important;
+  --tile: #1e271b !important;
+  --accent: #93d1a0 !important;
+  --on-accent: #0b0e0a !important;
+  --ctl: #93d1a0 !important;
+  --on-ctl: #0b0e0a !important;
+}
+:root[data-pal="lilac"][data-skin="light"] {
+  --bg: #f0ecf6 !important;
+  --surface: #fcfbfd !important;
+  --soft: #f7f5fa !important;
+  --line: #e5dff3 !important;
+  --band: #f9f7fb !important;
+  --brand: #6a4fcb !important;
+  --link: #6a4fcb !important;
+  --brand-soft: #edeaf9 !important;
+  --muted: #605b74 !important;
+  --faint: #918ca9 !important;
+  --ink: #1b1924 !important;
+  --head: #322e41 !important;
+  --tile: #f6f4fa !important;
+  --accent: #6a4fcb !important;
+  --on-accent: #ffffff !important;
+  --ctl: #6a4fcb !important;
+  --on-ctl: #ffffff !important;
+}
+:root[data-pal="lilac"][data-skin="graphite"] {
+  --bg: #0e0b14 !important;
+  --surface: #201a2a !important;
+  --soft: #2a2237 !important;
+  --line: #362f44 !important;
+  --band: #231c2f !important;
+  --brand: #b9a3ff !important;
+  --link: #b9a3ff !important;
+  --brand-soft: #302943 !important;
+  --muted: #a6a1bb !important;
+  --faint: #827e93 !important;
+  --ink: #f1f0f6 !important;
+  --head: #e0dee9 !important;
+  --tile: #251e31 !important;
+  --accent: #b9a3ff !important;
+  --on-accent: #0e0b14 !important;
+  --ctl: #b9a3ff !important;
+  --on-ctl: #0e0b14 !important;
+}
+html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip,
+html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip * {
+  background: color-mix(in srgb, var(--ink) 7%, var(--surface)) !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip * {
+  background: transparent !important;
+}
+.vpv .vb.s5 {
+  position: relative;
+}
+.vpv .vn {
+  background: var(--bg) !important;
+  border: 1px solid var(--line) !important;
+  clip-path: inset(0 0 0 0);
+}
+.vpv .vn.t {
+  clip-path: inset(50% 0 0 0);
+}
+.vpv .vn.b {
+  clip-path: inset(0 0 50% 0);
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) {
+  --bzc: color-mix(in srgb, var(--accent) 32%, var(--ink));
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) [style*="var(--ink) 9%,var(--bg)"] {
+  fill: color-mix(in srgb, var(--accent) 16%, var(--bg)) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvc {
+  fill: color-mix(in srgb, var(--accent) 45%, var(--muted)) !important;
+}
+:root:root .ntoast:not(.in) {
+  transform: translateY(16px) !important;
+}
+:root:root .ntoast {
+  top: auto !important;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 86px) !important;
+}
+:root:root:root:root[data-pal]:not([data-pal="classic"])[data-skin="light"] :is(.oktoast, .ntoast) {
+  background: color-mix(in srgb, var(--accent) 7%, #f4f4f5) !important;
+  border-color: color-mix(in srgb, var(--accent) 16%, transparent) !important;
+}
+:root:root:root:root[data-pal]:not([data-pal="classic"])[data-skin="graphite"] :is(.oktoast, .ntoast) {
+  background: color-mix(in srgb, var(--accent) 9%, #26262a) !important;
+  border-color: color-mix(in srgb, var(--accent) 18%, transparent) !important;
+}
+:root:root:root .oktoast {
+  font-size: 0.89rem !important;
+}
+:root:root:root .oktoast button {
+  font-size: 0.92rem !important;
+}
+:root:root:root .ntoast .ntt b {
+  font-size: 0.83rem !important;
+}
+:root:root:root .ntoast .ntt small {
+  font-size: 0.76rem !important;
+}
+:root:root:root .ntoast .ntact {
+  font-size: 0.76rem !important;
+}
+:root:root[data-pal][data-skin="light"] .nav button:not([aria-current="page"]):not(.on) {
+  color: #8e8e94 !important;
+}
+:root:root[data-pal][data-skin="graphite"] .nav button:not([aria-current="page"]):not(.on) {
+  color: #7e7e85 !important;
+}
+html.skel:root:root:root[data-pal] main .view:not([hidden]) .chips .chip {
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  outline: 0 !important;
+}
+:root:root .vpv .vn {
+  z-index: 2;
+}
+:root:root .vpv .vn.t {
+  clip-path: inset(calc(50% - 1.5px) 0 0 0) !important;
+}
+:root:root .vpv .vn.b {
+  clip-path: inset(0 0 calc(50% - 1.5px) 0) !important;
+}
+.psbox {
+  overflow: clip !important;
+}
+:is(.sheet, .psbox, #ps-body, .lsheet) * {
+  overscroll-behavior: contain;
+}
+.sheet,
+.psbox,
+#ps-body {
+  overscroll-behavior: contain;
+}
+:is(.lshead, .pshd, .sheet:not(.inpage) > .shtitle) {
+  z-index: 6;
+}
+.passbox > .pshd {
+  top: -15px !important;
+}
+.passbox,
+.vpsheet * {
+  overscroll-behavior: contain;
+}
+html.sh-open,
+html.sh-open body {
+  overflow: hidden !important;
+}
+#ps-body .mprow,
+#place-sheet .mprow {
+  border-bottom: 1px dashed color-mix(in srgb, var(--ink) 16%, transparent) !important;
+  padding: 16px 0 !important;
+}
+html.sky-day .setbeach .bmoon {
+  display: none !important;
+}
+html.sky-day .setbeach .bsun {
+  display: inline !important;
+}
+html.sky-night .setbeach .bmoon {
+  display: inline !important;
+}
+html.sky-night .setbeach .bsun {
+  display: none !important;
+}
+html.sky-night:not(.darkbg) .setbeach .bmoon path:not(.bstar) {
+  fill: #e0c878 !important;
+}
+html.sky-night:not(.darkbg) .setbeach .bstar {
+  fill: #cdb46a !important;
+  filter: none !important;
+}
+#theme-sheet .thnote2 {
+  background: transparent !important;
+  padding-top: 4px !important;
+}
+:root[data-pal]:not([data-pal="classic"]) body {
+  background: var(--bg) !important;
+}
+:root[data-pal]:not([data-pal="classic"]) .sheet:not(.inpage) > .shtitle,
+:root[data-pal]:not([data-pal="classic"]) .lshead,
+:root[data-pal]:not([data-pal="classic"]) #theme-sheet .shtitle {
+  background: var(--bg) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+:root[data-pal]:not([data-pal="classic"])
+  :is(.btn, .obtn, .abtn, .hgo, #pl-go, #pl-next):is(:disabled, .locked) {
+  opacity: 1 !important;
+  background: color-mix(in srgb, var(--accent) 30%, var(--soft)) !important;
+  color: color-mix(in srgb, var(--on-accent) 85%, transparent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur:after {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur b {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pdot.cur b :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcard.on .ptog {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcard.on .ptog :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pspin {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pspin :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .psfoot .psact {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .psfoot .psact :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vtog button[aria-pressed="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .vtog
+  button[aria-pressed="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .fab {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .fab :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .seg-days.dstrip
+  > .chip[aria-pressed="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .seg-days.dstrip
+  > .chip[aria-pressed="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatav {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatav :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .cmsg.cm-me {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .cmsg.cm-me :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatsend {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatsend :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .padd {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .padd :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pcard.on .pchk {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .pcards
+  .pcard.on
+  .pchk
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pchk {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pchk :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qfill {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qfill :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .twt[aria-selected="true"]:after {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qtrack i.on {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .qtrack i.on :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .totop:not(.inplan) {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .totop:not(.inplan) :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .gchip.on span {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .gchip.on span :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pills button[aria-pressed="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .pills
+  button[aria-pressed="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .gmdone {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .gmdone :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .xin .xgh span :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-close.save {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-close.save :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .ptr.go .ptrc {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .ptr.go .ptrc :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .avlet {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .avlet :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatbub {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatbub :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chint .chico {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chint .chico :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatbub.dk.drag {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .chatbub.dk.drag :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvdots i.on {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .hvdots i.on :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pbadge2,
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pcards .pcard.on .pimg .pbadge2 {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pbadge2 :not(svg):not(svg *),
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .pcards
+  .pcard.on
+  .pimg
+  .pbadge2
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .psign {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .psign :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #logout .loav {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #logout .loav :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root.seldot[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .seg-days
+  > .chip[aria-pressed="true"]:after {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root.seldot[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .seg-days
+  > .chip[aria-pressed="true"]
+  > span:before {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .tvdots i.on {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .tvdots i.on :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpbar i {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpbar i :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpleg i.a {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dpleg i.a :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .pxst + .pxst:before {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vpv .vbar i {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vpv .vbar i :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vpv .vd.k {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .vpv .vd.k :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .plancard.pro .plbadge {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .plancard.pro .plbadge :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-sheet .rtsave {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) #rate-sheet .rtsave :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .uptabs button[aria-selected="true"]:after {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dkpills button[aria-pressed="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .dkpills
+  button[aria-pressed="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .tqd button[aria-current="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .tqd
+  button[aria-current="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .shtitle .shsave {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .shtitle .shsave :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dksw .knob {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .dksw .knob :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .onbdots button[aria-current="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .onbdots
+  button[aria-current="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .onbdots button[aria-current="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .onbdots
+  button[aria-current="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .tqd button[aria-current="true"] {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"])
+  .tqd
+  button[aria-current="true"]
+  :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .kz-qb .qd i.on {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+}
+:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .kz-qb .qd i.on :not(svg):not(svg *) {
+  color: inherit !important;
+}
+:root[data-pal]:not([data-pal="classic"]) :is(.pbadge.ai, .airec) {
+  color: var(--on-accent) !important;
+}
+.pshd,
+.sheet:not(.inpage) > .shtitle,
+.lshead {
+  background: var(--bg) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html:not(.pv-card) .pcards .pimg {
+  outline: 0 !important;
+}
+#v-days .pghead,
+#v-route .pghead,
+#v-plan .pghead {
+  position: relative !important;
+  top: auto !important;
+}
+#v-days .vz > .chips,
+#v-route .vz > .chips,
+#v-plan .vz > .chips {
+  z-index: 21 !important;
+}
+.nnote > svg,
+.csnote > svg,
+.mcpnote > svg,
+.syncnote > svg,
+.pfhint > svg,
+.ppophint > svg,
+.cnote > svg,
+.pnote > svg,
+.dknote > svg,
+.note > svg,
+.warnbox > svg,
+.sethint > svg,
+.senote > svg,
+.pfnote > svg,
+.ctwarn > svg,
+.pinfo > svg,
+.bnote > svg,
+.pptsnote > svg,
+.emnote > svg,
+.pxnote > svg,
+.tkinfo > svg,
+.thnote2 > svg,
+.carry > svg {
+  display: none !important;
+}
+:root:root:root[data-pal]:not([data-pal="classic"]):not([data-pal="mono"]) .totop:not(.inplan) svg {
+  color: var(--on-accent) !important;
+}
+:root:root:root[data-pal]:not([data-pal="classic"])[data-skin="light"] :is(.oktoast, .ntoast) {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14) !important;
+}
+:root:root:root[data-pal]:not([data-pal="classic"])[data-skin="graphite"] :is(.oktoast, .ntoast) {
+  background: #2a2a2e !important;
+  color: #f4f4f5 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5) !important;
+}
+:root:root:root[data-pal]:not([data-pal="classic"]) :is(.oktoast, .ntoast) :is(button, .ntact) {
+  background: transparent !important;
+  color: inherit !important;
+  box-shadow: inset 0 0 0 1px currentColor !important;
+  opacity: 0.85;
+}
+.dsart .ds-w,
+.dsart .ds-nb,
+.dsart[data-who="w"] .ds-m,
+.dsart[data-who="nb"] .ds-m {
+  display: none;
+}
+.dsart[data-who="w"] .ds-w,
+.dsart[data-who="nb"] .ds-nb {
+  display: inline;
+}
+html body #off-sheet .dsart {
+  width: min(250px, 70%) !important;
+  height: auto !important;
+  max-width: none !important;
+  margin: -4px auto 4px !important;
+  display: block;
+}
+html body #offsteps-sheet > .lohead {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  text-align: left !important;
+  gap: 4px !important;
+}
+#off-sheet .wgbox.dsbox {
+  --sand: color-mix(in srgb, var(--accent) 20%, color-mix(in srgb, var(--ink) 16%, var(--bg)));
+  width: min(85%, 653px, 34.8dvh) !important;
+  max-width: none !important;
+  margin: -22px auto 0 !important;
+  -webkit-mask: linear-gradient(180deg, #000 0, #000 72%, transparent 100%);
+  mask: linear-gradient(180deg, #000 0, #000 72%, transparent 100%);
+}
+#off-sheet .dsbox .dsfr {
+  pointer-events: none;
+}
+#off-sheet .dsbox {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+[data-devofopen] {
+  display: inline;
+  margin: 0 0 0 4px;
+  padding: 0;
+  font-size: inherit;
+}
+#off-sheet .dscap {
+  margin: 2px 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+#off-sheet
+  .dsglobe
+  :is(
+    .twwrap,
+    .sky2,
+    .k2,
+    .k2cat,
+    .hkpupw,
+    .hkleash,
+    .wxsky,
+    .wxrays,
+    .wxmoon,
+    .wxstars,
+    .wxclouds,
+    .wxdark,
+    .wxbolt,
+    .wxrain,
+    .wxheavy,
+    .wxsnow,
+    .wxfog,
+    .wxflash,
+    .wxsun,
+    .wxc0,
+    .wxdl,
+    .wxrr,
+    .wxs1,
+    .wxfl,
+    .wxreel
+  ) {
+  display: none !important;
+}
+#off-sheet .dsglobe path.grass2 {
+  fill: url(#twht_ds) !important;
+}
+#off-sheet .dsglobe path.grass3 {
+  fill: url(#grgr_ds);
+}
+#off-sheet .dsbox .dsglobe {
+  display: block !important;
+  position: absolute;
+  left: 8.55%;
+  width: 82.9% !important;
+  max-width: none !important;
+  height: auto;
+  top: 18.6%;
+  margin: 0 !important;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+#off-sheet .offlink {
+  display: inline-block;
+  margin: 10px auto 2px;
+  padding: 6px 4px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--accent-ink, var(--accent));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  cursor: pointer;
+}
+#offsteps-sheet .offsteps {
+  list-style: none;
+  counter-reset: os;
+  padding: 0;
+  margin: 6px 0 18px;
+  display: grid;
+  gap: 0;
+}
+#offsteps-sheet .offsteps li {
+  counter-increment: os;
+  position: relative;
+  padding: 14px 0 14px 40px;
+  border-bottom: 1px dashed var(--line);
+  line-height: 1.4;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+#offsteps-sheet .offsteps li:last-child {
+  border-bottom: 0;
+}
+#offsteps-sheet .offsteps li:before {
+  content: counter(os);
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  color: var(--ink);
+}
+html body #offline.offline {
+  z-index: 28 !important;
+  background: color-mix(in srgb, var(--warn) 22%, var(--bg)) !important;
+  color: var(--ink) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--warn) 40%, var(--line)) !important;
+}
+html body #offline.offline .t {
+  color: var(--ink) !important;
+}
+:root:root:root .pghead:not(.pgfix),
+:root:root:root .hometop {
+  top: var(--obh, 0px) !important;
+}
+:root:root:root .pghead.pgfix {
+  top: max(env(safe-area-inset-top, 0px), var(--obh, 0px)) !important;
+}
+:root[data-pal="mono"][data-skin="graphite"] .pbadge.ai,
+:root[data-pal="mono"][data-skin="graphite"] .airec {
+  color: #111 !important;
+}
+html body #theme-sheet .swrow.pl-hide {
+  display: none !important;
+}
+.pl-mode {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--soft);
+  margin: 2px 0 14px;
+}
+.pl-mode button {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pl-mode button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pl-mode button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.pl-row {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  justify-items: center;
+  padding: 3px 0;
+}
+.pl-s {
+  width: min(34px, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.35);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.pl-s i {
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+}
+.pl-s[aria-pressed="true"] {
+  outline-color: var(--ink);
+}
+.pl-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin: 14px 0 2px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pl-match span {
+  display: grid;
+  gap: 2px;
+}
+.pl-match b {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.pl-match small {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.pl-match i {
+  flex: none;
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border-radius: 99px;
+  background: var(--line);
+  transition: background 0.2s;
+}
+.pl-match i:after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s;
+}
+.pl-match[aria-checked="true"] i {
+  background: var(--accent);
+}
+.pl-match[aria-checked="true"] i:after {
+  transform: translateX(18px);
+}
+.pl-sub {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 0 2px 8px;
+}
+.pl-sub b {
+  font-weight: 500;
+}

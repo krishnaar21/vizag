@@ -1,8 +1,11 @@
 /* Offline + low-network support for the Vizag trip planner (GitHub Pages).
    Page files open instantly from the phone's cache and refresh in the background;
    fonts and login scripts are cached after first use. */
-const CACHE = 'vizag-trip-v541';
-const CORE = ['./', './index.html', './sync-config.js', './manifest.webmanifest', './vizag-trip-planner.pdf'];
+const CACHE = 'vizag-trip-v542';
+const CORE = ['./', './index.html', './sync-config.js', './manifest.webmanifest', './vizag-trip-planner.pdf',
+  './styles/base.css', './styles/themes.css', './styles/refinements.css',
+  './scripts/startup.js', './scripts/qr-code.js', './scripts/app.js', './scripts/app-icon.js',
+  './scripts/themes.js', './scripts/online-scene.js', './scripts/features.js'];
 const EXTERNAL = [
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
