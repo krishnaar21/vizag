@@ -7,7 +7,7 @@ var L=Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype,"href");L&&Objec
 var C=Object.getOwnPropertyDescriptor(Element.prototype,"className");C&&Object.defineProperty(Element.prototype,"className",{configurable:!0,enumerable:C.enumerable,get:C.get,set:function(v){if(C.get.call(this)===String(v))return;C.set.call(this,v)}});
 var X=Object.getOwnPropertyDescriptor(Node.prototype,"textContent");X&&Object.defineProperty(Node.prototype,"textContent",{configurable:!0,enumerable:X.enumerable,get:X.get,set:function(v){if(this.nodeType===1&&!this.firstElementChild&&X.get.call(this)===String(v==null?"":v))return;X.set.call(this,v)}})}catch(e){}})()</script>
 <meta charset="utf-8">
-<meta name="build" content="533">
+<meta name="build" content="534">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -2464,5 +2464,6 @@ function st(){var add=!!w.value.trim()&&!g.classList.contains("gxedit");b.classL
 b.addEventListener("click",function(e){if(b.classList.contains("gxadd")){e.preventDefault();e.stopImmediatePropagation();a.click();w.blur();setTimeout(st,30)}},!0);
 w.addEventListener("input",st);w.addEventListener("keydown",function(){setTimeout(st,30)});g.addEventListener("click",function(){setTimeout(st,60)});new MutationObserver(function(){setTimeout(st,30)}).observe(g,{attributes:!0,attributeFilter:["hidden","class"]});t&&new MutationObserver(st).observe(t,{childList:!0,characterData:!0,subtree:!0});st()}
 setTimeout(init,900);setInterval(init,2000)})()</script>
-<style id="s531">:root:root:root:root input::placeholder,:root:root:root:root textarea::placeholder{color:color-mix(in srgb,var(--ink) 34%,transparent)!important;-webkit-text-fill-color:color-mix(in srgb,var(--ink) 34%,transparent)!important;opacity:1!important;font-weight:400!important}:root:root:root:root :is(input,textarea):not([type=checkbox]):not([type=radio]){color:var(--ink)}</style></body>
+<style id="s531">:root:root:root:root input::placeholder,:root:root:root:root textarea::placeholder{color:color-mix(in srgb,var(--ink) 34%,transparent)!important;-webkit-text-fill-color:color-mix(in srgb,var(--ink) 34%,transparent)!important;opacity:1!important;font-weight:400!important}:root:root:root:root :is(input,textarea):not([type=checkbox]):not([type=radio]){color:var(--ink)}</style><script>(function(){var ok=0;document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("#vz-edit,#home-edit,[data-ctedit]");if(!b||ok||!window.__confirm)return;e.preventDefault();e.stopImmediatePropagation();var vz=!document.documentElement.classList.contains("ct-on");window.__confirm(vz?"Edit this trip?":"Edit trip details?",vz?"You’ll edit dates, travellers and places. Saving replaces the full Vizag trip, and its days and stops are rebuilt from your changes.":"You’ll edit dates, travellers and places. Saving updates the full trip, and its days and stops are rebuilt from your changes.","Continue",function(){ok=1;try{b.click()}finally{ok=0}},"trip")},!0)})()</script>
+</body>
 </html>
