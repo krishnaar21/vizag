@@ -7,7 +7,7 @@ var L=Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype,"href");L&&Objec
 var C=Object.getOwnPropertyDescriptor(Element.prototype,"className");C&&Object.defineProperty(Element.prototype,"className",{configurable:!0,enumerable:C.enumerable,get:C.get,set:function(v){if(C.get.call(this)===String(v))return;C.set.call(this,v)}});
 var X=Object.getOwnPropertyDescriptor(Node.prototype,"textContent");X&&Object.defineProperty(Node.prototype,"textContent",{configurable:!0,enumerable:X.enumerable,get:X.get,set:function(v){if(this.nodeType===1&&!this.firstElementChild&&X.get.call(this)===String(v==null?"":v))return;X.set.call(this,v)}})}catch(e){}})()</script>
 <meta charset="utf-8">
-<meta name="build" content="529">
+<meta name="build" content="530">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -2454,5 +2454,15 @@ new MutationObserver(function(m){if(g.hidden){mode=-1;newMode()}}).observe(g,{at
 var pv=g.querySelector(".gprev");if(pv){pv.removeAttribute("aria-hidden");new MutationObserver(function(){pv.querySelectorAll(".gstack i").forEach(function(i,k){i.setAttribute("role","button");i.setAttribute("tabindex","0");i.setAttribute("aria-label",i.classList.contains("add")?"Add a member":"Edit member "+(k+1))})}).observe(pv,{childList:!0,subtree:!0})}
 }
 setTimeout(init,900);setInterval(init,2000)})();
-</script></body>
+</script><style id="s530">:root:root:root:root:root .sheet.psheet{padding-bottom:24px!important}:root:root:root:root:root #theme-sheet{padding-bottom:24px!important}
+:root:root:root:root:root .sheet.psheet>.btn.full:not([hidden]){bottom:0!important;margin-top:22px!important}
+:root:root:root:root:root #v-profile .sigpick{margin-top:56px!important;transform:scale(.7);transform-origin:50% 0;margin-bottom:-24px!important}
+:root:root:root:root:root #grp-sheet #grp-addm{display:none!important}:root:root:root:root:root #grp-sheet .gadd input{width:100%!important;flex:1 1 auto!important}
+:root:root:root:root:root #grp-sheet #grp-save.gxadd{background:transparent!important;color:var(--ink)!important;border:1.5px solid var(--ink)!important}</style>
+<script>(function(){function init(){var g=document.getElementById("grp-sheet");if(!g||g.__gb)return;var b=g.querySelector("#grp-save"),w=g.querySelector("#grp-who"),a=g.querySelector("#grp-addm"),t=g.querySelector("#grp-title");if(!b||!w||!a)return;g.__gb=1;
+function st(){var add=!!w.value.trim()&&!g.classList.contains("gxedit");b.classList.toggle("gxadd",add);b.textContent=add?"Add to group":(t&&/edit/i.test(t.textContent)?"Update group":"Save group")}
+b.addEventListener("click",function(e){if(b.classList.contains("gxadd")){e.preventDefault();e.stopImmediatePropagation();a.click();w.blur();setTimeout(st,30)}},!0);
+w.addEventListener("input",st);w.addEventListener("keydown",function(){setTimeout(st,30)});g.addEventListener("click",function(){setTimeout(st,60)});new MutationObserver(function(){setTimeout(st,30)}).observe(g,{attributes:!0,attributeFilter:["hidden","class"]});t&&new MutationObserver(st).observe(t,{childList:!0,characterData:!0,subtree:!0});st()}
+setTimeout(init,900);setInterval(init,2000)})()</script>
+</body>
 </html>
