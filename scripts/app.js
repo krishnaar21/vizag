@@ -1289,7 +1289,8 @@ try {
             refreshLaterList(S);
         }
         L
-          ? ((n.style.transition = "transform .22s ease, opacity .22s ease"),
+          ? ((n.style.transition =
+              "transform .22s cubic-bezier(.23,1,.32,1), opacity .22s cubic-bezier(.23,1,.32,1)"),
             (n.style.transform = "translateX(" + (n._dir || 1) * 110 + "%)"),
             (n.style.opacity = "0"),
             setTimeout(function () {
@@ -1340,7 +1341,8 @@ try {
           L !== null &&
             (N && Math.abs(S) > 90
               ? ((n._dir = S > 0 ? 1 : -1), moveStopToLater(n, !0))
-              : ((n.style.transition = "transform .18s ease, opacity .18s ease"),
+              : ((n.style.transition =
+                  "transform .18s cubic-bezier(.23,1,.32,1), opacity .18s cubic-bezier(.23,1,.32,1)"),
                 (n.style.transform = ""),
                 (n.style.opacity = ""),
                 setTimeout(function () {
@@ -4602,6 +4604,8 @@ try {
             return t.toISOString().slice(0, 10);
           }
           function openPlanner(t, a) {
+            if ((!t || a) && window.__isDemo && window.__isDemo() && window.__demoBlock)
+              return window.__demoBlock();
             (editingTrip = a ? null : t),
               (customPlaces = t
                 ? t.places.filter(function (E) {
@@ -13160,6 +13164,25 @@ try {
         q.stopPropagation(), Q(m);
       };
       var k = (window.__CHANGES = [
+          {
+            b: "547",
+            d: "7 Nov 2026",
+            s: "Snappier motion, a redrawn beach scene and a clearer AI picker.",
+            n: [
+              "AI Assistant options show your choice with a highlighted border",
+              "The beach scene on More has a hammock on posts and a sun with rays",
+            ],
+            f: [
+              "Home, Saved and More headers get the same soft blur as the other tabs",
+              "Top travellers and Pass & Atlas icons match the other settings",
+              "Demo mode is a preview only; plan your own trips after leaving demo",
+            ],
+            u: [
+              "Faster, smoother animations that ease out",
+              "Refreshing on Home uses the same globe as Online and Offline",
+              "Rounded corners inside cards and sheets line up better",
+            ],
+          },
           {
             b: "545",
             d: "7 Nov 2026",

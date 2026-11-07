@@ -440,7 +440,7 @@
   opacity: 1 !important;
 }
 .ptr.go svg {
-  animation: ptrrot 0.75s linear infinite !important;
+  animation: ptrrot 0.6s linear infinite !important;
 }
 .ptr.fire svg {
   animation: ptrpop 0.4s cubic-bezier(0.3, 0.7, 0.3, 1) forwards !important;
@@ -1358,7 +1358,7 @@ html.kzmatch .kzi {
 .onbs h2,
 .onbs p {
   transition:
-    opacity 0.45s ease,
+    opacity 0.3s var(--ease-out),
     transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .onbs[aria-hidden="true"] .onbart {
@@ -1375,7 +1375,7 @@ html.kzmatch .kzi {
 }
 .lpage .lart {
   transition:
-    opacity 0.3s ease,
+    opacity 0.3s var(--ease-out),
     transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
 }
 :root:root .lpage.kb .lart {
@@ -1393,7 +1393,7 @@ html.kzmatch .kzi {
   transition-duration: 0.5s !important;
 }
 :root:root .psbg {
-  transition: opacity 0.35s ease-out !important;
+  transition: opacity 0.3s ease-out !important;
 }
 :root:root:root #plans-sheet.shghost {
   animation: iosdn 0.36s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
@@ -1454,7 +1454,7 @@ html.kzmatch .kzi {
   height: 28px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--ink) 16%, var(--surface));
-  transition: background 0.25s;
+  transition: background 0.25s var(--ease-out);
 }
 .kz-now .pl-match > i:after {
   content: "";
@@ -1531,7 +1531,7 @@ html.kzmatch .kzi {
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   opacity: 0;
-  transition: opacity 0.6s;
+  transition: opacity 0.3s var(--ease-out);
 }
 .sig.go small {
   opacity: 1;
@@ -1668,7 +1668,7 @@ html.dv-both .dspend {
   cursor: pointer;
   transition:
     background 0.3s cubic-bezier(0.32, 0.72, 0, 1),
-    color 0.2s;
+    color 0.2s var(--ease-out);
 }
 .p2seg button[aria-selected="true"] {
   background: var(--surface);
@@ -1916,12 +1916,12 @@ html.dv-both .dspend {
   opacity: calc(var(--p) * 0.9);
   transform: scale(calc(0.4 + var(--p) * 0.7));
   transition:
-    opacity 0.2s,
-    transform 0.2s;
+    opacity 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out);
   pointer-events: none;
 }
 .ptr.go:before {
-  animation: ptrbr 1.4s ease-in-out infinite;
+  animation: ptrbr 1s ease-in-out infinite;
 }
 @keyframes ptrbr {
   0%,
@@ -2160,7 +2160,7 @@ html.dv-both .dspend {
 :root:root .ptr.fire:before {
   opacity: 0 !important;
   animation: none !important;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.3s var(--ease-out);
 }
 .offtag.rfx {
   position: relative;
@@ -2183,31 +2183,13 @@ html.dv-both .dspend {
     clip-path: inset(0 0 0 0);
   }
 }
-.kgs {
-  position: absolute;
-  left: -2px;
-  top: 50%;
-  width: 15px;
-  height: 15px;
-  margin-top: -7.5px;
-  pointer-events: none;
-  animation: kgsroll 0.95s cubic-bezier(0.5, 0, 0.3, 1) forwards;
-}
-@keyframes kgsroll {
-  0% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  to {
-    transform: translateX(var(--kx, 80px));
-    opacity: 0;
-  }
+.offtag.rfx .netroll.rfroll {
+  stroke: var(--link);
+  left: 0;
+  animation: netroll2 0.95s cubic-bezier(0.5, 0, 0.3, 1) forwards;
 }
 @media (prefers-reduced-motion: reduce) {
-  .kgs {
+  .offtag.rfx .netroll.rfroll {
     display: none;
   }
   .offtag.rfx .otx {
@@ -2521,7 +2503,7 @@ html.dv-both .dspend {
   height: 100%;
   border-radius: inherit;
   background: var(--link);
-  transition: width 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: width 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 :root:root:root #profile .pstats {
   order: 3;
@@ -2645,7 +2627,7 @@ html.dv-both .dspend {
   transform: translateX(24px);
   transition:
     opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .lob .lobs.on,
 .lobc .lobs.on {
@@ -2675,7 +2657,7 @@ html.dv-both .dspend {
   transform: translateX(24px);
   transition:
     opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-    transform 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 .lobc h2 {
   margin: 0 0 4px;
@@ -2698,7 +2680,7 @@ html.dv-both .dspend {
   background: color-mix(in srgb, var(--ink) 22%, transparent);
   transition:
     width 0.35s cubic-bezier(0.32, 0.72, 0, 1),
-    background 0.35s;
+    background 0.3s var(--ease-out);
 }
 .lobd i.on {
   width: 18px;
@@ -2707,7 +2689,7 @@ html.dv-both .dspend {
 @media (prefers-reduced-motion: reduce) {
   .lob .lobs,
   .lobc .lobs {
-    transition: opacity 0.3s;
+    transition: opacity 0.3s var(--ease-out);
   }
 }
 
@@ -3003,11 +2985,6 @@ html.dv-both .dspend {
 }
 .kgl .kgr {
   stroke: color-mix(in srgb, var(--kg2) 18%, transparent);
-}
-:root:root:root .kgs {
-  fill: var(--ink) !important;
-  color: var(--ink);
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--kg2) 55%, transparent));
 }
 .gpick .sgc {
   margin: 0 4px 10px;
@@ -4399,8 +4376,8 @@ html:is(.dv-both, .dv-span)
   box-shadow: none;
   gap: 1px;
   transition:
-    background 0.15s,
-    color 0.15s;
+    background 0.15s var(--ease-out),
+    color 0.15s var(--ease-out);
 }
 #grp-sheet .segc button b {
   font-size: 0.86rem;
@@ -4534,7 +4511,7 @@ html:is(.dv-both, .dv-span)
   cursor: pointer;
   transition:
     transform 0.18s cubic-bezier(0.32, 0.72, 0, 1),
-    box-shadow 0.18s;
+    box-shadow 0.18s var(--ease-out);
 }
 :root:root:root:root:root #grp-sheet .gprev .gstack i:active {
   transform: scale(0.94);
@@ -5050,4 +5027,75 @@ body #v-home#v-home :is(.wxlocrow > svg, .wx.wxmoved .wxrowico) {
 #plans-sheet .p2ai.kpt svg.kpic {
   width: 44px;
   height: 44px;
+}
+
+/* ==========================================================================
+   AI Assistant: the card border shows the choice (547).
+   The radio stays in the markup for keyboard and screen readers.
+   ========================================================================== */
+#ai-sheet .aihead input.cbx {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+#ai-sheet .aiopt {
+  transition:
+    border-color 0.18s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+    box-shadow 0.18s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+}
+#ai-sheet .aiopt.on {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) !important;
+}
+#ai-sheet .aiopt:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Nested corners (547): an inner corner = outer radius − the gap between
+   them, with a floor so small shapes never go square.
+   Focus rings sit outside (outline-offset) and follow the element's own
+   radius, instead of reshaping the element on focus.
+   ========================================================================== */
+.sheet.lsheet > .btn {
+  border-radius: max(12px, calc(30px - 19px));
+}
+#v-home .card.summary > .hgo {
+  border-radius: max(10px, calc(18px - 14px));
+}
+
+/* ==========================================================================
+   More: Top travellers and Pass & Atlas icons match the settings rows (547).
+   Their glyphs sit inside a smaller part of the 24 grid, so draw them larger.
+   ========================================================================== */
+#acx-lb .xc svg,
+#acx-pf .xc svg {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.6;
+}
+
+/* Refresh animation tiles: smaller labels (547). */
+#settings-profile .gpick .gpr button {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ==========================================================================
+   Header blur (547): Home, Saved and More get the same soft blur band under
+   the header as Days, Plan and Explore (an older 1px hairline rule won).
+   ========================================================================== */
+:root:root:root:root :is(.hometop, .pghead).tstk::after {
+  height: 24px !important;
+  top: 100% !important;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg) 70%, transparent),
+    transparent
+  ) !important;
 }
