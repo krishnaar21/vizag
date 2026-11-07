@@ -7,7 +7,7 @@ var L=Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype,"href");L&&Objec
 var C=Object.getOwnPropertyDescriptor(Element.prototype,"className");C&&Object.defineProperty(Element.prototype,"className",{configurable:!0,enumerable:C.enumerable,get:C.get,set:function(v){if(C.get.call(this)===String(v))return;C.set.call(this,v)}});
 var X=Object.getOwnPropertyDescriptor(Node.prototype,"textContent");X&&Object.defineProperty(Node.prototype,"textContent",{configurable:!0,enumerable:X.enumerable,get:X.get,set:function(v){if(this.nodeType===1&&!this.firstElementChild&&X.get.call(this)===String(v==null?"":v))return;X.set.call(this,v)}})}catch(e){}})()</script>
 <meta charset="utf-8">
-<meta name="build" content="530">
+<meta name="build" content="531">
 <meta name="robots" content="noai, noimageai, noarchive">
 <meta name="description" content="Vizag trip planner. Copyright the owner. All rights reserved. Not for AI training or reverse engineering.">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" id="vpmeta">
@@ -2464,5 +2464,5 @@ function st(){var add=!!w.value.trim()&&!g.classList.contains("gxedit");b.classL
 b.addEventListener("click",function(e){if(b.classList.contains("gxadd")){e.preventDefault();e.stopImmediatePropagation();a.click();w.blur();setTimeout(st,30)}},!0);
 w.addEventListener("input",st);w.addEventListener("keydown",function(){setTimeout(st,30)});g.addEventListener("click",function(){setTimeout(st,60)});new MutationObserver(function(){setTimeout(st,30)}).observe(g,{attributes:!0,attributeFilter:["hidden","class"]});t&&new MutationObserver(st).observe(t,{childList:!0,characterData:!0,subtree:!0});st()}
 setTimeout(init,900);setInterval(init,2000)})()</script>
-</body>
+<style id="s531">:root:root:root:root input::placeholder,:root:root:root:root textarea::placeholder{color:color-mix(in srgb,var(--ink) 34%,transparent)!important;-webkit-text-fill-color:color-mix(in srgb,var(--ink) 34%,transparent)!important;opacity:1!important;font-weight:400!important}:root:root:root:root :is(input,textarea):not([type=checkbox]):not([type=radio]){color:var(--ink)}</style></body>
 </html>
