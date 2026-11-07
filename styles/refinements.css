@@ -5206,3 +5206,108 @@ html.sheet-bottom:root:root:root:root:root :is(#lb-sheet, #plans-sheet):not([hid
   background: color-mix(in srgb, var(--ink) 7%, var(--surface));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 6%, transparent);
 }
+
+/* ==========================================================================
+   Build 550.
+   ========================================================================== */
+/* Splash: the Kosway logo on its own (no tile), bigger, with one of three
+   intro animations picked in Developer options (html[data-ksa]). The orbit
+   dashes keep flowing while the app loads. */
+#kssplash .kslogo {
+  width: 132px;
+  height: 132px;
+  overflow: visible;
+}
+#kssplash .ksp,
+#kssplash .kso {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+#kssplash .kso path {
+  animation: ksdash 1.4s linear infinite;
+}
+@keyframes ksdash {
+  to {
+    stroke-dashoffset: -23;
+  }
+}
+/* Glide: the pin grows in softly, then the orbit appears */
+#kssplash .ksp {
+  animation: ksglide 0.6s var(--ease-out) both;
+}
+#kssplash .kso {
+  animation: ksfade 0.45s 0.25s var(--ease-out) both;
+}
+@keyframes ksglide {
+  from {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+}
+@keyframes ksfade {
+  from {
+    opacity: 0;
+  }
+}
+/* Rise: the pin fills in from the bottom, the orbit widens out */
+html[data-ksa="rise"] #kssplash .ksp {
+  animation: ksrise 0.7s var(--ease-out) both;
+}
+html[data-ksa="rise"] #kssplash .kso {
+  animation: ksgrow 0.5s 0.35s var(--ease-out) both;
+}
+@keyframes ksrise {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ksgrow {
+  from {
+    opacity: 0;
+    transform: scale(0.7, 0.4);
+  }
+}
+/* Drop: the pin drops in and settles, the orbit opens around it */
+html[data-ksa="drop"] #kssplash .ksp {
+  animation: ksdrop 0.75s var(--ease-out) both;
+}
+html[data-ksa="drop"] #kssplash .kso {
+  animation: ksgrow 0.45s 0.4s var(--ease-out) both;
+}
+@keyframes ksdrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-22%);
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(3%);
+  }
+  70% {
+    transform: translateY(-1.2%);
+  }
+  100% {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #kssplash .ksp,
+  #kssplash .kso,
+  #kssplash .kso path {
+    animation: none !important;
+  }
+}
+/* Developer preview of the splash */
+#kssplash.kspv {
+  cursor: pointer;
+}
+
+/* Android: Chrome's own pull-to-refresh is switched off so the Kosway globe
+   refresh shows instead */
+html.android,
+html.android body {
+  overscroll-behavior-y: contain;
+}

@@ -50,6 +50,8 @@
    45. Update banner: checks the live build number and shows "New version" when it is newer.
    46. Atlas AI switch: turning Atlas on picks the AI for you; off switches AI off.
    47. Opens Home and Days on today's day while a trip is on.
+   48. More: Customisation sits right below Profile.
+   49. Developer options: splash animation picker with a live preview.
 */
 
 /* ==========================================================================
@@ -2717,16 +2719,19 @@ try {
               .split("?")[0]
               .replace(/[^/]*$/, "");
             var m = {
-              name: "Vizag · Araku · Vanjangi",
-              short_name: "Vizag trip",
+              name: /\/beta\//.test(base) ? "Kosway (Beta)" : "Kosway",
+              short_name: "Kosway",
               start_url: base,
               scope: base,
               display: "standalone",
-              background_color: "#F2F2F2",
+              background_color: "#FFFFFF",
               theme_color: "#151515",
+              /* the chosen icon fills the launcher shape; the plain logo
+                 (no tile) is what Android shows on its opening screen */
               icons: [
-                { src: u192, sizes: "192x192", type: "image/png" },
-                { src: u512, sizes: "512x512", type: "image/png", purpose: "any" },
+                { src: u192, sizes: "192x192", type: "image/png", purpose: "maskable" },
+                { src: u512, sizes: "512x512", type: "image/png", purpose: "maskable" },
+                { src: base + "icon-logo-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
               ],
             };
             var ml = doc.querySelector('link[rel="manifest"]');
@@ -6148,4 +6153,89 @@ try {
   })();
 } catch (err) {
   console.error("[Kosway] part failed:", "Opens Home and Days on today's day while a trip is on.", err);
+}
+
+/* ==========================================================================
+   More: Customisation sits right below Profile.
+   ========================================================================== */
+try {
+  (function () {
+    var doc = document;
+    function place() {
+      var sp = doc.getElementById("settings-profile"),
+        pro = sp && sp.querySelector(":scope>.procap");
+      if (!pro) return;
+      var cap = [].find.call(sp.querySelectorAll(":scope>.setcap"), function (c) {
+        return c.textContent.trim() === "Customisation";
+      });
+      var grp = cap && cap.nextElementSibling;
+      if (!grp || !grp.classList.contains("setgrp")) return;
+      /* the first caption after Profile is where Customisation goes */
+      var next = pro.nextElementSibling;
+      while (next && !next.classList.contains("setcap")) next = next.nextElementSibling;
+      if (!next || next === cap) return;
+      sp.insertBefore(cap, next);
+      sp.insertBefore(grp, next);
+    }
+    place();
+    setInterval(place, 1500);
+  })();
+} catch (err) {
+  console.error("[Kosway] part failed:", "More: Customisation sits right below Profile.", err);
+}
+
+/* ==========================================================================
+   Developer options: splash animation picker with a live preview.
+   Saves the choice in vizag-splash; startup.js reads it on the next launch.
+   ========================================================================== */
+try {
+  (function () {
+    var doc = document,
+      root = doc.documentElement;
+    function mark() {
+      var cur = root.getAttribute("data-ksa") || "glide";
+      doc.querySelectorAll("[data-ksa]").forEach(function (b) {
+        if (b === root) return;
+        b.setAttribute("aria-pressed", b.dataset.ksa === cur ? "true" : "false");
+      });
+    }
+    function preview() {
+      if (!window.__ksLogo) return;
+      var old = doc.getElementById("kssplash");
+      old && old.remove();
+      var e = doc.createElement("div");
+      e.id = "kssplash";
+      e.className = "kspv";
+      e.setAttribute("aria-hidden", "true");
+      e.innerHTML = window.__ksLogo;
+      doc.body.appendChild(e);
+      var gone = 0;
+      function close() {
+        if (gone) return;
+        gone = 1;
+        e.classList.add("go");
+        setTimeout(function () {
+          e.remove();
+        }, 320);
+      }
+      e.addEventListener("click", close);
+      setTimeout(close, 2200);
+    }
+    doc.addEventListener("click", function (ev) {
+      var b = ev.target.closest && ev.target.closest("button[data-ksa]");
+      if (!b) return;
+      ev.stopPropagation();
+      var v = b.dataset.ksa;
+      if (!/^(glide|rise|drop)$/.test(v)) return;
+      root.setAttribute("data-ksa", v);
+      try {
+        localStorage.setItem("vizag-splash", v);
+      } catch (e) {}
+      mark();
+      preview();
+    });
+    mark();
+  })();
+} catch (err) {
+  console.error("[Kosway] part failed:", "Developer options: splash animation picker with a live preview.", err);
 }

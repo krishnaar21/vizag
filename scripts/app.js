@@ -13164,6 +13164,23 @@ try {
       };
       var k = (window.__CHANGES = [
           {
+            b: "550",
+            d: "7 Nov 2026",
+            s: "A cleaner opening screen and updates at the bottom.",
+            n: [
+              "The opening screen shows the Kosway logo on its own, bigger and animated",
+              "Developer options: preview three logo animations",
+            ],
+            f: [
+              "Android shows the Kosway globe when you pull to refresh",
+              "The app is called Kosway on your home screen",
+            ],
+            u: [
+              "The new version banner sits at the bottom like other messages",
+              "Customisation comes right after Profile in More",
+            ],
+          },
+          {
             b: "549",
             d: "7 Nov 2026",
             s: "Opens on today, one switch for Atlas AI, and a new first look.",

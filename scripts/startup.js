@@ -290,12 +290,26 @@ try {
 try {
   (function () {
     var d = document,
-      done = 0;
+      done = 0,
+      t0 = Date.now(),
+      ksa = "glide";
+    /* Logo animation picked in Developer options (Glide, Rise or Drop) */
+    try {
+      ksa = localStorage.getItem("vizag-splash") || ksa;
+    } catch (err) {}
+    if (!/^(glide|rise|drop)$/.test(ksa)) ksa = "glide";
+    d.documentElement.setAttribute("data-ksa", ksa);
+    /* Android: stop Chrome's own pull-to-refresh so the Kosway globe shows */
+    if (/Android/i.test(navigator.userAgent)) d.documentElement.classList.add("android");
     function hide() {
       if (done) return;
+      /* let the logo animation finish once (about 0.9s from launch) */
+      var wait = 900 - (Date.now() - t0);
+      if (wait > 0) return setTimeout(hide, wait);
       done = 1;
       var e = d.getElementById("kssplash");
       if (!e) return;
+      window.__ksLogo = e.innerHTML;
       e.classList.add("go");
       setTimeout(function () {
         e.remove();
